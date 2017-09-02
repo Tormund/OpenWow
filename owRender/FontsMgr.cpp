@@ -141,8 +141,8 @@ Font* FontsMgr::Add(cstring _fontFileName, uint32_t _fontSize) {
 		}
 		glEndList();
 
-		for (int row = 0; row < face->glyph->bitmap.rows; ++row) {
-			for (int pixel = 0; pixel < face->glyph->bitmap.width; ++pixel) {
+		for (uint32_t row = 0; row < face->glyph->bitmap.rows; ++row) {
+			for (uint32_t pixel = 0; pixel < face->glyph->bitmap.width; ++pixel) {
 				image[(x + face->glyph->bitmap_left + pixel) + (y - face->glyph->bitmap_top + row) * imageWidth] = face->glyph->bitmap.buffer[pixel + row * face->glyph->bitmap.pitch];
 			}
 		}

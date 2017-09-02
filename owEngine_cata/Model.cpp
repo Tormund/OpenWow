@@ -12,10 +12,13 @@ int globalTime = 0;
 
 #define GL_BUFFER_OFFSET(i) ((char *)(0) + (i))
 
-Model::Model(string name, bool forceAnim) : RefItemNamed(name), forceAnim(forceAnim)
+Model::Model(cstring name, bool forceAnim) : RefItemNamed(name), forceAnim(forceAnim)
 {
-	if (name == "")
+	if (name.empty())
+	{
 		return;
+	}
+
 	// replace .MDX with .M2
 	char tempname[256];
 	strncpy_s(tempname, name.c_str(), sizeof(tempname));
@@ -172,7 +175,8 @@ bool Model::isAnimated(File &f)
 		}
 	}
 
-	if (animGeometry) animBones = true;
+	if (animGeometry) 
+		animBones = true;
 	else
 	{
 		for (size_t i = 0; i < header.nBones; i++)
@@ -314,6 +318,7 @@ void Model::initCommon(File& f)
 		for (size_t i = 0; i < header.nColors; i++)
 			colors[i].init(f, colorDefs[i], globalSequences);
 	}
+
 	// init transparency
 	int16_t *transLookup = (int16_t*)(f.GetData() + header.ofsTransparencyLookup);
 	if (header.nTransparency)
@@ -524,7 +529,7 @@ void Model::initAnimated(File &f)
 
 	if (animTextures)
 	{
-		texAnims = new TextureAnim[header.nTexAnims];
+		texAnims = new ModelTextureAnim[header.nTexAnims];
 		ModelTexAnimDef *ta = (ModelTexAnimDef*)(f.GetData() + header.ofsTexAnims);
 		for (size_t i = 0; i < header.nTexAnims; i++)
 		{
@@ -574,7 +579,6 @@ void Model::initAnimated(File &f)
 
 	animcalc = false;
 }
-
 
 void Model::calcBones(int anim, int time)
 {
@@ -763,70 +767,6 @@ void Model::drawModel()
 	glColor4f(1, 1, 1, 1);
 	glDepthMask(GL_TRUE);
 }
-
-
-
-void TextureAnim::calc(int anim, int time)
-{
-	if (trans.uses(anim))
-	{
-		tval = trans.getValue(anim, time);
-	}
-
-	if (rot.uses(anim))
-	{
-		rval = rot.getValue(anim, time);
-	}
-
-	if (scale.uses(anim))
-	{
-		sval = scale.getValue(anim, time);
-	}
-}
-
-void TextureAnim::setup(int anim)
-{
-	glLoadIdentity();
-
-	if (trans.uses(anim))
-	{
-		glTranslatef(tval.x, tval.y, tval.z);
-	}
-
-	if (rot.uses(anim))
-	{
-		glRotatef(rval.x, 0, 0, 1.0f); // this is wrong, I have no idea what I'm doing here ;)
-	}
-
-	if (scale.uses(anim))
-	{
-		glScalef(sval.x, sval.y, sval.z);
-	}
-}
-
-
-
-void ModelColor::init(File& f, ModelColorDef& mcd, uint32_t * global)
-{
-	color.init(mcd.color, f, global);
-	opacity.init(mcd.opacity, f, global);
-}
-
-
-void ModelTransparency::init(File& f, ModelTransDef& mcd, uint32_t * global)
-{
-	trans.init(mcd.trans, f, global);
-}
-
-
-void TextureAnim::init(File& f, ModelTexAnimDef& mta, uint32_t * global)
-{
-	trans.init(mta.trans, f, global);
-	rot.init(mta.rot, f, global);
-	scale.init(mta.scale, f, global);
-}
-
-
 
 void Model::draw()
 {

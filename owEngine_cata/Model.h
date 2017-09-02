@@ -12,8 +12,11 @@ class Bone;
 
 #include "Model_Bone.h"
 #include "Model_Camera.h"
+#include "Model_Color.h"
 #include "Model_Light.h"
 #include "Model_RenderPass.h"
+#include "Model_TextureAnim.h"
+#include "Model_Transparency.h"
 
 class Model;
 
@@ -59,35 +62,6 @@ public:
 	Vec4D ocol, ecol;
 };
 
-class TextureAnim
-{
-public:
-	void calc(int anim, int time);
-	void init(File &f, ModelTexAnimDef &mta, uint32_t *global);
-	void setup(int anim);
-
-private:
-	Animated<vec3> trans, rot, scale;
-
-public:
-	vec3 tval, rval, sval;
-};
-
-struct ModelColor
-{
-	Animated<vec3> color;
-	AnimatedShort opacity;
-
-	void init(File& f, ModelColorDef& mcd, uint32_t * global);
-};
-
-struct ModelTransparency
-{
-	AnimatedShort trans;
-
-	void init(File& f, ModelTransDef& mtd, uint32_t * global);
-};
-
 // copied from the .mdl docs? this might be completely wrong
 enum BlendModes
 {
@@ -115,7 +89,7 @@ class Model : public RefItemNamed
 
 	ModelHeader header;
 
-	TextureAnim * texAnims;
+	ModelTextureAnim * texAnims;
 	ModelAnimation * anims;
 	uint32_t * globalSequences;
 	ModelColor * colors;
@@ -171,7 +145,7 @@ public:
 	int anim, animtime;
 	string fullname;
 
-	Model(string name, bool forceAnim = false);
+	Model(cstring name, bool forceAnim = false);
 	~Model();
 
 	void draw();

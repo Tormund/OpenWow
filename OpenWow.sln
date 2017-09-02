@@ -52,6 +52,15 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "owGUI", "owGUI\owGUI.vcxpro
 		{E722B6DA-F485-4EAA-8E72-205CE3D4CEB5} = {E722B6DA-F485-4EAA-8E72-205CE3D4CEB5}
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shared", "shared", "{76177B02-4AB8-47F1-96E1-672BF7DFEA08}"
+	ProjectSection(SolutionItems) = preProject
+		shared\owCore.h = shared\owCore.h
+		shared\owDBC.h = shared\owDBC.h
+		shared\owGame.h = shared\owGame.h
+		shared\owGUI.h = shared\owGUI.h
+		shared\owRender.h = shared\owRender.h
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64

@@ -85,6 +85,15 @@
     <ClInclude Include="Map_GlobalWMOs.h">
       <Filter>Map</Filter>
     </ClInclude>
+    <ClInclude Include="Model_Color.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model_Transparency.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model_TextureAnim.h">
+      <Filter>Model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="frustum.cpp" />
@@ -164,6 +173,15 @@
     </ClCompile>
     <ClCompile Include="Map_GlobalWMOs.cpp">
       <Filter>Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Model_Color.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Model_Transparency.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Model_TextureAnim.cpp">
+      <Filter>Model</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

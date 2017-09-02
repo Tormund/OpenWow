@@ -36,7 +36,7 @@ void ConsoleOpenGL::Render() {
 
 	// Messages
 	int curLine = 0;
-	for(int i = messages.size() - 1 - lineOffset; i > 0; i--) {
+	for(size_t i = messages.size() - 1 - lineOffset; i > 0; i--) {
 		auto _message = messages[i];
 		if(curLine == linesInConsole)
 			break;

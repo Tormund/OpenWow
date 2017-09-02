@@ -33,12 +33,15 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="modelheaders.h" />
     <ClInclude Include="ModelsUtils.h" />
+    <ClInclude Include="Model_Color.h" />
     <ClInclude Include="Model_Bone.h" />
     <ClInclude Include="Model_Camera.h" />
     <ClInclude Include="Model_Instance.h" />
     <ClInclude Include="Model_Light.h" />
     <ClInclude Include="ModelsManager.h" />
     <ClInclude Include="Model_RenderPass.h" />
+    <ClInclude Include="Model_TextureAnim.h" />
+    <ClInclude Include="Model_Transparency.h" />
     <ClInclude Include="particle.h" />
     <ClInclude Include="quaternion.h" />
     <ClInclude Include="shaders.h" />
@@ -61,6 +64,7 @@
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Map_GlobalWMOs.cpp" />
     <ClCompile Include="ModelsUtils.cpp" />
+    <ClCompile Include="Model_Color.cpp" />
     <ClCompile Include="Model_Light.cpp" />
     <ClCompile Include="liquid.cpp" />
     <ClCompile Include="MapChunk.cpp" />
@@ -72,6 +76,8 @@
     <ClCompile Include="Model_Instance.cpp" />
     <ClCompile Include="ModelsManager.cpp" />
     <ClCompile Include="Model_RenderPass.cpp" />
+    <ClCompile Include="Model_TextureAnim.cpp" />
+    <ClCompile Include="Model_Transparency.cpp" />
     <ClCompile Include="particle.cpp" />
     <ClCompile Include="shaders.cpp" />
     <ClCompile Include="sky.cpp" />

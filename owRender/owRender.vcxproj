@@ -94,7 +94,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;OW_RENDER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Externals\glfw-3.2.1.bin.WIN32\include;..\Externals\glew-2.1.0\include;..\Externals\glfx\glfx\include;..\Externals\soil;..\Externals\freetype\include;..\Externals\freetype\include\freetype2;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Externals\glfw-3.2.1.bin.WIN32\include;..\Externals\glew-2.1.0\include;..\Externals\glfx\glfx\include;..\Externals\soil;..\Externals\freetype\include;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
@@ -112,7 +112,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;OW_RENDER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\Externals\glfw-3.2.1.bin.WIN64\include;..\Externals\glew-2.1.0\include;..\Externals\glfx\glfx\include;..\Externals\soil;..\Externals\freetype\include;..\Externals\freetype\include\freetype2;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Externals\glfw-3.2.1.bin.WIN64\include;..\Externals\glew-2.1.0\include;..\Externals\glfx\glfx\include;..\Externals\soil;..\Externals\freetype\include;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -130,7 +130,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;OW_RENDER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Externals\glfw-3.2.1.bin.WIN32\include;..\Externals\glew-2.1.0\include;..\Externals\glfx\glfx\include;..\Externals\soil;..\Externals\freetype\include;..\Externals\freetype\include\freetype2;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Externals\glfw-3.2.1.bin.WIN32\include;..\Externals\glew-2.1.0\include;..\Externals\glfx\glfx\include;..\Externals\soil;..\Externals\freetype\include;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
@@ -152,7 +152,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;OW_RENDER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\Externals\glfw-3.2.1.bin.WIN64\include;..\Externals\glew-2.1.0\include;..\Externals\glfx\glfx\include;..\Externals\soil;..\Externals\freetype\include;..\Externals\freetype\include\freetype2;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Externals\glfw-3.2.1.bin.WIN64\include;..\Externals\glew-2.1.0\include;..\Externals\glfx\glfx\include;..\Externals\soil;..\Externals\freetype\include;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

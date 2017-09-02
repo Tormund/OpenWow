@@ -19,7 +19,7 @@ public:
 	OW_RENDER_DLL_API uint32_t GetFontHeight(Font* _font) const;
 
 	OW_RENDER_DLL_API Font* GetMainFont() const { return mainFont; }
-	OW_RENDER_DLL_API int GetFontsCount() const { return Fonts.size(); }
+	OW_RENDER_DLL_API size_t GetFontsCount() const { return Fonts.size(); }
 
 private:
 	map<string, Font*> Fonts;

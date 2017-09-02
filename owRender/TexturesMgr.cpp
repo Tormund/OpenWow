@@ -27,7 +27,7 @@ bool TexturesMgr::LoadSoilTexture(ByteBuffer& _buffer, Texture* _texture) {
 
 	// Read data
 	int32_t sizeX, sizeY;
-	uint8_t* image = SOIL_load_image_from_memory(_buffer.GetData(), _buffer.GetSize(), &sizeX, &sizeY, 0, SOIL_LOAD_RGBA);
+	uint8_t* image = SOIL_load_image_from_memory(_buffer.GetData(), static_cast<int>(_buffer.GetSize()), &sizeX, &sizeY, 0, SOIL_LOAD_RGBA);
 
 	if(SOIL_last_result() != "Image loaded from memory") {
 		Debug::Error("TexturesMgr: Error while loading texture. Error [%s].", SOIL_last_result());
