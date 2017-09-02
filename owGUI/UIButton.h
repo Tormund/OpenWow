@@ -5,12 +5,12 @@
 class UIButton : public UIElement {
 	typedef UIElement base;
 public:
-	OW_GAME_DLL_API UIButton();
+	OW_GUI_DLL_API UIButton();
 	virtual ~UIButton();
 
-	OW_GAME_DLL_API void Init(cvec2 _position, Image* _image);
+	OW_GUI_DLL_API void Init(cvec2 _position, Image* _image);
 
-	OW_GAME_DLL_API void SetAction(ArgFunctionBase* _onPress);
+	OW_GUI_DLL_API void SetAction(ArgFunctionBase* _onPress);
 
 	virtual void Enable();
 	virtual void Disable();

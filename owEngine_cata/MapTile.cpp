@@ -216,18 +216,18 @@ MapTile::MapTile(int x0, int z0, cstring basename) : indexX(x0), indexZ(z0), wmo
 		switch(fileindex) {
 			case 0:
 			phase = main_file;
-			sprintf(name, "World\\Maps\\%s\\%s_%d_%d.adt", basename.c_str(), basename.c_str(), x0, z0);
+			sprintf_s(name, "World\\Maps\\%s\\%s_%d_%d.adt", basename.c_str(), basename.c_str(), x0, z0);
 			break;
 			case 1:
 			phase = tex;
-			sprintf(name, "World\\Maps\\%s\\%s_%d_%d_tex0.adt", basename.c_str(), basename.c_str(), x0, z0);
+			sprintf_s(name, "World\\Maps\\%s\\%s_%d_%d_tex0.adt", basename.c_str(), basename.c_str(), x0, z0);
 			break;
 			/*case 2:
 				sprintf(name,"World\\Maps\\%s\\%s_%d_%d_tex1.adt", basename.c_str(), basename.c_str(), x0, z0);
 				break;*/
 			case 2:
 			phase = obj;
-			sprintf(name, "World\\Maps\\%s\\%s_%d_%d_obj0.adt", basename.c_str(), basename.c_str(), x0, z0);
+			sprintf_s(name, "World\\Maps\\%s\\%s_%d_%d_obj0.adt", basename.c_str(), basename.c_str(), x0, z0);
 			break;
 		}
 		parse_adt(name, phase);

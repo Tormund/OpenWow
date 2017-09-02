@@ -9,7 +9,6 @@
 // Additional
 #include "ConsoleOpenGL.h"
 #include "GameState_Empty.h"
-#include "UIMgr.h"
 
 bool Engine::Init(vector<string>& _argumentQueue) {
 	// Add debug outputs

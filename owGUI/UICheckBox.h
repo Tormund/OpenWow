@@ -8,7 +8,7 @@ public:
 	UICheckBox();
 	virtual ~UICheckBox();
 
-	OW_GAME_DLL_API void Init(cvec2 _position);
+	OW_GUI_DLL_API void Init(cvec2 _position);
 
 	bool IsChecked() const { return isChecked; }
 

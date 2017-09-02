@@ -19,7 +19,7 @@ public:
 	template<class MODULE>
 	inline MODULE * GetModule();
 
-	inline int GetModulesCount() { return modules.size(); }
+	inline size_t GetModulesCount() { return modules.size(); }
 
 private:
 	vector<Module*> modules;

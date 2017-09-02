@@ -6,18 +6,13 @@
 #include <cmath>
 #include <iomanip>
 #include <cstdlib>
-#include <memory>
-#include <ctime>
+#include <typeinfo>
 using namespace std;
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-#define NOMINMAX
-#include <winerror.h>
 
-// INCLUDES
-#include <GL/glew.h>
-
+// GLFW
 #define GLFW_DLL
 #include <GLFW/glfw3.h>
 
@@ -27,11 +22,4 @@ using namespace std;
 #include <owRender.h>
 #pragma comment(lib, "owRender.lib")
 
-#include <owGUI.h>
-#pragma comment(lib, "owGUI.lib")
-
-#include <owGame.h>
-#pragma comment(lib, "owGame.lib")
-
-#include <owDBC.h>
-#pragma comment(lib, "owDBC.lib")
+#define OW_GUI_DLL_API __declspec(dllexport)

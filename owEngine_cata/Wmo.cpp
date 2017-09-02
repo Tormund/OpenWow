@@ -33,10 +33,10 @@ WMO::WMO(cstring name) : RefItemNamed(name), groups(0), mat(0), skybox(0) {
 	uint32_t size;
 	float ff[3];
 
-	char *ddnames;
-	char *groupnames;
+	char *ddnames = nullptr;
+	char *groupnames = nullptr;
 
-	char *texbuf = 0;
+	char *texbuf = nullptr;
 
 	while(!f.IsEof()) {
 		memset(fourcc, 0, 4);
@@ -84,7 +84,7 @@ flag2 		Meaning
 0x40 		looks like GL_CLAMP
 0x80 		looks like GL_REPEAT
 */
-			for(int i = 0; i < header.nTextures; i++) {
+			for(uint32_t i = 0; i < header.nTextures; i++) {
 				WMOMaterial* _mat = new WMOMaterial(f);
 				_mat->initTexture(texbuf);
 				mat.push_back(_mat);
@@ -115,7 +115,7 @@ flag2 		Meaning
 			groupnames = (char*)f.GetDataFromCurrent();
 		}
 		else if(strcmp(fourcc, "MOGI") == 0) {
-			for(int i = 0; i < header.nGroups; i++) {
+			for(uint32_t i = 0; i < header.nGroups; i++) {
 				auto group = new WMOGroup;
 				group->init(this, f, i, groupnames);
 				groups.push_back(group);
@@ -149,7 +149,7 @@ flag2 		Meaning
 			It's fun, you can actually map out the topology of the WMO using this and the MOPR chunk. This could be used to speed up the rendering once/if I figure out how.
 			*/
 			WMOPV p;
-			for(int i = 0; i < header.nPortals; i++) {
+			for(uint32_t i = 0; i < header.nPortals; i++) {
 				f.ReadBytes(ff, 12);
 				p.a = vec3(ff[0], ff[2], -ff[1]);
 				f.ReadBytes(ff, 12);
@@ -243,7 +243,7 @@ flag2 		Meaning
 			I haven't quite figured out how WoW actually does lighting, as it seems much smoother than the regular vertex lighting in my screenshots. The light paramters might be range or attenuation information, or something else entirely. Some WMO groups reference a lot of lights at once.
 			The WoW client (at least on my system) uses only one light, which is always directional. Attenuation is always (0, 0.7, 0.03). So I suppose for models/doodads (both are M2 files anyway) it selects an appropriate light to turn on. Global light is handled similarly. Some WMO textures (BLP files) have specular maps in the alpha channel, the pixel shader renderpath uses these. Still don't know how to determine direction/color for either the outdoor light or WMO local lights... :)
 			*/
-			for(int i = 0; i < header.nLights; i++) {
+			for(uint32_t i = 0; i < header.nLights; i++) {
 				WMOLight l;
 				l.init(f);
 				lights.push_back(l);
@@ -267,7 +267,7 @@ flag2 		Meaning
 			01Ch  UINT32 nulls;
 			}
 			*/
-			for(int i = 0; i < header.nDoodadSets; i++) {
+			for(uint32_t i = 0; i < header.nDoodadSets; i++) {
 				WMODoodadSet dds;
 				f.ReadBytes(&dds, sizeof(WMODoodadSet));
 				doodadsets.push_back(dds);
@@ -319,7 +319,7 @@ flag2 		Meaning
 			};
 			*/
 			header.nDoodadNames = (int)size / 0x28;
-			for(auto i = 0; i < header.nDoodadNames; i++) {
+			for(uint32_t i = 0; i < header.nDoodadNames; i++) {
 				int ofs;
 				f.ReadBytes(&ofs, 4);
 				if(!ddnames)
@@ -518,7 +518,7 @@ void WMO::drawSkybox() {
 void WMO::drawPortals() {
 	// not used ;)
 	glBegin(GL_QUADS);
-	for(int i = 0; i < header.nPortals; i++) {
+	for(uint32_t i = 0; i < header.nPortals; i++) {
 		glVertex3fv(glm::value_ptr(pvs[i].d));
 		glVertex3fv(glm::value_ptr(pvs[i].c));
 		glVertex3fv(glm::value_ptr(pvs[i].b));

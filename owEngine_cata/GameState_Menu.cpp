@@ -88,8 +88,8 @@ void GameState_Menu::Destroy()
 
 void GameState_Menu::InputPhase(double t, double dt)
 {
-	double delta = PI / 60.0;
-	double speed = 1.5 * (cameraSprint ? 5.0 : 1.0);
+	float delta = PI / 60.0f;
+	float speed = 1.5f * (cameraSprint ? 5.0f : 1.0f);
 
 	if (_Input->IsKeyPressed(GLFW_KEY_W))
 	{
@@ -486,7 +486,7 @@ void GameState_Menu::randBackground()
 
 	char* randui = ui[Random::GenerateRange(0, 6)];
 	char path[256];
-	sprintf(path, "Interface\\Glues\\Models\\UI_%s\\UI_%s.mdx", randui, randui);
+	sprintf_s(path, "Interface\\Glues\\Models\\UI_%s\\UI_%s.mdx", randui, randui);
 
 	backgroundModel = new Model(path);
 	backgroundModel->ind = true;

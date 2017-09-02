@@ -309,7 +309,7 @@ void Liquid::initTextures(const char *basename, int first, int last)
 {
 	char buf[256];
 	for (int i=first; i<=last; i++) {
-		sprintf(buf, "%s.%d.blp", basename, i);
+		sprintf_s(buf, "%s.%d.blp", basename, i);
 		textures.push_back(_TexturesMgr->Add(buf));
 	}
 }

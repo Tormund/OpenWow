@@ -9,16 +9,16 @@ class UIMgr : public Module, public InputListener {
 	friend UIElement;
 	friend UIWindow;
 public:
-	DEF_MODULE(UIMgr, OW_GAME_DLL_API);
+	DEF_MODULE(UIMgr, OW_GUI_DLL_API);
 
 	//
 
-	OW_GAME_DLL_API void Attach(UIElement* _element);
+	OW_GUI_DLL_API void Attach(UIElement* _element);
 
 	// Common functional
 
-	OW_GAME_DLL_API void Update();
-	OW_GAME_DLL_API void Render();
+	OW_GUI_DLL_API void Update();
+	OW_GUI_DLL_API void Render();
 
 	// Focus
 

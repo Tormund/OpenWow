@@ -9,7 +9,7 @@
 void MapWaterChunk::initTextures(const char* basename, int first, int last) {
 	char buf[256];
 	for(int i = first; i <= last; i++) {
-		sprintf(buf, "%s.%d.blp", basename, i);
+		sprintf_s(buf, "%s.%d.blp", basename, i);
 		wTextures.push_back(_TexturesMgr->Add(buf));
 	}
 }
@@ -38,8 +38,8 @@ void MapWaterChunk::drawWater() {
 	for(unsigned l = 0; l < waterLayer.size(); l++) {
 		SWaterLayer& layer = waterLayer[l];
 
-		for(unsigned y = layer.y; y < layer.h + layer.y; y++) {
-			for(unsigned x = layer.x; x < layer.w + layer.x; x++) {
+		for(uint8_t y = layer.y; y < layer.h + layer.y; y++) {
+			for(uint8_t x = layer.x; x < layer.w + layer.x; x++) {
 
 				unsigned tx = x - layer.x;
 				unsigned ty = y - layer.y;

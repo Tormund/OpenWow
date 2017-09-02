@@ -7,21 +7,21 @@ class UIWindow;
 class UIElement : public InputListener {
 	friend UIMgr;
 public:
-	OW_GAME_DLL_API UIElement();
+	OW_GUI_DLL_API UIElement();
 	virtual ~UIElement();
 
-	OW_GAME_DLL_API void Init(cvec2 _position, cvec2 _size, Image* _image, Color _color = COLOR_EMPTY);
+	OW_GUI_DLL_API void Init(cvec2 _position, cvec2 _size, Image* _image, Color _color = COLOR_EMPTY);
 
 	// Name functional
 
-	OW_GAME_DLL_API void SetName(cstring _newName);
+	OW_GUI_DLL_API void SetName(cstring _newName);
 	inline string GetName() const { return name; }
 
 	// Childs & parent functional
 
-	OW_GAME_DLL_API void Attach(UIWindow* _parent);
-	OW_GAME_DLL_API void Detach();
-	OW_GAME_DLL_API void Delete();
+	OW_GUI_DLL_API void Attach(UIWindow* _parent);
+	OW_GUI_DLL_API void Detach();
+	OW_GUI_DLL_API void Delete();
 	inline UIWindow* GetParent() const { return parent; }
 
 	// Enable & Disable functional
@@ -33,23 +33,23 @@ public:
 
 	// Mouse hover functional
 
-	OW_GAME_DLL_API bool CheckMouseHover();
+	OW_GUI_DLL_API bool CheckMouseHover();
 	inline bool IsMouseHover() const { return mouseHover; }
 
 	// Position & size functional
 
-	OW_GAME_DLL_API vec2 GetPosition() const;
+	OW_GUI_DLL_API vec2 GetPosition() const;
 	inline vec2 GetSize() const { return size; }
 
 	// Text functional
 
 	inline void ShowText() { textEnable = true; }
 	inline void HideText() { textEnable = false; }
-	OW_GAME_DLL_API void SetText(cstring _text);
+	OW_GUI_DLL_API void SetText(cstring _text);
 	inline void SetTextOffset(cvec2 _textOffset) { textOffset = _textOffset; }
 	inline void SetTextAlignW(TextAlignW _textAlignW) { textAlignW = _textAlignW; }
 	inline void SetTextAlignH(TextAlignH _textAlignH) { textAlignH = _textAlignH; }
-	OW_GAME_DLL_API void SetTextFont(Font* _font);
+	OW_GUI_DLL_API void SetTextFont(Font* _font);
 	inline string GetText() const { return text; };
 
 	// Common functional

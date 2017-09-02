@@ -22,4 +22,7 @@ using namespace std;
 #include <owRender.h>
 #pragma comment(lib, "owRender.lib")
 
+#include <owGUI.h>
+#pragma comment(lib, "owGUI.lib")
+
 #define OW_GAME_DLL_API __declspec(dllexport)

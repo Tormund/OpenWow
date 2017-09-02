@@ -144,12 +144,12 @@ void WMOGroup::init(WMO* wmo, File& f, int num, char* names) {
 }
 
 void WMOGroup::initDisplayList() {
-	vec3* vertices;
-	vec3* normals;
-	vec2* texcoords;
-	unsigned short* indices;
-	MOPY* materials;
-	WMOBatch* batches;
+	vec3* vertices = nullptr;
+	vec3* normals = nullptr;
+	vec2* texcoords = nullptr;
+	unsigned short* indices = nullptr;
+	MOPY* materials = nullptr;
+	WMOBatch* batches = nullptr;
 
 	WMOGroupHeader gh;
 
@@ -158,11 +158,11 @@ void WMOGroup::initDisplayList() {
 
 	// open group file
 	char temp[256];
-	strcpy(temp, wmo->GetName().c_str());
+	strcpy_s(temp, wmo->GetName().c_str());
 	temp[wmo->GetName().length() - 4] = 0;
 
 	char fname[256];
-	sprintf(fname, "%s_%03d.wmo", temp, num);
+	sprintf_s(fname, "%s_%03d.wmo", temp, num);
 
 	File gf(fname);
 	if(!gf.Open()) {
@@ -184,7 +184,7 @@ void WMOGroup::initDisplayList() {
 	char fourcc[5];
 	uint32_t size = 0;
 
-	uint32_t *cv;
+	uint32_t *cv = nullptr;
 	hascv = false;
 
 	while(!gf.IsEof()) {
@@ -219,7 +219,7 @@ void WMOGroup::initDisplayList() {
 			vmax = vec3(-9999999.0f, -9999999.0f, -9999999.0f);
 
 			rad = 0;
-			for(int i = 0; i < nVertices; i++) {
+			for(uint32_t i = 0; i < nVertices; i++) {
 				vec3 v(vertices[i].x, vertices[i].z, -vertices[i].y);
 				if(v.x < vmin.x) vmin.x = v.x;
 				if(v.y < vmin.y) vmin.y = v.y;
@@ -456,11 +456,11 @@ void WMOGroup::initLighting(int nLR, short *useLights) {
 		float lenmin;
 		int lmin;
 
-		for(int i = 0; i < nDoodads; i++) {
+		for(uint32_t i = 0; i < nDoodads; i++) {
 			lenmin = 999999.0f*999999.0f;
 			lmin = 0;
 			ModelInstance &mi = wmo->modelis[ddr[i]];
-			for(int j = 0; j < wmo->header.nLights; j++) {
+			for(uint32_t j = 0; j < wmo->header.nLights; j++) {
 				WMOLight &l = wmo->lights[j];
 				vec3 dir = l.pos - mi.pos;
 				float ll = glm::length2(dir);
@@ -549,7 +549,7 @@ void WMOGroup::drawDoodads(int doodadset, cvec3 ofs, const float rot) {
 
 	// draw doodads
 	glColor4f(1, 1, 1, 1);
-	for(int i = 0; i < nDoodads; i++) {
+	for(uint32_t i = 0; i < nDoodads; i++) {
 		short dd = ddr[i];
 		bool inSet;
 		// apparently, doodadset #0 (defaultGlobal) should always be visible

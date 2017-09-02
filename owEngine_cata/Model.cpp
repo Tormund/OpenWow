@@ -18,7 +18,7 @@ Model::Model(string name, bool forceAnim) : RefItemNamed(name), forceAnim(forceA
 		return;
 	// replace .MDX with .M2
 	char tempname[256];
-	strncpy(tempname, name.c_str(), sizeof(tempname));
+	strncpy_s(tempname, name.c_str(), sizeof(tempname));
 	if (tempname[name.length() - 1] != '2')
 	{
 		tempname[name.length() - 2] = '2';
@@ -284,7 +284,7 @@ void Model::initCommon(File& f)
 
 			if (texdef[i].type == 0)
 			{
-				strncpy(texname, (const char*)(f.GetData() + texdef[i].nameOfs), texdef[i].nameLen);
+				strncpy_s(texname, (const char*)(f.GetData() + texdef[i].nameOfs), texdef[i].nameLen);
 				texname[texdef[i].nameLen] = 0;
 				textures[i] = _TexturesMgr->Add(texname);
 			}
@@ -486,7 +486,7 @@ void Model::initAnimated(File &f)
 		char tempname[256];
 		for (size_t i = 0; i < header.nAnimations; i++)
 		{
-			sprintf(tempname, "%s%04d-%02d.anim", fullname.c_str(), anims[i].animID, anims[i].subAnimID);
+			sprintf_s(tempname, "%s%04d-%02d.anim", fullname.c_str(), anims[i].animID, anims[i].subAnimID);
 			if (File::getSize(tempname) > 0)
 			{
 				animfiles[i].Open(tempname);

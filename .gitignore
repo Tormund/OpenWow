@@ -33,9 +33,13 @@
 
 # Project
 .vs/
+
 Debug/
 Release/
+
 bin/
+bin_x64/
+
 Externals/
 owEngine/
 owTest/

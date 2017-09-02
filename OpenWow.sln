@@ -7,6 +7,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "owCore", "owCore\owCore.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "owGame", "owGame\owGame.vcxproj", "{25E4827B-D0DD-4758-B70F-DEA7217E7E70}"
 	ProjectSection(ProjectDependencies) = postProject
+		{4BDE3C61-6FD1-49B2-AD4B-FEDFA2400700} = {4BDE3C61-6FD1-49B2-AD4B-FEDFA2400700}
 		{A4E6F769-0036-4128-A409-495D9207F587} = {A4E6F769-0036-4128-A409-495D9207F587}
 		{E722B6DA-F485-4EAA-8E72-205CE3D4CEB5} = {E722B6DA-F485-4EAA-8E72-205CE3D4CEB5}
 	EndProjectSection
@@ -43,6 +44,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shaders", "Shaders", "{5722
 		owTest\shaders\null_technique.glsl = owTest\shaders\null_technique.glsl
 		owTest\shaders\SimpleColor.glsl = owTest\shaders\SimpleColor.glsl
 		owTest\shaders\SimpleTexture.glsl = owTest\shaders\SimpleTexture.glsl
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "owGUI", "owGUI\owGUI.vcxproj", "{4BDE3C61-6FD1-49B2-AD4B-FEDFA2400700}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A4E6F769-0036-4128-A409-495D9207F587} = {A4E6F769-0036-4128-A409-495D9207F587}
+		{E722B6DA-F485-4EAA-8E72-205CE3D4CEB5} = {E722B6DA-F485-4EAA-8E72-205CE3D4CEB5}
 	EndProjectSection
 EndProject
 Global
@@ -101,6 +108,14 @@ Global
 		{3BCC105A-6AEE-4C9E-A8C7-3FB9336EA2A2}.Release|x64.Build.0 = Release|x64
 		{3BCC105A-6AEE-4C9E-A8C7-3FB9336EA2A2}.Release|x86.ActiveCfg = Release|Win32
 		{3BCC105A-6AEE-4C9E-A8C7-3FB9336EA2A2}.Release|x86.Build.0 = Release|Win32
+		{4BDE3C61-6FD1-49B2-AD4B-FEDFA2400700}.Debug|x64.ActiveCfg = Debug|x64
+		{4BDE3C61-6FD1-49B2-AD4B-FEDFA2400700}.Debug|x64.Build.0 = Debug|x64
+		{4BDE3C61-6FD1-49B2-AD4B-FEDFA2400700}.Debug|x86.ActiveCfg = Debug|Win32
+		{4BDE3C61-6FD1-49B2-AD4B-FEDFA2400700}.Debug|x86.Build.0 = Debug|Win32
+		{4BDE3C61-6FD1-49B2-AD4B-FEDFA2400700}.Release|x64.ActiveCfg = Release|x64
+		{4BDE3C61-6FD1-49B2-AD4B-FEDFA2400700}.Release|x64.Build.0 = Release|x64
+		{4BDE3C61-6FD1-49B2-AD4B-FEDFA2400700}.Release|x86.ActiveCfg = Release|Win32
+		{4BDE3C61-6FD1-49B2-AD4B-FEDFA2400700}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

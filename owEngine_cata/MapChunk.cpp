@@ -342,7 +342,7 @@ void MapChunk::init(vector<Texture*>* mt, File &f, load_phases phase)
 		f.Seek(header->ofsLayer);
 		{
 			// Texture layer definitions for this map chunk. 16 bytes per layer, up to 4 layers (thus, layer count = size / 16).
-			for (int i = 0; i < header->nLayers; i++)
+			for (uint32_t i = 0; i < header->nLayers; i++)
 			{
 				f.ReadBytes(&mcly[i], 16);
 
@@ -366,7 +366,7 @@ void MapChunk::init(vector<Texture*>* mt, File &f, load_phases phase)
 			uint8_t* data = f.GetDataFromCurrent();
 			if (header->nLayers > 0)
 			{
-				for (int i = 1; i < header->nLayers; i++)
+				for (uint32_t i = 1; i < header->nLayers; i++)
 				{
 					alphamaps[i - 1]->GenerateTexture();
 
@@ -683,7 +683,7 @@ void MapChunk::draw()
 		blend->Bind();
 
 		// blended layers
-		for (int i = 1; i < header->nLayers; i++)
+		for (uint32_t i = 1; i < header->nLayers; i++)
 		{
 			int tex = GL_TEXTURE2_ARB + i - 1;
 			glActiveTextureARB(tex);
@@ -725,7 +725,7 @@ void MapChunk::draw()
 		}
 
 		// Layers
-		for (int i = 1; i < header->nLayers; i++)
+		for (uint32_t i = 1; i < header->nLayers; i++)
 		{
 			// Common texture
 			textures[i]->Bind();

@@ -9,8 +9,8 @@ class WMOInstance;
 class WMOManager;
 class Liquid;
 
-class WMOFog;
-class WMOLight;
+struct WMOFog;
+struct WMOLight;
 class WMOMaterial;
 
 struct WMOHeader {

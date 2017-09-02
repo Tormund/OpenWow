@@ -41,11 +41,13 @@ ShaderARB::ShaderARB(GLenum target, const char *program, bool fromFile) :id(0), 
 		return;
 	}
 
-	const char *progtext;
-	char *buf;
+	const char *progtext = nullptr;
+	char *buf = nullptr;
 	if (fromFile)
 	{
-		FILE *f = fopen(program, "rb");
+		FILE *f;
+		fopen_s(&f, program, "rb");
+
 		if (!f)
 		{
 			ok = false;
