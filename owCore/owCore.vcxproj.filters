@@ -1,0 +1,209 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Types">
+      <UniqueIdentifier>{de8a75b4-8f47-4cf8-90f6-6e82895a1cb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Debug">
+      <UniqueIdentifier>{deebd8da-8980-4331-b271-45cc65f99fd1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files">
+      <UniqueIdentifier>{51b84f54-cbb0-4a65-9203-96380aca6299}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{99cc3793-975f-4c86-9eee-6ca69f13a6d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Module">
+      <UniqueIdentifier>{0aac1f61-7524-4d73-a6d5-ac5839c221d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Debug\Debug Outputs">
+      <UniqueIdentifier>{ee96e328-f0ef-46a7-8da9-95f0400b912b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RefManager">
+      <UniqueIdentifier>{1e0aa16e-9a5d-41ce-ba51-305029359e7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Memory">
+      <UniqueIdentifier>{1c087543-2cdc-4768-baeb-8f29f42fd579}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RefManager\2 Dim">
+      <UniqueIdentifier>{d7879282-8d68-4c32-8b0b-ca4948a9fc99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RefManager\2 Dim\Simple">
+      <UniqueIdentifier>{86fc22ef-41b0-4b34-846f-8e0e94f08f04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RefManager\1 Dim">
+      <UniqueIdentifier>{364d279b-b6fe-4433-9fa9-0e522f3e1221}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RefManager\Items">
+      <UniqueIdentifier>{cd89c663-5455-491b-b7bb-ff5790697a69}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Types</Filter>
+    </ClCompile>
+    <ClCompile Include="INIFile.cpp">
+      <Filter>Files</Filter>
+    </ClCompile>
+    <ClCompile Include="XMLFile.cpp">
+      <Filter>Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ModulesMgr.cpp">
+      <Filter>Module</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug.cpp">
+      <Filter>Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="InputListener.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Console.cpp">
+      <Filter>Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugOutput_ConsoleWindows.cpp">
+      <Filter>Debug\Debug Outputs</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugOutput_Log.cpp">
+      <Filter>Debug\Debug Outputs</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugOutput.cpp">
+      <Filter>Debug\Debug Outputs</Filter>
+    </ClCompile>
+    <ClCompile Include="File.cpp">
+      <Filter>Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Random.cpp" />
+    <ClCompile Include="Utils.cpp" />
+    <ClCompile Include="UtilsConvert.cpp" />
+    <ClCompile Include="ByteBuffer.cpp">
+      <Filter>Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FileSystem.cpp" />
+    <ClCompile Include="WowChunkFile.cpp">
+      <Filter>Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Consts.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="RefSimpleManagers.cpp">
+      <Filter>RefManager\2 Dim\Simple</Filter>
+    </ClCompile>
+    <ClCompile Include="RefManager.cpp">
+      <Filter>RefManager\2 Dim</Filter>
+    </ClCompile>
+    <ClCompile Include="RefManager1Dim.cpp">
+      <Filter>RefManager\1 Dim</Filter>
+    </ClCompile>
+    <ClCompile Include="RefItem.cpp">
+      <Filter>RefManager\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="RefItemNamed.cpp">
+      <Filter>RefManager\Items</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Function.h">
+      <Filter>Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Rect.h">
+      <Filter>Types</Filter>
+    </ClInclude>
+    <ClInclude Include="INIFile.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="XMLFile.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Module.h">
+      <Filter>Module</Filter>
+    </ClInclude>
+    <ClInclude Include="ModulesMgr.h">
+      <Filter>Module</Filter>
+    </ClInclude>
+    <ClInclude Include="Color.h">
+      <Filter>Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug.h">
+      <Filter>Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="InputListener.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugMacros.h">
+      <Filter>Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="Console.h">
+      <Filter>Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugOutput_ConsoleWindows.h">
+      <Filter>Debug\Debug Outputs</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugOutput_Log.h">
+      <Filter>Debug\Debug Outputs</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugOutput.h">
+      <Filter>Debug\Debug Outputs</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector4.h">
+      <Filter>Types</Filter>
+    </ClInclude>
+    <ClInclude Include="File.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Random.h" />
+    <ClInclude Include="Utils.h" />
+    <ClInclude Include="Manager.h">
+      <Filter>Types</Filter>
+    </ClInclude>
+    <ClInclude Include="ByteBuffer.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FileSystem.h" />
+    <ClInclude Include="WowChunkFile.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Types.h">
+      <Filter>Types</Filter>
+    </ClInclude>
+    <ClInclude Include="common.h" />
+    <ClInclude Include="Consts.h" />
+    <ClInclude Include="..\shared\owCore.h" />
+    <ClInclude Include="poppack.h" />
+    <ClInclude Include="pushpack.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="RefSimpleManagers.h">
+      <Filter>RefManager\2 Dim\Simple</Filter>
+    </ClInclude>
+    <ClInclude Include="RefManager.h">
+      <Filter>RefManager\2 Dim</Filter>
+    </ClInclude>
+    <ClInclude Include="RefManager1Dim.h">
+      <Filter>RefManager\1 Dim</Filter>
+    </ClInclude>
+    <ClInclude Include="RefItem.h">
+      <Filter>RefManager\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="RefItemNamed.h">
+      <Filter>RefManager\Items</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ModulesMgr.inl">
+      <Filter>Module</Filter>
+    </None>
+    <None Include="RefManager.inl">
+      <Filter>RefManager\2 Dim</Filter>
+    </None>
+    <None Include="RefManager1Dim.inl">
+      <Filter>RefManager\1 Dim</Filter>
+    </None>
+  </ItemGroup>
+</Project>

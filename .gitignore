@@ -30,3 +30,14 @@
 *.exe
 *.out
 *.app
+
+# Project
+.vs/
+Debug/
+Release/
+bin/
+Externals/
+owEngine/
+owTest/
+WowMapView/
+WowMapView_cata/

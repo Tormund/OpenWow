@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="DBC_LoadingScreen.cpp">
+      <Filter>Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DBC_Map.cpp">
+      <Filter>Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DBCFile.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="DBCs.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ForeignKey.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="DBC_LiquidType.cpp">
+      <Filter>Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DBC_LiquidMaterial.cpp">
+      <Filter>Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DBC_Light.cpp">
+      <Filter>Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DBC_LightSkyBox.cpp">
+      <Filter>Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DBC_Map.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DBC_LoadingScreen.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DBCFile.h">
+      <Filter>General</Filter>
+    </ClInclude>
+    <ClInclude Include="DBCs.h">
+      <Filter>General</Filter>
+    </ClInclude>
+    <ClInclude Include="ForeignKey.h">
+      <Filter>General</Filter>
+    </ClInclude>
+    <ClInclude Include="DBC_LiquidType.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DBC_LiquidMaterial.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DBC_Light.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DBC_LightSkyBox.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\shared\owDBC.h" />
+    <ClInclude Include="stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Files">
+      <UniqueIdentifier>{a2ce91e1-5e78-41e8-a7de-8e821af8bec9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="General">
+      <UniqueIdentifier>{3b442b07-0951-4c6c-99cc-49900aff2a7a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

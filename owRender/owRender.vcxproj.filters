@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Font.cpp">
+      <Filter>Types</Filter>
+    </ClCompile>
+    <ClCompile Include="Image.cpp">
+      <Filter>Types</Filter>
+    </ClCompile>
+    <ClCompile Include="FontsMgr.cpp" />
+    <ClCompile Include="Render.cpp" />
+    <ClCompile Include="TexturesMgr.cpp" />
+    <ClCompile Include="GLFWBackend.cpp" />
+    <ClCompile Include="Pipeline.cpp" />
+    <ClCompile Include="ShadowMapFBO.cpp" />
+    <ClCompile Include="Shader.cpp">
+      <Filter>Techniques\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Technique.cpp">
+      <Filter>Techniques\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Gbuffer.cpp" />
+    <ClCompile Include="ds_geom_pass_tech.cpp">
+      <Filter>Techniques</Filter>
+    </ClCompile>
+    <ClCompile Include="ds_light_pass_tech.cpp">
+      <Filter>Techniques</Filter>
+    </ClCompile>
+    <ClCompile Include="ds_point_light_pass_tech.cpp">
+      <Filter>Techniques</Filter>
+    </ClCompile>
+    <ClCompile Include="ds_dir_light_pass_tech.cpp">
+      <Filter>Techniques</Filter>
+    </ClCompile>
+    <ClCompile Include="null_technique.cpp">
+      <Filter>Techniques</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="SimpleColorTechnique.cpp">
+      <Filter>Techniques</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="Texture.cpp">
+      <Filter>Types</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Font.h">
+      <Filter>Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Image.h">
+      <Filter>Types</Filter>
+    </ClInclude>
+    <ClInclude Include="FontsMgr.h" />
+    <ClInclude Include="Render.h" />
+    <ClInclude Include="TexturesMgr.h" />
+    <ClInclude Include="GLFWBackend.h" />
+    <ClInclude Include="Pipeline.h" />
+    <ClInclude Include="ShadowMapFBO.h" />
+    <ClInclude Include="Shader.h">
+      <Filter>Techniques\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Technique.h">
+      <Filter>Techniques\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Gbuffer.h" />
+    <ClInclude Include="ds_geom_pass_tech.h">
+      <Filter>Techniques</Filter>
+    </ClInclude>
+    <ClInclude Include="ds_light_pass_tech.h">
+      <Filter>Techniques</Filter>
+    </ClInclude>
+    <ClInclude Include="ds_point_light_pass_tech.h">
+      <Filter>Techniques</Filter>
+    </ClInclude>
+    <ClInclude Include="ds_dir_light_pass_tech.h">
+      <Filter>Techniques</Filter>
+    </ClInclude>
+    <ClInclude Include="null_technique.h">
+      <Filter>Techniques</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="lights_common.h">
+      <Filter>Light</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleColorTechnique.h">
+      <Filter>Techniques</Filter>
+    </ClInclude>
+    <ClInclude Include="common.h" />
+    <ClInclude Include="..\shared\owRender.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Texture.h">
+      <Filter>Types</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Types">
+      <UniqueIdentifier>{04374022-e70a-4f96-b887-0198fcdcd1c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Techniques">
+      <UniqueIdentifier>{f3d818e7-b12a-49b6-b477-32e20e14077d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Techniques\Base">
+      <UniqueIdentifier>{f86fa411-0791-4b63-a3d7-61e3d16966ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Light">
+      <UniqueIdentifier>{93900090-8885-4917-ae6a-4f4dde8843e1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
