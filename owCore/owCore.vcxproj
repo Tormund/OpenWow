@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="MathUtils.cpp" />
     <ClCompile Include="RefManager1Dim.cpp" />
     <ClCompile Include="ByteBuffer.cpp" />
     <ClCompile Include="Console.cpp" />
@@ -50,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\shared\owCore.h" />
+    <ClInclude Include="MathUtils.h" />
     <ClInclude Include="RefManager1Dim.h" />
     <ClInclude Include="ByteBuffer.h" />
     <ClInclude Include="Color.h" />
@@ -85,7 +87,6 @@
     </ClInclude>
     <ClInclude Include="Types.h" />
     <ClInclude Include="Utils.h" />
-    <ClInclude Include="Vector4.h" />
     <ClInclude Include="WowChunkFile.h" />
     <ClInclude Include="XMLFile.h" />
   </ItemGroup>

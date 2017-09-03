@@ -1,7 +1,6 @@
 #include "stdafx.h"
 
 // Includes
-#include "quaternion.h"
 #include "Wmo_Fog.h"
 #include "Wmo_Light.h"
 #include "Wmo_Material.h"

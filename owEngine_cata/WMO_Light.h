@@ -1,7 +1,5 @@
 #pragma once
 
-class Vec4D;
-
 struct WMOLight {
 	uint8_t LightType;
 	uint8_t type;
@@ -15,10 +13,10 @@ struct WMOLight {
 	float unk[4];
 
 	// struct read stop
-	Vec4D fcolor;
+	vec4 fcolor;
 
 	void init(File &f);
 	void setup(GLint light);
 
-	static void setupOnce(GLint light, vec3 dir, Vec4D lcol);
+	static void setupOnce(GLint light, vec3 dir, vec4 lcol);
 };

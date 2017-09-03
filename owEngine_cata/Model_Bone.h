@@ -1,7 +1,6 @@
 #pragma once
 
 #include "modelheaders.h"
-#include "quaternion.h"
 #include "matrix.h"
 #include "animated.h"
 
@@ -13,7 +12,6 @@ public:
 
 private:
 	Animated<vec3> trans;
-	//Animated<Quaternion> rot;
 	Animated<Quaternion, PACK_QUATERNION, Quat16ToQuat32> rot;
 	Animated<vec3> scale;
 

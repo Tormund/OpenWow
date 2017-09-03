@@ -69,7 +69,7 @@ private:
 private:
 	Animated<float> speed, variation, spread, lat, gravity, lifespan, rate, areal, areaw, deacceleration;
 	Animated<uint8_t> enabled;
-	Vec4D colors[3];
+	vec4 colors[3];
 	float sizes[3];
 	float mid, slowdown, rotation;
 	vec3 pos;

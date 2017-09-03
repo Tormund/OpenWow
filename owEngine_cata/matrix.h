@@ -2,7 +2,6 @@
 #define MATRIX_H
 
 #include <cmath>
-#include "quaternion.h"
 
 class Matrix
 {
@@ -238,7 +237,6 @@ public:
 	{
 		return (float*)this;
 	}
-
 };
 
 

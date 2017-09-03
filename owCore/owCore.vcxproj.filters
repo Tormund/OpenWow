@@ -37,6 +37,9 @@
     <Filter Include="RefManager\Items">
       <UniqueIdentifier>{cd89c663-5455-491b-b7bb-ff5790697a69}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utils &amp; Helpers">
+      <UniqueIdentifier>{ef01fae2-1fd7-4937-ab5c-8763ec202dd6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Timer.cpp">
@@ -75,9 +78,6 @@
     <ClCompile Include="File.cpp">
       <Filter>Files</Filter>
     </ClCompile>
-    <ClCompile Include="Random.cpp" />
-    <ClCompile Include="Utils.cpp" />
-    <ClCompile Include="UtilsConvert.cpp" />
     <ClCompile Include="ByteBuffer.cpp">
       <Filter>Files</Filter>
     </ClCompile>
@@ -101,6 +101,18 @@
     </ClCompile>
     <ClCompile Include="RefItemNamed.cpp">
       <Filter>RefManager\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Utils &amp; Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="UtilsConvert.cpp">
+      <Filter>Utils &amp; Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="Random.cpp">
+      <Filter>Utils &amp; Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="MathUtils.cpp">
+      <Filter>Utils &amp; Helpers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -152,14 +164,9 @@
     <ClInclude Include="DebugOutput.h">
       <Filter>Debug\Debug Outputs</Filter>
     </ClInclude>
-    <ClInclude Include="Vector4.h">
-      <Filter>Types</Filter>
-    </ClInclude>
     <ClInclude Include="File.h">
       <Filter>Files</Filter>
     </ClInclude>
-    <ClInclude Include="Random.h" />
-    <ClInclude Include="Utils.h" />
     <ClInclude Include="Manager.h">
       <Filter>Types</Filter>
     </ClInclude>
@@ -193,6 +200,15 @@
     </ClInclude>
     <ClInclude Include="RefItemNamed.h">
       <Filter>RefManager\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Utils &amp; Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Random.h">
+      <Filter>Utils &amp; Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="MathUtils.h">
+      <Filter>Utils &amp; Helpers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,6 @@
 #include "stdafx.h"
 
 // Includes
-#include "quaternion.h"
 
 // General
 #include "Wmo_Light.h"
@@ -59,24 +58,24 @@ void WMOLight::setup(GLint light) { // not used right now
 	GLfloat LightPosition[] = {pos.x, pos.y, pos.z, 0.0f};
 
 	glLightfv(light, GL_AMBIENT, LightAmbient);
-	glLightfv(light, GL_DIFFUSE, fcolor);
+	glLightfv(light, GL_DIFFUSE, glm::value_ptr(fcolor));
 	glLightfv(light, GL_POSITION, LightPosition);
 
 	glEnable(light);
 }
 
-void WMOLight::setupOnce(GLint light, vec3 dir, Vec4D lcol) {
-	Vec4D position(dir, 0);
-	//Vec4D position(0,1,0,0);
+void WMOLight::setupOnce(GLint light, vec3 dir, vec4 lcol) {
+	vec4 position(dir, 0);
+	//vec4 position(0,1,0,0);
 
-	Vec4D ambient = lcol*0.3f; //Vec4D(lcol * 0.3f, 1);
-							   //Vec4D ambient = Vec4D(0.101961f, 0.062776f, 0, 1);
-	Vec4D diffuse = lcol; //Vec4D(lcol, 1);
-						  //Vec4D diffuse = Vec4D(0.439216f, 0.266667f, 0, 1);
+	vec4 ambient = lcol * 0.3f; //vec4(lcol * 0.3f, 1);
+							   //vec4 ambient = vec4(0.101961f, 0.062776f, 0, 1);
+	vec4 diffuse = lcol; //vec4(lcol, 1);
+						  //vec4 diffuse = vec4(0.439216f, 0.266667f, 0, 1);
 
-	glLightfv(light, GL_AMBIENT, ambient);
-	glLightfv(light, GL_DIFFUSE, diffuse);
-	glLightfv(light, GL_POSITION, position);
+	glLightfv(light, GL_AMBIENT, glm::value_ptr(ambient));
+	glLightfv(light, GL_DIFFUSE, glm::value_ptr(diffuse));
+	glLightfv(light, GL_POSITION, glm::value_ptr(position));
 
 	glEnable(light);
 }

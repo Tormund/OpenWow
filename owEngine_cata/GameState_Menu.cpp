@@ -138,8 +138,8 @@ void GameState_Menu::RenderPhase(double t, double dt)
 
 	if (backgroundModel != nullptr)
 	{
-		Vec4D la(0.1f, 0.1f, 0.1f, 1);
-		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, la);
+		vec4 la(0.1f, 0.1f, 0.1f, 1);
+		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, glm::value_ptr(la));
 
 		glEnable(GL_COLOR_MATERIAL);
 		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);

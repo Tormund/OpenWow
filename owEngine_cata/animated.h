@@ -5,13 +5,12 @@
 #include <vector>
 
 #include "modelheaders.h"
-#include "quaternion.h"
 
 // interpolation functions
 template<class T>
-inline T interpolate(const float r, const T &v1, const T &v2)
+inline T interpolate(const float r, const T& v1, const T& v2)
 {
-	return v1*(1.0f - r) + v2*r;
+	return v1 * (1.0f - r) + v2 * r;
 }
 
 template<class T>
@@ -34,7 +33,7 @@ inline T interpolateHermite(const float r, const T &v1, const T &v2, const T &in
 template<>
 inline Quaternion interpolate<Quaternion>(const float r, const Quaternion &v1, const Quaternion &v2)
 {
-	return Quaternion::slerp(r, v1, v2);
+	return glm::slerp(v1, v2, r); //Quaternion::slerp(r, v1, v2);
 }
 
 
@@ -60,10 +59,10 @@ public:
 	}
 };
 
-// In WoW 2.0+ Blizzard are now storing rotation data in 16bit values instead of 32bit.
-// I don't really understand why as its only a very minor saving in model sizes and adds extra overhead in
-// processing the models.  Need this structure to read the data into.
-struct PACK_QUATERNION { __int16 x, y, z, w; };
+struct PACK_QUATERNION
+{
+	__int16 x, y, z, w;
+};
 
 class Quat16ToQuat32
 {
@@ -71,15 +70,13 @@ public:
 	static const Quaternion conv(const PACK_QUATERNION t)
 	{
 		return Quaternion(
+			float(t.w > 0 ? t.w - 32767 : t.w + 32767) / 32767.0f,
 			float(t.x > 0 ? t.x - 32767 : t.x + 32767) / 32767.0f,
 			float(t.y > 0 ? t.y - 32767 : t.y + 32767) / 32767.0f,
-			float(t.z > 0 ? t.z - 32767 : t.z + 32767) / 32767.0f,
-			float(t.w > 0 ? t.w - 32767 : t.w + 32767) / 32767.0f);
+			float(t.z > 0 ? t.z - 32767 : t.z + 32767) / 32767.0f);
 	}
 };
 
-// Convert opacity values stored as shorts to floating point
-// I wonder why Blizzard decided to save 2 bytes by doing this
 class ShortToFloat
 {
 public:
@@ -99,33 +96,38 @@ public:
 
 	T is the data type to animate
 	D is the data type stored in the file (by default this is the same as T)
-	Conv is a conversion object that defines T conv(D) to convert from D to T
-		(by default this is an identity function)
+	Conv is a conversion object that defines T conv(D) to convert from D to T (by default this is an identity function)
 	(there might be a nicer way to do this? meh meh)
 */
 template <class T, class D = T, class Conv = Identity<T> >
 class Animated
 {
 public:
-
 	int type, seq;
-	uint32_t *globals;
+	uint32_t* globals;
 
 	vector<int> times[MAX_ANIMATED];
 	vector<T> data[MAX_ANIMATED];
+
 	// for nonlinear interpolations:
-	vector<T> in[MAX_ANIMATED], out[MAX_ANIMATED];
+	vector<T> in[MAX_ANIMATED];
+	vector<T> out[MAX_ANIMATED];
 	size_t sizes;
 
 	bool uses(uint32_t anim)
 	{
 #ifdef LESS_MEMORY
 		if (anim >= MAX_ANIMATED)
+		{
 			anim = 0;
+	    }
 #endif
 
 		if (seq > -1)
+		{
 			anim = 0;
+		}
+
 		return (data[anim].size() > 0);
 	}
 
@@ -133,7 +135,9 @@ public:
 	{
 #ifdef LESS_MEMORY
 		if (anim >= MAX_ANIMATED)
+		{
 			anim = 0;
+	    }
 #endif
 
 		// obtain a time value and a data range
@@ -141,9 +145,13 @@ public:
 		{
 			// TODO
 			if (globals[seq] == 0)
+			{
 				time = 0;
+			}
 			else
+			{
 				time = globalTime % globals[seq];
+			}
 			anim = 0;
 		}
 		if (data[anim].size() > 1 && times[anim].size() > 1)
@@ -152,7 +160,9 @@ public:
 			size_t pos = 0;
 			int max_time = times[anim][times[anim].size() - 1];
 			if (max_time > 0)
+			{
 				time %= max_time; // I think this might not be necessary?
+			}
 			for (size_t i = 0; i < times[anim].size() - 1; i++)
 			{
 				if (time >= times[anim][i] && time < times[anim][i + 1])
@@ -166,9 +176,13 @@ public:
 			float r = (time - t1) / (float)(t2 - t1);
 
 			if (type == INTERPOLATION_LINEAR)
+			{
 				return interpolate<T>(r, data[anim][pos], data[anim][pos + 1]);
+			}
 			else if (type == INTERPOLATION_NONE)
+			{
 				return data[anim][pos];
+			}
 			else
 			{
 				// INTERPOLATION_HERMITE is only used in cameras afaik?
@@ -179,13 +193,17 @@ public:
 		{
 			// default value
 			if (data[anim].size() == 0)
+			{
 				return T();
+			}
 			else
+			{
 				return data[anim][0];
+			}
 		}
-	}
+}
 
-	void init(AnimationBlock &b, File &f, uint32_t *gs)
+	void init(AnimationBlock& b, File& f, uint32_t* gs)
 	{
 		globals = gs;
 		type = b.type;
@@ -200,7 +218,9 @@ public:
 		assert1(b.nTimes == b.nKeys);
 		sizes = b.nTimes;
 		if (b.nTimes == 0)
+		{
 			return;
+		}
 
 #ifdef LESS_MEMORY
 		sizes = b.nTimes = b.nKeys = MAX_ANIMATED;
@@ -212,7 +232,9 @@ public:
 
 			uint32_t *ptimes = (uint32_t*)(f.GetData() + pHeadTimes->ofsEntrys);
 			for (size_t i = 0; i < pHeadTimes->nEntrys; i++)
+			{
 				times[j].push_back(ptimes[i]);
+			}
 		}
 
 		// keyframes
@@ -220,7 +242,7 @@ public:
 		{
 			AnimationBlockHeader* pHeadKeys = (AnimationBlockHeader*)(f.GetData() + b.ofsKeys + j * sizeof(AnimationBlockHeader));
 
-			D *keys = (D*)(f.GetData() + pHeadKeys->ofsEntrys);
+			D* keys = (D*)(f.GetData() + pHeadKeys->ofsEntrys);
 			switch (type)
 			{
 				case INTERPOLATION_NONE:
@@ -228,6 +250,7 @@ public:
 				for (size_t i = 0; i < pHeadKeys->nEntrys; i++)
 					data[j].push_back(Conv::conv(keys[i]));
 				break;
+
 				case INTERPOLATION_HERMITE:
 				for (size_t i = 0; i < pHeadKeys->nEntrys; i++)
 				{
@@ -238,7 +261,7 @@ public:
 				break;
 			}
 		}
-	}
+		}
 
 	void init(AnimationBlock &b, File &f, uint32_t *gs, File *animfiles)
 	{
@@ -301,7 +324,7 @@ public:
 		}
 	}
 
-	void fix(T fixfunc(const T))
+	void fix(T fixfunc(const T&))
 	{
 		switch (type)
 		{
@@ -315,6 +338,7 @@ public:
 				}
 			}
 			break;
+
 			case INTERPOLATION_HERMITE:
 			for (size_t i = 0; i < sizes; i++)
 			{
@@ -329,7 +353,7 @@ public:
 		}
 	}
 
-};
+	};
 
 typedef Animated<float, short, ShortToFloat> AnimatedShort;
 

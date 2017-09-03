@@ -17,8 +17,8 @@ bool ModelRenderPass::init(Model * m)
 
 		// COLOUR
 		// Get the colour and transparency and check that we should even render
-		ocol = Vec4D(1.0f, 1.0f, 1.0f, m->trans);
-		ecol = Vec4D(0.0f, 0.0f, 0.0f, 0.0f);
+		ocol = vec4(1.0f, 1.0f, 1.0f, m->trans);
+		ecol = vec4(0.0f, 0.0f, 0.0f, 0.0f);
 
 		//if (m->trans == 1.0f)
 		//	return false;
@@ -42,8 +42,8 @@ bool ModelRenderPass::init(Model * m)
 				ocol.x = ocol.y = ocol.z = 0;
 			}
 
-			ecol = Vec4D(c, ocol.w);
-			glMaterialfv(GL_FRONT, GL_EMISSION, ecol);
+			ecol = vec4(c, ocol.w);
+			glMaterialfv(GL_FRONT, GL_EMISSION, glm::value_ptr(ecol));
 		}
 
 		// opacity
@@ -163,7 +163,7 @@ bool ModelRenderPass::init(Model * m)
 		}
 
 		// color
-		glColor4fv(ocol);
+		glColor4fv(glm::value_ptr(ocol));
 		//glMaterialfv(GL_FRONT, GL_SPECULAR, ocol);
 
 		// don't use lighting on the surface

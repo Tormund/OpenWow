@@ -18,6 +18,23 @@ typedef const glm::vec4& cvec4;
 typedef glm::mat4x4 mat4;
 typedef const glm::mat4x4& cmat4;
 
+typedef glm::quat Quaternion;
+typedef const glm::quat& cQuaternion;
+
+/*float* operator float*(const glm::mat4x4& mat)
+{
+	return (float*)this;
+}*/
+
+inline glm::vec3 operator*(cvec3 v, const glm::mat4x4& mat)
+{
+	vec3 o;
+	o.x = mat[0][0] * v.x + mat[0][1] * v.y + mat[0][2] * v.z + mat[0][3];
+	o.y = mat[1][0] * v.x + mat[1][1] * v.y + mat[1][2] * v.z + mat[1][3];
+	o.z = mat[2][0] * v.x + mat[2][1] * v.y + mat[2][2] * v.z + mat[2][3];
+	return o;
+}
+
 
 // STL Types
 #include <map>

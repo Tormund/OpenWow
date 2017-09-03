@@ -91,7 +91,7 @@ void RibbonEmitter::setup(int anim, int time)
 	}
 
 	tpos = ntpos;
-	tcolor = Vec4D(color.getValue(anim, time), opacity.getValue(anim, time));
+	tcolor = vec4(color.getValue(anim, time), opacity.getValue(anim, time));
 
 	tabove = above.getValue(anim, time);
 	tbelow = below.getValue(anim, time);
@@ -122,7 +122,7 @@ void RibbonEmitter::draw()
 	glDisable(GL_CULL_FACE);
 	glDepthMask(GL_FALSE);
 	
-	glColor4fv(tcolor);
+	glColor4fv(glm::value_ptr(tcolor));
 
 	glBegin(GL_QUAD_STRIP);
 	{

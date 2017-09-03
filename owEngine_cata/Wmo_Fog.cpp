@@ -1,7 +1,6 @@
 #include "stdafx.h"
 
 // Include
-#include "quaternion.h"
 
 // General
 #include "Wmo_Fog.h"
@@ -11,8 +10,8 @@
 
 void WMOFog::init(File &f) {
 	f.ReadBytes(this, __size);
-	color = Vec4D(fog.color.r, fog.color.g, fog.color.b, fog.color.a);
-	//color = Vec4D(((color1 & 0x00FF0000) >> 16) / 255.0f, ((color1 & 0x0000FF00) >> 8) / 255.0f, ((color1 & 0x000000FF)) / 255.0f, ((color1 & 0xFF000000) >> 24) / 255.0f);
+	color = vec4(fog.color.r, fog.color.g, fog.color.b, fog.color.a);
+	//color = vec4(((color1 & 0x00FF0000) >> 16) / 255.0f, ((color1 & 0x0000FF00) >> 8) / 255.0f, ((color1 & 0x000000FF)) / 255.0f, ((color1 & 0xFF000000) >> 24) / 255.0f);
 	float temp;
 	temp = position.y;
 	position.y = position.z;
@@ -22,7 +21,7 @@ void WMOFog::init(File &f) {
 
 void WMOFog::setup() {
 	if(_World->drawfog) {
-		glFogfv(GL_FOG_COLOR, color);
+		glFogfv(GL_FOG_COLOR, glm::value_ptr(color));
 		glFogf(GL_FOG_START, fog.startScalar);
 		glFogf(GL_FOG_END, fog.end);
 

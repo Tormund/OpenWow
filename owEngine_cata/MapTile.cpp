@@ -153,25 +153,7 @@ struct MH2O_Instance {
 	uint32_t offsetVertexData;
 };
 
-bool getBitH2L(uint8_t* data, unsigned bit) {
-	uint8_t byte = data[bit / 8];
-	uint8_t pos = bit % 8;
 
-	uint8_t mask = 0x80;
-	mask >>= pos;
-
-	return (byte & mask) == mask;
-}
-
-bool getBitL2H(uint8_t* data, unsigned bit) {
-	uint8_t byte = data[bit / 8];
-	uint8_t pos = bit % 8;
-
-	uint8_t mask = 0x1;
-	mask <<= pos;
-
-	return (byte & mask) == mask;
-}
 
 ///////////////////////////////////////////////////////////
 

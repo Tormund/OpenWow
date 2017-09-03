@@ -4,7 +4,6 @@
 #include "INIFile.h"
 
 // Additional
-#include "Utils.h"
 
 bool INIFile::Open(cstring _filename)
 {

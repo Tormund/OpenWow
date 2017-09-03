@@ -25,5 +25,5 @@ public: // TODO private
 
 	int light;
 	vec3 ldir;
-	Vec4D lcol;
+	vec4 lcol;
 };

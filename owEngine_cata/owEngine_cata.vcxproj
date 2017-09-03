@@ -44,7 +44,6 @@
     <ClInclude Include="Model_Transparency.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="ParticleSystem.h" />
-    <ClInclude Include="quaternion.h" />
     <ClInclude Include="RibbonEmitter.h" />
     <ClInclude Include="shaders.h" />
     <ClInclude Include="sky.h" />

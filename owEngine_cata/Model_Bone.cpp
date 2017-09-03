@@ -15,14 +15,19 @@ void Bone::init(File &f, ModelBoneDef &b, uint32_t *global, File *animfiles)
 	trans.init(b.translation, f, global, animfiles);
 	rot.init(b.rotation, f, global, animfiles);
 	scale.init(b.scaling, f, global, animfiles);
+
 	trans.fix(fixCoordSystem);
 	rot.fix(fixCoordSystemQuat);
 	scale.fix(fixCoordSystem2);
 }
 
-void Bone::calcMatrix(Bone *allbones, int anim, int time)
+void Bone::calcMatrix(Bone* allbones, int anim, int time)
 {
-	if (calc) return;
+	if (calc)
+	{
+		return;
+	}
+
 	Matrix m;
 	Quaternion q;
 
@@ -66,14 +71,20 @@ void Bone::calcMatrix(Bone *allbones, int anim, int time)
 		m *= Matrix::newTranslation(pivot*-1.0f);
 
 	}
-	else m.unit();
+	else
+	{
+		m.unit();
+	}
 
 	if (parent >= 0)
 	{
 		allbones[parent].calcMatrix(allbones, anim, time);
 		mat = allbones[parent].mat * m;
 	}
-	else mat = m;
+	else
+	{
+		mat = m;
+	}
 
 	// transform matrix for normal vectors ... ??
 	if (rot.uses(anim))
@@ -84,7 +95,10 @@ void Bone::calcMatrix(Bone *allbones, int anim, int time)
 		}
 		else mrot = Matrix::newQuatRotate(q);
 	}
-	else mrot.unit();
+	else
+	{
+		mrot.unit();
+	}
 
 	transPivot = mat * pivot;
 

@@ -2,7 +2,6 @@
 
 #include "Model_Instance.h"
 #include "WowTypes.h"
-#include "quaternion.h"
 
 class WMOGroup;
 class WMOInstance;

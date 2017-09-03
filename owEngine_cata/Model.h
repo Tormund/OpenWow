@@ -1,7 +1,6 @@
 #pragma once
 
 #include "modelheaders.h"
-#include "quaternion.h"
 #include "matrix.h"
 
 #include "animated.h"
@@ -59,7 +58,7 @@ public:
 	bool swrap, twrap;
 
 	// colours
-	Vec4D ocol, ecol;
+	vec4 ocol, ecol;
 };
 
 // copied from the .mdl docs? this might be completely wrong
@@ -85,7 +84,7 @@ class Model : public RefItemNamed
 	bool forceAnim;
 	File *animfiles;
 
-	void init(File &f);
+	void init(File& f);
 
 	ModelHeader header;
 

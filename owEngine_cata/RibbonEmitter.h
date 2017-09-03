@@ -37,7 +37,7 @@ private:
 	int numsegs;
 
 	vec3 tpos;
-	Vec4D tcolor;
+	vec4 tcolor;
 	float tabove, tbelow;
 
 	Texture* texture;

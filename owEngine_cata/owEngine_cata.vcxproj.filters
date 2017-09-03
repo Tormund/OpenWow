@@ -4,7 +4,6 @@
     <ClInclude Include="animated.h" />
     <ClInclude Include="frustum.h" />
     <ClInclude Include="GameState_Menu.h" />
-    <ClInclude Include="quaternion.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="WowTypes.h" />
     <ClInclude Include="shaders.h" />
@@ -34,7 +33,7 @@
       <Filter>WMO</Filter>
     </ClInclude>
     <ClInclude Include="modelheaders.h">
-      <Filter>Model</Filter>
+      <Filter>MDX</Filter>
     </ClInclude>
     <ClInclude Include="liquid.h">
       <Filter>Liquid</Filter>
@@ -49,31 +48,31 @@
       <Filter>WMO</Filter>
     </ClInclude>
     <ClInclude Include="Model_Bone.h">
-      <Filter>Model</Filter>
+      <Filter>MDX</Filter>
     </ClInclude>
     <ClInclude Include="Model_Camera.h">
-      <Filter>Model</Filter>
+      <Filter>MDX</Filter>
     </ClInclude>
     <ClInclude Include="Model_Instance.h">
-      <Filter>Model</Filter>
+      <Filter>MDX</Filter>
     </ClInclude>
     <ClInclude Include="Model_Light.h">
-      <Filter>Model</Filter>
+      <Filter>MDX</Filter>
     </ClInclude>
     <ClInclude Include="ModelsUtils.h">
-      <Filter>Model</Filter>
+      <Filter>MDX</Filter>
     </ClInclude>
     <ClInclude Include="Model_RenderPass.h">
-      <Filter>Model</Filter>
+      <Filter>MDX</Filter>
     </ClInclude>
     <ClInclude Include="ModelsManager.h">
-      <Filter>Model</Filter>
+      <Filter>MDX</Filter>
     </ClInclude>
     <ClInclude Include="WMOsManager.h">
       <Filter>WMO</Filter>
     </ClInclude>
     <ClInclude Include="Model.h">
-      <Filter>Model</Filter>
+      <Filter>MDX</Filter>
     </ClInclude>
     <ClInclude Include="Map.h">
       <Filter>Map</Filter>
@@ -82,22 +81,22 @@
       <Filter>Map</Filter>
     </ClInclude>
     <ClInclude Include="Model_Color.h">
-      <Filter>Model</Filter>
+      <Filter>MDX</Filter>
     </ClInclude>
     <ClInclude Include="Model_Transparency.h">
-      <Filter>Model</Filter>
+      <Filter>MDX</Filter>
     </ClInclude>
     <ClInclude Include="Model_TextureAnim.h">
-      <Filter>Model</Filter>
+      <Filter>MDX</Filter>
     </ClInclude>
     <ClInclude Include="ParticleSystem.h">
-      <Filter>Model\Particle</Filter>
+      <Filter>MDX\Particle</Filter>
     </ClInclude>
     <ClInclude Include="RibbonEmitter.h">
-      <Filter>Model\Particle</Filter>
+      <Filter>MDX\Particle</Filter>
     </ClInclude>
     <ClInclude Include="Particle.h">
-      <Filter>Model\Particle</Filter>
+      <Filter>MDX\Particle</Filter>
     </ClInclude>
     <ClInclude Include="Matrix.h" />
   </ItemGroup>
@@ -145,31 +144,31 @@
       <Filter>WMO</Filter>
     </ClCompile>
     <ClCompile Include="Model_Bone.cpp">
-      <Filter>Model</Filter>
+      <Filter>MDX</Filter>
     </ClCompile>
     <ClCompile Include="Model_Camera.cpp">
-      <Filter>Model</Filter>
+      <Filter>MDX</Filter>
     </ClCompile>
     <ClCompile Include="Model_Instance.cpp">
-      <Filter>Model</Filter>
+      <Filter>MDX</Filter>
     </ClCompile>
     <ClCompile Include="Model_Light.cpp">
-      <Filter>Model</Filter>
+      <Filter>MDX</Filter>
     </ClCompile>
     <ClCompile Include="ModelsUtils.cpp">
-      <Filter>Model</Filter>
+      <Filter>MDX</Filter>
     </ClCompile>
     <ClCompile Include="Model_RenderPass.cpp">
-      <Filter>Model</Filter>
+      <Filter>MDX</Filter>
     </ClCompile>
     <ClCompile Include="ModelsManager.cpp">
-      <Filter>Model</Filter>
+      <Filter>MDX</Filter>
     </ClCompile>
     <ClCompile Include="WMOsManager.cpp">
       <Filter>WMO</Filter>
     </ClCompile>
     <ClCompile Include="Model.cpp">
-      <Filter>Model</Filter>
+      <Filter>MDX</Filter>
     </ClCompile>
     <ClCompile Include="Map.cpp">
       <Filter>Map</Filter>
@@ -178,25 +177,25 @@
       <Filter>Map</Filter>
     </ClCompile>
     <ClCompile Include="Model_Color.cpp">
-      <Filter>Model</Filter>
+      <Filter>MDX</Filter>
     </ClCompile>
     <ClCompile Include="Model_Transparency.cpp">
-      <Filter>Model</Filter>
+      <Filter>MDX</Filter>
     </ClCompile>
     <ClCompile Include="Model_TextureAnim.cpp">
-      <Filter>Model</Filter>
+      <Filter>MDX</Filter>
     </ClCompile>
     <ClCompile Include="ParticleSystem.cpp">
-      <Filter>Model\Particle</Filter>
+      <Filter>MDX\Particle</Filter>
     </ClCompile>
     <ClCompile Include="ParticleEmitters.cpp">
-      <Filter>Model\Particle</Filter>
+      <Filter>MDX\Particle</Filter>
     </ClCompile>
     <ClCompile Include="RibbonEmitter.cpp">
-      <Filter>Model\Particle</Filter>
+      <Filter>MDX\Particle</Filter>
     </ClCompile>
     <ClCompile Include="Particle.cpp">
-      <Filter>Model\Particle</Filter>
+      <Filter>MDX\Particle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -212,10 +211,10 @@
     <Filter Include="Liquid">
       <UniqueIdentifier>{a9971b09-250b-467b-9410-1b11376a202c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Model">
+    <Filter Include="MDX">
       <UniqueIdentifier>{18d02b5d-5db9-43bd-96a8-5cd01c4b39ae}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Model\Particle">
+    <Filter Include="MDX\Particle">
       <UniqueIdentifier>{5e67aebb-ce1b-45f2-9b54-7e3bf30426cf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>

@@ -90,3 +90,37 @@ T Utils::Clamp(T& _value, T _min, T _max)
 {
 	return Max(_min, Min(_value, _max));
 }
+
+inline bool getBitH2L(uint8_t* data, uint32_t bit)
+{
+	uint8_t mask = 0x80;
+	mask >>= (bit % 8);
+
+	return ((data[bit / 8]) & mask) == mask;
+}
+
+inline bool getBitL2H(uint8_t* data, uint32_t bit)
+{
+	uint8_t mask = 0x1;
+	mask <<= (bit % 8);
+
+	return ((data[bit / 8]) & mask) == mask;
+}
+
+inline vec4 fromARGB(uint32_t color)
+{
+	const float a = ((color & 0xFF000000) >> 24) / 255.0f;
+	const float r = ((color & 0x00FF0000) >> 16) / 255.0f;
+	const float g = ((color & 0x0000FF00) >> 8 ) / 255.0f;
+	const float b = ((color & 0x000000FF)      ) / 255.0f;
+	return vec4(r, g, b, a);
+}
+
+inline vec4 fromBGRA(uint32_t color)
+{
+	const float b = ((color & 0xFF000000) >> 24) / 255.0f;
+	const float g = ((color & 0x00FF0000) >> 16) / 255.0f;
+	const float r = ((color & 0x0000FF00) >> 8 ) / 255.0f;
+	const float a = ((color & 0x000000FF)      ) / 255.0f;
+	return vec4(r, g, b, a);
+}

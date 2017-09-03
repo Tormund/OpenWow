@@ -29,5 +29,5 @@ public:
 	void setup();
 
 public:
-	Vec4D color;
+	vec4 color;
 };

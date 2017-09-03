@@ -41,5 +41,5 @@ private:
 	bool swrap, twrap;
 
 	// colours
-	Vec4D ocol, ecol;
+	vec4 ocol, ecol;
 };*/

@@ -52,7 +52,7 @@ void ParticleSystem::init(File& f, ModelParticleEmitterDef& mta, uint32_t * glob
 	for (size_t i = 0; i < 3; i++)
 	{
 		float opacity = *(short*)(f.GetData() + mta.p.opacity.ofsKeys + i * 2);
-		colors[i] = Vec4D(colors2[i].x / 255.0f, colors2[i].y / 255.0f, colors2[i].z / 255.0f, opacity / 32767.0f);
+		colors[i] = vec4(colors2[i].x / 255.0f, colors2[i].y / 255.0f, colors2[i].z / 255.0f, opacity / 32767.0f);
 		sizes[i] = (*(float*)(f.GetData() + mta.p.sizes.ofsKeys + i * 4))*mta.p.scales[i];
 	}
 
@@ -180,7 +180,7 @@ void ParticleSystem::update(float dt)
 		float rlife = p.life / p.maxlife;
 		// calculate size and color based on lifetime
 		p.size = lifeRamp<float>(rlife, mid, sizes[0], sizes[1], sizes[2]);
-		p.color = lifeRamp<Vec4D>(rlife, mid, colors[0], colors[1], colors[2]);
+		p.color = lifeRamp<vec4>(rlife, mid, colors[0], colors[1], colors[2]);
 
 		// kill off old particles
 		if (rlife >= 1.0f)
@@ -360,7 +360,7 @@ void ParticleSystem::draw()
 				if (tiles.size() - 1 < it->m_TileExists) // Alfred, 2009.08.07, error prevent
 					break;
 				const float size = it->size;// / 2;
-				glColor4fv(it->color);
+				glColor4fv(glm::value_ptr(it->color));
 
 				glTexCoord2fv(glm::value_ptr(tiles[it->m_TileExists].tc[0]));
 				glVertex3fv(glm::value_ptr(it->pos - (vRight + vUp) * size));
@@ -384,7 +384,7 @@ void ParticleSystem::draw()
 			{
 				if (tiles.size() - 1 < it->m_TileExists) // Alfred, 2009.08.07, error prevent
 					break;
-				glColor4fv(it->color);
+				glColor4fv(glm::value_ptr(it->color));
 
 				glTexCoord2fv(glm::value_ptr(tiles[it->m_TileExists].tc[0]));
 				glVertex3fv(glm::value_ptr(it->pos + it->corners[0] * it->size));
@@ -418,7 +418,7 @@ void ParticleSystem::draw()
 		{
 			if (tiles.size() - 1 < it->m_TileExists) // Alfred, 2009.08.07, error prevent
 				break;
-			glColor4fv(it->color);
+			glColor4fv(glm::value_ptr(it->color));
 
 			glTexCoord2fv(glm::value_ptr(tiles[it->m_TileExists].tc[0]));
 			glVertex3fv(glm::value_ptr(it->pos + bv0 * it->size));

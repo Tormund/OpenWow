@@ -1,7 +1,6 @@
 #pragma once
 
 #include "WowTypes.h"
-#include "quaternion.h"
 
 class WMOMaterial {
 	struct __WMOMaterial {

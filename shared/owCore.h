@@ -4,6 +4,9 @@
 
 #include "../owCore/common.h"
 
+// Maths
+#include "../owCore/MathUtils.h"
+
 // Ref manager
 #include "../owCore/RefItem.h"
 #include "../owCore/RefItemNamed.h"

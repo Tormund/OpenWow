@@ -10,7 +10,6 @@
 // Additional
 #include "world.h"
 #include "shaders.h"
-#include "quaternion.h"
 #include "Wmo_Fog.h"
 #include "Wmo_Light.h"
 #include "Wmo_Material.h"
@@ -25,13 +24,13 @@ void setGLColor(uint32_t col) {
 	glColor4ub(r, g, b, 1);
 }
 
-Vec4D colorFromInt(uint32_t col) {
+vec4 colorFromInt(uint32_t col) {
 	GLubyte r, g, b, a;
 	a = (col & 0xFF000000) >> 24;
 	r = (col & 0x00FF0000) >> 16;
 	g = (col & 0x0000FF00) >> 8;
 	b = (col & 0x000000FF);
-	return Vec4D(r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f);
+	return vec4(r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f);
 }
 
 /*
@@ -406,11 +405,11 @@ void WMOGroup::initDisplayList() {
 			glEnable(GL_CULL_FACE);
 
 		if(spec_shader) {
-			glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, colorFromInt(mat->GetDiffuseColor()));
+			glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, glm::value_ptr(colorFromInt(mat->GetDiffuseColor())));
 		}
 		else {
-			Vec4D nospec(0, 0, 0, 1);
-			glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, nospec);
+			vec4 nospec(0, 0, 0, 1);
+			glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, glm::value_ptr(nospec));
 		}
 
 		if(overbright) {
@@ -504,9 +503,9 @@ void WMOGroup::draw(cvec3 ofs, const float rot) {
 				// set up some kind of default outdoor light... ?
 				glEnable(GL_LIGHT0);
 				glDisable(GL_LIGHT1);
-				glLightfv(GL_LIGHT0, GL_AMBIENT, Vec4D(0.4f, 0.4f, 0.4f, 1));
-				glLightfv(GL_LIGHT0, GL_DIFFUSE, Vec4D(0.8f, 0.8f, 0.8f, 1));
-				glLightfv(GL_LIGHT0, GL_POSITION, Vec4D(1, 1, 1, 0));
+				glLightfv(GL_LIGHT0, GL_AMBIENT, glm::value_ptr(vec4(0.4f, 0.4f, 0.4f, 1)));
+				glLightfv(GL_LIGHT0, GL_DIFFUSE, glm::value_ptr(vec4(0.8f, 0.8f, 0.8f, 1)));
+				glLightfv(GL_LIGHT0, GL_POSITION, glm::value_ptr(vec4(1, 1, 1, 0)));
 			}
 		}
 		else glDisable(GL_LIGHTING);
@@ -588,9 +587,9 @@ void WMOGroup::drawLiquid() {
 			// TODO: setup some kind of indoor lighting... ?
 			_World->outdoorLights(false);
 			glEnable(GL_LIGHT2);
-			glLightfv(GL_LIGHT2, GL_AMBIENT, Vec4D(0.1f, 0.1f, 0.1f, 1));
-			glLightfv(GL_LIGHT2, GL_DIFFUSE, Vec4D(0.8f, 0.8f, 0.8f, 1));
-			glLightfv(GL_LIGHT2, GL_POSITION, Vec4D(0, 1, 0, 0));
+			glLightfv(GL_LIGHT2, GL_AMBIENT, glm::value_ptr(vec4(0.1f, 0.1f, 0.1f, 1)));
+			glLightfv(GL_LIGHT2, GL_DIFFUSE, glm::value_ptr(vec4(0.8f, 0.8f, 0.8f, 1)));
+			glLightfv(GL_LIGHT2, GL_POSITION, glm::value_ptr(vec4(0, 1, 0, 0)));
 		}
 		glDisable(GL_BLEND);
 		glDisable(GL_ALPHA_TEST);

@@ -17,7 +17,7 @@ void ModelsManager::Destroy()
 {
 	DeleteAll();
 
-	Debug::Info("WMOsManager: All WMOs destroyed.");
+	Debug::Info("MDXsManager: All MDXs destroyed.");
 }
 
 Model* ModelsManager::CreateAction(cstring name)

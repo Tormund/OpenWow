@@ -174,9 +174,9 @@ void World::initDisplay()
 
 void World::outdoorLighting()
 {
-	Vec4D black(0, 0, 0, 0);
-	Vec4D ambient(skies->colorSet[LIGHT_GLOBAL_AMBIENT], 1);
-	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
+	vec4 black(0, 0, 0, 0);
+	vec4 ambient(skies->colorSet[LIGHT_GLOBAL_AMBIENT], 1);
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, glm::value_ptr(ambient));
 
 	float di = dayNightPhase.dayIntensity, ni = dayNightPhase.nightIntensity;
 	//di = 1;
@@ -184,21 +184,21 @@ void World::outdoorLighting()
 
 	//vec3 dd = outdoorLightStats.dayDir;
 	// HACK: let's just keep the light source in place for now
-	Vec4D pos(-1, 1, -1, 0);
-	Vec4D col(skies->colorSet[LIGHT_GLOBAL_DIFFUSE] * di, 1);
-	glLightfv(GL_LIGHT0, GL_AMBIENT, black);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, col);
-	glLightfv(GL_LIGHT0, GL_POSITION, pos);
+	vec4 pos(-1, 1, -1, 0);
+	vec4 col(skies->colorSet[LIGHT_GLOBAL_DIFFUSE] * di, 1);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, glm::value_ptr(black));
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, glm::value_ptr(col));
+	glLightfv(GL_LIGHT0, GL_POSITION, glm::value_ptr(pos));
 
 	const float spc = useshaders ? 1.4f : 0; // specular light intensity...
-	Vec4D spcol(spc, spc, spc, 1);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, spcol); // ???
+	vec4 spcol(spc, spc, spc, 1);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, glm::value_ptr(spcol)); // ???
 
 
 	/*
 	vec3 dd = outdoorLightStats.nightDir;
-	Vec4D pos(-dd.x, -dd.z, dd.y, 0);
-	Vec4D col(skies->colorSet[LIGHT_GLOBAL_DIFFUSE] * ni, 1);
+	vec4 pos(-dd.x, -dd.z, dd.y, 0);
+	vec4 col(skies->colorSet[LIGHT_GLOBAL_DIFFUSE] * ni, 1);
 	glLightfv(GL_LIGHT1, GL_AMBIENT, black);
 	glLightfv(GL_LIGHT1, GL_DIFFUSE, col);
 	glLightfv(GL_LIGHT1, GL_POSITION, pos);
@@ -211,8 +211,8 @@ void World::outdoorLights(bool on)
 
 	if (on)
 	{
-		Vec4D ambient(skies->colorSet[LIGHT_GLOBAL_AMBIENT], 1);
-		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
+		vec4 ambient(skies->colorSet[LIGHT_GLOBAL_AMBIENT], 1);
+		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, glm::value_ptr(ambient));
 		if (di > 0)
 		{
 			glEnable(GL_LIGHT0);
@@ -232,8 +232,8 @@ void World::outdoorLights(bool on)
 	}
 	else
 	{
-		Vec4D ambient(0, 0, 0, 1);
-		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
+		vec4 ambient(0, 0, 0, 1);
+		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, glm::value_ptr(ambient));
 		glDisable(GL_LIGHT0);
 		glDisable(GL_LIGHT1);
 	}
@@ -248,8 +248,8 @@ void World::setupFog()
 
 		culldistance = fogdist;
 
-		Vec4D fogcolor(skies->colorSet[FOG_COLOR], 1);
-		glFogfv(GL_FOG_COLOR, fogcolor);
+		vec4 fogcolor(skies->colorSet[FOG_COLOR], 1);
+		glFogfv(GL_FOG_COLOR, glm::value_ptr(fogcolor));
 		// TODO: retreive fogstart and fogend from lights.lit somehow
 		glFogf(GL_FOG_END, fogdist);
 		glFogf(GL_FOG_START, fogdist * fogstart);
@@ -356,8 +356,8 @@ void World::draw()
 	// if we're using shaders let's give it some specular
 	if (supportShaders && useshaders)
 	{
-		Vec4D spec_color(1, 1, 1, 1);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, spec_color);
+		vec4 spec_color(1, 1, 1, 1);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, glm::value_ptr(spec_color));
 		glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, 20);
 
 		glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
@@ -397,8 +397,8 @@ void World::draw()
 
 	if (supportShaders && useshaders)
 	{
-		Vec4D spec_color(0, 0, 0, 1);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, spec_color);
+		vec4 spec_color(0, 0, 0, 1);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, glm::value_ptr(spec_color));
 		glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, 0);
 	}
 
@@ -427,8 +427,8 @@ void World::draw()
 
 	if (supportShaders && useshaders)
 	{
-		Vec4D spec_color(1, 1, 1, 1);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, spec_color);
+		vec4 spec_color(1, 1, 1, 1);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, glm::value_ptr(spec_color));
 		glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, 10);
 
 		glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
@@ -442,8 +442,8 @@ void World::draw()
 
 	if (supportShaders && useshaders)
 	{
-		Vec4D spec_color(0, 0, 0, 1);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, spec_color);
+		vec4 spec_color(0, 0, 0, 1);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, glm::value_ptr(spec_color));
 		glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, 0);
 	}
 
