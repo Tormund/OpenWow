@@ -1,14 +1,14 @@
 #pragma once
 
-class Model;
-class Bone;
-
 #include "modelheaders.h"
 #include "quaternion.h"
 #include "matrix.h"
 
 #include "animated.h"
-#include "particle.h"
+
+#include "Particle.h"
+#include "ParticleSystem.h"
+#include "RibbonEmitter.h"
 
 #include "Model_Bone.h"
 #include "Model_Camera.h"

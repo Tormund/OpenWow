@@ -346,7 +346,7 @@ void MapTile::parse_adt(char* name, load_phases phase) {
 				uint32_t mdxIndex;
 				f.ReadBytes(&mdxIndex, 4);
 
-				Model *model = (Model*)_ModelsMgr->items[_ModelsMgr->GetIDByName(mdxNames[mdxIndex])];
+				Model *model = (Model*)_ModelsMgr->objects[mdxNames[mdxIndex]];
 				ModelInstance inst(model, f);
 				mdxInstances.push_back(inst);
 			}

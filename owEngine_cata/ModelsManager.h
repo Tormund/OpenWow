@@ -2,13 +2,13 @@
 
 #include "Model.h"
 
-class ModelsManager : public Module, public IntManager<Model>
+class ModelsManager : public Module, public RefManager1Dim<Model>
 {
 public:
 	DEF_MODULE_SIMPLE(ModelsManager);
 
-	Model* CreateAction(cstring name, uint32_t id) override;
-	bool DeleteAction(cstring name, uint32_t id) override;
+	Model* CreateAction(cstring name) override;
+	bool DeleteAction(cstring name) override;
 
 	void resetAnim();
 	void updateEmitters(float dt);

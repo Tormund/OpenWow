@@ -324,7 +324,7 @@ flag2 		Meaning
 				f.ReadBytes(&ofs, 4);
 				if(!ddnames)
 					continue;
-				Model *m = (Model*)_ModelsMgr->items[_ModelsMgr->GetIDByName(ddnames + ofs)];
+				Model *m = (Model*)_ModelsMgr->objects[ddnames + ofs];
 				ModelInstance mi;
 				mi.InitAsDoodad(m, f);
 				modelis.push_back(mi);

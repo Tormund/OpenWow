@@ -29,7 +29,7 @@
     <ClInclude Include="MapChunk.h" />
     <ClInclude Include="MapTile.h" />
     <ClInclude Include="MapWaterChunk.h" />
-    <ClInclude Include="matrix.h" />
+    <ClInclude Include="Matrix.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="modelheaders.h" />
     <ClInclude Include="ModelsUtils.h" />
@@ -42,8 +42,10 @@
     <ClInclude Include="Model_RenderPass.h" />
     <ClInclude Include="Model_TextureAnim.h" />
     <ClInclude Include="Model_Transparency.h" />
-    <ClInclude Include="particle.h" />
+    <ClInclude Include="Particle.h" />
+    <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="quaternion.h" />
+    <ClInclude Include="RibbonEmitter.h" />
     <ClInclude Include="shaders.h" />
     <ClInclude Include="sky.h" />
     <ClInclude Include="stdafx.h" />
@@ -78,7 +80,10 @@
     <ClCompile Include="Model_RenderPass.cpp" />
     <ClCompile Include="Model_TextureAnim.cpp" />
     <ClCompile Include="Model_Transparency.cpp" />
-    <ClCompile Include="particle.cpp" />
+    <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="ParticleEmitters.cpp" />
+    <ClCompile Include="ParticleSystem.cpp" />
+    <ClCompile Include="RibbonEmitter.cpp" />
     <ClCompile Include="shaders.cpp" />
     <ClCompile Include="sky.cpp" />
     <ClCompile Include="stdafx.cpp" />

@@ -68,11 +68,10 @@ bool GameState_Menu::Init()
 		mapsY += mapsYdelta;
 	}
 
-
-
 	cmd = CMD_NONE;
 
 	backgroundModel = 0;
+	//randBackground();
 
 	return true;
 }
@@ -110,26 +109,6 @@ void GameState_Menu::InputPhase(double t, double dt)
 	{
 		_Camera->ProcessKeyboard(RIGHT, speed);
 	}
-
-	/*if(_Input->IsKeyPressed(GLFW_KEY_W)) {
-		_Camera->SetPosition(_Camera->GetPosition() + _Camera->GetDirection() * speed);
-	}
-
-	if(_Input->IsKeyPressed(GLFW_KEY_S)) {
-		_Camera->SetPosition(_Camera->GetPosition() - _Camera->GetDirection() * speed);
-	}
-
-	if(_Input->IsKeyPressed(GLFW_KEY_A)) {
-		auto directionVetor = _Camera->GetDirection();
-		auto directionVetorNew = vec3(directionVetor.z, 0, -directionVetor.x);
-		_Camera->SetPosition(_Camera->GetPosition() + directionVetorNew * speed);
-	}
-
-	if(_Input->IsKeyPressed(GLFW_KEY_D)) {
-		auto directionVetor = _Camera->GetDirection();
-		auto directionVetorNew = vec3(-directionVetor.z, 0, directionVetor.x);
-		_Camera->SetPosition(_Camera->GetPosition() + directionVetorNew * speed);
-	}*/
 }
 
 void GameState_Menu::UpdatePhase(double t, double dt)
@@ -188,16 +167,17 @@ void GameState_Menu::RenderPhase(double t, double dt)
 
 void GameState_Menu::RenderUIPhase(double t, double dt)
 {
-	if (_World != nullptr)
-		if (_World->loading)
-			_Render->RenderText(vec2(_Render->GetWindowSize().x / 2, 200), _World->GetMap()->IsOutOfBounds() ? "Out of bounds" : "Loading...");
+	if (_World->loading)
+	{
+		_Render->RenderText(vec2(_Render->GetWindowSize().x / 2, 200), _World->GetMap()->IsOutOfBounds() ? "Out of bounds" : "Loading...");
+	}
 
 	if (minimapActive || cmd == CMD_SELECT)
 	{
 		int basex = 200;
 		int basey = 0;
 
-		if (_World != nullptr && _World->GetMap()->GetMinimap() != 0)
+		if (_World->GetMap()->GetMinimap() != 0)
 		{
 			const int len = 768;
 			glColor4f(1, 1, 1, 1);
@@ -224,7 +204,7 @@ void GameState_Menu::RenderUIPhase(double t, double dt)
 			fz = basey + _Camera->Position.z / C_TileSize * 12.0f;
 			glVertex2f(fx, fz);
 			glColor4f(1, 1, 1, 0);
-			glVertex2f(fx + 10.0f * cos(_Camera->Yaw), fz + 10.0f * sin(_Camera->Yaw));
+			glVertex2f(fx + 10.0f * cosf(glm::degrees(_Camera->Yaw)), fz + 10.0f * sinf(glm::degrees(_Camera->Yaw)));
 			glEnd();
 		}
 	}
@@ -263,6 +243,7 @@ void GameState_Menu::RenderUIPhase(double t, double dt)
 		}
 		catch (DBCNotFound)
 		{
+			areaName = "Not found!";
 		}
 
 		_Render->RenderText(vec2(5, 20), "Area: [" + areaName + "]");
@@ -290,9 +271,7 @@ void GameState_Menu::RenderUIPhase(double t, double dt)
 bool GameState_Menu::LoadWorld(cvec3 _pos)
 {
 	_World->GetMap()->enterTile(_pos.x / C_TileSize, _pos.z / C_TileSize);
-
 	_World->initDisplay();
-
 	_Camera->Position = _pos;
 
 	if (backgroundModel != nullptr)
@@ -386,6 +365,11 @@ KEYBD_PRESSED(GameState_Menu)
 			cmd = CMD_NONE;
 			_UIMgr->Attach(window);
 		}
+		else if (cmd == CMD_IN_WORLD)
+		{
+			cmd = CMD_SELECT;
+			_UIMgr->Attach(window);
+		}
 		else
 		{
 			Debug::Exit(0);
@@ -477,7 +461,7 @@ KEYBD_RELEASE(GameState_Menu)
 
 void GameState_Menu::randBackground()
 {
-	if (backgroundModel)
+	if (backgroundModel != nullptr)
 		delete backgroundModel;
 
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);

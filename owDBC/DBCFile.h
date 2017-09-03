@@ -130,19 +130,19 @@ public:
 	}
 	const char* getLocalizedString(uint32_t field, int8_t locale = -1) const
 	{
-		size_t loc = locale;
+		int8_t loc = locale;
 		if (locale == -1)
 		{
 			assert2(field < dbcStats->fieldCount - 8, std::to_string(field).c_str());
 			for (loc = 0; loc < 8; loc++)
 			{
-				size_t stringOffset = getUInt(field + loc);
+				uint32_t stringOffset = getUInt(field + loc);
 				if (stringOffset != 0)
 					break;
 			}
 		}
 		assert2(field + loc < dbcStats->fieldCount, std::to_string(field).c_str());
-		size_t stringOffset = getUInt(field + loc);
+		uint32_t stringOffset = getUInt(field + static_cast<uint32_t>(loc));
 
 		assert2(stringOffset < dbcStats->stringSize, std::to_string(stringOffset).c_str());
 		return reinterpret_cast<char*>(dbcStats->stringTable + stringOffset);

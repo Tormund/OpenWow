@@ -20,19 +20,19 @@ void ModelsManager::Destroy()
 	Debug::Info("WMOsManager: All WMOs destroyed.");
 }
 
-Model* ModelsManager::CreateAction(cstring name, uint32_t id)
+Model* ModelsManager::CreateAction(cstring name)
 {
 	return new Model(name);
 }
 
-bool ModelsManager::DeleteAction(cstring name, uint32_t id)
+bool ModelsManager::DeleteAction(cstring name)
 {
 	return true;
 }
 
 void ModelsManager::resetAnim()
 {
-	for (auto it = items.begin(); it != items.end(); ++it)
+	for (auto it = objects.begin(); it != objects.end(); ++it)
 	{
 		(it->second)->animcalc = false;
 	}
@@ -40,7 +40,7 @@ void ModelsManager::resetAnim()
 
 void ModelsManager::updateEmitters(float dt)
 {
-	for (auto it = items.begin(); it != items.end(); ++it)
+	for (auto it = objects.begin(); it != objects.end(); ++it)
 	{
 		(it->second)->updateEmitters(dt);
 	}

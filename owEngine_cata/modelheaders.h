@@ -1,6 +1,8 @@
 #ifndef MODELHEADERS_H
 #define MODELHEADERS_H
 
+#include "WowTypes.h"
+
 #pragma pack(push,1)
 
 //float floats[14];
@@ -12,12 +14,70 @@ struct PhysicsSettings
 	float BoundingRadius;
 };
 
+struct M2Bounds
+{
+	CAaBox extent;
+	float radius;
+};
+
+template<typename T>
+struct M2Array
+{
+	uint32_t size;
+	uint32_t offset; // pointer to T, relative to begin of m2 data block (i.e. MD21 chunk content or begin of file)
+};
+
+/*struct M2TrackBase
+{
+	uint16_t trackType;
+	uint16_t loopIndex;
+	M2Array<M2SequenceTimes> sequenceTimes;
+};*/
+
+/*template<typename T>
+struct M2PartTrack
+{
+	M2Array<fixed16> times;
+	M2Array<T> values;
+};*/
+
+template<typename T>
+struct M2SplineKey
+{
+	T value;
+	T inTan;
+	T outTan;
+};
+
+struct M2Range
+{
+	uint32_t minimum;
+	uint32_t maximum;
+};
+
+struct M2TrackBase
+{
+	uint16_t interpolation_type;
+	uint16_t global_sequence;
+	M2Array<M2Array<uint32_t>> timestamps;
+};
+
+template<typename T>
+struct M2Track : M2TrackBase
+{
+	M2Array<M2Array<T>> values;
+};
+
+
+////////
+
 struct ModelHeader
 {
-	char id[4];
+	char id[4];                   // MD20 Magic
 	uint8_t version[4];
 	uint32_t nameLength;
 	uint32_t nameOfs;
+	//M2Array<char> name;
 	uint32_t GlobalModelFlags; // 1: tilt x, 2: tilt y, 4:, 8: add another field in header, 16: ; (no other flags as of 3.1.1);
 
 	uint32_t nGlobalSequences; // AnimationRelated
