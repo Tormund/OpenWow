@@ -27,6 +27,7 @@
 
 // Files
 #include "../owCore/File.h"
+#include "../owCore/MPQFile.h"
 #include "../owCore/FileSystem.h"
 #include "../owCore/INIFile.h"
 #include "../owCore/XMLFile.h"

@@ -61,35 +61,7 @@ public:
 	static OW_CORE_DLL_API  string getLine(ifstream& infile);
 
 	static OW_CORE_DLL_API  bool PointInRectangle(const vec2 _point, const vec2 _rectStart, const vec2 _rectEnd);
-
-	// Standarts
-	template <typename T>
-	static T Min(T& _value, T _min);
-
-	template <typename T>
-	static T Max(T& _value, T _max);
-
-	template <typename T>
-	static T Clamp(T& _value, T _min, T _max);
 };
-
-template <typename T>
-T Utils::Min(T& _value, T _min)
-{
-	return (_value < _min) ? _value : _min;
-}
-
-template <typename T>
-T Utils::Max(T& _value, T _max)
-{
-	return (_value > _max) ? _value : _max;
-}
-
-template <typename T>
-T Utils::Clamp(T& _value, T _min, T _max)
-{
-	return Max(_min, Min(_value, _max));
-}
 
 inline bool getBitH2L(uint8_t* data, uint32_t bit)
 {

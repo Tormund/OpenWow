@@ -114,6 +114,12 @@
     <ClCompile Include="MathUtils.cpp">
       <Filter>Utils &amp; Helpers</Filter>
     </ClCompile>
+    <ClCompile Include="MPQFile.cpp">
+      <Filter>Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IFile.cpp">
+      <Filter>Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Function.h">
@@ -209,6 +215,12 @@
     </ClInclude>
     <ClInclude Include="MathUtils.h">
       <Filter>Utils &amp; Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="MPQFile.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IFile.h">
+      <Filter>Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

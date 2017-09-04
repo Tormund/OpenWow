@@ -2,7 +2,7 @@
 
 #include "ByteBuffer.h"
 
-class File : public ByteBuffer
+class File : public IFile, public ByteBuffer
 {
 public:
 	OW_CORE_DLL_API File();
@@ -26,18 +26,18 @@ public:
 	inline const string Extension() const { return extension; }
 
 	inline const string Path_Name() const { return string(path + name); }
-	inline const string Gamedata_Path_Name() const { return string(File::gamedata + path + name); }
 
 	//
 
-	OW_CORE_DLL_API bool Open(bool _isLocalFile = false);
+	OW_CORE_DLL_API virtual bool Open(bool _isLocalFile = false) override;
 
 	// STATIC MEMBERS
 
-	static OW_CORE_DLL_API size_t getSize(cstring _name, bool _isLocalFile = false);
-	static OW_CORE_DLL_API bool exists(cstring _name, bool _isLocalFile = false);
+	static OW_CORE_DLL_API size_t getSize(cstring _name);
+	static OW_CORE_DLL_API bool exists(cstring _name);
 
 private:
+	bool OpenLocalFile();
 	void ParsePathAndExtension();
 
 private:
@@ -45,7 +45,10 @@ private:
 	string path;
 	string extension;
 
+protected:
+	static bool usePackedGamedata;
 	static const char* gamedata;
+	static const char* archives;
 };
 
 

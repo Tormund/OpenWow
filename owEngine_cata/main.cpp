@@ -16,24 +16,18 @@ int main(int argumentCount, char* arguments[])
 	if (!_Engine->Init(argumentQueue))
 		shutdown(1);
 
-	/*vector<MPQArchive*> archives;
-	archives.push_back(new MPQArchive("D:/_games/World of Warcraft/Data/texture.MPQ"));
-	archives.push_back(new MPQArchive("D:/_games/World of Warcraft/Data/model.MPQ"));
-	archives.push_back(new MPQArchive("D:/_games/World of Warcraft/Data/wmo.MPQ"));
-	archives.push_back(new MPQArchive("D:/_games/World of Warcraft/Data/terrain.MPQ"));
-	archives.push_back(new MPQArchive("D:/_games/World of Warcraft/Data/interface.MPQ"));
-	archives.push_back(new MPQArchive("D:/_games/World of Warcraft/Data/misc.MPQ"));
-	archives.push_back(new MPQArchive("D:/_games/World of Warcraft/Data/dbc.MPQ"));
-	archives.push_back(new MPQArchive("D:/_games/World of Warcraft/Data/patch.MPQ"));
-	archives.push_back(new MPQArchive("D:/_games/World of Warcraft/Data/patch-2.MPQ"));*/
+	MPQFile::AddArchive("D:/_games/World of Warcraft/Data/art.MPQ");
+	MPQFile::AddArchive("D:/_games/World of Warcraft/Data/base-Win.MPQ");
+	MPQFile::AddArchive("D:/_games/World of Warcraft/Data/expansion1.MPQ");
+	MPQFile::AddArchive("D:/_games/World of Warcraft/Data/expansion2.MPQ");
+	MPQFile::AddArchive("D:/_games/World of Warcraft/Data/expansion3.MPQ");
+	MPQFile::AddArchive("D:/_games/World of Warcraft/Data/sound.MPQ");
+	MPQFile::AddArchive("D:/_games/World of Warcraft/Data/world.MPQ");
+	MPQFile::AddArchive("D:/_games/World of Warcraft/Data/world2.MPQ");
 
-	/*archives.push_back(new MPQArchive("D:/_games/World of Warcraft - Wrath of the Lich King/Data/common.MPQ"));
-	archives.push_back(new MPQArchive("D:/_games/World of Warcraft - Wrath of the Lich King/Data/common-2.MPQ"));
-	archives.push_back(new MPQArchive("D:/_games/World of Warcraft - Wrath of the Lich King/Data/expansion.MPQ"));
-	archives.push_back(new MPQArchive("D:/_games/World of Warcraft - Wrath of the Lich King/Data/lichking.MPQ"));
-	archives.push_back(new MPQArchive("D:/_games/World of Warcraft - Wrath of the Lich King/Data/patch.MPQ"));
-	archives.push_back(new MPQArchive("D:/_games/World of Warcraft - Wrath of the Lich King/Data/patch-2.MPQ"));
-	archives.push_back(new MPQArchive("D:/_games/World of Warcraft - Wrath of the Lich King/Data/patch-3.MPQ"));*/
+	MPQFile::AddArchive("wow-update-base-15211.MPQ");
+	MPQFile::AddArchive("D:/_games/World of Warcraft/Data/wow-update-base-15354.MPQ");
+	MPQFile::AddArchive("D:/_games/World of Warcraft/Data/wow-update-base-15595.MPQ");
 
 	OpenDBs();
 
@@ -46,9 +40,12 @@ int main(int argumentCount, char* arguments[])
 	// Main loop
 	while (_Engine->Tick());
 
-	/*for(auto it = archives.begin(); it != archives.end(); ++it)
-		(*it)->close();
-	archives.clear();*/
+
+	// Clear arhives
+	//for(auto it = archives.begin(); it != archives.end(); ++it)
+	//	(*it)->close();
+	//archives.clear();
+	MPQFile::ClearArchives();
 
 	shutdown(0);
 }

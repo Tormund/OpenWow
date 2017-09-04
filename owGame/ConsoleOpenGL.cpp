@@ -86,7 +86,7 @@ MOUSE_WHEEL(ConsoleOpenGL) {
 		return true;
 
 	lineOffset += _yoffset;
-	lineOffset = Utils::Clamp(lineOffset, 0, (int)messages.size() - (int)linesInConsole - 1);
+	lineOffset = Clamp(lineOffset, 0, (int)messages.size() - (int)linesInConsole - 1);
 
 	return true;
 }
@@ -116,12 +116,12 @@ KEYBD_PRESSED(ConsoleOpenGL) {
 
 	if(_key == GLFW_KEY_DOWN) {
 		helperSelected++;
-		helperSelected = Utils::Min(helperSelected, (int)commandsHelper.size());
+		helperSelected = Min(helperSelected, (int)commandsHelper.size());
 	}
 
 	if(_key == GLFW_KEY_UP) {
 		helperSelected--;
-		helperSelected = Utils::Max(helperSelected, 0);
+		helperSelected = Max(helperSelected, 0);
 	}
 
 	if(_key == GLFW_KEY_ENTER && !inputString.empty()) {

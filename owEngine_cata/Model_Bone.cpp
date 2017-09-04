@@ -41,16 +41,19 @@ void Bone::calcMatrix(Bone* allbones, int anim, int time)
 			vec3 tr = trans.getValue(anim, time);
 			m *= Matrix::newTranslation(tr);
 		}
+
 		if (rot.uses(anim))
 		{
 			q = rot.getValue(anim, time);
 			m *= Matrix::newQuatRotate(q);
 		}
+
 		if (scale.uses(anim))
 		{
 			vec3 sc = scale.getValue(anim, time);
 			m *= Matrix::newScale(sc);
 		}
+
 		if (billboard)
 		{
 			float modelview[16];

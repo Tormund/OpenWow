@@ -76,7 +76,7 @@ ByteBuffer::~ByteBuffer()
 {
 	if (!isOnlyPointerToData)
 		if (data != nullptr)
-			delete data;
+			delete[] data;
 
 	isEof = true;
 	allocated = false;

@@ -1,9 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.10
+VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "owCore", "owCore\owCore.vcxproj", "{A4E6F769-0036-4128-A409-495D9207F587}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0CC7FA61-23DE-4D9F-A6F4-FDA327AB5984} = {0CC7FA61-23DE-4D9F-A6F4-FDA327AB5984}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "owGame", "owGame\owGame.vcxproj", "{25E4827B-D0DD-4758-B70F-DEA7217E7E70}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -52,7 +55,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "owGUI", "owGUI\owGUI.vcxpro
 		{E722B6DA-F485-4EAA-8E72-205CE3D4CEB5} = {E722B6DA-F485-4EAA-8E72-205CE3D4CEB5}
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shared", "shared", "{76177B02-4AB8-47F1-96E1-672BF7DFEA08}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3rd party", "3rd party", "{C8B50526-DF4C-4967-B575-671360520ACF}"
 	ProjectSection(SolutionItems) = preProject
 		shared\owCore.h = shared\owCore.h
 		shared\owDBC.h = shared\owDBC.h
@@ -60,6 +63,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shared", "shared", "{76177B
 		shared\owGUI.h = shared\owGUI.h
 		shared\owRender.h = shared\owRender.h
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "owLibMPQ", "owLibMPQ\owLibMPQ.vcxproj", "{0CC7FA61-23DE-4D9F-A6F4-FDA327AB5984}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -125,6 +130,14 @@ Global
 		{4BDE3C61-6FD1-49B2-AD4B-FEDFA2400700}.Release|x64.Build.0 = Release|x64
 		{4BDE3C61-6FD1-49B2-AD4B-FEDFA2400700}.Release|x86.ActiveCfg = Release|Win32
 		{4BDE3C61-6FD1-49B2-AD4B-FEDFA2400700}.Release|x86.Build.0 = Release|Win32
+		{0CC7FA61-23DE-4D9F-A6F4-FDA327AB5984}.Debug|x64.ActiveCfg = Debug|x64
+		{0CC7FA61-23DE-4D9F-A6F4-FDA327AB5984}.Debug|x64.Build.0 = Debug|x64
+		{0CC7FA61-23DE-4D9F-A6F4-FDA327AB5984}.Debug|x86.ActiveCfg = Debug|Win32
+		{0CC7FA61-23DE-4D9F-A6F4-FDA327AB5984}.Debug|x86.Build.0 = Debug|Win32
+		{0CC7FA61-23DE-4D9F-A6F4-FDA327AB5984}.Release|x64.ActiveCfg = Release|x64
+		{0CC7FA61-23DE-4D9F-A6F4-FDA327AB5984}.Release|x64.Build.0 = Release|x64
+		{0CC7FA61-23DE-4D9F-A6F4-FDA327AB5984}.Release|x86.ActiveCfg = Release|Win32
+		{0CC7FA61-23DE-4D9F-A6F4-FDA327AB5984}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

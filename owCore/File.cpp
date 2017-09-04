@@ -3,6 +3,8 @@
 // General
 #include "File.h"
 
+bool File::usePackedGamedata = false;
+const char* File::archives = "D:/_games/World of Warcraft 4.3.4/Data/";
 const char* File::gamedata = "D:/_games/World of Warcraft 4.3.4 ExData/";
 
 File::File() :
@@ -84,6 +86,52 @@ File& File::operator=(const char* _fullFileName)
 
 bool File::Open(bool _isLocalFile)
 {
+	return OpenLocalFile();
+}
+
+size_t File::getSize(cstring _name)
+{
+	// Open stream
+	ifstream stream;
+	stream.open(string(gamedata + _name), ios::binary);
+
+	// Check stream
+	if (!stream.is_open())
+	{
+		return 0;
+	}
+
+	// Filesize
+	stream.seekg(0, stream.end);
+	size_t fileSize = size_t(stream.tellg());
+	stream.seekg(0, stream.beg);
+
+	stream.clear();
+	stream.close();
+
+	return fileSize;
+}
+
+bool File::exists(cstring _name)
+{
+	// Open stream
+	ifstream stream;
+	stream.open(string(gamedata + _name), ios::binary);
+
+	// Check stream
+	if (!stream.is_open())
+		return false;
+
+	stream.clear();
+	stream.close();
+
+	return true;
+}
+
+// 
+
+bool File::OpenLocalFile()
+{
 	if (ByteBuffer::isFilled)
 	{
 		Debug::Warn("File[%s]: Not reason to open file, because buffer is filled.", Path_Name().c_str());
@@ -93,7 +141,7 @@ bool File::Open(bool _isLocalFile)
 	// Open stream
 	ifstream stream;
 	stream.clear();
-	stream.open(_isLocalFile ? Path_Name() : Gamedata_Path_Name(), ios::binary);
+	stream.open(File::gamedata + path + name, ios::binary);
 
 
 	// Check stream
@@ -133,45 +181,6 @@ bool File::Open(bool _isLocalFile)
 
 	return true;
 }
-
-size_t File::getSize(cstring _name, bool _isLocalFile)
-{
-	// Open stream
-	ifstream stream;
-	stream.open(_isLocalFile ? _name : string(gamedata + _name), ios::binary);
-
-	// Check stream
-	if (!stream.is_open())
-		return 0;
-
-	// Filesize
-	stream.seekg(0, stream.end);
-	size_t fileSize = size_t(stream.tellg());
-	stream.seekg(0, stream.beg);
-
-	stream.clear();
-	stream.close();
-
-	return fileSize;
-}
-
-bool File::exists(cstring _name, bool _isLocalFile)
-{
-	// Open stream
-	ifstream stream;
-	stream.open(_isLocalFile ? _name : string(gamedata + _name), ios::binary);
-
-	// Check stream
-	if (!stream.is_open())
-		return false;
-
-	stream.clear();
-	stream.close();
-
-	return true;
-}
-
-// 
 
 void File::ParsePathAndExtension()
 {

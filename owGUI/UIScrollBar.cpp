@@ -55,9 +55,9 @@ MOUSE_MOVED_(UIScrollBar) {
 
 	if (begunokPressed) {
 		auto culledMouseX = _mousePos.x - begunokBounds.x;
-		Utils::Clamp(reinterpret_cast<int&>(culledMouseX), 0, begunokBoundsSize);
+		Clamp(reinterpret_cast<int&>(culledMouseX), 0, begunokBoundsSize);
 		value = static_cast<double>(culledMouseX) / static_cast<double>(begunokBoundsSize);
-		Utils::Clamp(value, 0.0, 1.0);
+		Clamp(value, 0.0, 1.0);
 	}
 }
 
@@ -80,7 +80,7 @@ MOUSE_RELEASE(UIScrollBar) {
 
 MOUSE_WHEEL(UIScrollBar) {
 	value += static_cast<double>(_yoffset) / 100.0;
-	Utils::Clamp(value, 0.0, 1.0);
+	Clamp(value, 0.0, 1.0);
 
 	return true;
 }
