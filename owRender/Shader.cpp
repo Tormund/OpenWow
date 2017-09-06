@@ -4,8 +4,8 @@
 #include "Shader.h"
 
 Shader::Shader(GLenum _shaderType, cstring _shaderFileName) : shaderType(_shaderType), shaderOglObj(0) {
-	File f = _shaderFileName;
-	if(!f.Open(true)) {
+	MPQFile f = _shaderFileName;
+	if(!f.Open()) {
 		Debug::Error("Shader[%s]: Error while open shader file.", _shaderFileName.c_str());
 		return;
 	}

@@ -17,7 +17,9 @@ WMOInstance::~WMOInstance() {
 
 void WMOInstance::draw() {
 	if (alreadyDraw.find(placementInfo->uniqueId) != alreadyDraw.end())
+	{
 		return;
+	}
 
 	alreadyDraw.insert(placementInfo->uniqueId);
 

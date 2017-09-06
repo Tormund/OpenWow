@@ -28,8 +28,7 @@ WMO::WMO(cstring name) : RefItemNamed(name), groups(0), mat(0), skybox(0) {
 
 	Debug::Info("WMO[%s]: Loading...", name.c_str());
 
-	char fourcc[5];
-	uint32_t size;
+	
 	float ff[3];
 
 	char *ddnames = nullptr;
@@ -37,6 +36,8 @@ WMO::WMO(cstring name) : RefItemNamed(name), groups(0), mat(0), skybox(0) {
 
 	char *texbuf = nullptr;
 
+	char fourcc[5];
+	uint32_t size;
 	while(!f.IsEof()) {
 		memset(fourcc, 0, 4);
 		size = 0;
@@ -44,10 +45,7 @@ WMO::WMO(cstring name) : RefItemNamed(name), groups(0), mat(0), skybox(0) {
 		f.ReadBytes(&size, 4);
 		flipcc(fourcc);
 		fourcc[4] = 0;
-
-		if(size == 0)
-			continue;
-
+		if(size == 0) continue;
 		size_t nextpos = f.GetPos() + size;
 
 		if(strcmp(fourcc, "MVER") == 0) {
@@ -125,8 +123,7 @@ flag2 		Meaning
 			Skybox. Always 00 00 00 00. Skyboxes are now defined in DBCs (Light.dbc etc.). Contained a M2 filename that was used as skybox.
 			*/
 			if(size > 4) {
-				string path = (char*)f.GetDataFromCurrent();
-				//fixname(path);
+				string path = string((char*)f.GetDataFromCurrent());
 				if(path.length()) {
 					Debug::Info("SKYBOX:");
 

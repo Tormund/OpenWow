@@ -8,9 +8,8 @@ const float C_ZeroPoint = 32.0f * C_TileSize;
 const uint8_t C_ChunksInTile = 16;
 const uint8_t C_MapBufferSize = 9 * 9 + 8 * 8;
 
-#include "wmo.h"
-#include "model.h"
-#include "liquid.h"
+#include "Wmo.h"
+#include "Model.h"
 
 enum load_phases;
 
@@ -20,6 +19,27 @@ class MapWaterChunk;
 
 class MapTile
 {
+public:
+	MapTile(int x0, int z0);
+	~MapTile();
+
+	//
+
+	bool Init(cstring _filename);
+	bool parse_adt(cstring _filename, load_phases _phase);
+
+	//
+
+	void draw();
+	void drawWater();
+	void drawObjects();
+	void drawSky();
+	void drawModels();
+
+	//
+
+	MapChunk* getChunk(uint32_t x, uint32_t z);
+
 public:
 	vector<Texture*> textures;
 
@@ -31,28 +51,10 @@ public:
 	vector<string> mdxNames;
 	vector<ModelInstance> mdxInstances;
 
-	int indexX, indexZ;
-	bool ok;
+	int m_IndexX, m_IndexZ;
+	float m_GamePositionX, m_GamePositionZ;
 
-	float xbase, zbase;
-
-	MapWaterChunk* chunks[16][16];
-	//MapWaterChunk* waterChunks[16][16];
-
-public:
-	MapTile(int x0, int z0, cstring filename);
-	~MapTile();
-
-	void draw();
-	void drawWater();
-	void drawObjects();
-	void drawSky();
-	void drawModels();
-
-	void parse_adt(char*, load_phases);
-
-	// Get chunk for sub offset x,z
-	MapChunk* getChunk(uint32_t x, uint32_t z);
+	MapWaterChunk* chunks[C_ChunksInTile][C_ChunksInTile];
 };
 
 int indexMapBuf(int x, int y);

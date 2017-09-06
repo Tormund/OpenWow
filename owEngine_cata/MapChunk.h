@@ -92,7 +92,7 @@ private:
 	bool colorBufferEnable;
 
 public:
-	float xbase, ybase, zbase;
+	float m_GamePositionX, ybase, m_GamePositionZ;
 	float r;
 
 	int areaID;
@@ -123,7 +123,7 @@ public:
 
 	vec3 vmin, vmax, vcenter;
 
-	MapChunk() : xbase(0), ybase(0), zbase(0), r(0), areaID(-1),
+	MapChunk() : m_GamePositionX(0), ybase(0), m_GamePositionZ(0), r(0), areaID(-1),
 		haswater(false), visible(false), hasholes(false), shadow(0), blend(0),
 		vertices(0), normals(0), strip(0), striplen(0), lq(0)
 	{

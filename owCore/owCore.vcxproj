@@ -19,7 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="IFile.cpp" />
+    <ClCompile Include="BaseFile.cpp" />
+    <ClCompile Include="File.cpp" />
     <ClCompile Include="MathUtils.cpp" />
     <ClCompile Include="MPQFile.cpp" />
     <ClCompile Include="RefManager1Dim.cpp" />
@@ -28,7 +29,7 @@
     <ClCompile Include="Consts.cpp" />
     <ClCompile Include="DebugOutput_ConsoleWindows.cpp" />
     <ClCompile Include="Debug.cpp" />
-    <ClCompile Include="File.cpp" />
+    <ClCompile Include="LocalFile.cpp" />
     <ClCompile Include="FileSystem.cpp" />
     <ClCompile Include="DebugOutput.cpp" />
     <ClCompile Include="INIFile.cpp" />
@@ -48,12 +49,12 @@
     </ClCompile>
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="UtilsConvert.cpp" />
-    <ClCompile Include="WowChunkFile.cpp" />
     <ClCompile Include="XMLFile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\shared\owCore.h" />
-    <ClInclude Include="IFile.h" />
+    <ClInclude Include="BaseFile.h" />
+    <ClInclude Include="File.h" />
     <ClInclude Include="MathUtils.h" />
     <ClInclude Include="MPQFile.h" />
     <ClInclude Include="RefManager1Dim.h" />
@@ -65,7 +66,7 @@
     <ClInclude Include="Consts.h" />
     <ClInclude Include="Debug.h" />
     <ClInclude Include="DebugMacros.h" />
-    <ClInclude Include="File.h" />
+    <ClInclude Include="LocalFile.h" />
     <ClInclude Include="FileSystem.h" />
     <ClInclude Include="Function.h" />
     <ClInclude Include="DebugOutput.h" />
@@ -91,7 +92,6 @@
     </ClInclude>
     <ClInclude Include="Types.h" />
     <ClInclude Include="Utils.h" />
-    <ClInclude Include="WowChunkFile.h" />
     <ClInclude Include="XMLFile.h" />
   </ItemGroup>
   <ItemGroup>
@@ -174,8 +174,8 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;OW_CORE_DLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <SDLCheck>false</SDLCheck>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -190,8 +190,8 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;OW_CORE_DLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <SDLCheck>false</SDLCheck>
+      <AdditionalIncludeDirectories>..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -209,7 +209,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;OW_CORE_DLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -228,7 +228,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;;OW_CORE_DLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <AdditionalIncludeDirectories>..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>

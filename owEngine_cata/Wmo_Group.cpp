@@ -96,7 +96,6 @@ struct MOPY {
 		bool isCollidable() { return F_COLLISION || isRenderFace(); }
 	} flags;
 
-	//uint8_t flags;
 	uint8_t materialId;
 };
 

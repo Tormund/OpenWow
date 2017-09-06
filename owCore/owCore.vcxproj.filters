@@ -40,16 +40,22 @@
     <Filter Include="Utils &amp; Helpers">
       <UniqueIdentifier>{ef01fae2-1fd7-4937-ab5c-8763ec202dd6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Files\LocalFile">
+      <UniqueIdentifier>{c5843f27-a998-440f-b88d-9826bb29194f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files\MPQFile">
+      <UniqueIdentifier>{07300169-73f9-4809-8663-0e8fbdb3589c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files\XMLFile">
+      <UniqueIdentifier>{2d4c8544-c710-4346-8de2-c547f9f5db3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files\INIFile">
+      <UniqueIdentifier>{bb2177ab-e922-4b42-878d-49a18a36fc63}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Timer.cpp">
       <Filter>Types</Filter>
-    </ClCompile>
-    <ClCompile Include="INIFile.cpp">
-      <Filter>Files</Filter>
-    </ClCompile>
-    <ClCompile Include="XMLFile.cpp">
-      <Filter>Files</Filter>
     </ClCompile>
     <ClCompile Include="ModulesMgr.cpp">
       <Filter>Module</Filter>
@@ -75,16 +81,10 @@
     <ClCompile Include="DebugOutput.cpp">
       <Filter>Debug\Debug Outputs</Filter>
     </ClCompile>
-    <ClCompile Include="File.cpp">
-      <Filter>Files</Filter>
-    </ClCompile>
     <ClCompile Include="ByteBuffer.cpp">
       <Filter>Files</Filter>
     </ClCompile>
     <ClCompile Include="FileSystem.cpp" />
-    <ClCompile Include="WowChunkFile.cpp">
-      <Filter>Files</Filter>
-    </ClCompile>
     <ClCompile Include="Consts.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="RefSimpleManagers.cpp">
@@ -114,11 +114,23 @@
     <ClCompile Include="MathUtils.cpp">
       <Filter>Utils &amp; Helpers</Filter>
     </ClCompile>
-    <ClCompile Include="MPQFile.cpp">
+    <ClCompile Include="File.cpp">
       <Filter>Files</Filter>
     </ClCompile>
-    <ClCompile Include="IFile.cpp">
+    <ClCompile Include="BaseFile.cpp">
       <Filter>Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LocalFile.cpp">
+      <Filter>Files\LocalFile</Filter>
+    </ClCompile>
+    <ClCompile Include="MPQFile.cpp">
+      <Filter>Files\MPQFile</Filter>
+    </ClCompile>
+    <ClCompile Include="XMLFile.cpp">
+      <Filter>Files\XMLFile</Filter>
+    </ClCompile>
+    <ClCompile Include="INIFile.cpp">
+      <Filter>Files\INIFile</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -130,12 +142,6 @@
     </ClInclude>
     <ClInclude Include="Rect.h">
       <Filter>Types</Filter>
-    </ClInclude>
-    <ClInclude Include="INIFile.h">
-      <Filter>Files</Filter>
-    </ClInclude>
-    <ClInclude Include="XMLFile.h">
-      <Filter>Files</Filter>
     </ClInclude>
     <ClInclude Include="Module.h">
       <Filter>Module</Filter>
@@ -170,9 +176,6 @@
     <ClInclude Include="DebugOutput.h">
       <Filter>Debug\Debug Outputs</Filter>
     </ClInclude>
-    <ClInclude Include="File.h">
-      <Filter>Files</Filter>
-    </ClInclude>
     <ClInclude Include="Manager.h">
       <Filter>Types</Filter>
     </ClInclude>
@@ -180,9 +183,6 @@
       <Filter>Files</Filter>
     </ClInclude>
     <ClInclude Include="FileSystem.h" />
-    <ClInclude Include="WowChunkFile.h">
-      <Filter>Files</Filter>
-    </ClInclude>
     <ClInclude Include="Types.h">
       <Filter>Types</Filter>
     </ClInclude>
@@ -216,11 +216,23 @@
     <ClInclude Include="MathUtils.h">
       <Filter>Utils &amp; Helpers</Filter>
     </ClInclude>
-    <ClInclude Include="MPQFile.h">
+    <ClInclude Include="File.h">
       <Filter>Files</Filter>
     </ClInclude>
-    <ClInclude Include="IFile.h">
+    <ClInclude Include="BaseFile.h">
       <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LocalFile.h">
+      <Filter>Files\LocalFile</Filter>
+    </ClInclude>
+    <ClInclude Include="MPQFile.h">
+      <Filter>Files\MPQFile</Filter>
+    </ClInclude>
+    <ClInclude Include="XMLFile.h">
+      <Filter>Files\XMLFile</Filter>
+    </ClInclude>
+    <ClInclude Include="INIFile.h">
+      <Filter>Files\INIFile</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

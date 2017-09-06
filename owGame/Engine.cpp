@@ -10,7 +10,37 @@
 #include "ConsoleOpenGL.h"
 #include "GameState_Empty.h"
 
-bool Engine::Init(vector<string>& _argumentQueue) {
+void shutdown(int _errCode)
+{
+	_Engine->Destroy();
+	Debug::Exit(_errCode);
+}
+
+void Engine::QuickStart(int argumentCount, char * arguments[], GameState* _newGameState)
+{
+	vector<string> argumentQueue;
+	for (int i = 0; i < argumentCount; i++)
+	{
+		argumentQueue.push_back(arguments[i]);
+	}
+
+	if (!Init(argumentQueue))
+	{
+		shutdown(1);
+	}
+
+	if (!SetGameState(_newGameState))
+	{
+		shutdown(2);
+	}
+
+	while (Tick());
+
+	shutdown(0);
+}
+
+bool Engine::Init(vector<string>& _argumentQueue)
+{
 	// Add debug outputs
 	Debug::AddDebugOutput(new DebugOutput_ConsoleWindows);
 	Debug::AddDebugOutput(new DebugOutput_Log);
@@ -57,7 +87,8 @@ bool Engine::Init(vector<string>& _argumentQueue) {
 	return true;
 }
 
-void Engine::Destroy() {
+void Engine::Destroy()
+{
 	Debug::Green("Engine[]: Destroy engine.");
 
 	if (currentGameState != nullptr)
@@ -66,22 +97,26 @@ void Engine::Destroy() {
 	_ModulesMgr->DestroyAllModules();
 }
 
-bool Engine::SetGameState(GameState* _newGameState) {
+bool Engine::SetGameState(GameState* _newGameState)
+{
 	Debug::Print("Engine[]: Setting new GameState.");
 
-	if (_newGameState == nullptr) {
+	if (_newGameState == nullptr)
+	{
 		Debug::Error("Engine[]: New GameState in null.");
 		return false;
 	}
 
-	if (currentGameState != nullptr) {
+	if (currentGameState != nullptr)
+	{
 		currentGameState->Destroy();
 		delete currentGameState;
 		Debug::Print("Engine[]: Current GameState destroyed.");
 	}
 
 	currentGameState = _newGameState;
-	if (!currentGameState->IsInited()) {
+	if (!currentGameState->IsInited())
+	{
 		Debug::Warn("Engine[]: New GameState in not inited. Initializating.");
 		currentGameState->Init();
 	}
@@ -89,8 +124,10 @@ bool Engine::SetGameState(GameState* _newGameState) {
 	return true;
 }
 
-bool Engine::Tick() {
-	if (currentGameState == nullptr) {
+bool Engine::Tick()
+{
+	if (currentGameState == nullptr)
+	{
 		Debug::Warn("Current game state is null. Set empty GameState.");
 		this->SetGameState(new GameState_Empty);
 	}
@@ -103,39 +140,52 @@ bool Engine::Tick() {
 
 	// Input
 	if (currentGameState != nullptr)
+	{
 		currentGameState->InputPhase(ftime, static_cast<double>(dt) / 1000.0);
+	}
 
 	// Update
 	if (currentGameState != nullptr)
+	{
 		currentGameState->UpdatePhase(ftime, static_cast<double>(dt) / 1000.0);
+	}
 	_UIMgr->Update();
 
+	//
 	// Render world
 	_Render->Set3D();
 	if (currentGameState != nullptr)
+	{
 		currentGameState->RenderPhase(ftime, static_cast<double>(dt) / 1000.0);
+	}
 
+	//
 	// Render UI
 	_Render->Set2D();
-	if(currentGameState != nullptr)
+	if (currentGameState != nullptr)
+	{
 		currentGameState->RenderUIPhase(ftime, static_cast<double>(dt) / 1000.0);
-
+	}
 	_UIMgr->Render();
 	consoleOpenGL->Render();
 
 	// Swap buffers
-	if(!_GLFW->SwapWindowBuffers())
-		if(!needExit) {
+	if (!_GLFW->SwapWindowBuffers())
+	{
+		if (!needExit)
+		{
 			Debug::Green("Engine[]: Need exit.");
 			needExit = true;
 			return false;
 		}
+	}
 
 	// Caclulate FPS
 	double currentTime = _GLFW->GetTime();
 	double delta = currentTime - framesTimer;
 	framesCounter++;
-	if(delta > 1.0) {
+	if (delta > 1.0)
+	{
 		framesPerSecond = static_cast<int>(static_cast<double>(framesCounter) / delta);
 		framesTimer = currentTime;
 		framesCounter = 0;
@@ -148,7 +198,8 @@ bool Engine::Tick() {
 
 //---------------------------------------------------------
 
-unsigned long long Engine::GetTicks() const {
+unsigned long long Engine::GetTicks() const
+{
 	return static_cast<unsigned long long>(_GLFW->GetTime() * 1000.0);
 }
 

@@ -2,7 +2,8 @@
 
 class InputListener;
 
-class GameState : public InputListener {
+class GameState : public InputListener
+{
 public:
 	GameState() : inited(false) {};
 

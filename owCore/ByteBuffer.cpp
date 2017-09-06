@@ -34,60 +34,45 @@ ByteBuffer::ByteBuffer(const ByteBuffer& _other) :
 	}
 }
 
-ByteBuffer::ByteBuffer(size_t _size) :
+ByteBuffer::ByteBuffer(uint64_t _size) :
 	isFilled(false),
 	isOnlyPointerToData(false),
-	isEof(_size == 0),
-	allocated(_size > 0),
+	isEof(true),
+	allocated(false),
 	data(nullptr),
 	position(0),
-	bufferSize(_size)
+	bufferSize(0)
 {
-
-	if (_size > 0)
-	{
-		data = new uint8_t[_size + 1];
-		data[_size] = 0;
-	}
+	Allocate(_size);
 }
 
-ByteBuffer::ByteBuffer(uint8_t* _data, size_t _size) :
+ByteBuffer::ByteBuffer(uint8_t* _data, uint64_t _size) :
 	isFilled(false),
 	isOnlyPointerToData(false),
-	isEof(_size == 0),
-	allocated(_size > 0),
+	isEof(true),
+	allocated(false),
 	data(nullptr),
 	position(0),
-	bufferSize(_size)
+	bufferSize(0)
 {
 
-	if (_size > 0)
-	{
-		if (_data != nullptr)
-		{
-			data = _data;
-			isFilled = true;
-			isOnlyPointerToData = true;
-		}
-	}
+	Init(_data, _size);
 }
 
 ByteBuffer::~ByteBuffer()
 {
 	if (!isOnlyPointerToData)
+	{
 		if (data != nullptr)
+		{
 			delete[] data;
-
-	isEof = true;
-	allocated = false;
-	data = nullptr;
-	position = 0;
-	bufferSize = 0;
+		}
+	}
 }
 
 //
 
-void ByteBuffer::Allocate(size_t _size)
+void ByteBuffer::Allocate(uint64_t _size)
 {
 	isEof = (_size == 0);
 
@@ -105,10 +90,12 @@ void ByteBuffer::Allocate(size_t _size)
 	bufferSize = _size;
 }
 
-void ByteBuffer::CopyData(uint8_t* _data, size_t _size)
+void ByteBuffer::CopyData(uint8_t* _data, uint64_t _size)
 {
 	if (!allocated)
+	{
 		Allocate(_size);
+	}
 
 	if (_size > bufferSize)
 	{
@@ -126,17 +113,19 @@ void ByteBuffer::CopyData(uint8_t* _data, size_t _size)
 	position = 0;
 }
 
-void ByteBuffer::Init(uint8_t* _dataPtr, size_t _size)
+void ByteBuffer::Init(uint8_t* _dataPtr, uint64_t _size)
 {
 	isEof = (_size == 0);
 
 	if (_size > 0)
+	{
 		if (_dataPtr != nullptr)
 		{
 			data = _dataPtr;
 			isFilled = true;
 			isOnlyPointerToData = true;
 		}
+	}
 
 	position = 0;
 	bufferSize = _size;
@@ -147,17 +136,19 @@ void ByteBuffer::Init(uint8_t* _dataPtr, size_t _size)
 const string ByteBuffer::ReadLine()
 {
 	if (isEof)
+	{
 		return 0;
+	}
 
 	// Find first incorrect symbol
-	size_t lineEndPos;
+	uint64_t lineEndPos;
 	for (lineEndPos = position; (lineEndPos < bufferSize) && (data[lineEndPos] != '\n' && data[lineEndPos] != '\r'); lineEndPos++);
 
 	// Find first correct symbol after incorrects
-	size_t nextLineBeginPos;
+	uint64_t nextLineBeginPos;
 	for (nextLineBeginPos = lineEndPos; (nextLineBeginPos < bufferSize) && (data[nextLineBeginPos] == '\n' || data[nextLineBeginPos] == '\r'); nextLineBeginPos++);
 
-	size_t charsCount = lineEndPos - position;
+	uint64_t charsCount = lineEndPos - position;
 
 	char* _string = new char[charsCount + 1];
 	_string[charsCount] = '\0';
@@ -173,12 +164,14 @@ const string ByteBuffer::ReadLine()
 	return Utils::Trim(line);
 }
 
-const size_t ByteBuffer::ReadBytes(void* _destination, size_t _size)
+const void ByteBuffer::ReadBytes(void* _destination, uint64_t _size)
 {
 	if (isEof)
-		return 0;
+	{
+		return;
+	}
 
-	size_t posAfterRead = position + _size;
+	uint64_t posAfterRead = position + _size;
 	if (posAfterRead > bufferSize)
 	{
 		_size = bufferSize - position;
@@ -188,13 +181,11 @@ const size_t ByteBuffer::ReadBytes(void* _destination, size_t _size)
 	memcpy(_destination, &(data[position]), _size);
 
 	position = posAfterRead;
-
-	return _size;
 }
 
 //
 
-void ByteBuffer::Seek(size_t _bufferOffsetAbsolute)
+void ByteBuffer::Seek(uint64_t _bufferOffsetAbsolute)
 {
 	if (_bufferOffsetAbsolute >= bufferSize)
 	{
@@ -208,7 +199,7 @@ void ByteBuffer::Seek(size_t _bufferOffsetAbsolute)
 	}
 }
 
-void ByteBuffer::SeekRelative(size_t _bufferOffsetRelative)
+void ByteBuffer::SeekRelative(uint64_t _bufferOffsetRelative)
 {
 	if (position + _bufferOffsetRelative >= bufferSize)
 	{

@@ -8,7 +8,7 @@
 #include FT_FREETYPE_H
 
 bool FontsMgr::Init() {
-	mainFont = Add("Fonts/ARIALN.TTF", 14);
+	mainFont = Add("Fonts\\ARIALN.TTF", 14);
 
 	return true;
 }
@@ -39,8 +39,10 @@ Font* FontsMgr::Add(cstring _fontFileName, uint32_t _fontSize) {
 
 	// Try get fonst
 	auto fontIt = Fonts.find(fullFontFileName);
-	if(fontIt != Fonts.end())
+	if (fontIt != Fonts.end())
+	{
 		return (*fontIt).second;
+	}
 
 	GLuint listOpenglIndex = 0;
 	GLuint textureOpenglIndex = 0;
@@ -51,7 +53,11 @@ Font* FontsMgr::Add(cstring _fontFileName, uint32_t _fontSize) {
 	FT_Init_FreeType(&ftLibrary);
 
 	File f(_fontFileName);
-	f.Open();
+	if (!f.Open())
+	{
+		Debug::Fatal("FontsMgr[%s]: Error while loading font.", f.Path_Name().c_str());
+		return nullptr;
+	}
 
 	FT_Face face;
 	if (FT_New_Memory_Face(ftLibrary, f.GetData(), f.GetSize(), 0, &face) != 0)

@@ -25,13 +25,18 @@ Map_GlobalWMOs::~Map_GlobalWMOs()
 	{
 		_WMOsMgr->Delete(globalWMOName);
 	}
+
+	for (auto it = lowResolutionWMOsNames.begin(); it != lowResolutionWMOsNames.end(); ++it)
+	{
+		_WMOsMgr->Delete(*it);
+	}
 }
 
 void Map_GlobalWMOs::SetGlobalWMOName(cstring _name)
 {
 	globalWMOName = _name;
 
-	//Debug::Info("World[%s]: WDT: Global WMO name [%s].", templateMap->Get_Directory_cstr(), globalWMOName.c_str());
+	Debug::Green("Map_GlobalWMOs[]: Global WMO name [%s].", globalWMOName.c_str());
 }
 
 void Map_GlobalWMOs::SetGlobalWMOPlacementInfo(WMOPlacementInfo * _placement)
@@ -43,7 +48,7 @@ void Map_GlobalWMOs::SetGlobalWMOPlacementInfo(WMOPlacementInfo * _placement)
 void Map_GlobalWMOs::AddLowResWMOName(cstring _name)
 {
 	lowResolutionWMOsNames.push_back(_name);
-	Debug::Info("Low-res name %s", _name.c_str());
+	Debug::Info("Map_GlobalWMOs: Low-res name [%s]", _name.c_str());
 }
 
 void Map_GlobalWMOs::AddLowResWMOPlacementInfo(WMOPlacementInfo * _placement)
@@ -54,7 +59,7 @@ void Map_GlobalWMOs::AddLowResWMOPlacementInfo(WMOPlacementInfo * _placement)
 void Map_GlobalWMOs::InitGlobalsWMOs()
 {
 	// Load global WMO
-	//Debug::Info("World[%s]: Global WMO exists [%s].", templateMap->Get_Directory_cstr(), globalWMOExists ? "true" : "false");
+	Debug::Info("Map_GlobalWMOs[]: Global WMO exists [%s].", globalWMOExists ? "true" : "false");
 	if (globalWMOExists)
 	{
 		WMO* wmo = _WMOsMgr->Add(globalWMOName);
@@ -62,7 +67,7 @@ void Map_GlobalWMOs::InitGlobalsWMOs()
 	}
 
 	// Load low-resolution WMOs
-	//Debug::Info("World[%s]: Low WMOs count [%d].", templateMap->Get_Directory_cstr(), lowResolutionWMOsCount);
+	Debug::Info("Map_GlobalWMOs[]: Low WMOs count [%d].", lowResolutionWMOsCount);
 	for (size_t i = 0; i < lowResolutionWMOsCount; i++)
 	{
 		const string name = lowResolutionWMOsNames[lowResolutionWMOsplacementInfo[i]->nameIndex];

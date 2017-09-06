@@ -492,9 +492,10 @@ void Model::initAnimated(File &f)
 		for (size_t i = 0; i < header.nAnimations; i++)
 		{
 			sprintf_s(tempname, "%s%04d-%02d.anim", fullname.c_str(), anims[i].animID, anims[i].subAnimID);
-			if (File::getSize(tempname) > 0)
+			if (MPQFile::GetFileSize(tempname) > 0)
 			{
-				animfiles[i].Open(tempname);
+				animfiles[i].SetName(tempname);
+				animfiles[i].Open();
 			}
 		}
 	}

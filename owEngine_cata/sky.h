@@ -6,10 +6,12 @@ class SkyColor {
 public:
 	SkyColor(int _time, int _color) {
 		time = _time;
-		color.z = ((_color & 0x0000ff)) / 255.0f;
-		color.y = ((_color & 0x00ff00) >> 8) / 255.0f;
+
 		color.x = ((_color & 0xff0000) >> 16) / 255.0f;
+		color.y = ((_color & 0x00ff00) >> 8) / 255.0f;
+		color.z = ((_color & 0x0000ff)) / 255.0f;
 	}
+
 
 	vec3 color;
 	int time;

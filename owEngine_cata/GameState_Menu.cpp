@@ -55,7 +55,7 @@ bool GameState_Menu::Init()
 			mapsY = mapsYStart;
 		}
 
-		auto image = new Image(_TexturesMgr->Add("Interface/Buttons/UI-DialogBox-Button-Up.blp"), VECTOR_ZERO, vec2(128, 22));
+		auto image = new Image(_TexturesMgr->Add("Interface\\Buttons\\UI-DialogBox-Button-Up.blp"), VECTOR_ZERO, vec2(128, 22));
 
 		// Add btn
 		auto btn = new UIButton();
@@ -204,7 +204,7 @@ void GameState_Menu::RenderUIPhase(double t, double dt)
 			fz = basey + _Camera->Position.z / C_TileSize * 12.0f;
 			glVertex2f(fx, fz);
 			glColor4f(1, 1, 1, 0);
-			glVertex2f(fx + 10.0f * cosf(glm::degrees(_Camera->Yaw)), fz + 10.0f * sinf(glm::degrees(_Camera->Yaw)));
+			glVertex2f(fx + 10.0f * cosf(glm::radians(_Camera->Yaw)), fz + 10.0f * sinf(glm::radians(_Camera->Yaw)));
 			glEnd();
 		}
 	}
@@ -246,7 +246,7 @@ void GameState_Menu::RenderUIPhase(double t, double dt)
 			areaName = "Not found!";
 		}
 
-		_Render->RenderText(vec2(5, 20), "Area: [" + areaName + "]");
+		_Render->RenderText(vec2(5, 20), "Area: [" + areaName + "] [" + std::to_string(_World->GetMap()->getAreaID()) + "]");
 		_Render->RenderText(vec2(5, 40), "Region: " + regionName + "]");
 		_Render->RenderText(vec2(5, 60), "CURRX: " + to_string(_World->GetMap()->GetCurrentX()) + ", CURRZ " + to_string(_World->GetMap()->GetCurrentZ()));
 

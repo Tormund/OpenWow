@@ -32,3 +32,17 @@ inline Quaternion fixCoordSystemQuat(cQuaternion v)
 {
 	return Quaternion(v.w, -v.x, -v.z, v.y);
 }
+
+inline void rotate(float x0, float y0, float *x, float *y, float angle)
+{
+	float xa = *x - x0;
+	float ya = *y - y0;
+	*x = xa * cosf(angle) - ya * sinf(angle) + x0;
+	*y = xa * sinf(angle) + ya * cosf(angle) + y0;
+}
+
+inline void flipcc(char* fcc)
+{
+	std::swap(fcc[0], fcc[3]);
+	std::swap(fcc[1], fcc[2]);
+}

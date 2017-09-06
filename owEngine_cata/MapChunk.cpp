@@ -12,15 +12,13 @@
 #include "world.h"
 
 
-int holetab_h[4] = {0x1111, 0x2222, 0x4444, 0x8888};
-int holetab_v[4] = {0x000F, 0x00F0, 0x0F00, 0xF000};
-
 bool isHole(int holes, int i, int j)
 {
+	const int holetab_h[4] = {0x1111, 0x2222, 0x4444, 0x8888};
+	const int holetab_v[4] = {0x000F, 0x00F0, 0x0F00, 0xF000};
+
 	return (holes & holetab_h[i] & holetab_v[j]) != 0;
 }
-
-
 
 static uint8_t blendbuf[64 * 64 * 4]; // make unstable when new/delete, just make it global
 
@@ -38,13 +36,13 @@ void MapChunk::init(vector<Texture*>* mt, File &f, load_phases phase)
 
 		areaID = header->areaid;
 
-		zbase = header->zpos;
-		xbase = header->xpos;
+		m_GamePositionZ = header->zpos;
+		m_GamePositionX = header->xpos;
 		ybase = header->ypos;
 
 		// correct the x and z values
-		zbase = zbase * (-1.0f) + C_ZeroPoint;
-		xbase = xbase * (-1.0f) + C_ZeroPoint;
+		m_GamePositionZ = m_GamePositionZ * (-1.0f) + C_ZeroPoint;
+		m_GamePositionX = m_GamePositionX * (-1.0f) + C_ZeroPoint;
 
 		if (supportShaders)
 		{
@@ -103,7 +101,7 @@ void MapChunk::init(vector<Texture*>* mt, File &f, load_phases phase)
 					{
 						xpos += C_UnitSize*0.5f;
 					}
-					vec3 v = vec3(xbase + xpos, ybase + h, zbase + zpos);
+					vec3 v = vec3(m_GamePositionX + xpos, ybase + h, m_GamePositionZ + zpos);
 					*ttv++ = v;
 					if (v.y < vmin.y)
 						vmin.y = v.y;
@@ -112,10 +110,10 @@ void MapChunk::init(vector<Texture*>* mt, File &f, load_phases phase)
 				}
 			}
 
-			vmin.x = xbase;
-			vmin.z = zbase;
-			vmax.x = xbase + 8 * C_UnitSize;
-			vmax.z = zbase + 8 * C_UnitSize;
+			vmin.x = m_GamePositionX;
+			vmin.z = m_GamePositionZ;
+			vmax.x = m_GamePositionX + 8 * C_UnitSize;
+			vmax.z = m_GamePositionZ + 8 * C_UnitSize;
 			r = glm::length(vmax - vmin) * 0.5f;
 		}
 

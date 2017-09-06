@@ -3,57 +3,27 @@
 // General
 #include "File.h"
 
-bool File::usePackedGamedata = false;
-const char* File::archives = "D:/_games/World of Warcraft 4.3.4/Data/";
-const char* File::gamedata = "D:/_games/World of Warcraft 4.3.4 ExData/";
-
-File::File() :
-	ByteBuffer(),
-	name(""),
-	path(""),
-	extension("")
+File::File() : BaseFile()
 {}
 
-File::File(const File& _file) :
-	ByteBuffer(_file), name(_file.name),
-	path(_file.path),
-	extension(_file.extension)
+File::File(const File& _file) : BaseFile(_file)
 {}
 
-File::File(const ByteBuffer& _buffer) :
-	ByteBuffer(_buffer),
-	name("<empty>"),
-	path(""),
-	extension("")
+File::File(cstring _fullFileName) : BaseFile(_fullFileName)
 {}
 
-File::File(cstring _fullFileName) :
-	name(_fullFileName),
-	path("")
-{
-	ParsePathAndExtension();
-}
+File::File(const char* _fullFileName) : BaseFile(_fullFileName)
+{}
 
-File::File(const char* _fullFileName) :
-	name(_fullFileName),
-	path("")
-{
-	ParsePathAndExtension();
-}
-
-File::File(cstring _name, cstring _path) :
-	name(_name),
-	path(_path)
-{
-	ParsePathAndExtension();
-}
+File::File(cstring _name, cstring _path) : BaseFile(_name, _path)
+{}
 
 File::~File()
 {
-	ByteBuffer::~ByteBuffer();
+	BaseFile::~BaseFile();
 }
 
-// Equal operators copy only name and path
+//
 
 File& File::operator=(const File& _file)
 {
@@ -84,51 +54,54 @@ File& File::operator=(const char* _fullFileName)
 
 //
 
-bool File::Open(bool _isLocalFile)
+void File::SetName(cstring _fullFileName)
 {
-	return OpenLocalFile();
+	name = _fullFileName;
+
+	ParsePathAndExtension();
 }
 
-size_t File::getSize(cstring _name)
+void File::SetName(const char * _fullFileName)
 {
-	// Open stream
-	ifstream stream;
-	stream.open(string(gamedata + _name), ios::binary);
+	name = _fullFileName;
 
-	// Check stream
-	if (!stream.is_open())
+	ParsePathAndExtension();
+}
+
+//
+
+string File::Name() const
+{
+	return name;
+}
+string File::Path() const
+{
+	return path;
+}
+string File::Extension() const
+{
+	return extension;
+}
+
+string File::Path_Name() const
+{
+	return string(path + name);
+}
+
+bool File::Open()
+{
+	if (OpenMPQFile())
 	{
-		return 0;
+		return true;
 	}
 
-	// Filesize
-	stream.seekg(0, stream.end);
-	size_t fileSize = size_t(stream.tellg());
-	stream.seekg(0, stream.beg);
+	if (OpenLocalFile())
+	{
+		return true;
+	}
 
-	stream.clear();
-	stream.close();
-
-	return fileSize;
+	return false;
 }
-
-bool File::exists(cstring _name)
-{
-	// Open stream
-	ifstream stream;
-	stream.open(string(gamedata + _name), ios::binary);
-
-	// Check stream
-	if (!stream.is_open())
-		return false;
-
-	stream.clear();
-	stream.close();
-
-	return true;
-}
-
-// 
 
 bool File::OpenLocalFile()
 {
@@ -141,7 +114,7 @@ bool File::OpenLocalFile()
 	// Open stream
 	ifstream stream;
 	stream.clear();
-	stream.open(File::gamedata + path + name, ios::binary);
+	stream.open(LocalFile::gamedata + Path_Name(), ios::binary);
 
 
 	// Check stream
@@ -182,16 +155,33 @@ bool File::OpenLocalFile()
 	return true;
 }
 
-void File::ParsePathAndExtension()
+bool File::OpenMPQFile()
 {
-	auto lastSlashPos = name.find_last_of('/');
-	if (lastSlashPos != string::npos)
+	MPQFileLocation location = GetFileLocation(Path_Name());
+
+	if (location.exists)
 	{
-		path += name.substr(0, lastSlashPos + 1);
-		name = name.substr(lastSlashPos + 1);
+		libmpq__off_t size;
+		libmpq__file_size_unpacked(location.archive, location.fileNumber, &size);
+
+		// HACK: in patch.mpq some files don't want to open and give 1 for filesize
+		if (size <= 1)
+		{
+			Debug::Warn("MPQFile[%s]: Has size [%d]. Considered dummy file.", Path_Name().c_str(), size);
+			isEof = true;
+			data = 0;
+			return false;
+		}
+
+		// Allocate space and set data
+		ByteBuffer::Allocate(size);
+		libmpq__file_read(location.archive, location.fileNumber, data, bufferSize, &size);
+		assert1(bufferSize == size);
+		ByteBuffer::Init(data, size);
+
+		return true;
 	}
 
-	auto lastPointPos = name.find_last_of('.');
-	if (lastPointPos != string::npos)
-		extension = Utils::ToLower(name.substr(lastPointPos + 1));
+	return false;
 }
+

@@ -3,76 +3,128 @@
 // General
 #include "MPQFile.h"
 
-std::vector<mpq_archive*> gOpenArchives;
+const char* MPQFile::archives = "D:/_games/World of Warcraft 4.3.4/Data/";
+
+uint64_t MPQFile::GetFileSize(cstring _name)
+{
+	MPQFileLocation location = GetFileLocation(_name);
+
+	if (location.exists)
+	{
+		libmpq__off_t size;
+		libmpq__file_size_unpacked(location.archive, location.fileNumber, &size);
+		return size;
+	}
+	
+	return 0;
+}
+
+bool MPQFile::IsFileExists(cstring _name)
+{
+	return GetFileLocation(_name).exists;
+}
 
 //
 
-MPQFile::MPQFile(const MPQFile& _file) : File(_file)
-{}
+vector<mpq_archive*> m_OpenArchives;
 
-MPQFile::MPQFile(cstring _fullFileName) : File(_fullFileName)
-{}
-
-MPQFile::MPQFile(const char* _fullFileName) : File(_fullFileName)
-{}
-
-MPQFile::~MPQFile()
+void MPQFile::AddArchive(cstring filename)
 {
-	File::~File();
+	mpq_archive* mpq_a;
+	int result = libmpq__archive_open(&mpq_a, (MPQFile::archives + filename).c_str(), -1);
+	Debug::Info("Opening %s", filename.c_str());
+	if (result)
+	{
+		switch (result)
+		{
+			case LIBMPQ_ERROR_OPEN:
+			Debug::Error("Error opening archive [%s]: Does file really exist?", filename.c_str());
+			break;
+
+			case LIBMPQ_ERROR_FORMAT:            /* bad file format */
+			Debug::Error("Error opening archive [%s]: Bad file format", filename.c_str());
+			break;
+
+			case LIBMPQ_ERROR_SEEK:         /* seeking in file failed */
+			Debug::Error("Error opening archive [%s]: Seeking in file failed", filename.c_str());
+			break;
+
+			case LIBMPQ_ERROR_READ:              /* Read error in archive */
+			Debug::Error("Error opening archive [%s]: Read error in archive", filename.c_str());
+			break;
+
+			case LIBMPQ_ERROR_MALLOC:               /* maybe not enough memory? :) */
+			Debug::Error("Error opening archive [%s]: Maybe not enough memory", filename.c_str());
+			break;
+
+			default:
+			Debug::Error("Error opening archive [%s]: Unknown error\n", filename.c_str());
+			break;
+		}
+		return;
+	}
+
+
+	/*uint32_t filenum;
+	if (libmpq__file_number(mpq_a, "(listfile)", &filenum)) return;
+
+	libmpq__off_t size, transferred;
+	libmpq__file_size_unpacked(mpq_a, filenum, &size);
+
+	char *buffer = new char[size + 1];
+	buffer[size] = '\0';
+
+	libmpq__file_read(mpq_a, filenum, (unsigned char*)buffer, size, &transferred);
+
+	char seps[] = "\n";
+	char *token;
+
+	strtok_s(buffer, seps, &token);
+	uint32_t counter = 0;
+	while ((token != NULL) && (counter < size))
+	{
+		//cout << token << endl;
+		token[strlen(token) - 1] = 0;
+		std::string s = token;
+
+		//filelist.push_back(s);
+
+		//if(s[0] == 'I')
+		//	Debug::Info("File [%s]", s.c_str());
+
+		counter += strlen(token) + 2;
+		strtok_s(NULL, seps, &token);
+	}
+
+	delete[] buffer;*/
+
+	m_OpenArchives.push_back(mpq_a);
+	Debug::Green("MPQFile[%s]: Added!", filename.c_str());
 }
 
-bool MPQFile::Open(bool _isLocalFile)
+MPQFileLocation MPQFile::GetFileLocation(cstring filename)
 {
-	for (auto i = gOpenArchives.begin(); i != gOpenArchives.end(); ++i)
+	for (auto i = m_OpenArchives.begin(); i != m_OpenArchives.end(); ++i)
 	{
-		mpq_archive &mpq_a = **i;
-		int fileno = libmpq_file_number(&mpq_a, Path_Name().c_str());
-		if (fileno == LIBMPQ_EFILE_NOT_FOUND)
+		mpq_archive* mpq_a = *i;
+
+		uint32_t filenum;
+		if (libmpq__file_number(mpq_a, filename.c_str(), &filenum) == LIBMPQ_ERROR_EXIST)
 		{
 			continue;
 		}
 
-		// Found!
-		bufferSize = libmpq_file_info(&mpq_a, LIBMPQ_FILE_UNCOMPRESSED_SIZE, fileno);
-
-		// HACK: in patch.mpq some files don't want to open and give 1 for filesize
-		if (bufferSize <= 1)
-		{
-			isEof = true;
-			data = 0;
-			return true;
-		}
-
-		data = new uint8_t[bufferSize];
-		libmpq_file_getdata(&mpq_a, fileno, (unsigned char*)data);
-
-		return true;
+		return MPQFileLocation(mpq_a, filenum);
 	}
 
-	isEof = true;
-	data = 0;
-
-	return true;
-}
-
-void MPQFile::AddArchive(cstring filename)
-{
-	mpq_archive mpq_a;
-	int result = libmpq_archive_open(&mpq_a, (uint8_t*)(File::archives + filename).c_str());
-	Debug::Green("Opening [%s]", filename);
-	if (result)
-	{
-		Debug::Green("Error opening archive [%s]", filename);
-		return;
-	}
-	gOpenArchives.push_back(&mpq_a);
+	return MPQFileLocation();
 }
 
 void MPQFile::ClearArchives()
 {
-	for (auto i = gOpenArchives.begin(); i != gOpenArchives.end(); ++i)
+	for (auto it = m_OpenArchives.begin(); it != m_OpenArchives.end(); ++it)
 	{
-		libmpq_archive_close(*i);
+		libmpq__archive_close(*it);
 	}
 }
 

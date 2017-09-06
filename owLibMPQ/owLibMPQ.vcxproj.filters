@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="common.cpp" />
-    <ClCompile Include="explode.cpp" />
-    <ClCompile Include="extract.cpp" />
-    <ClCompile Include="huffman.cpp" />
-    <ClCompile Include="mpq.cpp" />
-    <ClCompile Include="wave.cpp" />
+    <ClCompile Include="common.c" />
+    <ClCompile Include="explode.c" />
+    <ClCompile Include="extract.c" />
+    <ClCompile Include="huffman.c" />
+    <ClCompile Include="mpq.c" />
+    <ClCompile Include="wave.c" />
     <ClCompile Include="..\Externals\zlib\adler32.c">
       <Filter>zlib</Filter>
     </ClCompile>
@@ -19,7 +19,19 @@
     <ClCompile Include="..\Externals\zlib\deflate.c">
       <Filter>zlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\Externals\zlib\gzio.c">
+    <ClCompile Include="..\Externals\zlib\gzclose.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Externals\zlib\gzlib.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Externals\zlib\gzread.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Externals\zlib\gzwrite.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Externals\zlib\infback.c">
       <Filter>zlib</Filter>
     </ClCompile>
     <ClCompile Include="..\Externals\zlib\inffast.c">
@@ -42,15 +54,25 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\shared\owLibMPQ.h" />
     <ClInclude Include="common.h" />
+    <ClInclude Include="crypt_buf.h" />
     <ClInclude Include="explode.h" />
+    <ClInclude Include="extract.h" />
     <ClInclude Include="huffman.h" />
     <ClInclude Include="mpq.h" />
+    <ClInclude Include="mpq-internal.h" />
+    <ClInclude Include="pack_begin.h" />
+    <ClInclude Include="pack_end.h" />
+    <ClInclude Include="platform.h" />
     <ClInclude Include="wave.h" />
     <ClInclude Include="..\Externals\zlib\crc32.h">
       <Filter>zlib</Filter>
     </ClInclude>
     <ClInclude Include="..\Externals\zlib\deflate.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Externals\zlib\gzguts.h">
       <Filter>zlib</Filter>
     </ClInclude>
     <ClInclude Include="..\Externals\zlib\inffast.h">
@@ -77,7 +99,6 @@
     <ClInclude Include="..\Externals\zlib\zutil.h">
       <Filter>zlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\shared\owLibMPQ.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="zlib">

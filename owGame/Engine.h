@@ -3,13 +3,19 @@
 class ConsoleOpenGL;
 class GameState;
 
-class Engine {
+class Engine
+{
 public:
-	static OW_GAME_DLL_API Engine* instance() {
+	static OW_GAME_DLL_API Engine* instance()
+	{
 		static Engine instance;
 		return &instance;
 	}
 
+	//-------------------------------------------------
+
+	OW_GAME_DLL_API void QuickStart(int argumentCount, char* arguments[], GameState* _newGameState);
+	
 	//-------------------------------------------------
 
 	OW_GAME_DLL_API bool Init(vector<string>& _argumentQueue);
@@ -32,7 +38,7 @@ private:
 	double framesTimer;
 
 	float ftime;
-	uint32_t t; 
+	uint32_t t;
 	uint32_t last_t;
 	uint32_t time;
 

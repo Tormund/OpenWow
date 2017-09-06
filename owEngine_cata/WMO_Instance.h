@@ -9,6 +9,8 @@ public:
 
 	static void reset();
 
+	inline WMO* GetWMO() { return wmoObject; }
+
 private:
 	WMO* wmoObject;
 	WMOPlacementInfo* placementInfo;

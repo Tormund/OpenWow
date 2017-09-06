@@ -1,29 +1,28 @@
 #pragma once
 
-// GLM
+// Standart includes
+#include <algorithm>
+#include <fstream>
+#include <cmath>
+#include <typeinfo>
+#include <memory>
+using namespace std;
 
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 
+// Engine includes
 #include "Types.h"
 #include "Consts.h"
 
-// Types
-#include "File.h"
+// Engine Types
 #include "Color.h"
 #include "Rect.h"
-//#include "Vector21.h"
-//#include "Vector31.h"
 
-// Common classes
+// Engine Common classes
 #include "Function.h"
 #include "Module.h"
 #include "Random.h"
 #include "Utils.h"
 #include "Debug.h"
 #include "Manager.h"
-
-inline void rotate(float x0, float y0, float *x, float *y, float angle) {
-	float xa = *x - x0;
-	float ya = *y - y0;
-	*x = xa * cosf(angle) - ya * sinf(angle) + x0;
-	*y = xa * sinf(angle) + ya * cosf(angle) + y0;
-}

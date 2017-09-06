@@ -2,6 +2,8 @@
 
 class Module;
 
+#include "File.h"
+
 class FileSystem : public Module
 {
 private:

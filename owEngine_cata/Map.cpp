@@ -19,9 +19,10 @@ Map::Map()
 	minimap = 0;
 	memset(maptilecache, 0, sizeof(maptilecache));
 	currentTileX = currentTileZ = -1;
-	enteredTileX = enteredTileZ = -1;
 	memset(current, 0, sizeof(current));
 	outOfBounds = false;
+
+	ADDCONSOLECOMMAND_CLASS("map_clear", Map, ClearCache);
 }
 
 Map::~Map()
@@ -50,6 +51,8 @@ Map::~Map()
 		glDeleteTextures(1, &minimap);
 	}
 }
+
+//
 
 void Map::PreloadMap(gMapDBRecord* _map)
 {
@@ -159,7 +162,7 @@ void Map::PreloadMap(gMapDBRecord* _map)
 		else if (strcmp(fourcc, "MODF") == 0)
 		{
 			size_t globalWMOCount = WMOPlacementInfo::__size;
-			assert4(globalWMOCount < 2, "Map has more then 1 global WMO ", templateMap->Get_Directory_cstr(), std::to_string(globalWMOCount).c_str());
+			assert4(globalWMOCount > 1, "Map has more then 1 global WMO ", templateMap->Get_Directory_cstr(), std::to_string(globalWMOCount).c_str());
 
 			if (globalWMOCount > 0)
 			{
@@ -180,9 +183,10 @@ void Map::PreloadMap(gMapDBRecord* _map)
 	if (tilesCount > 0)
 	{
 		mapHasTerrain = true;
-		LoadLowTerrain();
 		Debug::Info("Map[%s]: Is tile-based map.", templateMap->Get_Directory_cstr());
 	}
+
+	LoadLowTerrain();
 }
 
 void Map::LoadLowTerrain()
@@ -423,20 +427,26 @@ void Map::LoadLowTerrain()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
 	delete[] texbuf;
+
+
+	// Init global WMOs
+	m_Map_GlobalWMOs.InitGlobalsWMOs();
 }
+
+//
 
 void Map::Tick()
 {
 	bool loading = false;
-
+	int enteredTileX, enteredTileZ;
 	int midTile = static_cast<int>(RENDERED_TILES / 2);
 	if (current[midTile][midTile] != nullptr || outOfBounds)
 	{
 		if (outOfBounds ||
-			(_Camera->Position.x < current[midTile][midTile]->xbase) ||
-			(_Camera->Position.x > (current[midTile][midTile]->xbase + C_TileSize)) ||
-			(_Camera->Position.z < current[midTile][midTile]->zbase) ||
-			(_Camera->Position.z > (current[midTile][midTile]->zbase + C_TileSize)))
+			(_Camera->Position.x < current[midTile][midTile]->m_GamePositionX) ||
+			(_Camera->Position.x > (current[midTile][midTile]->m_GamePositionX + C_TileSize)) ||
+			(_Camera->Position.z < current[midTile][midTile]->m_GamePositionZ) ||
+			(_Camera->Position.z > (current[midTile][midTile]->m_GamePositionZ + C_TileSize)))
 		{
 
 			enteredTileX = static_cast<int>(_Camera->Position.x / C_TileSize);
@@ -457,18 +467,14 @@ void Map::Tick()
 	}
 }
 
+//
+
 void Map::RenderSky()
 {
 	for (int i = 0; i < RENDERED_TILES; i++)
 	{
 		for (int j = 0; j < RENDERED_TILES; j++)
 		{
-			// OOB check
-			if (IsBadTileIndex(i, j))
-			{
-				continue;
-			}
-
 			if (current[i][j] != nullptr)
 			{
 				current[i][j]->drawSky();
@@ -514,10 +520,18 @@ void Map::RenderLowResTiles()
 
 void Map::RenderTiles()
 {
-	for (int i = 0; i < RENDERED_TILES; i++)
+	for (int i = 0; i < MAPTILECACHESIZE; i++)
+	{
+		if (maptilecache[i] != nullptr)
+		{
+			maptilecache[i]->draw();
+		}
+	}
+
+	/*for (int i = 0; i < RENDERED_TILES; i++)
 		for (int j = 0; j < RENDERED_TILES; j++)
 			if (current[i][j] != nullptr)
-				current[i][j]->draw();
+				current[i][j]->draw();*/
 }
 
 void Map::RenderObjects()
@@ -543,6 +557,8 @@ void Map::RenderWater()
 			if (current[i][j] != nullptr)
 				current[i][j]->drawWater();
 }
+
+//
 
 void Map::enterTile(int x, int z)
 {
@@ -584,7 +600,7 @@ MapTile* Map::LoadTile(int x, int z)
 	int firstnull = MAPTILECACHESIZE;
 	for (int i = 0; i < MAPTILECACHESIZE; i++)
 	{
-		if ((maptilecache[i] != 0) && (maptilecache[i]->indexX == x) && (maptilecache[i]->indexZ == z))
+		if ((maptilecache[i] != nullptr) && (maptilecache[i]->m_IndexX == x) && (maptilecache[i]->m_IndexZ == z))
 		{
 			return maptilecache[i];
 		}
@@ -602,9 +618,13 @@ MapTile* Map::LoadTile(int x, int z)
 		// oh shit we need to throw away a m_TileExists
 		for (int i = 0; i < MAPTILECACHESIZE; i++)
 		{
-			if (maptilecache[i] == 0)
+			if (maptilecache[i] == nullptr)
+			{
 				continue;
-			score = abs(maptilecache[i]->indexX - currentTileX) + abs(maptilecache[i]->indexZ - currentTileZ);
+			}
+
+			score = abs(maptilecache[i]->m_IndexX - currentTileX) + abs(maptilecache[i]->m_IndexZ - currentTileZ);
+
 			if (score > maxscore)
 			{
 				maxscore = score;
@@ -614,12 +634,32 @@ MapTile* Map::LoadTile(int x, int z)
 
 		// maxidx is the winner (loser)
 		delete maptilecache[maxidx];
-		maptilecache[maxidx] = 0;
+		maptilecache[maxidx] = nullptr;
 		firstnull = maxidx;
 	}
 
-	maptilecache[firstnull] = new MapTile(x, z, templateMap->Get_Directory_cstr());
+	// Create new tile
+	maptilecache[firstnull] = new MapTile(x, z);
+	if (!maptilecache[firstnull]->Init(templateMap->Get_Directory_cstr()))
+	{
+		delete maptilecache[firstnull];
+		Debug::Info("Map[%d]: Error loading tile [%d, %d].", GetPath().c_str(), x, z);
+		return nullptr;
+	}
+
 	return maptilecache[firstnull];
+}
+
+void Map::ClearCache()
+{
+	for (int i = 0; i < MAPTILECACHESIZE; i++)
+	{
+		if (maptilecache[i] != nullptr && !IsTileInCurrent(maptilecache[i]))
+		{
+			delete maptilecache[i];
+			maptilecache[i] = nullptr;
+		}
+	}
 }
 
 uint32_t Map::getAreaID()
@@ -649,4 +689,14 @@ uint32_t Map::getAreaID()
 		return 0;
 
 	return curChunk->areaID;
+}
+
+bool Map::IsTileInCurrent(MapTile * _mapTile)
+{
+	for (int i = 0; i < RENDERED_TILES; i++)
+		for (int j = 0; j < RENDERED_TILES; j++)
+			if (current[i][j] != nullptr)
+				if (current[i][j] == _mapTile)
+					return true;
+	return false;
 }

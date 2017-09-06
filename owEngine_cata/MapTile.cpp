@@ -11,11 +11,13 @@
 #include "world.h"
 #include "shaders.h"
 #include "WMO_Instance.h"
+#include "liquid.h"
 
 #include "ModelsManager.h"
 #include "WMOsManager.h"
 
-struct MH2O_Header {
+struct MH2O_Header
+{
 	/*
 	uint32_t offsetInstances;
 	This is an Offset to the first Water Layer, it has tobe an offset because there can be multiple layers.
@@ -53,7 +55,8 @@ struct MH2O_Header {
 	uint32_t offsetAttributes;
 };
 
-struct MH2O_Instance {
+struct MH2O_Instance
+{
 	/*
 	uint16_t flags;
 	known values:
@@ -153,11 +156,10 @@ struct MH2O_Instance {
 	uint32_t offsetVertexData;
 };
 
-
-
 ///////////////////////////////////////////////////////////
 
-struct MapTileHeader {
+struct MapTileHeader
+{
 	uint32_t flags;
 
 	uint32_t MCIN;
@@ -177,43 +179,90 @@ struct MapTileHeader {
 	uint32_t unused[3];
 };
 
-MapTile::MapTile(int x0, int z0, cstring basename) : indexX(x0), indexZ(z0), wmoCount(0), mdxCount(0) {
-	xbase = x0 * C_TileSize;
-	zbase = z0 * C_TileSize;
+MapTile::MapTile(int x0, int z0) : m_IndexX(x0), m_IndexZ(z0), wmoCount(0), mdxCount(0)
+{
+	m_GamePositionX = x0 * C_TileSize;
+	m_GamePositionZ = z0 * C_TileSize;
 
-	for(size_t j = 0; j < C_ChunksInTile; j++) {
-		for(size_t i = 0; i < C_ChunksInTile; i++) {
+	for (size_t i = 0; i < C_ChunksInTile; i++)
+	{
+		for (size_t j = 0; j < C_ChunksInTile; j++)
+		{
+			chunks[i][j] = nullptr;
+		}
+	}
+}
 
-			chunks[j][i] = new MapWaterChunk;
-			//waterChunks[j][i] = nullptr;
+MapTile::~MapTile()
+{
+	Debug::Info("MapTile[%d, %d]: Unloading tile...", m_IndexX, m_IndexZ);
 
+	for (size_t i = 0; i < C_ChunksInTile; i++)
+	{
+		for (size_t j = 0; j < C_ChunksInTile; j++)
+		{
+			if (chunks[i][j] != nullptr)
+			{
+				chunks[i][j]->destroy();
+			}
 		}
 	}
 
-	Debug::Info("Loading tile %d,%d", x0, z0);
+	for (auto it = textures.begin(); it != textures.end(); ++it)
+	{
+		_TexturesMgr->Delete(*it);
+	}
 
-	for(int fileindex = 0; fileindex < 3; fileindex++) {
-		char name[256];
+	for (vector<string>::iterator it = wmoNames.begin(); it != wmoNames.end(); ++it)
+	{
+		_WMOsMgr->Delete(*it);
+	}
+
+	for (vector<string>::iterator it = mdxNames.begin(); it != mdxNames.end(); ++it)
+	{
+		_ModelsMgr->Delete(*it);
+	}
+
+	Debug::Green("MapTile[%d, %d]: Unloaded.", m_IndexX, m_IndexZ);
+}
+
+bool MapTile::Init(cstring _filename)
+{
+	for (size_t i = 0; i < C_ChunksInTile; i++)
+	{
+		for (size_t j = 0; j < C_ChunksInTile; j++)
+		{
+			chunks[i][j] = new MapWaterChunk;
+		}
+	}
+
+	Debug::Info("MapTile[%d, %d, %s]: Loading...", m_IndexX, m_IndexZ, _filename.c_str());
+
+	for (int fileindex = 0; fileindex < 3; fileindex++)
+	{
 		load_phases phase;
-		switch(fileindex) {
+		switch (fileindex)
+		{
 			case 0:
 			phase = main_file;
-			sprintf_s(name, "World\\Maps\\%s\\%s_%d_%d.adt", basename.c_str(), basename.c_str(), x0, z0);
 			break;
+
 			case 1:
 			phase = tex;
-			sprintf_s(name, "World\\Maps\\%s\\%s_%d_%d_tex0.adt", basename.c_str(), basename.c_str(), x0, z0);
 			break;
-			/*case 2:
-				sprintf(name,"World\\Maps\\%s\\%s_%d_%d_tex1.adt", basename.c_str(), basename.c_str(), x0, z0);
-				break;*/
+
 			case 2:
 			phase = obj;
-			sprintf_s(name, "World\\Maps\\%s\\%s_%d_%d_obj0.adt", basename.c_str(), basename.c_str(), x0, z0);
 			break;
 		}
-		parse_adt(name, phase);
+
+		if (!parse_adt(_filename, phase))
+		{
+			return false;
+		}
 	}
+
+	Debug::Green("MapTile[%d, %d, %s]: Loaded!", m_IndexX, m_IndexZ, _filename.c_str());
 
 	// init quadtree
 	//topnode = new MapNode(x, z, 16);
@@ -222,14 +271,38 @@ MapTile::MapTile(int x0, int z0, cstring basename) : indexX(x0), indexZ(z0), wmo
 	// Verteces
 	//technique = new LightTechnique();
 	//technique->Init();
+
+	return true;
 }
 
-void MapTile::parse_adt(char* name, load_phases phase) {
+bool MapTile::parse_adt(cstring _filename, load_phases _phase)
+{
+	char name[256];
+	switch (_phase)
+	{
+		case main_file:
+		sprintf_s(name, "World\\Maps\\%s\\%s_%d_%d.adt", _filename.c_str(), _filename.c_str(), m_IndexX, m_IndexZ);
+		break;
+
+		case tex:
+		sprintf_s(name, "World\\Maps\\%s\\%s_%d_%d_tex%d.adt", _filename.c_str(), _filename.c_str(), m_IndexX, m_IndexZ, 0 /*1*/);
+		break;
+
+		case obj:
+		sprintf_s(name, "World\\Maps\\%s\\%s_%d_%d_obj0.adt", _filename.c_str(), _filename.c_str(), m_IndexX, m_IndexZ);
+		break;
+
+		default:
+		assert1(false);
+		break;
+	}
+
+
 	File f(name);
-	ok = f.Open();
-	if(!ok) {
-		Debug::Info("MapTile[%s]: Error loading.", name);
-		return;
+	if (!f.Open())
+	{
+		Debug::Error("MapTile[%d, %d, %s]: Error open file!", m_IndexX, m_IndexZ, name);
+		return false;
 	}
 
 	char fourcc[5];
@@ -238,43 +311,45 @@ void MapTile::parse_adt(char* name, load_phases phase) {
 	int chunkI = 0;
 	int chunkJ = 0;
 
-	while(!f.IsEof()) {
+	while (!f.IsEof())
+	{
 		memset(fourcc, 0, 4);
 		f.ReadBytes(fourcc, 4);
 		f.ReadBytes(&size, 4);
-
 		flipcc(fourcc);
 		fourcc[4] = 0;
-
-		if(size == 0)
-			continue;
-
+		if (size == 0) continue;
 		size_t nextpos = f.GetPos() + size;
 
-		if(strncmp(fourcc, "MVER", 4) == 0) {
+		if (strncmp(fourcc, "MVER", 4) == 0)
+		{
 			uint32_t version;
 			f.ReadBytes(&version, 4);
 			assert4(version == 18, "Version mismatch != 18", std::to_string(version).c_str(), name);
 		}
-		else if(strncmp(fourcc, "MHDR", 4) == 0) {
+		else if (strncmp(fourcc, "MHDR", 4) == 0)
+		{
 			// Contains offsets relative to &MHDR.data in the file for specific chunks.
 		}
-		else if(strncmp(fourcc, "MTEX", 4) == 0) {
+		else if (strncmp(fourcc, "MTEX", 4) == 0)
+		{
 			// List of textures used for texturing the terrain in this map m_TileExists.
 			char* buf = new char[size + 1];
 			f.ReadBytes(buf, size);
 			buf[size] = 0;
 
 			char* p = buf;
-			while(p < buf + size) {
+			while (p < buf + size)
+			{
 				string texpath(p);
 				p += strlen(p) + 1;
 
-				if(supportShaders) {
+				if (supportShaders)
+				{
 					string texshader = texpath;
 					// load the specular texture instead
 					texshader.insert(texshader.length() - 4, "_s");
-					if(File::exists(texshader.c_str()))
+					if (MPQFile::IsFileExists(texshader.c_str()))
 						texpath = texshader;
 				}
 
@@ -283,13 +358,15 @@ void MapTile::parse_adt(char* name, load_phases phase) {
 			}
 			delete[] buf;
 		}
-		else if(strncmp(fourcc, "MMDX", 4) == 0) {
+		else if (strncmp(fourcc, "MMDX", 4) == 0)
+		{
 			// List of filenames for M2 models that appear in this map m_TileExists.
 			char* buf = new char[size + 1];
 			f.ReadBytes(buf, size);
 			buf[size] = 0;
 			char *p = buf;
-			while(p < buf + size) {
+			while (p < buf + size)
+			{
 				string path(p);
 				p += strlen(p) + 1;
 
@@ -299,32 +376,38 @@ void MapTile::parse_adt(char* name, load_phases phase) {
 			}
 			delete[] buf;
 		}
-		else if(strncmp(fourcc, "MMID", 4) == 0) {
+		else if (strncmp(fourcc, "MMID", 4) == 0)
+		{
 			// List of offsets of model filenames in the MMDX chunk.
 		}
-		else if(strncmp(fourcc, "MWMO", 4) == 0) {
+		else if (strncmp(fourcc, "MWMO", 4) == 0)
+		{
 			// List of filenames for WMOs (world map objects) that appear in this map m_TileExists.
 			char *buf = new char[size + 1];
 			f.ReadBytes(buf, size);
 			buf[size] = 0;
 			char* p = buf;
-			while(p < buf + size) {
+			while (p < buf + size)
+			{
 				string path(p);
 				p += strlen(p) + 1;
-	
+
 				// Preload WMO
 				_WMOsMgr->Add(path);
 				wmoNames.push_back(path);
 			}
 			delete[] buf;
 		}
-		else if(strncmp(fourcc, "MWID", 4) == 0) {
+		else if (strncmp(fourcc, "MWID", 4) == 0)
+		{
 			// List of offsets of WMO filenames in the MWMO chunk.
 		}
-		else if(strncmp(fourcc, "MDDF", 4) == 0) {
+		else if (strncmp(fourcc, "MDDF", 4) == 0)
+		{
 			// Placement information for doodads (M2 models).
 			mdxCount = (int)size / 36;
-			for(size_t i = 0; i < mdxCount; i++) {
+			for (size_t i = 0; i < mdxCount; i++)
+			{
 				uint32_t mdxIndex;
 				f.ReadBytes(&mdxIndex, 4);
 
@@ -333,10 +416,12 @@ void MapTile::parse_adt(char* name, load_phases phase) {
 				mdxInstances.push_back(inst);
 			}
 		}
-		else if(strncmp(fourcc, "MODF", 4) == 0) {
+		else if (strncmp(fourcc, "MODF", 4) == 0)
+		{
 			// Placement information for WMOs.
 			wmoCount = size / 64;
-			for(size_t i = 0; i < wmoCount; i++) {
+			for (size_t i = 0; i < wmoCount; i++)
+			{
 				WMOPlacementInfo* placementInfo = new WMOPlacementInfo;
 				f.ReadBytes(placementInfo, placementInfo->__size);
 
@@ -345,15 +430,18 @@ void MapTile::parse_adt(char* name, load_phases phase) {
 				wmoInstances.push_back(inst);
 			}
 		}
-		else if(strncmp(fourcc, "MH2O", 4) == 0) {
+		else if (strncmp(fourcc, "MH2O", 4) == 0)
+		{
 			uint8_t* abuf = f.GetDataFromCurrent();
 
-			for(size_t i = 0; i < C_ChunksInTile * C_ChunksInTile; i++) { // 256*12=3072 bytes
+			for (size_t i = 0; i < C_ChunksInTile * C_ChunksInTile; i++)
+			{ // 256*12=3072 bytes
 				MH2O_Header* mh2o_Header = (MH2O_Header*)abuf;
 
 				//Debug::Green("MH2O: layers = %d", mh2o_Header->layersCount);
 
-				for(size_t j = 0; j < mh2o_Header->layersCount; j++) {
+				for (size_t j = 0; j < mh2o_Header->layersCount; j++)
+				{
 					MH2O_Instance* mh2o_instance = new MH2O_Instance;
 					mh2o_instance = (MH2O_Instance*)(f.GetDataFromCurrent() + mh2o_Header->offsetInstances + sizeof(MH2O_Instance) * j);
 
@@ -362,7 +450,8 @@ void MapTile::parse_adt(char* name, load_phases phase) {
 
 
 
-					if(mh2o_instance->minHeightLevel - mh2o_instance->maxHeightLevel > 0.001f) {
+					if (mh2o_instance->minHeightLevel - mh2o_instance->maxHeightLevel > 0.001f)
+					{
 						Debug::Green("MinHeight %f:", mh2o_instance->minHeightLevel);
 						Debug::Green("MaxHeight %f:", mh2o_instance->maxHeightLevel);
 						Debug::Error("MIN WATER != MAX_WATER!!!!");
@@ -371,7 +460,7 @@ void MapTile::parse_adt(char* name, load_phases phase) {
 					//Debug::Green("---------");
 					//Debug::Green("Chunk [%d][%d]", i / C_ChunksInTile, i % C_ChunksInTile);
 					//Debug::Green("Layer %d:", j);
-					
+
 					//Debug::Green("MATERIAL = %d", LTYPE->Get_LiquidMaterialID());
 					//Debug::Green("VERTEX FMT = %d", VERTEX_FMT->Get_LiquidVertexFormat());
 
@@ -387,39 +476,46 @@ void MapTile::parse_adt(char* name, load_phases phase) {
 					waterLayer.type = mh2o_instance->liquidObject;
 
 					waterLayer.hasmask = mh2o_instance->offsetExistsBitmap != 0;
-					if(waterLayer.hasmask) {
+					if (waterLayer.hasmask)
+					{
 						unsigned co = mh2o_instance->width * mh2o_instance->height / 8;
 
-						if(mh2o_instance->width * mh2o_instance->height % 8 != 0)
+						if (mh2o_instance->width * mh2o_instance->height % 8 != 0)
 							co++;
 
 						memcpy(waterLayer.mask, f.GetDataFromCurrent() + mh2o_instance->offsetExistsBitmap, co);
 
-						for(size_t k = 0; k < (size_t)(waterLayer.w * waterLayer.h); k++) {
-							if(getBitL2H(waterLayer.mask, (uint32_t)k)) {
+						for (size_t k = 0; k < (size_t)(waterLayer.w * waterLayer.h); k++)
+						{
+							if (getBitL2H(waterLayer.mask, (uint32_t)k))
+							{
 								waterLayer.renderTiles.push_back(true);
 							}
-							else {
+							else
+							{
 								waterLayer.renderTiles.push_back(false);
 							}
 						}
 					}
 
 					// Check exists vertex data
-					if(mh2o_instance->offsetVertexData == 0) {
+					if (mh2o_instance->offsetVertexData == 0)
+					{
 						Debug::Error("Liquid instance NOT offset Vertex data!!!");
 						continue;
 					}
 
 					const size_t vertexDataSize = (mh2o_instance->width + 1) * (mh2o_instance->height + 1);
 
-					if(VERTEX_FMT->Get_LiquidVertexFormat() == 0) {
+					if (VERTEX_FMT->Get_LiquidVertexFormat() == 0)
+					{
 						//Debug::Info("Case 0, Height and Depth data");
 
 						float* pHeights = (float*)(f.GetDataFromCurrent() + mh2o_instance->offsetVertexData);
 						uint8_t* pDepths = (uint8_t*)f.GetDataFromCurrent() + mh2o_instance->offsetVertexData + (sizeof(float) * vertexDataSize);
 
-						for(size_t g = 0; g < vertexDataSize; g++) {
+						for (size_t g = 0; g < vertexDataSize; g++)
+						{
 							waterLayer.heights.push_back(mh2o_instance->maxHeightLevel);
 							//waterLayer.heights.push_back(pHeights[g]);
 							waterLayer.depths.push_back(pDepths[g]);
@@ -427,18 +523,21 @@ void MapTile::parse_adt(char* name, load_phases phase) {
 							//Debug::Info("Depth [%d]", pDepths[g]);
 						}
 					}
-					else if(VERTEX_FMT->Get_LiquidVertexFormat() == 1) {
+					else if (VERTEX_FMT->Get_LiquidVertexFormat() == 1)
+					{
 						//Debug::Info("Case 1, Height and Texture Coordinate data");
 
-						struct uv_map_entry {
+						struct uv_map_entry
+						{
 							uint16_t x;                      // divided by 8 for shaders
 							uint16_t y;
 						};
 
 						float* pHeights = (float*)(f.GetDataFromCurrent() + mh2o_instance->offsetVertexData);
 						uv_map_entry* pUVMap = (uv_map_entry*)f.GetDataFromCurrent() + mh2o_instance->offsetVertexData + (sizeof(float) * vertexDataSize);
-						
-						for(size_t g = 0; g < vertexDataSize; g++) {
+
+						for (size_t g = 0; g < vertexDataSize; g++)
+						{
 							waterLayer.heights.push_back(pHeights[g]);
 							//waterLayer.alphas.push_back( pUnknowns[g] );
 							//Debug::Info("Height [%f]", pHeights[g]);
@@ -456,27 +555,31 @@ void MapTile::parse_adt(char* name, load_phases phase) {
 				abuf += sizeof(MH2O_Header);
 			}
 		}
-		else if(strncmp(fourcc, "MCNK", 4) == 0) {
-			chunks[chunkI][chunkJ]->init(&textures, f, phase);
+		else if (strncmp(fourcc, "MCNK", 4) == 0)
+		{
+			chunks[chunkI][chunkJ]->init(&textures, f, _phase);
 			chunkJ++;
-			if(chunkJ == 16) {
+			if (chunkJ == 16)
+			{
 				chunkJ = 0;
 				chunkI++;
 			}
 		}
-		else if(strncmp(fourcc, "MFBO", 4) == 0) {
+		else if (strncmp(fourcc, "MFBO", 4) == 0)
+		{
 			// A bounding box for flying.
 			/*
 			struct plane {
-				short[3][3] height;
+			short[3][3] height;
 			};
 			struct {
-				plane maximum;
-				plane minimum;
+			plane maximum;
+			plane minimum;
 			} MFBO;
 			*/
 		}
-		else if(strncmp(fourcc, "MTFX", 4) == 0) {
+		else if (strncmp(fourcc, "MTFX", 4) == 0)
+		{
 			/*
 			This chunk is an array of integers that are 1 or 0. 1 means that the texture at the same position in the MTEX array has to be handled differentely. The size of this chunk is always the same as there are entries in the MTEX chunk.
 			Simple as it is:
@@ -494,86 +597,79 @@ void MapTile::parse_adt(char* name, load_phases phase) {
 
 		f.Seek(nextpos);
 	}
+
+	return true;
 }
 
-MapTile::~MapTile() {
-	if(!ok)
-		return;
+//
 
-	Debug::Info("Unloading tile %d,%d", indexX, indexZ);
-
-	for(size_t j = 0; j < C_ChunksInTile; j++) {
-		for(size_t i = 0; i < C_ChunksInTile; i++) {
-			chunks[j][i]->destroy();
-		}
-	}
-
-	for(auto it = textures.begin(); it != textures.end(); ++it) {
-		//video.textures.delbyname(*it);
-	}
-
-	for(vector<string>::iterator it = wmoNames.begin(); it != wmoNames.end(); ++it) {
-		_WMOsMgr->Delete(*it);
-	}
-
-	for(vector<string>::iterator it = mdxNames.begin(); it != mdxNames.end(); ++it) {
-		_ModelsMgr->Delete(*it);
-	}
-}
-
-void MapTile::draw() {
-	if(!ok)
-		return;
-
-	for(size_t j = 0; j < C_ChunksInTile; j++) {
-		for(size_t i = 0; i < C_ChunksInTile; i++) {
-			chunks[j][i]->visible = false;
-			chunks[j][i]->draw();
+void MapTile::draw()
+{
+	for (size_t i = 0; i < C_ChunksInTile; i++)
+	{
+		for (size_t j = 0; j < C_ChunksInTile; j++)
+		{
+			if (chunks[i][j] != nullptr)
+			{
+				chunks[i][j]->visible = false;
+				chunks[i][j]->draw();
+			}
 		}
 	}
 }
 
-void MapTile::drawWater() {
-	if(!ok)
-		return;
-
-	for(size_t j = 0; j < C_ChunksInTile; j++)
-		for(size_t i = 0; i < C_ChunksInTile; i++)
-			if(chunks[j][i] != nullptr)
-				chunks[j][i]->drawWater();
+void MapTile::drawWater()
+{
+	for (size_t i = 0; i < C_ChunksInTile; i++)
+	{
+		for (size_t j = 0; j < C_ChunksInTile; j++)
+		{
+			if (chunks[i][j] != nullptr)
+			{
+				chunks[i][j]->drawWater();
+			}
+		}
+	}
 }
 
-void MapTile::drawObjects() {
-	if(!ok)
-		return;
-
-	for(auto it = wmoInstances.begin(); it != wmoInstances.end(); ++it)
+void MapTile::drawObjects()
+{
+	for (auto it = wmoInstances.begin(); it != wmoInstances.end(); ++it)
+	{
 		(*it).draw();
+	}
 }
 
-void MapTile::drawSky() {
-	if(!ok) return;
+void MapTile::drawSky()
+{
+	for (auto it = wmoInstances.begin(); it != wmoInstances.end(); ++it)
+	{
+		(*it).GetWMO()->drawSkybox();
 
-	/*for(size_t i = 0; i < wmoCount; i++) {
-		wmois[i].wmo->drawSkybox();
-		if(_World->hadSky)
+		if (_World->hadSky)
+		{
 			break;
-	}*/
+		}
+	}
 }
 
-void MapTile::drawModels() {
-	if(!ok)
-		return;
-
-	for(auto it = mdxInstances.begin(); it != mdxInstances.end(); ++it)
+void MapTile::drawModels()
+{
+	for (auto it = mdxInstances.begin(); it != mdxInstances.end(); ++it)
+	{
 		(*it).draw();
+	}
 }
 
-int indexMapBuf(int x, int y) {
+//
+
+int indexMapBuf(int x, int y)
+{
 	return ((y + 1) / 2) * 9 + (y / 2) * 8 + x;
 }
 
-MapChunk* MapTile::getChunk(uint32_t x, uint32_t z) {
+MapChunk* MapTile::getChunk(uint32_t x, uint32_t z)
+{
 	assert1(x < C_ChunksInTile && z < C_ChunksInTile);
-	return chunks[z][x];
+	return chunks[x][z];
 }

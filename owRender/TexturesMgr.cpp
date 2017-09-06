@@ -308,6 +308,7 @@ GLuint TexturesMgr::GenerateID() {
 
 Texture* TexturesMgr::CreateAction(cstring name, GLuint id) {
 	File f(name);
+
 	if (!f.Open()) {
 		Debug::Error("TexturesMgr[%s]: Error while open texture.", f.Path_Name().c_str());
 		return black;
@@ -329,7 +330,6 @@ Texture* TexturesMgr::CreateAction(cstring name, GLuint id) {
 		return black;
 	}
 
-	// Insert texture in array
 	//Debug::Info("TexturesMgr[%s]: Texture loaded. Size [%fx%f].", f.Path_Name().c_str(), texture->size.x, texture->size.y);
 
 	return texture;

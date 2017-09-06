@@ -282,9 +282,11 @@ void World::draw()
 	hadSky = false;
 	m_map.RenderSky();
 
-	/*if(globalWMOExists && !hadSky) {
-		globalWMO->wmo->drawSkybox();
-	}*/
+	if (m_map.MapHasGlobalWMO() && !hadSky)
+	{
+		m_map.SetOutOfBounds(false);
+		m_map.GetMapWMOs()->GetGlobalWMOInstance()->GetWMO()->drawSkybox();
+	}
 
 	glEnable(GL_CULL_FACE);
 	glDisable(GL_BLEND);
@@ -420,10 +422,10 @@ void World::draw()
 		glLightf(light, GL_QUADRATIC_ATTENUATION, l_quadratic);
 	}
 
-	/*if(globalWMOExists) {
-		outOfBounds = false;
-		globalWMO->draw();
-	}*/
+	if(m_map.MapHasGlobalWMO()) {
+		m_map.SetOutOfBounds(false);
+		m_map.GetMapWMOs()->GetGlobalWMOInstance()->draw();
+	}
 
 	if (supportShaders && useshaders)
 	{
@@ -468,20 +470,12 @@ void World::draw()
 		m_map.RenderWater();
 	}
 
-	
-
 	glColor4f(1, 1, 1, 1);
 	glDisable(GL_COLOR_MATERIAL);
-
-	
-	// Map Tick();
-
 }
 
 void World::tick(float dt)
 {
-	// Map Tick2
-
 	m_map.Tick();
 
 	while (dt > 0.1f)

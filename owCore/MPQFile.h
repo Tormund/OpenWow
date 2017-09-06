@@ -1,17 +1,33 @@
 #pragma once
 
-class MPQFile : public File
+// MPQ Files
+#include <owLibMPQ.h>
+#pragma comment(lib, "owLibMPQ.lib")
+
+struct MPQFileLocation
 {
-public:
-	OW_CORE_DLL_API MPQFile(const MPQFile& _file);
-	OW_CORE_DLL_API MPQFile(cstring _fullFileName);
-	OW_CORE_DLL_API MPQFile(const char* _fullFileName);
-	~MPQFile();
+	MPQFileLocation() : archive(nullptr), fileNumber(0), exists(false) {}
+	MPQFileLocation(mpq_archive* _archive, uint32_t _fileNumber) : archive(_archive), fileNumber(_fileNumber), exists(true) {}
 
-	OW_CORE_DLL_API bool Open(bool _isLocalFile = false) override;
-
-public:
-	static OW_CORE_DLL_API void AddArchive(cstring filename);
-	static OW_CORE_DLL_API void ClearArchives();
+	bool exists;
+	mpq_archive* archive;
+	uint32_t fileNumber;
 };
 
+class MPQFile
+{
+public:
+	static OW_CORE_DLL_API uint64_t GetFileSize(cstring _name);
+	static OW_CORE_DLL_API bool IsFileExists(cstring _name);
+
+protected:
+	OW_CORE_DLL_API virtual bool OpenMPQFile() = 0;
+
+protected:
+	static const char* archives;
+
+public: // MPQ File
+	static OW_CORE_DLL_API void AddArchive(cstring filename);
+	static OW_CORE_DLL_API MPQFileLocation GetFileLocation(cstring filename);
+	static OW_CORE_DLL_API void ClearArchives();	
+};

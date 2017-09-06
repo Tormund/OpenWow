@@ -27,11 +27,12 @@
 
 // Files
 #include "../owCore/File.h"
+#include "../owCore/LocalFile.h"
 #include "../owCore/MPQFile.h"
-#include "../owCore/FileSystem.h"
 #include "../owCore/INIFile.h"
 #include "../owCore/XMLFile.h"
-#include "../owCore/WowChunkFile.h"
+
+#include "../owCore/FileSystem.h"
 
 // Input
 #include "../owCore/Input.h"

@@ -17,6 +17,8 @@ public :
 
 	void InitGlobalsWMOs();
 
+	WMOInstance* GetGlobalWMOInstance() { return globalWMO; }
+
 public:
 	bool IsGlobalWMOExists() { return globalWMOExists; }
 	WMOPlacementInfo* GetGlobalWMOPlacementInfo() {	return globalWMOplacementInfo; }

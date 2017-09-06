@@ -66,7 +66,7 @@ inline void RefManager<OBJECT_TYPE, ID_TYPE>::Delete(OBJECT_TYPE* item)
 	{
 		if (it->second == item)
 		{
-			this.Delete(it->first);
+			Delete(it->first);
 			return;
 		}
 	}

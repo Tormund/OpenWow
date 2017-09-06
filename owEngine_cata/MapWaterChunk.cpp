@@ -82,21 +82,21 @@ void MapWaterChunk::drawWater() {
 				{
 					glTexCoord2f(0, 0);
 					glNormal3f(0, 1, 0);
-					glVertex3f(xbase + C_UnitSize * x, h1, zbase + C_UnitSize * y);
+					glVertex3f(m_GamePositionX + C_UnitSize * x, h1, m_GamePositionZ + C_UnitSize * y);
 
 
 					glTexCoord2f(0, wr);
 					glNormal3f(0, 1, 0);
-					glVertex3f(xbase + C_UnitSize * x, h2, zbase + C_UnitSize + C_UnitSize * y);
+					glVertex3f(m_GamePositionX + C_UnitSize * x, h2, m_GamePositionZ + C_UnitSize + C_UnitSize * y);
 
 
 					glTexCoord2f(wr, wr);
 					glNormal3f(0, 1, 0);
-					glVertex3f(xbase + C_UnitSize + C_UnitSize * x, h3, zbase + C_UnitSize + C_UnitSize * y);
+					glVertex3f(m_GamePositionX + C_UnitSize + C_UnitSize * x, h3, m_GamePositionZ + C_UnitSize + C_UnitSize * y);
 
 					glTexCoord2f(wr, 0);
 					glNormal3f(0, 1, 0);
-					glVertex3f(xbase + C_UnitSize + C_UnitSize * x, h4, zbase + C_UnitSize * y);
+					glVertex3f(m_GamePositionX + C_UnitSize + C_UnitSize * x, h4, m_GamePositionZ + C_UnitSize * y);
 				}
 				glEnd();
 			}
