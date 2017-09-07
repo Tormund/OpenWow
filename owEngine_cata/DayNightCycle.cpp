@@ -3,7 +3,8 @@
 // General
 #include "DayNightCycle.h"
 
-void DayNightPhase::init(File &f) {
+void DayNightPhase::init(File& f)
+{
 	float h, m;
 
 	f.SeekRelative(4); // Always 0x46
@@ -76,13 +77,15 @@ void DayNightPhase::init(File &f) {
 	time = (int)h * 60 * 2 + (int)m * 2;
 
 	// HACK: make day & night intensity exclusive; set day intensity to 1.0
-	if(dayIntensity > 0) {
+	if (dayIntensity > 0)
+	{
 		dayIntensity = 1.0f;
 		nightIntensity = 0.0f;
 	}
 }
 
-void DayNightPhase::interpolate(DayNightPhase *a, DayNightPhase *b, float r) {
+void DayNightPhase::interpolate(DayNightPhase *a, DayNightPhase *b, float r)
+{
 	float ir = 1.0f - r;
 
 	// Day
@@ -105,7 +108,8 @@ void DayNightPhase::interpolate(DayNightPhase *a, DayNightPhase *b, float r) {
 	fogColor = a->fogColor * ir + b->fogColor * r;
 }
 
-void DayNightPhase::setupLighting() {
+void DayNightPhase::setupLighting()
+{
 	GLfloat ambient[4];
 	GLfloat day[4];
 	GLfloat direction[4];
@@ -117,7 +121,8 @@ void DayNightPhase::setupLighting() {
 	ambient[0] = ambient[1] = ambient[2] = 0.0f;
 
 	// Setup day lighting
-	if(dayIntensity > 0) {
+	if (dayIntensity > 0)
+	{
 		day[0] = dayColor.x * dayIntensity;
 		day[1] = dayColor.y * dayIntensity;
 		day[2] = dayColor.z * dayIntensity;
@@ -132,10 +137,13 @@ void DayNightPhase::setupLighting() {
 		glEnable(GL_LIGHT0);
 	}
 	else
+	{
 		glDisable(GL_LIGHT0);
+	}
 
 	// Setup night lighting
-	if(nightIntensity > 0) {
+	if (nightIntensity > 0)
+	{
 		day[0] = nightColor.x * nightIntensity;
 		day[1] = nightColor.y * nightIntensity;
 		day[2] = nightColor.z * nightIntensity;
@@ -148,8 +156,10 @@ void DayNightPhase::setupLighting() {
 		glLightfv(GL_LIGHT1, GL_POSITION, direction);
 		glEnable(GL_LIGHT1);
 	}
-	else 
+	else
+	{
 		glDisable(GL_LIGHT1);
+	}
 
 	// Setup ambient lighting
 	{
@@ -164,9 +174,11 @@ void DayNightPhase::setupLighting() {
 
 //
 
-DayNightCycle::DayNightCycle() {
+DayNightCycle::DayNightCycle()
+{
 	File f("World\\dnc.db");
-	if(!f.Open()) {
+	if (!f.Open())
+	{
 		Debug::Error("DayNightCycle[]: Can't init day-night cycle.");
 		return;
 	}
@@ -188,7 +200,8 @@ DayNightCycle::DayNightCycle() {
 	// Skip names
 	f.Seek(8 + nFields * 8);
 
-	while(f.GetPos() < d) {
+	while (f.GetPos() < d)
+	{
 		DayNightPhase ols;
 		ols.init(f);
 
@@ -196,7 +209,8 @@ DayNightCycle::DayNightCycle() {
 	}
 }
 
-DayNightPhase DayNightCycle::getPhase(int time) {
+DayNightPhase DayNightCycle::getPhase(int time)
+{
 	int ta = time / 120;
 	int tb = (ta + 1) % 24;
 

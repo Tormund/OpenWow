@@ -24,8 +24,10 @@ UIElement::UIElement() {
 	textEnable = true;
 	text = "<empty>";
 	textFont = _FontsMgr->GetMainFont();
-	if(textFont != nullptr)
-		textOffset = vec2(6, textFont->CharHeight);
+	if (textFont != nullptr)
+	{
+		textOffset = vec2(6, textFont->GetHeight());
+	}
 	textAlignW = TextAlignW::TEXT_ALIGNW_LEFT;
 	textAlignH = TextAlignH::TEXT_ALIGNH_CENTER;
 

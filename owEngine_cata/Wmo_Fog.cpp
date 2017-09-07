@@ -20,7 +20,7 @@ void WMOFog::init(File &f) {
 }
 
 void WMOFog::setup() {
-	if(_World->drawfog) {
+	if(_WowSettings->drawfog) {
 		glFogfv(GL_FOG_COLOR, glm::value_ptr(color));
 		glFogf(GL_FOG_START, fog.startScalar);
 		glFogf(GL_FOG_END, fog.end);

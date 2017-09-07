@@ -8,6 +8,8 @@
 #include "world.h"
 #include "shaders.h"
 
+#include "WoWSettings.h"
+
 struct LiquidVertex {
 	//uint8_t c[4];
 	unsigned short w1,w2;
@@ -264,7 +266,7 @@ void Liquid::draw()
 		glDepthMask(GL_FALSE);
 	}
 
-	if (supportShaders && _World->useshaders && (shader>=0)) {
+	if (supportShaders && _WowSettings->useshaders && (shader>=0)) {
 		// SHADER-BASED
 		vec3 col2;
 		waterShaders[shader]->bind();

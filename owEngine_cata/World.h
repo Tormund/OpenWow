@@ -9,6 +9,7 @@
 #include "sky.h"
 
 #include "Map.h"
+#include "WoWSettings.h"
 
 class gMapDBRecord;
 
@@ -40,13 +41,7 @@ public: // Getters
 	Map* GetMap() { return &m_map; }
 
 private:
-	inline void CalculateSquareDistances()
-	{
-		highresdistance2 = highresdistance * highresdistance;
-		mapdrawdistance2 = mapdrawdistance * mapdrawdistance;
-		modeldrawdistance2 = modeldrawdistance * modeldrawdistance;
-		doodaddrawdistance2 = doodaddrawdistance * doodaddrawdistance;
-	}
+
 
 private:
 	Map m_map;
@@ -56,10 +51,7 @@ public:
 	short* mapstrip2;
 
 public:
-	// Distances
-	float mapdrawdistance, modeldrawdistance, doodaddrawdistance, highresdistance, culldistance;
-	float mapdrawdistance2, modeldrawdistance2, doodaddrawdistance2, highresdistance2, culldistance2;
-	float fogdistance;
+	
 
 	// Fog params
 	float l_const, l_linear, l_quadratic;
@@ -76,11 +68,6 @@ public:
 
 	//
 	float time, animtime;
-
-
-	bool lighting, drawmodels, drawdoodads, drawterrain, drawwmo, loading, drawhighres, drawfog, drawColors;
-	bool uselowlod;
-	bool useshaders;
 
 	GLuint detailtexcoords, alphatexcoords;
 };

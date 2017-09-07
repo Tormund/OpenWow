@@ -1,15 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Font.cpp">
-      <Filter>Types</Filter>
-    </ClCompile>
     <ClCompile Include="Image.cpp">
       <Filter>Types</Filter>
     </ClCompile>
-    <ClCompile Include="FontsMgr.cpp" />
     <ClCompile Include="Render.cpp" />
-    <ClCompile Include="TexturesMgr.cpp" />
     <ClCompile Include="GLFWBackend.cpp" />
     <ClCompile Include="Pipeline.cpp" />
     <ClCompile Include="ShadowMapFBO.cpp" />
@@ -40,20 +35,24 @@
       <Filter>Techniques</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="TexturesMgr.cpp">
+      <Filter>Textures</Filter>
+    </ClCompile>
     <ClCompile Include="Texture.cpp">
-      <Filter>Types</Filter>
+      <Filter>Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="FontsMgr.cpp">
+      <Filter>Fonts</Filter>
+    </ClCompile>
+    <ClCompile Include="Font.cpp">
+      <Filter>Fonts</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Font.h">
-      <Filter>Types</Filter>
-    </ClInclude>
     <ClInclude Include="Image.h">
       <Filter>Types</Filter>
     </ClInclude>
-    <ClInclude Include="FontsMgr.h" />
     <ClInclude Include="Render.h" />
-    <ClInclude Include="TexturesMgr.h" />
     <ClInclude Include="GLFWBackend.h" />
     <ClInclude Include="Pipeline.h" />
     <ClInclude Include="ShadowMapFBO.h" />
@@ -89,8 +88,17 @@
     <ClInclude Include="common.h" />
     <ClInclude Include="..\shared\owRender.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="TexturesMgr.h">
+      <Filter>Textures</Filter>
+    </ClInclude>
     <ClInclude Include="Texture.h">
-      <Filter>Types</Filter>
+      <Filter>Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="FontsMgr.h">
+      <Filter>Fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="Font.h">
+      <Filter>Fonts</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -105,6 +113,12 @@
     </Filter>
     <Filter Include="Light">
       <UniqueIdentifier>{93900090-8885-4917-ae6a-4f4dde8843e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Textures">
+      <UniqueIdentifier>{6cc0d5a6-0295-4c2b-9463-2f1164bc7b27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fonts">
+      <UniqueIdentifier>{5bcbfcfc-c3c6-4a8e-a1b9-750f8d3379f6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

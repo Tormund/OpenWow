@@ -486,7 +486,7 @@ void WMOGroup::draw(cvec3 ofs, const float rot) {
 	rotate(ofs.x, ofs.z, &pos.x, &pos.z, rot*PI / 180.0f);
 	if(!_World->frustum.intersectsSphere(pos, rad)) return;
 	float dist = glm::length(pos - vec3(_Camera->Position.x, _Camera->Position.y, _Camera->Position.z)) - rad;
-	if(dist >= _World->culldistance) return;
+	if(dist >= _WowSettings->culldistance) return;
 	visible = true;
 
 	if(hascv) {
@@ -494,7 +494,7 @@ void WMOGroup::draw(cvec3 ofs, const float rot) {
 		_World->outdoorLights(false);
 	}
 	else {
-		if(_World->lighting) {
+		if(_WowSettings->lighting) {
 			if(_World->skies->hasSkies()) {
 				_World->outdoorLights(true);
 			}
@@ -516,7 +516,7 @@ void WMOGroup::draw(cvec3 ofs, const float rot) {
 	glDisable(GL_BLEND);
 	glColor4f(1, 1, 1, 1);
 	for(uint32_t i = 0; i < nBatches; i++) {
-		bool useshader = (supportShaders && _World->useshaders && lists[i].second);
+		bool useshader = (supportShaders && _WowSettings->useshaders && lists[i].second);
 		if(useshader) wmoShader->bind();
 		glCallList(lists[i].first);
 		if(useshader) wmoShader->unbind();
@@ -526,7 +526,7 @@ void WMOGroup::draw(cvec3 ofs, const float rot) {
 	glEnable(GL_CULL_FACE);
 
 	if(hascv) {
-		if(_World->lighting) {
+		if(_WowSettings->lighting) {
 			glEnable(GL_LIGHTING);
 			//glCallList(dl_light);
 		}

@@ -2,24 +2,24 @@
 
 #include "model.h"
 
-class SkyColor {
+class SkyColor
+{
 public:
-	SkyColor(int _time, int _color) {
+	SkyColor(int _time, int _color)
+	{
 		time = _time;
-
-		color.x = ((_color & 0xff0000) >> 16) / 255.0f;
-		color.y = ((_color & 0x00ff00) >> 8) / 255.0f;
-		color.z = ((_color & 0x0000ff)) / 255.0f;
+		color = fromRGB(_color);
 	}
 
-
+public:
 	vec3 color;
 	int time;
 };
 
 
 
-class Sky {
+class Sky
+{
 public:
 	vec3 position;
 	float radiusInner;
@@ -35,17 +35,19 @@ public:
 	float weight;
 	bool global;
 
-	bool operator<(const Sky& s) const {
-		if(global)
+	bool operator<(const Sky& s) const
+	{
+		if (global)
 			return false;
-		else if(s.global)
+		else if (s.global)
 			return true;
 		else
 			return radiusOuter < s.radiusOuter;
 	}
 };
 
-enum SkyColorNames {
+enum SkyColorNames
+{
 	LIGHT_GLOBAL_DIFFUSE,
 	LIGHT_GLOBAL_AMBIENT,
 	SKY_COLOR_0,
@@ -66,7 +68,8 @@ enum SkyColorNames {
 	SHADOW_COLOR
 };
 
-class MapSkies {
+class MapSkies
+{
 	vector<Sky*> skies;
 	Model* stars;
 

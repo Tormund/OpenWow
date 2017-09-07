@@ -808,7 +808,7 @@ void Model::draw()
 			ribbons[i].draw();
 		}
 
-		if (_World && _World->drawfog) glEnable(GL_FOG);
+		if (_World && _WowSettings->drawfog) glEnable(GL_FOG);
 	}
 }
 

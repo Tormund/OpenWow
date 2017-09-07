@@ -18,16 +18,18 @@ public:
 	OW_CORE_DLL_API File& operator=(cstring _fullFileName);
 	OW_CORE_DLL_API File& operator=(const char* _fullFileName);
 
-	OW_CORE_DLL_API void SetName(cstring _fullFileName);
-	OW_CORE_DLL_API void SetName(const char* _fullFileName);
+	//
+
+	OW_CORE_DLL_API void SetName(cstring _fullFileName) override;
+	OW_CORE_DLL_API void SetName(const char* _fullFileName) override;
 
 	//
 
-	OW_CORE_DLL_API string Name() const;
-	OW_CORE_DLL_API string Path() const;
-	OW_CORE_DLL_API string Extension() const;
+	OW_CORE_DLL_API string Name() const override;
+	OW_CORE_DLL_API string Path() const override;
+	OW_CORE_DLL_API string Extension() const override;
 
-	OW_CORE_DLL_API string Path_Name() const;
+	OW_CORE_DLL_API string Path_Name() const override;
 
 	//
 

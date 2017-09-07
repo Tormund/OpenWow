@@ -387,7 +387,7 @@ void WMO::draw(int doodadset, cvec3 ofs, const float rot) {
 	for(auto it = groups.begin(); it != groups.end(); ++it)
 		(*it)->draw(ofs, rot);
 
-	if(_World->drawdoodads)
+	if(_WowSettings->drawdoodads)
 		for(auto it = groups.begin(); it != groups.end(); ++it)
 			(*it)->drawDoodads(doodadset, ofs, rot);
 

@@ -10,6 +10,7 @@
 // Additional
 #include "ModelsManager.h"
 #include "WMOsManager.h"
+#include "WoWSettings.h"
 
 bool GameState_Menu::Init()
 {
@@ -167,10 +168,10 @@ void GameState_Menu::RenderPhase(double t, double dt)
 
 void GameState_Menu::RenderUIPhase(double t, double dt)
 {
-	if (_World->loading)
-	{
-		_Render->RenderText(vec2(_Render->GetWindowSize().x / 2, 200), _World->GetMap()->IsOutOfBounds() ? "Out of bounds" : "Loading...");
-	}
+	//if (_World->loading)
+	//{
+	//	_Render->RenderText(vec2(_Render->GetWindowSize().x / 2, 200), _World->GetMap()->IsOutOfBounds() ? "Out of bounds" : "Loading...");
+	//}
 
 	if (minimapActive || cmd == CMD_SELECT)
 	{
@@ -382,58 +383,48 @@ KEYBD_PRESSED(GameState_Menu)
 		return true;
 	}
 
-	if (_key == GLFW_KEY_N)
-	{
-		return true;
-	}
-
-	if (_key == GLFW_KEY_B)
-	{
-		return true;
-	}
-
 	if (_key == GLFW_KEY_L)
 	{
-		_World->lighting = !_World->lighting;
+		_WowSettings->lighting = !_WowSettings->lighting;
 		return true;
 	}
 
 	if (_key == GLFW_KEY_F5)
 	{
-		_World->drawmodels = !_World->drawmodels;
+		_WowSettings->drawmodels = !_WowSettings->drawmodels;
 		return true;
 	}
 	if (_key == GLFW_KEY_F6)
 	{
-		_World->drawdoodads = !_World->drawdoodads;
+		_WowSettings->drawdoodads = !_WowSettings->drawdoodads;
 		return true;
 	}
 	if (_key == GLFW_KEY_F7)
 	{
-		_World->drawterrain = !_World->drawterrain;
+		_WowSettings->drawterrain = !_WowSettings->drawterrain;
 		return true;
 	}
 	if (_key == GLFW_KEY_F8)
 	{
-		_World->drawwmo = !_World->drawwmo;
+		_WowSettings->drawwmo = !_WowSettings->drawwmo;
 		return true;
 	}
 
 	if (_key == GLFW_KEY_C)
 	{
-		_World->drawColors = !_World->drawColors;
+		_WowSettings->drawColors = !_WowSettings->drawColors;
 		return true;
 	}
 
 	if (_key == GLFW_KEY_H)
 	{
-		_World->drawhighres = !_World->drawhighres;
+		_WowSettings->drawhighres = !_WowSettings->drawhighres;
 		return true;
 	}
 
 	if (_key == GLFW_KEY_F)
 	{
-		_World->drawfog = !_World->drawfog;
+		_WowSettings->drawfog = !_WowSettings->drawfog;
 		return true;
 	}
 

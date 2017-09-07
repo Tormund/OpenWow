@@ -490,7 +490,17 @@ void Map::RenderSky()
 
 void Map::RenderLowResTiles()
 {
-	const int lrr = 3;
+
+	for (int i = 0; i < TILES_IN_MAP; i++)
+		for (int j = 0; j < TILES_IN_MAP; j++)
+			if (lowrestiles[i][j])
+			{
+				glCallList(lowrestiles[i][j]);
+			}
+
+
+
+	/*const int lrr = 5;
 	for (int i = currentTileX - lrr; i <= currentTileX + lrr; i++)
 	{
 		for (int j = currentTileZ - lrr; j <= currentTileZ + lrr; j++)
@@ -510,12 +520,12 @@ void Map::RenderLowResTiles()
 			// TODO: some annoying visual artifacts when the verylowres terrain overlaps
 			// maptiles that are close (1-off) - figure out how to fix.
 			// still less annoying than hoels in the horizon when only 2-off verylowres tiles are drawn
-			if (lowrestiles[j][i])
+			if (lowrestiles[i][j])
 			{
-				glCallList(lowrestiles[j][i]);
+				glCallList(lowrestiles[i][j]);
 			}
 		}
-	}
+	}*/
 }
 
 void Map::RenderTiles()

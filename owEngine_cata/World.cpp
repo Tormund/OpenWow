@@ -9,18 +9,11 @@
 #include "ModelsManager.h"
 #include "WMO_Instance.h"
 
+#include "WoWSettings.h"
+
 World::World()
 {
-	// Distances
-	highresdistance = 384.0f * 12.0f;
-	mapdrawdistance = 998.0f * 12.0f;
-	modeldrawdistance = 384.0f * 12.0f;
-	doodaddrawdistance = 64.0f * 12.0f;
-
-	fogdistance = 512.0f;
-	culldistance = fogdistance;
-
-	CalculateSquareDistances();
+	_WowSettings->CalculateSquareDistances();
 
 	// Fog params
 	l_const = 0.0f;
@@ -33,20 +26,9 @@ World::World()
 	mapstrip = 0;
 	mapstrip2 = 0;
 
-	// Draw enable flag
-	lighting = true;
-	drawmodels = true;
-	drawdoodads = true;
-	drawterrain = true;
-	drawwmo = true;
-	drawhighres = true;
-	drawfog = false;
-	drawColors = true;
-
 	// Common
 	time = 1450;
 	animtime = 0;
-	loading = false;
 }
 
 World::~World()
@@ -165,8 +147,6 @@ void World::initDisplay()
 	detailtexcoords = gdetailtexcoords;
 	alphatexcoords = galphatexcoords;
 
-	useshaders = true;
-
 	skies = new MapSkies(m_map.GetTemplate()->Get_ID());
 
 	dayNightCycle = new DayNightCycle();
@@ -190,7 +170,7 @@ void World::outdoorLighting()
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, glm::value_ptr(col));
 	glLightfv(GL_LIGHT0, GL_POSITION, glm::value_ptr(pos));
 
-	const float spc = useshaders ? 1.4f : 0; // specular light intensity...
+	const float spc = _WowSettings->useshaders ? 1.4f : 0; // specular light intensity...
 	vec4 spcol(spc, spc, spc, 1);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, glm::value_ptr(spcol)); // ???
 
@@ -241,27 +221,24 @@ void World::outdoorLights(bool on)
 
 void World::setupFog()
 {
-	if (drawfog)
+	if (_WowSettings->drawfog)
 	{
-		float fogdist = fogdistance;
+		float fogdist = _WowSettings->fogdistance;
 		float fogstart = 0.5f;
 
-		culldistance = fogdist;
+		_WowSettings->culldistance = fogdist;
 
 		vec4 fogcolor(skies->colorSet[FOG_COLOR], 1);
-		glFogfv(GL_FOG_COLOR, glm::value_ptr(fogcolor));
-		// TODO: retreive fogstart and fogend from lights.lit somehow
-		glFogf(GL_FOG_END, fogdist);
+		glFogfv(GL_FOG_COLOR, glm::value_ptr(fogcolor)); // TODO: retreive fogstart and fogend from lights.lit somehow
 		glFogf(GL_FOG_START, fogdist * fogstart);
-
+		glFogf(GL_FOG_END, fogdist);
 		glEnable(GL_FOG);
 	}
 	else
 	{
 		glDisable(GL_FOG);
-		culldistance = mapdrawdistance;
+		_WowSettings->culldistance = _WowSettings->mapdrawdistance;
 	}
-	culldistance2 = culldistance * culldistance;
 }
 
 void World::draw()
@@ -271,7 +248,6 @@ void World::draw()
 
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
 
-	//CalculateSquareDistances();
 
 	// camera is set up
 	frustum.retrieve();
@@ -326,13 +302,13 @@ void World::draw()
 	setupFog();
 
 	// Draw verylowres heightmap
-	if (drawfog && drawterrain)
+	if (/*_WowSettings->drawfog && */_WowSettings->drawterrain)
 	{
 		glEnable(GL_CULL_FACE);
 		glDisable(GL_DEPTH_TEST);
 		glDisable(GL_LIGHTING);
 		glColor3fv(glm::value_ptr(this->skies->colorSet[FOG_COLOR]));
-		//glColor3f(0,1,0);
+
 		//glDisable(GL_FOG);
 		m_map.RenderLowResTiles();
 		//glEnable(GL_FOG);
@@ -356,7 +332,7 @@ void World::draw()
 	glColor4f(1, 1, 1, 1);
 
 	// if we're using shaders let's give it some specular
-	if (supportShaders && useshaders)
+	if (supportShaders && _WowSettings->useshaders)
 	{
 		vec4 spec_color(1, 1, 1, 1);
 		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, glm::value_ptr(spec_color));
@@ -381,9 +357,9 @@ void World::draw()
 	glClientActiveTextureARB(GL_TEXTURE0_ARB);
 
 	// height map w/ a zillion texture passes
-	if (drawterrain)
+	if (_WowSettings->drawterrain)
 	{
-		uselowlod = drawfog;
+		_WowSettings->uselowlod = _WowSettings->drawfog;
 		m_map.RenderTiles();
 	}
 
@@ -397,7 +373,7 @@ void World::draw()
 
 	glEnable(GL_BLEND);
 
-	if (supportShaders && useshaders)
+	if (supportShaders && _WowSettings->useshaders)
 	{
 		vec4 spec_color(0, 0, 0, 1);
 		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, glm::value_ptr(spec_color));
@@ -427,7 +403,7 @@ void World::draw()
 		m_map.GetMapWMOs()->GetGlobalWMOInstance()->draw();
 	}
 
-	if (supportShaders && useshaders)
+	if (supportShaders && _WowSettings->useshaders)
 	{
 		vec4 spec_color(1, 1, 1, 1);
 		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, glm::value_ptr(spec_color));
@@ -436,13 +412,13 @@ void World::draw()
 		glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
 	}
 
-	if (drawwmo)
+	if (_WowSettings->drawwmo)
 	{
 		m_map.RenderObjects();
 	}
 	
 
-	if (supportShaders && useshaders)
+	if (supportShaders && _WowSettings->useshaders)
 	{
 		vec4 spec_color(0, 0, 0, 1);
 		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, glm::value_ptr(spec_color));
@@ -455,7 +431,7 @@ void World::draw()
 	glColor4f(1, 1, 1, 1);
 
 	//models
-	if (drawmodels)
+	if (_WowSettings->drawmodels)
 	{
 		m_map.RenderModels();
 	}
@@ -465,7 +441,7 @@ void World::draw()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	if (drawterrain)
+	if (_WowSettings->drawterrain)
 	{
 		m_map.RenderWater();
 	}
@@ -476,6 +452,8 @@ void World::draw()
 
 void World::tick(float dt)
 {
+	_WowSettings->CalculateSquareDistances();
+
 	m_map.Tick();
 
 	while (dt > 0.1f)

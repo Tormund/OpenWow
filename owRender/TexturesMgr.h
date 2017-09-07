@@ -1,12 +1,11 @@
 #pragma once
 
 class Module;
-
 class File;
 class Texture;
 
-
-class TexturesMgr : public Module, public RefManager<Texture, GLuint> {
+class TexturesMgr : public Module, public RefManager<Texture, GLuint>
+{
 public:
 	DEF_MODULE(TexturesMgr, OW_RENDER_DLL_API);
 
@@ -23,8 +22,8 @@ protected:
 	bool DeleteAction(cstring name, GLuint id) override;
 
 private:
-	bool LoadSoilTexture(ByteBuffer& _buffer, Texture* _texture);
-	bool LoadBLPTexture(ByteBuffer& _buffer, Texture* _texture);
+	bool LoadSoilTexture(File& _file, Texture* _texture);
+	bool LoadBLPTexture(File& _file, Texture* _texture);
 
 private:
 	Texture* black;

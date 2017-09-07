@@ -123,25 +123,10 @@ public:
 
 	vec3 vmin, vmax, vcenter;
 
-	MapChunk() : m_GamePositionX(0), ybase(0), m_GamePositionZ(0), r(0), areaID(-1),
-		haswater(false), visible(false), hasholes(false), shadow(0), blend(0),
-		vertices(0), normals(0), strip(0), striplen(0), lq(0)
-	{
+public:
+	MapChunk();
 
-		waterlevel[0] = 0;
-		waterlevel[1] = 0;
-
-		shadow = _TexturesMgr->Generate();
-
-		blend = _TexturesMgr->Generate();
-
-		for (int i = 0; i < 3; i++)
-			alphamaps[i] = _TexturesMgr->Generate();
-
-		colorBufferEnable = false;
-	}
-
-	void init(vector<Texture*>* mt, File &f, load_phases _phase);
+	void init(vector<Texture*>* mt, File& f, load_phases _phase);
 	void destroy();
 	void initStrip(int holes);
 

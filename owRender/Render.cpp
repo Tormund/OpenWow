@@ -207,7 +207,7 @@ void RenderGL::RenderImage(const vec2& _pos, Image* _image, const vec2& _size)
 void RenderGL::RenderTexture(const vec2& _pos, Texture* _texture, const vec2& _size, const Rect<double>& _coords)
 {
 	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, _texture->GetOGLObject());
+	_texture->Bind();
 	glPushMatrix();
 	{
 		glTranslated(static_cast<double>(_pos.x), static_cast<double>(_pos.y), 0.0);
@@ -280,8 +280,8 @@ void RenderGL::RenderText(const vec2& _pos, cstring _string, TextAlignW _alignW,
 
 void RenderGL::RenderText(const vec2& _pos, cstring _string, TextAlignW _alignW, TextAlignH _alignH, Font* _font, const Color& _color) const
 {
-	auto stringWidth = _FontsMgr->GetFontWidth(_font, _string);
-	auto fontHeight = _FontsMgr->GetFontHeight(_font);
+	auto stringWidth = _font->GetStringWidth(_string);
+	auto fontHeight = _font->GetHeight();
 
 	vec2 offset = VECTOR_ZERO;
 
@@ -320,7 +320,7 @@ void RenderGL::RenderText(const vec2& _pos, cstring _string, TextAlignW _alignW,
 		{
 			glColor4d(_color.red, _color.green, _color.blue, _color.alpha);
 
-			_FontsMgr->Render(_font, _string);
+			_font->Render(_string);
 		}
 		glPopAttrib();
 	}

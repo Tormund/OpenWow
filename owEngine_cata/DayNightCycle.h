@@ -1,8 +1,9 @@
 #pragma once
 
-class DayNightPhase {
+class DayNightPhase
+{
 public:
-	void init(File &f);
+	void init(File& f);
 
 	void interpolate(DayNightPhase *a, DayNightPhase *b, float r);
 	void setupLighting();
@@ -15,7 +16,8 @@ public:
 	vec3 dayColor, nightColor, ambientColor, fogColor, dayDir, nightDir;
 };
 
-class DayNightCycle {
+class DayNightCycle
+{
 public:
 	DayNightCycle();
 

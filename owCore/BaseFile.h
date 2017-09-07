@@ -15,6 +15,19 @@ public:
 
 	//
 
+	OW_CORE_DLL_API virtual void SetName(cstring _fullFileName) = 0;
+	OW_CORE_DLL_API virtual void SetName(const char* _fullFileName) = 0;
+
+	//
+
+	OW_CORE_DLL_API virtual string Name() const = 0;
+	OW_CORE_DLL_API virtual string Path() const = 0;
+	OW_CORE_DLL_API virtual string Extension() const = 0;
+
+	OW_CORE_DLL_API virtual string Path_Name() const = 0;
+
+	//
+
 	OW_CORE_DLL_API virtual bool Open() = 0;
 
 protected:

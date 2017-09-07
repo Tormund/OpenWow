@@ -10,7 +10,7 @@
 #include "MapTile.h"
 #include "shaders.h"
 #include "world.h"
-
+#include "WoWSettings.h"
 
 bool isHole(int holes, int i, int j)
 {
@@ -24,7 +24,39 @@ static uint8_t blendbuf[64 * 64 * 4]; // make unstable when new/delete, just mak
 
 //
 
-void MapChunk::init(vector<Texture*>* mt, File &f, load_phases phase)
+MapChunk::MapChunk() :
+	m_GamePositionX(0),
+	ybase(0),
+	m_GamePositionZ(0),
+	r(0),
+	areaID(-1),
+	haswater(false),
+	visible(false),
+	hasholes(false),
+	shadow(0),
+	blend(0),
+	vertices(0), 
+	normals(0), 
+	strip(0), 
+	striplen(0), 
+	lq(0)
+{
+
+	waterlevel[0] = 0;
+	waterlevel[1] = 0;
+
+	shadow = _TexturesMgr->Generate();
+	blend = _TexturesMgr->Generate();
+
+	for (int i = 0; i < 3; i++)
+	{
+		alphamaps[i] = _TexturesMgr->Generate();
+	}
+
+	colorBufferEnable = false;
+}
+
+void MapChunk::init(vector<Texture*>* mt, File& f, load_phases phase)
 {
 	size_t startPosition = f.GetPos();
 
@@ -203,10 +235,10 @@ void MapChunk::init(vector<Texture*>* mt, File &f, load_phases phase)
 				mclvAndMccvColors[i] = CArgb(mclvColors[i].r, mclvColors[i].g, mclvColors[i].b, 128);
 		}
 		else */if (header->flags & MCNK_Header::FLAG_HAS_MCCV)
-{
-	for (size_t i = 0; i < C_MapBufferSize; i++)
-		mclvAndMccvColors[i] = CArgb(mccvColors[i].r, mccvColors[i].g, mccvColors[i].b, 128);
-}
+		{
+			for (size_t i = 0; i < C_MapBufferSize; i++)
+				mclvAndMccvColors[i] = CArgb(mccvColors[i].r, mccvColors[i].g, mccvColors[i].b, 128);
+		}
 
 		if (/*MCLV_exists || */(header->flags & MCNK_Header::FLAG_HAS_MCCV))
 		{
@@ -577,11 +609,17 @@ void MapChunk::destroy()
 	glDeleteBuffers(1, &normals);
 
 	if (hasholes)
+	{
 		delete[] strip;
+	}
 
 	if (haswater)
+	{
 		delete lq;
+	}
 }
+
+//
 
 void MapChunk::drawPass(int anim)
 {
@@ -625,10 +663,12 @@ void MapChunk::draw()
 
 	float mydist = glm::length(vec3(_Camera->Position.x, _Camera->Position.y, _Camera->Position.z) - vcenter) - r;
 
-	if (mydist > _World->culldistance)
+	if (mydist > _WowSettings->culldistance)
 	{
-		if (_World->uselowlod)
+		if (_WowSettings->uselowlod)
+		{
 			this->drawNoDetail();
+		}
 		return;
 	}
 
@@ -636,11 +676,12 @@ void MapChunk::draw()
 
 	if (!hasholes)
 	{
-		bool highres = _World->drawhighres;
+		bool highres = _WowSettings->drawhighres;
 		if (highres)
 		{
-			highres = mydist < _World->highresdistance2;
+			highres = mydist < _WowSettings->highresdistance2;
 		}
+
 		if (highres)
 		{
 			strip = _World->mapstrip2;
@@ -662,7 +703,7 @@ void MapChunk::draw()
 
 
 
-	if (supportShaders && _World->useshaders)
+	if (supportShaders && _WowSettings->useshaders)
 	{
 		/*
 		unit 0 - base texture layer

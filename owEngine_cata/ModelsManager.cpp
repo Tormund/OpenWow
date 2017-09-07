@@ -34,7 +34,10 @@ void ModelsManager::resetAnim()
 {
 	for (auto it = objects.begin(); it != objects.end(); ++it)
 	{
-		(it->second)->animcalc = false;
+		if (it->second != nullptr) // FIXME: Incorrect names in objects
+		{
+			(it->second)->animcalc = false;
+		}
 	}
 }
 
@@ -42,6 +45,9 @@ void ModelsManager::updateEmitters(float dt)
 {
 	for (auto it = objects.begin(); it != objects.end(); ++it)
 	{
-		(it->second)->updateEmitters(dt);
+		if (it->second != nullptr)  // FIXME: Incorrect names in objects
+		{
+			(it->second)->updateEmitters(dt);
+		}
 	}
 }

@@ -24,6 +24,7 @@ struct WMOHeader {
 	uint32_t wmoID;				// &WMOAreaTableRec::m_WMOID
 	CAaBox bounding_box;
 
+	//
 	const size_t __size = 64;
 };
 

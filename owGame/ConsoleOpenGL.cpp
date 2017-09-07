@@ -8,7 +8,7 @@ bool ConsoleOpenGL::Init() {
 	opened = false;
 	consoleFont = _FontsMgr->GetMainFont();
 	assert1(consoleFont != nullptr);
-	fontHeight = consoleFont->CharHeight;
+	fontHeight = consoleFont->GetHeight();
 	consoleHeight = windowSize.y / 2;
 	linesInConsole = consoleHeight / fontHeight;
 	textOffset = vec2(5, -(fontHeight + 3));
@@ -16,7 +16,7 @@ bool ConsoleOpenGL::Init() {
 	inputString = "";
 
 	helperSelected = 0;
-	helperOffset = vec2(_FontsMgr->GetFontWidth(consoleFont, ">"), 0);
+	helperOffset = vec2(consoleFont->GetStringWidth(">"), 0);
 
 	AddCommonCommands();
 
@@ -56,7 +56,7 @@ void ConsoleOpenGL::Render() {
 		for(auto it = commandsHelper.begin(); it != commandsHelper.end(); ++it) {
 			auto command = *it;
 			auto commandName = command->GetName();
-			auto commandNameWidth = _FontsMgr->GetFontWidth(consoleFont, commandName);
+			auto commandNameWidth = consoleFont->GetStringWidth(commandName);
 
 			// Rectangle
 			_Render->RenderRectangle(vec2(0, consoleHeight + i * fontHeight), helperOffset + vec2(commandNameWidth, fontHeight), true, COLOR_GRAY);

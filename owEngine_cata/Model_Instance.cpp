@@ -31,7 +31,7 @@ void ModelInstance::draw()
 {
 	float dist = glm::length(pos - _Camera->Position) - model->rad;
 
-	if (dist > _World->modeldrawdistance)
+	if (dist > _WowSettings->modeldrawdistance)
 	{
 		return;
 	}
@@ -84,7 +84,7 @@ void ModelInstance::DrawAsDoodad(cvec3 ofs, float rot)
 	vec3 tpos(ofs + pos);
 	rotate(ofs.x, ofs.z, &tpos.x, &tpos.z, rot * PI / 180.0f);
 
-	if (glm::length2(tpos - _Camera->Position) > (_World->doodaddrawdistance2 * model->rad * sc))
+	if (glm::length2(tpos - _Camera->Position) > (_WowSettings->doodaddrawdistance2 * model->rad * sc))
 	{
 		return;
 	}

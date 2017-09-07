@@ -99,6 +99,7 @@
       <Filter>MDX\Particle</Filter>
     </ClInclude>
     <ClInclude Include="Matrix.h" />
+    <ClInclude Include="WoWSettings.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="frustum.cpp" />
@@ -197,6 +198,7 @@
     <ClCompile Include="Particle.cpp">
       <Filter>MDX\Particle</Filter>
     </ClCompile>
+    <ClCompile Include="WoWSettings.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Map">
