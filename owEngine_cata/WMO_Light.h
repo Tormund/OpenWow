@@ -1,6 +1,7 @@
 #pragma once
 
-struct WMOLight {
+struct WMOLight
+{
 	uint8_t LightType;
 	uint8_t type;
 	uint8_t useAtten;

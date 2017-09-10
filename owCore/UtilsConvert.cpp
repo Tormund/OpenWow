@@ -122,7 +122,7 @@ bool Utils::ToBool(cstring _string)
 	if (_str == "false") return false;
 	if (_str == "0") return false;
 
-	Debug::Error("Utils.h: %s %s doesn't know how to handle %s", __FILE__, __FUNCTION__, _string.c_str());
+	Debug::Error("Utils: %s %s doesn't know how to handle %s", __FILE__, __FUNCTION__, _string.c_str());
 	return false;
 }
 
@@ -130,28 +130,12 @@ bool Utils::ToBool(cstring _string)
 
 vec2 Utils::ToPoint(string& _string)
 {
-	int _x = popFirstInt(_string);
-	int _y = popFirstInt(_string);
+	float _x = popFirstFloat(_string);
+	float _y = popFirstFloat(_string);
 	return vec2(_x, _y);
 }
 
-vec3 Utils::ToVector3i(string& _string)
-{
-	int _x = popFirstInt(_string);
-	int _y = popFirstInt(_string);
-	int _z = popFirstInt(_string);
-	return vec3(_x, _y, _z);
-}
-
-vec3 Utils::ToVector3d(string& _string)
-{
-	double _x = popFirstDouble(_string);
-	double _y = popFirstDouble(_string);
-	double _z = popFirstDouble(_string);
-	return vec3(_x, _y, _z);
-}
-
-vec3 Utils::ToVector3f(string& _string)
+vec3 Utils::ToVector3(string& _string)
 {
 	float _x = popFirstFloat(_string);
 	float _y = popFirstFloat(_string);
@@ -159,13 +143,13 @@ vec3 Utils::ToVector3f(string& _string)
 	return vec3(_x, _y, _z);
 }
 
-Rect<int> Utils::ToRect(string& _string)
+Rect Utils::ToRect(string& _string)
 {
-	int _x = popFirstInt(_string);
-	int _y = popFirstInt(_string);
-	int _w = popFirstInt(_string);
-	int _h = popFirstInt(_string);
-	return Rect<int>(_x, _y, _w, _h);
+	float _x = popFirstFloat(_string);
+	float _y = popFirstFloat(_string);
+	float _w = popFirstFloat(_string);
+	float _h = popFirstFloat(_string);
+	return Rect(_x, _y, _w, _h);
 }
 
 Color Utils::ToColorFromName(string& _string)
@@ -215,9 +199,9 @@ Color Utils::ToColorFromName(string& _string)
 Color Utils::ToColorFromRGB(string& _string)
 {
 	Color c;
-	c.red = static_cast<double>(popFirstInt(_string)) / 255.0;
-	c.green = static_cast<double>(popFirstInt(_string)) / 255.0;
-	c.blue = static_cast<double>(popFirstInt(_string)) / 255.0;
+	c.red = static_cast<float>(popFirstFloat(_string)) / 255.0f;
+	c.green = static_cast<float>(popFirstFloat(_string)) / 255.0f;
+	c.blue = static_cast<float>(popFirstFloat(_string)) / 255.0f;
 	c.alpha = 1.0;
 	return c;
 }
@@ -225,10 +209,10 @@ Color Utils::ToColorFromRGB(string& _string)
 Color Utils::ToColorFromRGBA(string& _string)
 {
 	Color c;
-	c.red = static_cast<double>(popFirstInt(_string)) / 255.0;
-	c.green = static_cast<double>(popFirstInt(_string)) / 255.0;
-	c.blue = static_cast<double>(popFirstInt(_string)) / 255.0;
-	c.alpha = static_cast<double>(popFirstInt(_string)) / 255.0;
+	c.red = static_cast<float>(popFirstFloat(_string)) / 255.0f;
+	c.green = static_cast<float>(popFirstFloat(_string)) / 255.0f;
+	c.blue = static_cast<float>(popFirstFloat(_string)) / 255.0f;
+	c.alpha = static_cast<float>(popFirstInt(_string)) / 255.0f;
 	return c;
 }
 

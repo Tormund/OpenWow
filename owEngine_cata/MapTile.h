@@ -43,13 +43,17 @@ public:
 public:
 	vector<Texture*> textures;
 
+#ifdef WMO_INCL
 	size_t wmoCount;
 	vector<string> wmoNames;
 	vector<WMOInstance> wmoInstances;
+#endif
 
+#ifdef MDX_INCL
 	size_t mdxCount;
 	vector<string> mdxNames;
 	vector<ModelInstance> mdxInstances;
+#endif
 
 	int m_IndexX, m_IndexZ;
 	float m_GamePositionX, m_GamePositionZ;

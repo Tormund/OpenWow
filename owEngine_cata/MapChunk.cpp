@@ -654,14 +654,16 @@ void MapChunk::drawPass(int anim)
 void MapChunk::draw()
 {
 	if (!_World->frustum.intersects(vmin, vmax))
+	{
 		return;
+	}
 
 	if (header->nLayers == 0)
 	{
 		return;
 	}
 
-	float mydist = glm::length(vec3(_Camera->Position.x, _Camera->Position.y, _Camera->Position.z) - vcenter) - r;
+	float mydist = glm::length(_Camera->Position - vcenter) - r;
 
 	if (mydist > _WowSettings->culldistance)
 	{

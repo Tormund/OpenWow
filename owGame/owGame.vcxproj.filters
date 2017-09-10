@@ -19,6 +19,9 @@
       <Filter>General</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="Settings.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -35,5 +38,8 @@
     </ClInclude>
     <ClInclude Include="..\shared\owGame.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Settings.h">
+      <Filter>General</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

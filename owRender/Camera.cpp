@@ -6,7 +6,8 @@
 Camera::Camera(vec3 position, vec3 up, float yaw, float pitch) :
 	Direction(vec3(0.0f, 0.0f, -1.0f)),
 	MovementSpeed(SPEED),
-	MouseSensitivity(SENSITIVTY) {
+	MouseSensitivity(SENSITIVTY)
+{
 
 	Position = position;
 	WorldUp = up;
@@ -19,7 +20,8 @@ Camera::Camera(vec3 position, vec3 up, float yaw, float pitch) :
 Camera::Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch) :
 	Direction(vec3(0.0f, 0.0f, -1.0f)),
 	MovementSpeed(SPEED),
-	MouseSensitivity(SENSITIVTY) {
+	MouseSensitivity(SENSITIVTY)
+{
 
 	Position = vec3(posX, posY, posZ);
 	WorldUp = vec3(upX, upY, upZ);
@@ -29,21 +31,31 @@ Camera::Camera(float posX, float posY, float posZ, float upX, float upY, float u
 	updateCameraVectors();
 }
 
-void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime) {
+void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
+{
 	float velocity = MovementSpeed * deltaTime;
-	if(direction == FORWARD)
+	if (direction == FORWARD)
+	{
 		Position += Direction * velocity;
-	if(direction == BACKWARD)
+	}
+	if (direction == BACKWARD)
+	{
 		Position -= Direction * velocity;
-	if(direction == LEFT)
+	}
+	if (direction == LEFT)
+	{
 		Position -= CameraRight * velocity;
-	if(direction == RIGHT)
+	}
+	if (direction == RIGHT)
+	{
 		Position += CameraRight * velocity;
+	}
 
 	updateCameraVectors();
 }
 
-void Camera::ProcessMouseMovement(float xoffset, float yoffset, bool constrainPitch /*= true*/) {
+void Camera::ProcessMouseMovement(float xoffset, float yoffset, bool constrainPitch /*= true*/)
+{
 	xoffset *= MouseSensitivity;
 	yoffset *= MouseSensitivity;
 
@@ -51,17 +63,24 @@ void Camera::ProcessMouseMovement(float xoffset, float yoffset, bool constrainPi
 	Pitch += yoffset;
 
 	// Make sure that when pitch is out of bounds, screen doesn't get flipped
-	if(constrainPitch) {
-		if(Pitch > 89.0f)
+	if (constrainPitch)
+	{
+		if (Pitch > 89.0f)
+		{
 			Pitch = 89.0f;
-		if(Pitch < -89.0f)
+		}
+
+		if (Pitch < -89.0f)
+		{
 			Pitch = -89.0f;
+		}
 	}
 
 	updateCameraVectors();
 }
 
-void Camera::updateCameraVectors() {
+void Camera::updateCameraVectors()
+{
 	// Calculate the new Front vector
 	vec3 front;
 	front.x = cos(glm::radians(Yaw)) * cos(glm::radians(Pitch));

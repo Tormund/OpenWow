@@ -1,11 +1,9 @@
 #pragma once
 
+//-----------------------------------------
+
 #define DEF_MODULE_SIMPLE(_className) \
-public:\
-static _className* instance() { \
-	static _className instance; \
-	return &instance; \
-}\
+CLASS_INSTANCE(_className)\
 \
 _className() { \
 	inited = false; \
@@ -15,6 +13,8 @@ _className() { \
 \
 bool Init();\
 void Destroy();
+
+//------------------------------------------
 
 #define DEF_MODULE(_className, _dllApi) \
 public:\
@@ -31,6 +31,8 @@ _className() { \
 \
 _dllApi bool Init();\
 _dllApi void Destroy();
+
+//------------------------------------------
 
 class Module {
 public:

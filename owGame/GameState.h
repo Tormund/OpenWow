@@ -1,21 +1,18 @@
 #pragma once
 
+class GameModule;
 class InputListener;
 
-class GameState : public InputListener
+class GameState : public GameModule, public InputListener
 {
 public:
-	GameState() : inited(false) {};
+	GameState() : m_inited(false) {};
 
 	virtual bool Init() = 0;
 	virtual void Destroy() = 0;
-	virtual void InputPhase(double t, double dt) = 0;
-	virtual void UpdatePhase(double t, double dt) = 0;
-	virtual void RenderPhase(double t, double dt) = 0;
-	virtual void RenderUIPhase(double t, double dt) = 0;
 
-	bool IsInited() const { return inited; }
+	bool IsInited() const { return m_inited; }
 
 protected:
-	bool inited;
+	bool m_inited;
 };

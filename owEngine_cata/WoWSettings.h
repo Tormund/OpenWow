@@ -2,12 +2,7 @@
 
 class WoWSettings
 {
-public:
-	static WoWSettings* instance()
-	{
-		static WoWSettings instance;
-		return &instance;
-	}
+	CLASS_INSTANCE(WoWSettings);
 
 public:
 	WoWSettings();

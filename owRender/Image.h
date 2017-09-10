@@ -45,5 +45,5 @@ struct Image
 	vec2 size;
 	vec2 offset;
 
-	Rect<double> coords;
+	Rect coords;
 };

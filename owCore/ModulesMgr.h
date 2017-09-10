@@ -3,12 +3,9 @@
 class Module;
 
 class ModulesMgr {
-public:
-	static OW_CORE_DLL_API ModulesMgr* instance() {
-		static ModulesMgr instance;
-		return &instance;
-	}
+	CLASS_INSTANCE_API(ModulesMgr, OW_CORE_DLL_API);
 
+public:
 	OW_CORE_DLL_API bool LoadModule(Module* _module, bool isSystemModule = false);
 	OW_CORE_DLL_API void DestroyModule(Module* _module);
 

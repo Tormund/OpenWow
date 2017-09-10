@@ -3,11 +3,14 @@
 // General
 #include "File.h"
 
+FileLocation File::m_DefaultFileLocation = FL_Any;;
+
 File::File() : BaseFile()
 {}
 
 File::File(const File& _file) : BaseFile(_file)
-{}
+{
+}
 
 File::File(cstring _fullFileName) : BaseFile(_fullFileName)
 {}
@@ -82,22 +85,77 @@ string File::Extension() const
 {
 	return extension;
 }
-
 string File::Path_Name() const
 {
 	return string(path + name);
 }
 
+//
+
+string File::FullPath()
+{
+	return LocalFile::gamedata + path + name;
+}
+
+/*mpq_archive* File::MPQArchive()
+{
+	return nullptr;
+}*/
+
+void File::SetDefaultFileLocation(FileLocation _fileLocation)
+{
+	m_DefaultFileLocation = _fileLocation;
+}
+
 bool File::Open()
 {
-	if (OpenMPQFile())
-	{
-		return true;
-	}
+	switch (m_DefaultFileLocation)
+	{ 
+		case FL_Any:
+		{
+			if (OpenMPQFile())
+			{
+				return true;
+			}
 
-	if (OpenLocalFile())
-	{
-		return true;
+			if (OpenLocalFile())
+			{
+				return true;
+			}
+		}
+		break;
+
+		case FL_Local:
+		{
+			if (OpenLocalFile())
+			{
+				return true;
+			}
+
+			if (OpenMPQFile())
+			{
+				return true;
+			}			
+		}
+		break;
+
+		case FL_Local_Only:
+		{
+			if (OpenLocalFile())
+			{
+				return true;
+			}
+		}
+		break;
+
+		case FL_MPQ_Only:
+		{
+			if (OpenMPQFile())
+			{
+				return true;
+			}
+		}
+		break;
 	}
 
 	return false;

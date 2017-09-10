@@ -3,14 +3,19 @@
 // General
 #include "Technique.h"
 
-Technique::Technique(cstring _fileName) {
+Technique::Technique(cstring _fileName)
+{
 	fileName = _fileName;
 	programOglObj = 0;
 	glfxEffectObj = glfxGenEffect();
+
+	Debug::Info("Technique[%s]: GLFX_OBJ [%d]", _fileName.c_str(), glfxEffectObj);
 }
 
-Technique::~Technique() {
-	if(programOglObj != 0) {
+Technique::~Technique()
+{
+	if (programOglObj != 0)
+	{
 		glDeleteProgram(programOglObj);
 		programOglObj = 0;
 	}
@@ -18,10 +23,21 @@ Technique::~Technique() {
 	glfxDeleteEffect(glfxEffectObj);
 }
 
-bool Technique::CompileProgram(cstring _programName) {
+bool Technique::CompileProgram(cstring _programName)
+{
+	File f = fileName;
+	
+
+	/*if (!f.Open())
+	{
+		Debug::Error("Technique[%s][%s]: Unable to open file.", fileName.c_str(), _programName.c_str());
+		return false;
+	}*/
+
 	string log;
 
-	if(!glfxParseEffectFromFile(glfxEffectObj, fileName.c_str())) {
+	if (!glfxParseEffectFromFile(glfxEffectObj, f.FullPath().c_str())) // FIXME
+	{
 		log = glfxGetEffectLog(glfxEffectObj);
 		Debug::Error("Techique[%s]: Error creating program.", fileName.c_str());
 		Debug::Error("Techique[%s]: Log [%s].", fileName.c_str(), log.c_str());
@@ -29,8 +45,10 @@ bool Technique::CompileProgram(cstring _programName) {
 	}
 
 	programOglObj = glfxCompileProgram(glfxEffectObj, _programName.c_str());
+	Debug::Info("Technique[%s]: Program [%s] OGLID [%d]", fileName.c_str(), _programName.c_str(), glfxEffectObj);
 
-	if(programOglObj < 0) {
+	if (programOglObj < 0)
+	{
 		log = glfxGetEffectLog(glfxEffectObj);
 		Debug::Error("Techique[%s]: Error compiling program [%s].", fileName.c_str(), _programName.c_str());
 		Debug::Error("Techique[%s]: Log [%s].", fileName, log.c_str());
@@ -148,23 +166,27 @@ bool Technique::Validate() {
 
 //-----
 
-void Technique::Bind() {
+void Technique::Bind()
+{
 	glUseProgram(programOglObj);
 }
 
-void Technique::Unbind() {
+void Technique::Unbind()
+{
 	glUseProgram(0);
 }
 
 //-----
 
-GLint Technique::getLocation(cstring name) const {
+GLint Technique::getLocation(cstring name) const
+{
 	GLint location = glGetUniformLocation(programOglObj, name.c_str());
 	//assert2(location != 0xFFFFFFFF, name.c_str());
 	return location;
 }
 
-GLint Technique::getParam(GLint param) const {
+GLint Technique::getParam(GLint param) const
+{
 	GLint ret;
 	glGetProgramiv(programOglObj, param, &ret);
 	return ret;
@@ -172,51 +194,64 @@ GLint Technique::getParam(GLint param) const {
 
 //-----
 
-void Technique::setBool(cstring name, bool value) const {
+void Technique::setBool(cstring name, bool value) const
+{
 	glUniform1i(getLocation(name), (int)value);
 }
 
-void Technique::setInt(cstring name, int value) const {
+void Technique::setInt(cstring name, int value) const
+{
 	glUniform1i(getLocation(name), value);
 }
 
-void Technique::setFloat(cstring name, float value) const {
+void Technique::setFloat(cstring name, float value) const
+{
 	glUniform1f(getLocation(name), value);
 }
 
-void Technique::setVec2(cstring name, const vec2& value) const {
+void Technique::setVec2(cstring name, cvec2 value) const
+{
 	glUniform2fv(getLocation(name), 1, &value[0]);
 }
-void Technique::setVec2(cstring name, float x, float y) const {
+void Technique::setVec2(cstring name, float x, float y) const
+{
 	glUniform2f(getLocation(name), x, y);
 }
 
-void Technique::setVec3(cstring name, const vec3& value) const {
+void Technique::setVec3(cstring name, const vec3& value) const
+{
 	glUniform3fv(getLocation(name), 1, &value[0]);
 }
-void Technique::setVec3(cstring name, float x, float y, float z) const {
+void Technique::setVec3(cstring name, float x, float y, float z) const
+{
 	glUniform3f(getLocation(name), x, y, z);
 }
 
-void Technique::setVec4(cstring name, const vec4& value) const {
+void Technique::setVec4(cstring name, const vec4& value) const
+{
 	glUniform4fv(getLocation(name), 1, &value[0]);
 }
-void Technique::setVec4(cstring name, float x, float y, float z, float w) const {
+void Technique::setVec4(cstring name, float x, float y, float z, float w) const
+{
 	glUniform4f(getLocation(name), x, y, z, w);
 }
 
-void Technique::setMat2(cstring name, const glm::mat2& mat) const {
+void Technique::setMat2(cstring name, const glm::mat2& mat) const
+{
 	glUniformMatrix2fv(getLocation(name), 1, GL_FALSE, &mat[0][0]);
 }
 
-void Technique::setMat3(cstring name, const glm::mat3& mat) const {
+void Technique::setMat3(cstring name, const glm::mat3& mat) const
+{
 	glUniformMatrix3fv(getLocation(name), 1, GL_FALSE, &mat[0][0]);
 }
 
-void Technique::setMat4(cstring name, const glm::mat4& mat) const {
+void Technique::setMat4(cstring name, const glm::mat4& mat) const
+{
 	glUniformMatrix4fv(getLocation(name), 1, GL_FALSE, &mat[0][0]);
 }
 
-void Technique::SetWVP(cmat4 WVP) {
+void Technique::SetWVP(cmat4 WVP)
+{
 	setMat4("gWVP", WVP);
 }

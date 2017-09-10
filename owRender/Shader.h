@@ -1,6 +1,7 @@
 #pragma once
 
-class Shader {
+class Shader
+{
 public:
 	Shader(GLenum _type, cstring _shaderFileName);
 	~Shader();

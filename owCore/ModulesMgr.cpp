@@ -39,7 +39,9 @@ void ModulesMgr::DestroyAllModules(bool _includeSystem) {
 		auto _module = modules.back();
 
 		if (!_includeSystem && _module->IsSystemModule())
+		{
 			continue;
+		}
 
 		DestroyModule(_module);
 	}

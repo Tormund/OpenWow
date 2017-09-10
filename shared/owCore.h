@@ -37,3 +37,6 @@
 // Input
 #include "../owCore/Input.h"
 #include "../owCore/InputListener.h"
+
+// Game
+#include "../owCore/GameModule.h"

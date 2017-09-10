@@ -24,7 +24,7 @@ int Random::GenerateMax(int TMax) {
 }
 
 // Generates a random number [0, TMax]
-unsigned int Random::GenerateMax(unsigned int TMax) {
+uint32_t Random::GenerateMax(uint32_t TMax) {
 	return GenerateRandomInteger() % TMax;
 }
 
@@ -34,7 +34,7 @@ int Random::GenerateRange(int TMin, int TMax) {
 }
 
 // Generates a random number [TMin, TMax]
-unsigned int Random::GenerateRange(unsigned int TMin, unsigned int TMax) {
+uint32_t Random::GenerateRange(uint32_t TMin, uint32_t TMax) {
 	return GenerateRandomInteger() % (TMax - TMin + 1) + TMin;
 }
 
@@ -50,7 +50,7 @@ unsigned long Random::GenerateRandomInteger() {
 	unsigned long y;
 
 	if (rStateVectorIndex >= N) {
-		unsigned int kk;
+		uint32_t kk;
 
 		for (kk = 0; kk < N - M; ++kk) {
 			y = (rStateVector[kk] & UPPER_MASK) | (rStateVector[kk + 1] & LOWER_MASK);

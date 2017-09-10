@@ -15,7 +15,8 @@
 #define KEYSCOUNT 349
 #define MOUSEBUTTONSCOUNT 8
 
-bool Input::Init() {
+bool Input::Init()
+{
 	// Inits keystates
 	keyState = new bool[KEYSCOUNT];
 	for (int i = 0; i < KEYSCOUNT; i++)
@@ -29,39 +30,46 @@ bool Input::Init() {
 	return true;
 }
 
-void Input::Destroy() {
+void Input::Destroy()
+{
 	delete[] keyState;
 	delete[] mouseButtonState;
 
 	inputListeners.clear();
 }
 
-void Input::AddInputListener(InputListener* _inputListener) {
+void Input::AddInputListener(InputListener* _inputListener)
+{
 	if (_inputListener != nullptr)
 		inputListeners.push_back(_inputListener);
 }
 
-void Input::DeleteInputListener(InputListener* _inputListener) {
+void Input::DeleteInputListener(InputListener* _inputListener)
+{
 	inputListeners.erase(std::remove(inputListeners.begin(), inputListeners.end(), _inputListener), inputListeners.end());
 }
 
 //
 
-void Input::MousePositionCallback(cvec2 _mousePos) {
+void Input::MousePositionCallback(cvec2 _mousePos)
+{
 	mousePos = _mousePos;
 
 	for (auto it = inputListeners.begin(); it != inputListeners.end(); ++it)
 		(*it)->OnMouseMoved(mousePos);
 }
 
-void Input::MouseCallback(int button, int action, int mods) {
-	if (action == GLFW_PRESS) {
+void Input::MouseCallback(int button, int action, int mods)
+{
+	if (action == GLFW_PRESS)
+	{
 		mouseButtonState[button] = true;
 		for (auto it = inputListeners.begin(); it != inputListeners.end(); ++it)
 			if ((*it)->OnMouseButtonPressed(button, action, mousePos))
 				break;
 	}
-	else if (action == GLFW_RELEASE) {
+	else if (action == GLFW_RELEASE)
+	{
 		mouseButtonState[button] = false;
 
 		for (auto it = inputListeners.begin(); it != inputListeners.end(); ++it)
@@ -70,21 +78,25 @@ void Input::MouseCallback(int button, int action, int mods) {
 	}
 }
 
-void Input::MouseScrollCallback(int yoffset) {
+void Input::MouseScrollCallback(int yoffset)
+{
 	for (auto it = inputListeners.begin(); it != inputListeners.end(); ++it)
 		if ((*it)->OnMouseWheel(yoffset))
 			break;
 }
 
-void Input::KeyboardCallback(int key, int scancode, int action, int mods) {
-	if (action == GLFW_PRESS || action == GLFW_REPEAT) {
+void Input::KeyboardCallback(int key, int scancode, int action, int mods)
+{
+	if (action == GLFW_PRESS || action == GLFW_REPEAT)
+	{
 		keyState[key] = true;
 
 		for (auto it = inputListeners.begin(); it != inputListeners.end(); ++it)
 			if ((*it)->OnKeyboardPressed(key, scancode, mods))
 				break;
 	}
-	else if (action == GLFW_RELEASE) {
+	else if (action == GLFW_RELEASE)
+	{
 		keyState[key] = false;
 
 		for (auto it = inputListeners.begin(); it != inputListeners.end(); ++it)
@@ -93,7 +105,8 @@ void Input::KeyboardCallback(int key, int scancode, int action, int mods) {
 	}
 }
 
-void Input::CharCallback(unsigned int _char) {
+void Input::CharCallback(uint32_t _char)
+{
 	for (auto it = inputListeners.begin(); it != inputListeners.end(); ++it)
 		if ((*it)->OnCharInput(_char))
 			break;

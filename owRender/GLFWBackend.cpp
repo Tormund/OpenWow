@@ -12,7 +12,7 @@ const uint32_t C_DefaultWindowWidth = 1024;
 const uint32_t C_DefaultWindowHeight = 768;
 
 // Error callback
-void GLFWErrorCallback(int error, const char* description) { Debug::Error("GLFW error [%d]: [%s].", error, description); }
+void GLFWErrorCallback(int error, const char* description) { Debug::Error("GLFW[]: Error [%d] (%s).", error, description); }
 
 // Resize callback
 void GLFWFramebufferCallback(GLFWwindow* _window, int _width, int _height) { _GLFW->SetWindowSize(_width, _height); }
@@ -26,23 +26,25 @@ void GLFWCharCallback(GLFWwindow* window, unsigned int _char) { _Input->CharCall
 
 //---------------------------------------------------------
 
-bool GLFWBackend::Init() {
+bool GLFWBackend::Init()
+{
 	// Error callback
 	glfwSetErrorCallback(GLFWErrorCallback);
 
 	// Loading glfw libary
-	if (!glfwInit()) {
-		Debug::Error("Error while init GLFW!");
+	if (!glfwInit())
+	{
+		Debug::Error("GLFW[]: Error while init GLFW!");
 		return false;
 	}
-	Debug::Info("GLFW[] version [%s]", glfwGetVersionString());
+	Debug::Info("GLFW[]: Version [%s].", glfwGetVersionString());
 
 	// Set window options
-	//glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-	//glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-	glfwWindowHint(GLFW_SAMPLES, 8);
+	//glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+	//glfwWindowHint(GLFW_SAMPLES, 8);
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 
 	//
@@ -88,7 +90,8 @@ bool GLFWBackend::Init() {
 	// Loading glew libary
 	//glewExperimental = GL_TRUE;
 	GLenum err = glewInit();
-	if(err != GLEW_OK) {
+	if (err != GLEW_OK)
+	{
 		Debug::Error("GLFW[]: Error while init GLEW! [%s]", glewGetErrorString(err));
 		return false;
 	}
@@ -107,18 +110,15 @@ bool GLFWBackend::Init() {
 	return true;
 }
 
-void GLFWBackend::Destroy() {
+void GLFWBackend::Destroy()
+{
 	glfwTerminate();
 }
 
-bool GLFWBackend::SwapWindowBuffers() {
-	// Swap buffers
+bool GLFWBackend::SwapWindowBuffers()
+{
 	glfwSwapBuffers(window);
-
-	// Pop events
 	glfwPollEvents();
-
-	// Update time
 	glfwTime = glfwGetTime();
 
 	return !glfwWindowShouldClose(window);
@@ -126,26 +126,31 @@ bool GLFWBackend::SwapWindowBuffers() {
 
 //
 
-void GLFWBackend::SetWindowSize(int32_t _width, int32_t _height) {
+void GLFWBackend::SetWindowSize(int32_t _width, int32_t _height)
+{
 	glfwSetWindowSize(window, _width, _height);
 	_Render->OnWindowResized(_width, _height);
 }
 
-void GLFWBackend::SetWindowTitle(cstring _title) {
+void GLFWBackend::SetWindowTitle(cstring _title)
+{
 	if (_title.empty())
 		return;
 
 	glfwSetWindowTitle(window, _title.c_str());
 }
 
-void GLFWBackend::ShowCursor() {
+void GLFWBackend::ShowCursor()
+{
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 }
 
-void GLFWBackend::HideCursor() {
+void GLFWBackend::HideCursor()
+{
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 }
 
-void GLFWBackend::SetMousePosition(cvec2 _mousePosition) {
+void GLFWBackend::SetMousePosition(cvec2 _mousePosition)
+{
 	glfwSetCursorPos(window, static_cast<double>(_mousePosition.x), static_cast<double>(_mousePosition.y));
 }

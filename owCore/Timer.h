@@ -4,7 +4,7 @@ class Timer {
 public:
 	class Callback {
 	private:
-		typedef void(*timerProcType)(unsigned int timerId);
+		typedef void(*timerProcType)(uint32_t timerId);
 		timerProcType timerProc;
 
 	public:
@@ -15,7 +15,7 @@ public:
 			this->timerProc = timerProc;
 		}
 
-		virtual void operator()(unsigned int timerId) {
+		virtual void operator()(uint32_t timerId) {
 			(*timerProc)(timerId);
 		}
 	};
@@ -24,7 +24,7 @@ public:
 	class ClassCallback : public Callback {
 	private:
 		T* classInstancePtr;
-		typedef void(T::*classTimerProcType)(unsigned int timerId);
+		typedef void(T::*classTimerProcType)(uint32_t timerId);
 		classTimerProcType classTimerProc;
 
 	public:
@@ -33,13 +33,13 @@ public:
 			this->classTimerProc = timerProc;
 		}
 
-		virtual void operator()(unsigned int timerId) {
+		virtual void operator()(uint32_t timerId) {
 			(classInstancePtr->(*classTimerProc))(timerId);
 		}
 	};
 
 	// Запуск таймера
-	void Start(unsigned int time, Callback* timerObj) {
+	void Start(uint32_t time, Callback* timerObj) {
 		UINT_PTR _id = SetTimer(NULL, NULL, time, Timer::TimerProc);
 		_timers[_id] = timerObj;
 		id = _id;

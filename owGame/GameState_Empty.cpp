@@ -7,12 +7,12 @@ GameState_Empty::GameState_Empty() : GameState() {}
 
 bool GameState_Empty::Init()
 {
-	inited = true;
+	m_inited = true;
 
 	return true;
 }
 
 void GameState_Empty::Destroy()
 {
-	inited = false;
+	m_inited = false;
 }

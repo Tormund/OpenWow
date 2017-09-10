@@ -6,27 +6,29 @@
 // Additional
 #include "world.h"
 
-WMOMaterial::WMOMaterial(File& _file) {
+WMOMaterial::WMOMaterial(File& _file)
+{
 	data = new WMOMaterial::__WMOMaterial;
 	_file.ReadBytes(data, sizeof(WMOMaterial::__WMOMaterial));
-
-	//delete data;
 }
 
-WMOMaterial::~WMOMaterial() {
-	//_TexturesMgr->Delete(texture);
+WMOMaterial::~WMOMaterial()
+{
+	_TexturesMgr->Delete(texture);
 	delete data;
 }
 
-void WMOMaterial::initTexture(const char* _texturesFileNames) {
+void WMOMaterial::initTexture(const char* _texturesFileNames)
+{
 	string texpath(_texturesFileNames + data->diffuseNameIndex);
 
 	texture = _TexturesMgr->Add(texpath);
 }
 
-void WMOMaterial::setup() {
+void WMOMaterial::setup()
+{
 	//SetBlendMode();
-	if(IsTwoSided())
+	if (IsTwoSided())
 		glDisable(GL_CULL_FACE);
 	else
 		glEnable(GL_CULL_FACE);
@@ -34,8 +36,9 @@ void WMOMaterial::setup() {
 	texture->Bind();
 }
 
-void GLSetBlend(bool _enable, GLenum _srcColor, GLenum _descColor, GLenum _srcAlpha, GLenum _destAlpha) {
-	if(_enable)
+void GLSetBlend(bool _enable, GLenum _srcColor, GLenum _descColor, GLenum _srcAlpha, GLenum _destAlpha)
+{
+	if (_enable)
 		glEnable(GL_BLEND);
 	else
 		glDisable(GL_BLEND);
@@ -47,8 +50,10 @@ void GLSetBlend(bool _enable, GLenum _srcColor, GLenum _descColor, GLenum _srcAl
 	glBlendFunc(GL_DST_ALPHA, _destAlpha);
 }
 
-void WMOMaterial::SetBlendMode() {
-	switch(data->blendMode) {
+void WMOMaterial::SetBlendMode()
+{
+	switch (data->blendMode)
+	{
 		case 0:
 		//GxBlend_Opaque	
 		GLSetBlend(false, GL_ONE, GL_ZERO, GL_ONE, GL_ZERO);

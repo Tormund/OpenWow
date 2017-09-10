@@ -1,14 +1,12 @@
 #pragma once
 
-class Pipeline {
-public:
-	static OW_RENDER_DLL_API Pipeline* instance() {
-		static Pipeline instance;
-		return &instance;
-	}
+class Pipeline
+{
+	CLASS_INSTANCE_API(Pipeline, OW_RENDER_DLL_API);
 
-	Pipeline() : camera(nullptr) { }
-	
+public:
+	Pipeline() : camera(nullptr) {}
+
 	OW_RENDER_DLL_API void Clear();
 
 	OW_RENDER_DLL_API void SetProjection(float _fov, float _aspectRatio, float _near, float _far);
@@ -16,16 +14,16 @@ public:
 
 	OW_RENDER_DLL_API void SetCamera(Camera* _camera);
 	OW_RENDER_DLL_API void SetCamera(const vec3& _position, const vec3& _rotation, const vec3& _up = vec3(0.0f, 1.0f, 0.0f));
-	
+
 #pragma region World transformation
 
 	// Translate Set and Add
 	inline void SetTranslate(float x, float y, float z) { SetTranslate(vec3(x, y, z)); }
 	OW_RENDER_DLL_API void SetTranslate(const vec3& _translate);
-	
+
 	inline void AddTranslate(float x, float y, float z) { AddTranslate(vec3(x, y, z)); }
 	OW_RENDER_DLL_API void AddTranslate(const vec3& _translate);
-	
+
 	// Rotation Set and Add
 	inline void SetRotation(float _yaw, float _pitch, float _roll) { SetRotation(vec3(_yaw, _pitch, _roll)); }
 	OW_RENDER_DLL_API void SetRotation(const vec3& _rotation);
@@ -43,13 +41,13 @@ public:
 	inline void SetScale(float _scale) { SetScale(vec3(_scale, _scale, _scale)); }
 	inline void SetScale(float _scaleX, float _scaleY, float _scaleZ) { SetScale(vec3(_scaleX, _scaleY, _scaleZ)); }
 	OW_RENDER_DLL_API void SetScale(const vec3& _scale);
-	
+
 	inline void AddScale(float _scale) { AddScale(vec3(_scale, _scale, _scale)); }
 	inline void AddScale(float _scaleX, float _scaleY, float _scaleZ) { AddScale(vec3(_scaleX, _scaleY, _scaleZ)); }
 	OW_RENDER_DLL_API void AddScale(const vec3& _scale);
 
 #pragma endregion
-	
+
 	inline const mat4* GetProjection() { return &projection; }
 	inline const mat4* GetView() { return camera->GetViewMatrix(); }
 	inline const mat4* GetWorld() { return &worldTransformation; }
@@ -70,7 +68,7 @@ private: // Matrices
 	mat4 projection;
 	mat4 view;
 	mat4 worldTransformation;
-	
+
 	Camera* camera;
 
 private: // General

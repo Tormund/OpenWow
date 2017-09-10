@@ -2,7 +2,8 @@
 
 #include "Wmo.h"
 
-class WMOsManager : public Module, public RefManager1Dim<WMO> {
+class WMOsManager : public Module, public RefManager1Dim<WMO>
+{
 public:
 	DEF_MODULE_SIMPLE(WMOsManager);
 

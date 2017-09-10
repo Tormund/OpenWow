@@ -2,15 +2,11 @@
 
 class DebugOutput;
 
-class Debug {
+class Debug
+{
+	CLASS_INSTANCE_API(Debug, OW_CORE_DLL_API);
+
 public:
-	static OW_CORE_DLL_API Debug* instance() {
-		static Debug instance;
-		return &instance;
-	}
-
-	//
-
 	static OW_CORE_DLL_API bool Init();
 	static OW_CORE_DLL_API void Destroy();
 

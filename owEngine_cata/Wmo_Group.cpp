@@ -15,7 +15,8 @@
 #include "Wmo_Material.h"
 
 
-void setGLColor(uint32_t col) {
+void setGLColor(uint32_t col)
+{
 	GLubyte r, g, b, a;
 	a = (col & 0xFF000000) >> 24;
 	r = (col & 0x00FF0000) >> 16;
@@ -24,7 +25,8 @@ void setGLColor(uint32_t col) {
 	glColor4ub(r, g, b, 1);
 }
 
-vec4 colorFromInt(uint32_t col) {
+vec4 colorFromInt(uint32_t col)
+{
 	GLubyte r, g, b, a;
 	a = (col & 0xFF000000) >> 24;
 	r = (col & 0x00FF0000) >> 16;
@@ -52,7 +54,8 @@ Flag		Meaning
 0x40000	        Show skybox
 0x80000		isNotOcean, LiquidType related, see below in the MLIQ chunk.
 */
-struct WMOGroupHeader {
+struct WMOGroupHeader
+{
 	int32_t groupName;
 	int32_t descriptiveGroupName;
 	int32_t flags;
@@ -67,7 +70,8 @@ struct WMOGroupHeader {
 	int32_t unk3; // Always 0?
 };
 
-struct WMOBatch {
+struct WMOBatch
+{
 	uint32_t color0;
 	uint32_t color1;
 	uint32_t color2;
@@ -79,8 +83,10 @@ struct WMOBatch {
 	uint8_t texture; // index in MOMT
 };
 
-struct MOPY {
-	struct {
+struct MOPY
+{
+	struct
+	{
 		uint8_t F_UNK_0x01 : 1;
 		uint8_t F_NOCAMCOLLIDE : 1;
 		uint8_t F_DETAIL : 1;
@@ -99,28 +105,31 @@ struct MOPY {
 	uint8_t materialId;
 };
 
-struct WMOLiquidHeader {
+struct WMOLiquidHeader
+{
 	int X, Y, A, B;
 	vec3 pos;
 	short type;
 };
 
-WMOGroup::WMOGroup() :nBatches(0) { }
+WMOGroup::WMOGroup() :nBatches(0) {}
 
-WMOGroup::~WMOGroup() {
+WMOGroup::~WMOGroup()
+{
 	//if (dl) glDeleteLists(dl, 1);
 	//if (dl_light) glDeleteLists(dl_light, 1);
 
 	//for (size_t i=0; i<lists.size(); i++) {
 	//	glDeleteLists(lists[i].first);
 	//}
-	if(nBatches && lists.size()) glDeleteLists(lists[0].first, nBatches);
+	if (nBatches && lists.size()) glDeleteLists(lists[0].first, nBatches);
 
-	if(nDoodads) delete[] ddr;
-	if(lq) delete lq;
+	if (nDoodads) delete[] ddr;
+	if (lq) delete lq;
 }
 
-void WMOGroup::init(WMO* wmo, File& f, int num, char* names) {
+void WMOGroup::init(WMO* wmo, File& f, int num, char* names)
+{
 	this->wmo = wmo;
 	this->num = num;
 
@@ -129,7 +138,8 @@ void WMOGroup::init(WMO* wmo, File& f, int num, char* names) {
 
 	indoor = (groupInfo->flags & WMOGroupInfo::FLAG_IS_INDOOR);
 
-	if(groupInfo->nameoffset > 0) {
+	if (groupInfo->nameoffset > 0)
+	{
 		name = string(names + groupInfo->nameoffset);
 	}
 	else
@@ -141,7 +151,8 @@ void WMOGroup::init(WMO* wmo, File& f, int num, char* names) {
 	lq = 0;
 }
 
-void WMOGroup::initDisplayList() {
+void WMOGroup::initDisplayList()
+{
 	vec3* vertices = nullptr;
 	vec3* normals = nullptr;
 	vec2* texcoords = nullptr;
@@ -163,7 +174,8 @@ void WMOGroup::initDisplayList() {
 	sprintf_s(fname, "%s_%03d.wmo", temp, num);
 
 	File gf(fname);
-	if(!gf.Open()) {
+	if (!gf.Open())
+	{
 		return;
 	}
 	gf.Seek(0x14); // a header at 0x14
@@ -171,7 +183,7 @@ void WMOGroup::initDisplayList() {
 				   // read MOGP chunk header
 	gf.ReadBytes(&gh, sizeof(WMOGroupHeader));
 	WMOFog &wf = wmo->fogs[gh.fogs[0]];
-	if(wf.largerRadius <= 0) fog = -1; // default outdoor fog..?
+	if (wf.largerRadius <= 0) fog = -1; // default outdoor fog..?
 	else fog = gh.fogs[0];
 
 	b1 = vec3(gh.boundingBox.min.x, gh.boundingBox.min.z, -gh.boundingBox.min.y);
@@ -185,7 +197,8 @@ void WMOGroup::initDisplayList() {
 	uint32_t *cv = nullptr;
 	hascv = false;
 
-	while(!gf.IsEof()) {
+	while (!gf.IsEof())
+	{
 		memset(fourcc, 0, 4);
 		size = 0;
 		gf.ReadBytes(fourcc, 4);
@@ -193,21 +206,24 @@ void WMOGroup::initDisplayList() {
 		flipcc(fourcc);
 		fourcc[4] = 0;
 
-		if(size == 0)
+		if (size == 0)
 			continue;
 
 		size_t nextpos = gf.GetPos() + size;
 
-		if(strcmp(fourcc, "MOPY") == 0) {
+		if (strcmp(fourcc, "MOPY") == 0)
+		{
 			// Material info for triangles, two bytes per triangle. So size of this chunk in bytes is twice the number of triangles in the WMO group.
 			nTriangles = (int)size / 2;
 			materials = (MOPY*)gf.GetDataFromCurrent();
 		}
-		else if(strcmp(fourcc, "MOVI") == 0) {
+		else if (strcmp(fourcc, "MOVI") == 0)
+		{
 			// Vertex indices for triangles. count = size / sizeof(unsigned short). Three 16-bit integers per triangle, that are indices into the vertex list.
 			indices = (uint16_t*)gf.GetDataFromCurrent();
 		}
-		else if(strcmp(fourcc, "MOVT") == 0) {
+		else if (strcmp(fourcc, "MOVT") == 0)
+		{
 			// Vertices chunk., count = size / (sizeof(float) * 3). 3 floats per vertex, the coordinates are in (X,Z,-Y) order.
 			nVertices = (int)size / 12;
 
@@ -217,27 +233,31 @@ void WMOGroup::initDisplayList() {
 			vmax = vec3(-9999999.0f, -9999999.0f, -9999999.0f);
 
 			rad = 0;
-			for(uint32_t i = 0; i < nVertices; i++) {
+			for (uint32_t i = 0; i < nVertices; i++)
+			{
 				vec3 v(vertices[i].x, vertices[i].z, -vertices[i].y);
-				if(v.x < vmin.x) vmin.x = v.x;
-				if(v.y < vmin.y) vmin.y = v.y;
-				if(v.z < vmin.z) vmin.z = v.z;
-				if(v.x > vmax.x) vmax.x = v.x;
-				if(v.y > vmax.y) vmax.y = v.y;
-				if(v.z > vmax.z) vmax.z = v.z;
+				if (v.x < vmin.x) vmin.x = v.x;
+				if (v.y < vmin.y) vmin.y = v.y;
+				if (v.z < vmin.z) vmin.z = v.z;
+				if (v.x > vmax.x) vmax.x = v.x;
+				if (v.y > vmax.y) vmax.y = v.y;
+				if (v.z > vmax.z) vmax.z = v.z;
 			}
 			center = (vmax + vmin) * 0.5f;
-			rad = glm::length (vmax - center);
+			rad = glm::length(vmax - center);
 		}
-		else if(strcmp(fourcc, "MONR") == 0) {
+		else if (strcmp(fourcc, "MONR") == 0)
+		{
 			// Normals. 3 floats per vertex normal, in (X,Z,-Y) order.
 			normals = (vec3*)gf.GetDataFromCurrent();
 		}
-		else if(strcmp(fourcc, "MOTV") == 0) {
+		else if (strcmp(fourcc, "MOTV") == 0)
+		{
 			// Texture coordinates, 2 floats per vertex in (X,Y) order. The values range from 0.0 to 1.0. Vertices, normals and texture coordinates are in corresponding order, of course.
 			texcoords = (vec2*)gf.GetDataFromCurrent();
 		}
-		else if(strcmp(fourcc, "MOBA") == 0) {
+		else if (strcmp(fourcc, "MOBA") == 0)
+		{
 			// Render batches. Records of 24 bytes.
 
 			nBatches = size / 24;
@@ -265,23 +285,26 @@ void WMOGroup::initDisplayList() {
 			*/
 
 		}
-		else if(strcmp(fourcc, "MOLR") == 0) {
+		else if (strcmp(fourcc, "MOLR") == 0)
+		{
 			// Light references, one 16-bit integer per light reference.
 			// This is basically a list of lights used in this WMO group, the numbers are indices into the WMO root file's MOLT table.
 			//For some WMO groups there is a large number of lights specified here, more than what a typical video card will handle at once. I wonder how they do lighting properly. Currently, I just turn on the first GL_MAX_LIGHTS and hope for the best. :(
-			
+
 			nLights = (int)size / 2;
 			useLights = (short*)gf.GetDataFromCurrent();
 		}
-		else if(strcmp(fourcc, "MODR") == 0) {
+		else if (strcmp(fourcc, "MODR") == 0)
+		{
 			// Doodad references, one 16-bit integer per doodad.
 			// The numbers are indices into the doodad instance table (MODD chunk) of the WMO root file. These have to be filtered to the doodad set being used in any given WMO instance.
-			
+
 			nDoodads = size / 2;
 			ddr = new short[nDoodads];
 			gf.ReadBytes(ddr, size);
 		}
-		else if(strcmp(fourcc, "MOBN") == 0) {
+		else if (strcmp(fourcc, "MOBN") == 0)
+		{
 			//Nodes of the BSP tree, used for collision(along with bounding boxes ? ). Array of t_BSP_NODE. / CAaBspNode. 0x10 bytes.
 			/*struct t_BSP_NODE {
 				uint16_t planeType;    // 4: leaf, 0 for YZ-plane, 1 for XZ-plane, 2 for XY-plane
@@ -291,10 +314,12 @@ void WMOGroup::initDisplayList() {
 				float    fDist;
 			};*/
 		}
-		else if(strcmp(fourcc, "MOBR") == 0) {
+		else if (strcmp(fourcc, "MOBR") == 0)
+		{
 			// Triangle indices (in MOVI which define triangles) to describe polygon planes defined by MOBN BSP nodes.
 		}
-		else if(strcmp(fourcc, "MOCV") == 0) {
+		else if (strcmp(fourcc, "MOCV") == 0)
+		{
 			/*
 			Vertex colors, 4 bytes per vertex (BGRA), for WMO groups using indoor lighting.
 			I don't know if this is supposed to work together with, or replace, the lights referenced in MOLR. But it sure is the only way for the ground around the goblin smelting pot to turn red in the Deadmines. (but some corridors are, in turn, too dark - how the hell does lighting work anyway, are there lightmaps hidden somewhere?)
@@ -304,7 +329,8 @@ void WMOGroup::initDisplayList() {
 			hascv = true;
 			cv = (uint32_t*)gf.GetDataFromCurrent();
 		}
-		else if(strcmp(fourcc, "MLIQ") == 0) {
+		else if (strcmp(fourcc, "MLIQ") == 0)
+		{
 			/*
 			Specifies liquids inside WMOs.
 			This is where the water from Stormwind and BFD etc. is hidden. (slime in Undercity, pool water in the Darnassus temple, some lava in IF)
@@ -341,7 +367,8 @@ void WMOGroup::initDisplayList() {
 			lq = new Liquid(hlq.A, hlq.B, vec3(hlq.pos.x, hlq.pos.z, -hlq.pos.y));
 			//lq->initFromWMO(gf, wmo->mat[hlq.type], (flags & 0x2000) != 0);
 		}
-		else {
+		else
+		{
 			Debug::Info("WMO_Group[]: No implement group chunk %s [%d].", fourcc, size);
 		}
 
@@ -356,7 +383,7 @@ void WMOGroup::initDisplayList() {
 	//glColor4f(1,1,1,1);
 
 	// generate lists for each batch individually instead
-	
+
 
 	/*
 	float xr=0,xg=0,xb=0;
@@ -369,7 +396,8 @@ void WMOGroup::initDisplayList() {
 	// assume that texturing is on, for unit 1
 	GLuint listbase = glGenLists(nBatches);
 
-	for(uint32_t b = 0; b < nBatches; b++) {
+	for (uint32_t b = 0; b < nBatches; b++)
+	{
 
 		GLuint list = listbase + b;
 
@@ -388,40 +416,46 @@ void WMOGroup::initDisplayList() {
 		// setup texture
 		mat->setup();
 
-		if(mat->GetBlendMode()) {
+		if (mat->GetBlendMode())
+		{
 			glEnable(GL_ALPHA_TEST);
 
-			if(mat->IsTesClampT()) 
+			if (mat->IsTesClampT())
 				glAlphaFunc(GL_GREATER, 0.3f);
 
-			if(mat->IsLightingDisabled()) 
+			if (mat->IsLightingDisabled())
 				glAlphaFunc(GL_GREATER, 0.0f);
 		}
 
-		if(mat->IsTwoSided())
+		if (mat->IsTwoSided())
 			glDisable(GL_CULL_FACE);
 		else
 			glEnable(GL_CULL_FACE);
 
-		if(spec_shader) {
+		if (spec_shader)
+		{
 			glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, glm::value_ptr(colorFromInt(mat->GetDiffuseColor())));
 		}
-		else {
+		else
+		{
 			vec4 nospec(0, 0, 0, 1);
 			glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, glm::value_ptr(nospec));
 		}
 
-		if(overbright) {
+		if (overbright)
+		{
 			GLfloat em[4] = {mat->EmissiveColor().r, mat->EmissiveColor().g, mat->EmissiveColor().b, mat->EmissiveColor().a};
 			glMaterialfv(GL_FRONT, GL_EMISSION, em);
 		}
 
 		// render
 		glBegin(GL_TRIANGLES);
-		for(int t = 0, i = batch->indexStart; t < batch->indexCount; t++, i++) {
+		for (int t = 0, i = batch->indexStart; t < batch->indexCount; t++, i++)
+		{
 			int a = indices[i];
 
-			if(indoor && hascv) {
+			if (indoor && hascv)
+			{
 				setGLColor(cv[a]);
 			}
 
@@ -431,12 +465,14 @@ void WMOGroup::initDisplayList() {
 		}
 		glEnd();
 
-		if(overbright) {
+		if (overbright)
+		{
 			GLfloat em[4] = {0,0,0,1};
 			glMaterialfv(GL_FRONT, GL_EMISSION, em);
 		}
 
-		if(mat->GetBlendMode()) {
+		if (mat->GetBlendMode())
+		{
 			glDisable(GL_ALPHA_TEST);
 		}
 
@@ -445,24 +481,30 @@ void WMOGroup::initDisplayList() {
 	}
 }
 
-void WMOGroup::initLighting(int nLR, short *useLights) {
+void WMOGroup::initLighting(int nLR, short *useLights)
+{
 	//dl_light = 0;
 	// "real" lighting?
-	if(indoor && hascv) {
+	if (indoor && hascv)
+	{
 
 		vec3 dirmin(1, 1, 1);
 		float lenmin;
 		int lmin;
 
-		for(uint32_t i = 0; i < nDoodads; i++) {
+#ifdef MDX_INCL
+		for (uint32_t i = 0; i < nDoodads; i++)
+		{
 			lenmin = 999999.0f*999999.0f;
 			lmin = 0;
-			ModelInstance &mi = wmo->modelis[ddr[i]];
-			for(uint32_t j = 0; j < wmo->header.nLights; j++) {
+			ModelInstance &mi = wmo->m_MDXInstances[ddr[i]];
+			for (uint32_t j = 0; j < wmo->header.nLights; j++)
+			{
 				WMOLight &l = wmo->lights[j];
 				vec3 dir = l.pos - mi.pos;
 				float ll = glm::length2(dir);
-				if(ll < lenmin) {
+				if (ll < lenmin)
+				{
 					lenmin = ll;
 					dirmin = dir;
 					lmin = j;
@@ -471,34 +513,42 @@ void WMOGroup::initLighting(int nLR, short *useLights) {
 			mi.light = lmin;
 			mi.ldir = dirmin;
 		}
+#endif
 
 		outdoorLights = false;
 	}
-	else {
+	else
+	{
 		outdoorLights = true;
 	}
 }
 
-void WMOGroup::draw(cvec3 ofs, const float rot) {
+void WMOGroup::draw(cvec3 ofs, const float rot)
+{
 	visible = false;
 	// view frustum culling
 	vec3 pos = center + ofs;
 	rotate(ofs.x, ofs.z, &pos.x, &pos.z, rot*PI / 180.0f);
-	if(!_World->frustum.intersectsSphere(pos, rad)) return;
+	if (!_World->frustum.intersectsSphere(pos, rad)) return;
 	float dist = glm::length(pos - vec3(_Camera->Position.x, _Camera->Position.y, _Camera->Position.z)) - rad;
-	if(dist >= _WowSettings->culldistance) return;
+	if (dist >= _WowSettings->culldistance) return;
 	visible = true;
 
-	if(hascv) {
+	if (hascv)
+	{
 		glDisable(GL_LIGHTING);
 		_World->outdoorLights(false);
 	}
-	else {
-		if(_WowSettings->lighting) {
-			if(_World->skies->hasSkies()) {
+	else
+	{
+		if (_WowSettings->lighting)
+		{
+			if (_World->skies->hasSkies())
+			{
 				_World->outdoorLights(true);
 			}
-			else {
+			else
+			{
 				// set up some kind of default outdoor light... ?
 				glEnable(GL_LIGHT0);
 				glDisable(GL_LIGHT1);
@@ -515,18 +565,21 @@ void WMOGroup::draw(cvec3 ofs, const float rot) {
 	//glCallList(dl);
 	glDisable(GL_BLEND);
 	glColor4f(1, 1, 1, 1);
-	for(uint32_t i = 0; i < nBatches; i++) {
+	for (uint32_t i = 0; i < nBatches; i++)
+	{
 		bool useshader = (supportShaders && _WowSettings->useshaders && lists[i].second);
-		if(useshader) wmoShader->bind();
+		if (useshader) wmoShader->bind();
 		glCallList(lists[i].first);
-		if(useshader) wmoShader->unbind();
+		if (useshader) wmoShader->unbind();
 	}
 
 	glColor4f(1, 1, 1, 1);
 	glEnable(GL_CULL_FACE);
 
-	if(hascv) {
-		if(_WowSettings->lighting) {
+	if (hascv)
+	{
+		if (_WowSettings->lighting)
+		{
 			glEnable(GL_LIGHTING);
 			//glCallList(dl_light);
 		}
@@ -535,11 +588,12 @@ void WMOGroup::draw(cvec3 ofs, const float rot) {
 
 }
 
-void WMOGroup::drawDoodads(int doodadset, cvec3 ofs, const float rot) {
-	if(!visible)
+void WMOGroup::drawDoodads(int doodadset, cvec3 ofs, const float rot)
+{
+	if (!visible)
 		return;
 
-	if(nDoodads == 0)
+	if (nDoodads == 0)
 		return;
 
 	_World->outdoorLights(outdoorLights);
@@ -547,23 +601,30 @@ void WMOGroup::drawDoodads(int doodadset, cvec3 ofs, const float rot) {
 
 	// draw doodads
 	glColor4f(1, 1, 1, 1);
-	for(uint32_t i = 0; i < nDoodads; i++) {
+	for (uint32_t i = 0; i < nDoodads; i++)
+	{
 		short dd = ddr[i];
 		bool inSet;
 		// apparently, doodadset #0 (defaultGlobal) should always be visible
-		inSet = (((dd >= wmo->doodadsets[doodadset].start) && (dd < (wmo->doodadsets[doodadset].start + wmo->doodadsets[doodadset].size)))
-				 || ((dd >= wmo->doodadsets[0].start) && ((dd < (wmo->doodadsets[0].start + wmo->doodadsets[0].size)))));
-		if(inSet) {
+		inSet = (
+			((dd >= wmo->doodadsets[doodadset].start) && (dd < (wmo->doodadsets[doodadset].start + wmo->doodadsets[doodadset].size))) || 
+			((dd >= wmo->doodadsets[0].start)         && (dd < (wmo->doodadsets[0].start         + wmo->doodadsets[0].size)))
+				 );
+#ifdef MDX_INCL
+		if (inSet)
+		{
 			//if ((dd >= wmo->doodadsets[doodadset].start) && (dd < (wmo->doodadsets[doodadset].start+wmo->doodadsets[doodadset].size))) {
 
-			ModelInstance &mi = wmo->modelis[dd];
+			ModelInstance &mi = wmo->m_MDXInstances[dd];
 
-			if(!outdoorLights) {
+			if (!outdoorLights)
+			{
 				WMOLight::setupOnce(GL_LIGHT2, mi.ldir, mi.lcol);
 			}
 
-			wmo->modelis[dd].DrawAsDoodad(ofs, rot);
+			wmo->m_MDXInstances[dd].DrawAsDoodad(ofs, rot);
 		}
+#endif
 	}
 
 	glDisable(GL_LIGHT2);
@@ -572,17 +633,21 @@ void WMOGroup::drawDoodads(int doodadset, cvec3 ofs, const float rot) {
 
 }
 
-void WMOGroup::drawLiquid() {
-	if(!visible) return;
+void WMOGroup::drawLiquid()
+{
+	if (!visible) return;
 
 	// draw liquid
 	// TODO: culling for liquid boundingbox or something
-	if(lq) {
+	if (lq)
+	{
 		setupFog();
-		if(outdoorLights) {
+		if (outdoorLights)
+		{
 			_World->outdoorLights(true);
 		}
-		else {
+		else
+		{
 			// TODO: setup some kind of indoor lighting... ?
 			_World->outdoorLights(false);
 			glEnable(GL_LIGHT2);
@@ -599,11 +664,14 @@ void WMOGroup::drawLiquid() {
 	}
 }
 
-void WMOGroup::setupFog() {
-	if(outdoorLights || fog == -1) {
+void WMOGroup::setupFog()
+{
+	if (outdoorLights || fog == -1)
+	{
 		_World->setupFog();
 	}
-	else {
+	else
+	{
 		wmo->fogs[fog].setup();
 	}
 }

@@ -20,10 +20,21 @@ void WMOsManager::Destroy()
 	Debug::Info("WMOsManager: All WMOs destroyed.");
 }
 
-WMO* WMOsManager::CreateAction(cstring name) {
-	return new WMO(name);
+WMO* WMOsManager::CreateAction(cstring name)
+{
+	WMO* wmo = new WMO(name);
+
+	if (!wmo->Init())
+	{
+		Debug::Error("WMOsManager[%s]: Failed init WMO.", name.c_str());
+		delete wmo;
+		return nullptr;
+	}
+
+	return wmo;
 }
 
-bool WMOsManager::DeleteAction(cstring name) {
+bool WMOsManager::DeleteAction(cstring name)
+{
 	return true;
 }

@@ -78,13 +78,13 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize, GLuint id) // override
 	FT_Face face;
 	if (FT_New_Memory_Face(ftLibrary, f.GetData(), f.GetSize(), 0, &face) != 0)
 	{
-		Debug::Error("FontsMgr: Error while loading font [%s]. Could not load font file.", f.Path_Name().c_str());
+		Debug::Error("FontsMgr[%s]: Error while loading font. Could not load font file.", f.Path_Name().c_str());
 		return nullptr;
 	}
 
 	if (!(face->face_flags & FT_FACE_FLAG_SCALABLE) || !(face->face_flags & FT_FACE_FLAG_HORIZONTAL))
 	{
-		Debug::Error("FontsMgr: Error while loading font [%s]. Error setting font size.", f.Path_Name().c_str());
+		Debug::Error("FontsMgr[%s]: Error while loading font. Error setting font size.", f.Path_Name().c_str());
 		return nullptr;
 	}
 

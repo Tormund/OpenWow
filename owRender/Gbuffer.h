@@ -23,10 +23,10 @@ public:
 private:
 	GLuint gBuffer;
 	GLuint textures[4]; // Position, diffuse, normal, specular
-	GLuint texturePosition;
+	/*GLuint texturePosition;
 	GLuint textureDiffuse;
 	GLuint textureNormal;
-	GLuint textureSpecular;
+	GLuint textureSpecular;*/
 	GLuint depthTexture; // Depth
 
 	GLuint finalTexture;

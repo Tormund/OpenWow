@@ -8,8 +8,10 @@
 // Additional
 #include "WowTypes.h"
 
-struct __WMOLight {
-	enum LightType {
+struct __WMOLight
+{
+	enum LightType
+	{
 		OMNI_LGT = 0,
 		SPOT_LGT = 1,
 		DIRECT_LGT = 2,
@@ -26,7 +28,8 @@ struct __WMOLight {
 	float unk[4];
 };
 
-void WMOLight::init(File &f) {
+void WMOLight::init(File &f)
+{
 	f.ReadBytes(&LightType, 1);
 	f.ReadBytes(&type, 1);
 	f.ReadBytes(&useAtten, 1);
@@ -53,7 +56,8 @@ void WMOLight::init(File &f) {
 	*/
 }
 
-void WMOLight::setup(GLint light) { // not used right now
+void WMOLight::setup(GLint light)
+{ // not used right now
 	GLfloat LightAmbient[] = {0, 0, 0, 1.0f};
 	GLfloat LightPosition[] = {pos.x, pos.y, pos.z, 0.0f};
 
@@ -64,7 +68,8 @@ void WMOLight::setup(GLint light) { // not used right now
 	glEnable(light);
 }
 
-void WMOLight::setupOnce(GLint light, vec3 dir, vec4 lcol) {
+void WMOLight::setupOnce(GLint light, vec3 dir, vec4 lcol)
+{
 	vec4 position(dir, 0);
 	//vec4 position(0,1,0,0);
 

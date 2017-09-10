@@ -11,8 +11,112 @@
 
 #include "WoWSettings.h"
 
+#define COLOR_TEXTURE_UNIT              GL_TEXTURE0
+#define COLOR_TEXTURE_UNIT_INDEX        0
+
+#define SHADOW_TEXTURE_UNIT             GL_TEXTURE1
+#define SHADOW_TEXTURE_UNIT_INDEX       1
+
+#define NORMAL_TEXTURE_UNIT             GL_TEXTURE2
+#define NORMAL_TEXTURE_UNIT_INDEX       2
+
+#define RANDOM_TEXTURE_UNIT             GL_TEXTURE3
+#define RANDOM_TEXTURE_UNIT_INDEX       3
+
+#define DISPLACEMENT_TEXTURE_UNIT       GL_TEXTURE4
+#define DISPLACEMENT_TEXTURE_UNIT_INDEX 4
+
+#define SPECULAR_TEXTURE_UNIT           GL_TEXTURE5
+#define SPECULAR_TEXTURE_UNIT_INDEX     5
+
 World::World()
 {
+	// SHADERS
+	auto camera = new Camera;
+	_Pipeline->SetCamera(camera);
+	_Pipeline->SetProjection(45.0f, 1024.0f / 768.0f, 0.1f, 10000.0f);
+
+
+	m_gbuffer = new GBuffer();
+	if (!m_gbuffer->Init(1024, 768))
+	{
+		Debug::Error("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
+		return;
+	}
+
+	// Geometry pass
+	m_DSGeomPassTech = new DSGeomPassTech();
+	if (!m_DSGeomPassTech->Init())
+	{
+		Debug::Error("Error initializing DSGeomPassTech\n");
+		return;
+	}
+	m_DSGeomPassTech->Bind();
+	m_DSGeomPassTech->SetColorTextureUnit(COLOR_TEXTURE_UNIT_INDEX);
+	m_DSGeomPassTech->SetSpecularTextureUnit(SPECULAR_TEXTURE_UNIT_INDEX);
+	m_DSGeomPassTech->Unbind();
+
+	mat4 nullMatrix;
+	nullMatrix[0][0] = 1.0f; nullMatrix[0][1] = 0.0f; nullMatrix[0][2] = 0.0f; nullMatrix[0][3] = 0.0f;
+	nullMatrix[1][0] = 0.0f; nullMatrix[1][1] = 1.0f; nullMatrix[1][2] = 0.0f; nullMatrix[1][3] = 0.0f;
+	nullMatrix[2][0] = 0.0f; nullMatrix[2][1] = 0.0f; nullMatrix[2][2] = 1.0f; nullMatrix[2][3] = 0.0f;
+	nullMatrix[3][0] = 0.0f; nullMatrix[3][1] = 0.0f; nullMatrix[3][2] = 0.0f; nullMatrix[3][3] = 1.0f;
+
+	//
+
+	// Point light
+	m_DSPointLightPassTech = new DSPointLightPassTech();
+	if (!m_DSPointLightPassTech->Init())
+	{
+		Debug::Error("Error initializing DSPointLightPassTech");
+		return;
+	}
+	m_DSPointLightPassTech->Bind();
+	m_DSPointLightPassTech->SetPositionTextureUnit(GBuffer::GBUFFER_TEXTURE_TYPE_POSITION);
+	m_DSPointLightPassTech->SetColorTextureUnit(GBuffer::GBUFFER_TEXTURE_TYPE_DIFFUSE);
+	m_DSPointLightPassTech->SetNormalTextureUnit(GBuffer::GBUFFER_TEXTURE_TYPE_NORMAL);
+	m_DSPointLightPassTech->SetSpecularTextureUnit(GBuffer::GBUFFER_TEXTURE_TYPE_SPECULAR);
+	m_DSPointLightPassTech->SetScreenSize(1024, 768);
+	m_DSPointLightPassTech->SetMatSpecularPower(64);
+	m_DSPointLightPassTech->SetWVP(nullMatrix);
+	m_DSPointLightPassTech->Unbind();
+
+	//
+
+	// Directional light
+	m_DSDirLightPassTech = new DSDirLightPassTech();
+	if (!m_DSDirLightPassTech->Init())
+	{
+		Debug::Error("Error initializing DSDirLightPassTech");
+		return;
+	}
+	m_DSDirLightPassTech->Bind();
+	m_DSDirLightPassTech->SetPositionTextureUnit(GBuffer::GBUFFER_TEXTURE_TYPE_POSITION);
+	m_DSDirLightPassTech->SetColorTextureUnit(GBuffer::GBUFFER_TEXTURE_TYPE_DIFFUSE);
+	m_DSDirLightPassTech->SetNormalTextureUnit(GBuffer::GBUFFER_TEXTURE_TYPE_NORMAL);
+	m_DSDirLightPassTech->SetSpecularTextureUnit(GBuffer::GBUFFER_TEXTURE_TYPE_SPECULAR);
+	m_DSDirLightPassTech->SetScreenSize(1024, 768);
+	m_DSDirLightPassTech->SetMatSpecularPower(64);
+	m_DSDirLightPassTech->SetWVP(nullMatrix);
+	m_DSDirLightPassTech->Unbind();
+
+	//
+
+	m_nullTech = new NullTechnique();
+	if (!m_nullTech->Init())
+	{
+		Debug::Error("Error initializing NULL TECH\n");
+		return;
+	}
+
+	colorPassTech = new SimpleColorTechnique();
+	if (!colorPassTech->Init())
+	{
+		Debug::Error("Error initializing SimpleColorTech");
+		return;
+	}
+
+
 	_WowSettings->CalculateSquareDistances();
 
 	// Fog params
@@ -243,8 +347,13 @@ void World::setupFog()
 
 void World::draw()
 {
+#ifdef WMO_INCL
 	WMOInstance::reset();
+#endif
+
+#ifdef WMO_INCL
 	_ModelsMgr->resetAnim();
+#endif
 
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
 
@@ -261,7 +370,9 @@ void World::draw()
 	if (m_map.MapHasGlobalWMO() && !hadSky)
 	{
 		m_map.SetOutOfBounds(false);
+#ifdef WMO_INCL
 		m_map.GetMapWMOs()->GetGlobalWMOInstance()->GetWMO()->drawSkybox();
+#endif
 	}
 
 	glEnable(GL_CULL_FACE);
@@ -280,10 +391,6 @@ void World::draw()
 	{
 		hadSky = skies->drawSky(vec3(_Camera->Position.x, _Camera->Position.y, _Camera->Position.z));
 	}
-
-
-
-
 
 	GLbitfield clearmask = GL_DEPTH_BUFFER_BIT;
 	if (!hadSky)
@@ -400,7 +507,9 @@ void World::draw()
 
 	if(m_map.MapHasGlobalWMO()) {
 		m_map.SetOutOfBounds(false);
+#ifdef WMO_INCL
 		m_map.GetMapWMOs()->GetGlobalWMOInstance()->draw();
+#endif
 	}
 
 	if (supportShaders && _WowSettings->useshaders)
@@ -430,13 +539,15 @@ void World::draw()
 
 	glColor4f(1, 1, 1, 1);
 
-	//models
 	if (_WowSettings->drawmodels)
 	{
 		m_map.RenderModels();
 	}
 
 	glDisable(GL_CULL_FACE);
+
+
+	// ------ Water -------//
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -456,6 +567,7 @@ void World::tick(float dt)
 
 	m_map.Tick();
 
+#ifdef MDX_INCL
 	while (dt > 0.1f)
 	{
 		_ModelsMgr->updateEmitters(0.1f);
@@ -463,4 +575,5 @@ void World::tick(float dt)
 	}
 
 	_ModelsMgr->updateEmitters(dt);
+#endif
 }

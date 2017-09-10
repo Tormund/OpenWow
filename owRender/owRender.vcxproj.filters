@@ -18,15 +18,6 @@
     <ClCompile Include="ds_geom_pass_tech.cpp">
       <Filter>Techniques</Filter>
     </ClCompile>
-    <ClCompile Include="ds_light_pass_tech.cpp">
-      <Filter>Techniques</Filter>
-    </ClCompile>
-    <ClCompile Include="ds_point_light_pass_tech.cpp">
-      <Filter>Techniques</Filter>
-    </ClCompile>
-    <ClCompile Include="ds_dir_light_pass_tech.cpp">
-      <Filter>Techniques</Filter>
-    </ClCompile>
     <ClCompile Include="null_technique.cpp">
       <Filter>Techniques</Filter>
     </ClCompile>
@@ -47,6 +38,15 @@
     <ClCompile Include="Font.cpp">
       <Filter>Fonts</Filter>
     </ClCompile>
+    <ClCompile Include="ds_dir_light_pass_tech.cpp">
+      <Filter>Techniques\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="ds_light_pass_tech.cpp">
+      <Filter>Techniques\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="ds_point_light_pass_tech.cpp">
+      <Filter>Techniques\Lights</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Image.h">
@@ -64,15 +64,6 @@
     </ClInclude>
     <ClInclude Include="Gbuffer.h" />
     <ClInclude Include="ds_geom_pass_tech.h">
-      <Filter>Techniques</Filter>
-    </ClInclude>
-    <ClInclude Include="ds_light_pass_tech.h">
-      <Filter>Techniques</Filter>
-    </ClInclude>
-    <ClInclude Include="ds_point_light_pass_tech.h">
-      <Filter>Techniques</Filter>
-    </ClInclude>
-    <ClInclude Include="ds_dir_light_pass_tech.h">
       <Filter>Techniques</Filter>
     </ClInclude>
     <ClInclude Include="null_technique.h">
@@ -100,6 +91,15 @@
     <ClInclude Include="Font.h">
       <Filter>Fonts</Filter>
     </ClInclude>
+    <ClInclude Include="ds_dir_light_pass_tech.h">
+      <Filter>Techniques\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="ds_light_pass_tech.h">
+      <Filter>Techniques\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="ds_point_light_pass_tech.h">
+      <Filter>Techniques\Lights</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Types">
@@ -119,6 +119,9 @@
     </Filter>
     <Filter Include="Fonts">
       <UniqueIdentifier>{5bcbfcfc-c3c6-4a8e-a1b9-750f8d3379f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Techniques\Lights">
+      <UniqueIdentifier>{11adff86-9e23-4ce9-892c-d95ec8cdb83f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

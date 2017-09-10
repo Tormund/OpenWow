@@ -2,40 +2,47 @@
 
 #include "gbuffer.h"
 
-#define ZERO_MEM(a) memset(a, 0, sizeof(a))
-#define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
 
-GBuffer::GBuffer() {
+
+GBuffer::GBuffer()
+{
 	gBuffer = 0;
 	depthTexture = 0;
 	finalTexture = 0;
 	ZERO_MEM(textures);
 }
 
-GBuffer::~GBuffer() {
-	if(gBuffer != 0) {
+GBuffer::~GBuffer()
+{
+	if (gBuffer != 0)
+	{
 		glDeleteFramebuffers(1, &gBuffer);
 	}
 
-	if(textures[0] != 0) {
+	if (textures[0] != 0)
+	{
 		glDeleteTextures(ARRAY_SIZE_IN_ELEMENTS(textures), textures);
 	}
 
-	if(depthTexture != 0) {
+	if (depthTexture != 0)
+	{
 		glDeleteTextures(1, &depthTexture);
 	}
 
-	if(finalTexture != 0) {
+	if (finalTexture != 0)
+	{
 		glDeleteTextures(1, &finalTexture);
 	}
 }
 
-bool GBuffer::Init(unsigned int WindowWidth, unsigned int WindowHeight) {
+bool GBuffer::Init(unsigned int WindowWidth, unsigned int WindowHeight)
+{
 	// Create the FBO
 	glGenFramebuffers(1, &gBuffer);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, gBuffer);
 
-	for(unsigned int i = 0; i < ARRAY_SIZE_IN_ELEMENTS(textures); i++) {
+	for (unsigned int i = 0; i < ARRAY_SIZE_IN_ELEMENTS(textures); i++)
+	{
 		glGenTextures(1, &textures[i]);
 		glBindTexture(GL_TEXTURE_2D, textures[i]);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, WindowWidth, WindowHeight, 0, GL_RGB, GL_FLOAT, NULL);
@@ -58,7 +65,8 @@ bool GBuffer::Init(unsigned int WindowWidth, unsigned int WindowHeight) {
 
 	GLenum Status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
-	if(Status != GL_FRAMEBUFFER_COMPLETE) {
+	if (Status != GL_FRAMEBUFFER_COMPLETE)
+	{
 		Debug::Error("FB error, status: 0x%x", Status);
 		return false;
 	}
@@ -69,7 +77,8 @@ bool GBuffer::Init(unsigned int WindowWidth, unsigned int WindowHeight) {
 	return true;
 }
 
-void GBuffer::StartFrame() {
+void GBuffer::StartFrame()
+{
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, gBuffer);
 
 	glDrawBuffer(GL_COLOR_ATTACHMENT5);
@@ -77,35 +86,40 @@ void GBuffer::StartFrame() {
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void GBuffer::BindForGeomPass() {
+void GBuffer::BindForGeomPass()
+{
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, gBuffer);
 
 	GLenum DrawBuffers[] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3};
 	glDrawBuffers(ARRAY_SIZE_IN_ELEMENTS(DrawBuffers), DrawBuffers);
 }
 
-void GBuffer::BindForStencilPass() {
+void GBuffer::BindForStencilPass()
+{
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, gBuffer);
 
 	// must disable the draw buffers 
 	glDrawBuffer(GL_NONE);
 }
 
-void GBuffer::BindForLightPass() {
+void GBuffer::BindForLightPass()
+{
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, gBuffer);
 
 	glDrawBuffer(GL_COLOR_ATTACHMENT5);
 
-	for(unsigned int i = 0; i < ARRAY_SIZE_IN_ELEMENTS(textures); i++) {
+	for (unsigned int i = 0; i < ARRAY_SIZE_IN_ELEMENTS(textures); i++)
+	{
 		glActiveTexture(GL_TEXTURE0 + i);
 		glBindTexture(GL_TEXTURE_2D, textures[i]);
 	}
 }
 
-void GBuffer::BindForFinalPass(GLint _color) {
+void GBuffer::BindForFinalPass(GLint _color)
+{
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer);	// Get data from gBuffer
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);			// Set target buffer as Default
-	
+
 	glReadBuffer(_color);
 	glBlitFramebuffer(0, 0, 1024, 768, 0, 0, 1024, 768, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 }

@@ -1,6 +1,7 @@
 #pragma once
 
-enum Camera_Movement {
+enum Camera_Movement
+{
 	FORWARD,
 	BACKWARD,
 	LEFT,
@@ -12,21 +13,24 @@ const float PITCH = 0.0f;
 const float SPEED = 1.0f;
 const float SENSITIVTY = 20.1f;
 
-class Camera {
+class Camera
+{
 public:
 	OW_RENDER_DLL_API Camera(vec3 position = vec3(0.0f, 0.0f, 0.0f), vec3 up = vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH);
 
 	OW_RENDER_DLL_API Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch);
 
-	void Update() {
+	void Update()
+	{
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 
-		glMultMatrixf(&viewMatrix[0][0]);
+		glMultMatrixf(glm::value_ptr(viewMatrix));
 	}
 
 	// Returns the view matrix calculated using Eular Angles and the LookAt Matrix
-	inline const glm::mat4* GetViewMatrix() {
+	inline const glm::mat4* GetViewMatrix()
+	{
 		return &viewMatrix;
 	}
 

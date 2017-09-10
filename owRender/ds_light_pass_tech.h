@@ -3,7 +3,8 @@
 #include "technique.h"
 #include "lights_common.h"
 
-class DSLightPassTech : public Technique {
+class DSLightPassTech : public Technique
+{
 public:
 	OW_RENDER_DLL_API DSLightPassTech();
 	OW_RENDER_DLL_API virtual bool Init();

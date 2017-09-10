@@ -12,7 +12,8 @@ struct WMOFog;
 struct WMOLight;
 class WMOMaterial;
 
-struct WMOHeader {
+struct WMOHeader
+{
 	uint32_t nTextures;
 	uint32_t nGroups;
 	uint32_t nPortals;
@@ -25,7 +26,7 @@ struct WMOHeader {
 	CAaBox bounding_box;
 
 	//
-	const size_t __size = 64;
+	static const size_t __size = 64;
 };
 
 
@@ -33,7 +34,7 @@ struct WMOHeader {
 	int flags;
 	int specular;
 	int transparent; // Blending: 0 for opaque, 1 for transparent
-	int nameStart; // Start position for the first texture filename in the MOTX data block	
+	int nameStart; // Start position for the first texture filename in the MOTX data block
 	uint32_t col1; // color
 	int d3; // flag
 	int nameEnd; // Start position for the second texture filename in the MOTX data block
@@ -48,22 +49,26 @@ struct WMOHeader {
 	Texture* tex;
 };*/
 
-enum LightType {
+enum LightType
+{
 	OMNI_LGT,
 	SPOT_LGT,
 	DIRECT_LGT,
 	AMBIENT_LGT
 };
 
-struct WMOPV {
+struct WMOPV
+{
 	vec3 a, b, c, d;
 };
 
-struct WMOPR {
+struct WMOPR
+{
 	int16_t portal, group, dir, reserved;
 };
 
-struct WMODoodadSet {
+struct WMODoodadSet
+{
 	char name[0x14]; // Set name
 	int32_t start; // index of first doodad instance in this set
 	int32_t size; // number of doodad instances in this set
@@ -71,25 +76,29 @@ struct WMODoodadSet {
 };
 
 
-class WMO : public RefItemNamed {
+class WMO : public RefItemNamed
+{
 public:
-	WMO(cstring name);
-	~WMO() override;
+	WMO(cstring _fileName);
+	~WMO();
+
+	bool Init();
 
 	void draw(int doodadset, cvec3 ofs, const float rot);
 	void drawPortals();
 	void drawSkybox();
 
 public:
-	bool ok;
-
 	vector<WMOGroup*> groups;
 	vector<WMOMaterial*> mat;
 
-	vector<string> models;
-	vector<ModelInstance> modelis;
+#ifdef MDX_INCL
+	vector<string> m_MDXNames;
+	vector<ModelInstance> m_MDXInstances;
+#endif // MDX_INCL
 
 	vector<WMOLight> lights;
+
 	vector<WMOPV> pvs;
 	vector<WMOPR> prs;
 
@@ -99,12 +108,13 @@ public:
 
 	WMOHeader header;
 
-	Model * skybox;
+	Model* skybox;
 };
 
 /////////////////////////////////////
 
-struct WMOPlacementInfo {
+struct WMOPlacementInfo
+{
 	uint32_t nameIndex;
 	uint32_t uniqueId;
 	vec3 position;

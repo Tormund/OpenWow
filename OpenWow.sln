@@ -41,13 +41,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "owTest", "owTest\owTest.vcx
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shaders", "Shaders", "{57229CFC-3ED4-4E66-A65A-87F7802A3477}"
-	ProjectSection(SolutionItems) = preProject
-		owTest\shaders\geometry_pass.glsl = owTest\shaders\geometry_pass.glsl
-		owTest\shaders\light_pass.glsl = owTest\shaders\light_pass.glsl
-		owTest\shaders\null_technique.glsl = owTest\shaders\null_technique.glsl
-		owTest\shaders\SimpleColor.glsl = owTest\shaders\SimpleColor.glsl
-		owTest\shaders\SimpleTexture.glsl = owTest\shaders\SimpleTexture.glsl
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "owGUI", "owGUI\owGUI.vcxproj", "{4BDE3C61-6FD1-49B2-AD4B-FEDFA2400700}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -61,6 +54,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3rd party", "3rd party", "{
 		shared\owDBC.h = shared\owDBC.h
 		shared\owGame.h = shared\owGame.h
 		shared\owGUI.h = shared\owGUI.h
+		shared\owLibMPQ.h = shared\owLibMPQ.h
 		shared\owRender.h = shared\owRender.h
 	EndProjectSection
 EndProject

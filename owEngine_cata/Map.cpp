@@ -233,7 +233,9 @@ void Map::LoadLowTerrain()
 				string name(p);
 				p += strlen(p) + 1;
 
+#ifdef WMO_INCL
 				m_Map_GlobalWMOs.AddLowResWMOName(name);
+#endif
 			}
 			delete[] buf;
 		}
@@ -244,12 +246,14 @@ void Map::LoadLowTerrain()
 		{
 			uint32_t count = size / WMOPlacementInfo::__size;
 
+#ifdef WMO_INCL
 			for (size_t i = 0; i < count; i++)
 			{
 				WMOPlacementInfo* placement = new WMOPlacementInfo;
 				f.ReadBytes(placement, WMOPlacementInfo::__size);
 				m_Map_GlobalWMOs.AddLowResWMOPlacementInfo(placement);
 			}
+#endif
 		}
 		else if (strncmp(fourcc, "MAOF", 4) == 0) // Contains 64*64 = 4096 unsigned 32-bit integers, these are absolute offsets in the file to each map m_TileExists's MapAreaLow-array-entry. For unused tiles the value is 0.
 		{
@@ -430,7 +434,9 @@ void Map::LoadLowTerrain()
 
 
 	// Init global WMOs
+#ifdef WMO_INCL
 	m_Map_GlobalWMOs.InitGlobalsWMOs();
+#endif
 }
 
 //

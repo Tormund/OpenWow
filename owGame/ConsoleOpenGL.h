@@ -6,8 +6,10 @@ class DebugOutput;
 
 //
 
-struct ConsoleMessage {
-	ConsoleMessage(cstring _text, const Color _color) {
+struct ConsoleMessage
+{
+	ConsoleMessage(cstring _text, const Color _color)
+	{
 		text = _text;
 		color = _color;
 	}
@@ -18,13 +20,14 @@ struct ConsoleMessage {
 
 //
 
-class ConsoleOpenGL : public Console, public InputListener, public DebugOutput {
+class ConsoleOpenGL : public Console, public InputListener, public DebugOutput
+{
 	typedef vector<ConsoleMessage*> ConsoleMessages;
 public:
 	OW_GAME_DLL_API bool Init();
 	OW_GAME_DLL_API void Destroy();
 
-	OW_GAME_DLL_API void Render();
+	OW_GAME_DLL_API void RenderUI();
 
 	OW_GAME_DLL_API V_MOUSE_WHEEL;
 	OW_GAME_DLL_API V_KEYBD_PRESSED;

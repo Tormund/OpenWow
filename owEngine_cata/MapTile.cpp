@@ -179,8 +179,19 @@ struct MapTileHeader
 	uint32_t unused[3];
 };
 
-MapTile::MapTile(int x0, int z0) : m_IndexX(x0), m_IndexZ(z0), wmoCount(0), mdxCount(0)
+MapTile::MapTile(int x0, int z0)
 {
+	m_IndexX = x0;
+	m_IndexZ = z0; 
+
+#ifdef WMO_INCL
+	wmoCount = 0;
+#endif
+
+#ifdef MDX_INCL
+	mdxCount = 0;
+#endif
+
 	m_GamePositionX = x0 * C_TileSize;
 	m_GamePositionZ = z0 * C_TileSize;
 
@@ -213,15 +224,19 @@ MapTile::~MapTile()
 		_TexturesMgr->Delete(*it);
 	}
 
+#ifdef WMO_INCL
 	for (vector<string>::iterator it = wmoNames.begin(); it != wmoNames.end(); ++it)
 	{
 		_WMOsMgr->Delete(*it);
 	}
+#endif
 
+#ifdef MDX_INCL
 	for (vector<string>::iterator it = mdxNames.begin(); it != mdxNames.end(); ++it)
 	{
 		_ModelsMgr->Delete(*it);
 	}
+#endif
 
 	Debug::Green("MapTile[%d, %d]: Unloaded.", m_IndexX, m_IndexZ);
 }
@@ -370,9 +385,10 @@ bool MapTile::parse_adt(cstring _filename, load_phases _phase)
 				string path(p);
 				p += strlen(p) + 1;
 
-				// Preload m2 model
+#ifdef MDX_INCL
 				_ModelsMgr->Add(path);
 				mdxNames.push_back(path);
+#endif
 			}
 			delete[] buf;
 		}
@@ -392,9 +408,16 @@ bool MapTile::parse_adt(cstring _filename, load_phases _phase)
 				string path(p);
 				p += strlen(p) + 1;
 
+#ifdef WMO_INCL
 				// Preload WMO
-				_WMOsMgr->Add(path);
+				if (_WMOsMgr->Add(path) == nullptr)
+				{
+					Debug::Error("MapTile[%s]: Failed add WMO[%s]", _filename.c_str(), path.c_str());
+					break;
+				}
+
 				wmoNames.push_back(path);
+#endif
 			}
 			delete[] buf;
 		}
@@ -405,6 +428,7 @@ bool MapTile::parse_adt(cstring _filename, load_phases _phase)
 		else if (strncmp(fourcc, "MDDF", 4) == 0)
 		{
 			// Placement information for doodads (M2 models).
+#ifdef MDX_INCL
 			mdxCount = (int)size / 36;
 			for (size_t i = 0; i < mdxCount; i++)
 			{
@@ -415,10 +439,12 @@ bool MapTile::parse_adt(cstring _filename, load_phases _phase)
 				ModelInstance inst(model, f);
 				mdxInstances.push_back(inst);
 			}
+#endif
 		}
 		else if (strncmp(fourcc, "MODF", 4) == 0)
 		{
 			// Placement information for WMOs.
+#ifdef WMO_INCL
 			wmoCount = size / 64;
 			for (size_t i = 0; i < wmoCount; i++)
 			{
@@ -429,6 +455,7 @@ bool MapTile::parse_adt(cstring _filename, load_phases _phase)
 				WMOInstance inst(wmo, placementInfo);
 				wmoInstances.push_back(inst);
 			}
+#endif
 		}
 		else if (strncmp(fourcc, "MH2O", 4) == 0)
 		{
@@ -634,14 +661,17 @@ void MapTile::drawWater()
 
 void MapTile::drawObjects()
 {
+#ifdef WMO_INCL
 	for (auto it = wmoInstances.begin(); it != wmoInstances.end(); ++it)
 	{
 		(*it).draw();
 	}
+#endif
 }
 
 void MapTile::drawSky()
 {
+#ifdef WMO_INCL
 	for (auto it = wmoInstances.begin(); it != wmoInstances.end(); ++it)
 	{
 		(*it).GetWMO()->drawSkybox();
@@ -651,14 +681,17 @@ void MapTile::drawSky()
 			break;
 		}
 	}
+#endif
 }
 
 void MapTile::drawModels()
 {
+#ifdef MDX_INCL
 	for (auto it = mdxInstances.begin(); it != mdxInstances.end(); ++it)
 	{
 		(*it).draw();
 	}
+#endif
 }
 
 //

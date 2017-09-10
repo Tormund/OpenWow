@@ -234,6 +234,9 @@
     <ClInclude Include="INIFile.h">
       <Filter>Files\INIFile</Filter>
     </ClInclude>
+    <ClInclude Include="GameModule.h">
+      <Filter>Module</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ModulesMgr.inl">

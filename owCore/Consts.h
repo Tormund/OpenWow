@@ -21,7 +21,25 @@ OW_CORE_DLL_API extern vec2 VECTOR_ZERO;
 
 #define M_2_PI 6.28318530718
 
-#define FORCE_INLINE __forceinline
+#define ZERO_MEM(a) memset(a, 0, sizeof(a))
+#define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
+
+
+#define CLASS_INSTANCE(_className)\
+public:\
+	static _className* instance()\
+	{\
+		static _className instance;\
+		return &instance;\
+	}
+
+#define CLASS_INSTANCE_API(_className, _dllApi)\
+public:\
+	static _dllApi _className* instance()\
+	{\
+		static _className instance;\
+		return &instance;\
+	}
 
 enum TextAlignW {
 	TEXT_ALIGNW_LEFT = 0,

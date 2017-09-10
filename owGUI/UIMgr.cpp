@@ -48,7 +48,7 @@ void UIMgr::Update() {
 	}
 }
 
-void UIMgr::Render() {
+void UIMgr::RenderUI() {
 	baseWindow->Render();
 }
 

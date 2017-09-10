@@ -43,7 +43,10 @@ public:
 public: // Getters
 	string GetPath() { return path; }
 	gMapDBRecord* GetTemplate() { return templateMap; }
+
+#ifdef WMO_INCL
 	Map_GlobalWMOs* GetMapWMOs() { return &m_Map_GlobalWMOs; }
+#endif
 
 	bool IsBigAlpha() { return m_BigAlpha; }
 

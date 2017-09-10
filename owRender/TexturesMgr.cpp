@@ -9,6 +9,7 @@
 bool TexturesMgr::Init()
 {
 	ADDCONSOLECOMMAND_CLASS("tm_info", TexturesMgr, PrintAllInfo);
+
 	black = CreateAction("black.png", GenerateID());
 	white = CreateAction("white.png", GenerateID());
 
@@ -147,8 +148,6 @@ bool TexturesMgr::LoadBLPTexture(File& _file, Texture* _texture)
 	}
 	else if (header.compression == 1)
 	{
-
-		Debug::Error("Texture COD = []");
 		unsigned int pal[256];
 		_file.ReadBytes(pal, 1024);
 
@@ -273,7 +272,7 @@ GLuint TexturesMgr::GenerateID()
 
 Texture* TexturesMgr::CreateAction(cstring name, GLuint id)
 {
-	File f(name);
+	File f = name;
 
 	if (!f.Open())
 	{
@@ -307,6 +306,8 @@ bool TexturesMgr::DeleteAction(cstring name, GLuint id)
 {
 	return true;
 }
+
+//
 
 struct Color4
 {

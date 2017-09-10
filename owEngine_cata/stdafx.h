@@ -9,6 +9,12 @@
 #define GLFW_DLL
 #include <GLFW/glfw3.h>
 
+// ASSIMP
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+#include <assimp/DefaultLogger.hpp>
+
 #include <owCore.h>
 #pragma comment(lib, "owCore.lib")
 

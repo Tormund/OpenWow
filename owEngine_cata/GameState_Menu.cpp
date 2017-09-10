@@ -81,7 +81,7 @@ void GameState_Menu::Destroy()
 {
 	//window->Delete();
 
-	inited = false;
+	m_inited = false;
 
 	_Input->DeleteInputListener(this);
 }
@@ -127,7 +127,7 @@ void GameState_Menu::UpdatePhase(double t, double dt)
 		backgroundModel->updateEmitters(dt);
 }
 
-void GameState_Menu::RenderPhase(double t, double dt)
+void GameState_Menu::Render(double t, double dt)
 {
 	glDisable(GL_FOG);
 
@@ -166,7 +166,7 @@ void GameState_Menu::RenderPhase(double t, double dt)
 	}
 }
 
-void GameState_Menu::RenderUIPhase(double t, double dt)
+void GameState_Menu::RenderUI(double t, double dt)
 {
 	//if (_World->loading)
 	//{
@@ -317,7 +317,9 @@ MOUSE_PRESSED(GameState_Menu)
 		}
 		else if (_World->GetMap()->MapHasGlobalWMO())
 		{
+#ifdef WMO_INCL
 			pointInWorld = _World->GetMap()->GetMapWMOs()->GetGlobalWMOPlacementInfo()->position;
+#endif
 		}
 
 		delete backgroundModel;

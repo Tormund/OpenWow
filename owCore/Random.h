@@ -6,9 +6,9 @@ public:
 
 	static OW_CORE_DLL_API float Generate();
 	static OW_CORE_DLL_API int GenerateMax(int TMax);
-	static OW_CORE_DLL_API unsigned int GenerateMax(unsigned int TMax);
+	static OW_CORE_DLL_API uint32_t GenerateMax(uint32_t TMax);
 	static OW_CORE_DLL_API int GenerateRange(int TMin, int TMax);
-	static OW_CORE_DLL_API unsigned int GenerateRange(unsigned int TMin, unsigned int TMax);
+	static OW_CORE_DLL_API uint32_t GenerateRange(uint32_t TMin, uint32_t TMax);
 	static OW_CORE_DLL_API float GenerateRange(float TMin, float TMax);
 
 private:

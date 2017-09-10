@@ -51,13 +51,15 @@ void APIENTRY glDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severi
 bool RenderGL::Init()
 {
 	// Window size
-	windowSize = vec2(1024, 768);
+	windowSize = vec2(1024.0f, 768.0f);
 
 	// Aspect
-	aspectFactor = 1.0;
-	aspectRatio = static_cast<double>(windowSize.x) / static_cast<double>(windowSize.y);
-	if (aspectRatio >= 1.0)
+	aspectFactor = 1.0f;
+	aspectRatio = windowSize.x / windowSize.y;
+	if (aspectRatio >= 1.0f)
+	{
 		aspectFactor = aspectRatio;
+	}
 
 	// Debug output
 	GLint flags;
@@ -99,10 +101,10 @@ bool RenderGL::Init()
 	glPointSize(1.5f);
 	glEnable(GL_POINT_SMOOTH);
 
-	// Arrays
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_NORMAL_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	// Arrays // BOUZI ENABLE IN NOOB MODE
+	//glEnableClientState(GL_VERTEX_ARRAY);
+	//glEnableClientState(GL_NORMAL_ARRAY);
+	//glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	// Light
 	const GLfloat light_ambient[] = {0.0f, 0.0f, 0.0f, 1.0f};
@@ -134,7 +136,8 @@ bool RenderGL::Init()
 	return true;
 }
 
-void RenderGL::Destroy() {}
+void RenderGL::Destroy()
+{}
 
 void RenderGL::Set3D()
 {
@@ -150,10 +153,10 @@ void RenderGL::Set3D()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	//glDisable(GL_DEPTH_TEST);
-	//glDisable(GL_BLEND);
-	//glDisable(GL_CULL_FACE);
-	//glDisable(GL_ALPHA_TEST);
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_BLEND);
+	glDisable(GL_CULL_FACE);
+	glDisable(GL_ALPHA_TEST);
 }
 
 void RenderGL::Set2D()
@@ -178,57 +181,56 @@ void RenderGL::Set2D()
 	// Projection is orthographic
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-
-	mat4 orho = glm::ortho(0.0f, static_cast<float>(windowSize.x), static_cast<float>(windowSize.y), 0.0f);
-	glMultMatrixf(&orho[0][0]);
+	mat4 orho = glm::ortho(0.0f, windowSize.x, windowSize.y, 0.0f);
+	glMultMatrixf(glm::value_ptr(orho));
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	//glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
-	//glActiveTexture(GL_TEXTURE5);
-	//glBindTexture(GL_TEXTURE_2D, 0);
-	//glDisable(GL_TEXTURE_2D);
+	/*glActiveTexture(GL_TEXTURE5);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glDisable(GL_TEXTURE_2D);*/
 }
 
 // UI
 
-void RenderGL::RenderImage(const vec2& _pos, Image* _image)
+void RenderGL::RenderImage(cvec2 _pos, Image* _image)
 {
 	RenderTexture(_pos - _image->offset, _image->texture, _image->size, _image->coords);
 }
 
-void RenderGL::RenderImage(const vec2& _pos, Image* _image, const vec2& _size)
+void RenderGL::RenderImage(cvec2 _pos, Image* _image, cvec2 _size)
 {
 	RenderTexture(_pos - _image->offset, _image->texture, _size, _image->coords);
 }
 
-void RenderGL::RenderTexture(const vec2& _pos, Texture* _texture, const vec2& _size, const Rect<double>& _coords)
+void RenderGL::RenderTexture(cvec2 _pos, Texture* _texture, cvec2 _size, const Rect& _coords)
 {
 	glEnable(GL_TEXTURE_2D);
 	_texture->Bind();
 	glPushMatrix();
 	{
-		glTranslated(static_cast<double>(_pos.x), static_cast<double>(_pos.y), 0.0);
+		glTranslatef(_pos.x, _pos.y, 0.0f);
 
 		glPushAttrib(GL_COLOR_BUFFER_BIT);
 		{
-			glColor4d(COLOR_WHITE.red, COLOR_WHITE.green, COLOR_WHITE.blue, COLOR_WHITE.alpha);
+			glColor4f(COLOR_WHITE.red, COLOR_WHITE.green, COLOR_WHITE.blue, COLOR_WHITE.alpha);
 
 			glBegin(GL_TRIANGLE_STRIP);
 			{
-				glTexCoord2d(_coords.p1.x, _coords.p0.y);
-				glVertex2i(_size.x, 0);
+				glTexCoord2f(_coords.p1.x, _coords.p0.y);
+				glVertex2f(_size.x, 0.0f);
 
-				glTexCoord2d(_coords.p0.x, _coords.p0.y);
-				glVertex2i(0, 0);
+				glTexCoord2f(_coords.p0.x, _coords.p0.y);
+				glVertex2f(0.0f, 0.0f);
 
-				glTexCoord2d(_coords.p1.x, _coords.p1.y);
-				glVertex2i(_size.x, _size.y);
+				glTexCoord2f(_coords.p1.x, _coords.p1.y);
+				glVertex2f(_size.x, _size.y);
 
-				glTexCoord2d(_coords.p0.x, _coords.p1.y);
-				glVertex2i(0, _size.y);
+				glTexCoord2f(_coords.p0.x, _coords.p1.y);
+				glVertex2f(0.0f, _size.y);
 			}
 			glEnd();
 		}
@@ -239,22 +241,22 @@ void RenderGL::RenderTexture(const vec2& _pos, Texture* _texture, const vec2& _s
 	glDisable(GL_TEXTURE_2D);
 }
 
-void RenderGL::RenderRectangle(const vec2& _pos, const vec2& _size, bool _filled, const Color& _color)
+void RenderGL::RenderRectangle(cvec2 _pos, cvec2 _size, bool _filled, const Color& _color)
 {
 	glPushMatrix();
 	{
-		glTranslated(static_cast<double>(_pos.x), static_cast<double>(_pos.y), 0.0);
+		glTranslatef(static_cast<double>(_pos.x), static_cast<double>(_pos.y), 0.0);
 
 		glPushAttrib(GL_COLOR_BUFFER_BIT);
 		{
-			glColor4d(_color.red, _color.green, _color.blue, _color.alpha);
+			glColor4f(_color.red, _color.green, _color.blue, _color.alpha);
 
 			glBegin(_filled ? GL_POLYGON : GL_LINE_LOOP);
 			{
-				glVertex2i(0, 0);
-				glVertex2i(_size.x, 0);
-				glVertex2i(_size.x, _size.y);
-				glVertex2i(0, _size.y);
+				glVertex2f(0.0f, 0.0f);
+				glVertex2f(_size.x, 0.0f);
+				glVertex2f(_size.x, _size.y);
+				glVertex2f(0.0f, _size.y);
 			}
 			glEnd();
 		}
@@ -263,22 +265,22 @@ void RenderGL::RenderRectangle(const vec2& _pos, const vec2& _size, bool _filled
 	glPopMatrix();
 }
 
-void RenderGL::RenderText(const vec2& _pos, cstring _string, const Color & _color) const
+void RenderGL::RenderText(cvec2 _pos, cstring _string, const Color& _color) const
 {
 	RenderText(_pos, _string, TextAlignW::TEXT_ALIGNW_LEFT, TextAlignH::TEXT_ALIGNH_BOTTOM, _FontsMgr->GetMainFont(), _color);
 }
 
-void RenderGL::RenderText(const vec2& _pos, cstring _string, Font* _font, const Color & _color) const
+void RenderGL::RenderText(cvec2 _pos, cstring _string, Font* _font, const Color& _color) const
 {
 	RenderText(_pos, _string, TextAlignW::TEXT_ALIGNW_LEFT, TextAlignH::TEXT_ALIGNH_BOTTOM, _font, _color);
 }
 
-void RenderGL::RenderText(const vec2& _pos, cstring _string, TextAlignW _alignW, TextAlignH _alignH, const Color& _color) const
+void RenderGL::RenderText(cvec2 _pos, cstring _string, TextAlignW _alignW, TextAlignH _alignH, const Color& _color) const
 {
 	RenderText(_pos, _string, _alignW, _alignH, _FontsMgr->GetMainFont(), _color);
 }
 
-void RenderGL::RenderText(const vec2& _pos, cstring _string, TextAlignW _alignW, TextAlignH _alignH, Font* _font, const Color& _color) const
+void RenderGL::RenderText(cvec2 _pos, cstring _string, TextAlignW _alignW, TextAlignH _alignH, Font* _font, const Color& _color) const
 {
 	auto stringWidth = _font->GetStringWidth(_string);
 	auto fontHeight = _font->GetHeight();
@@ -318,7 +320,7 @@ void RenderGL::RenderText(const vec2& _pos, cstring _string, TextAlignW _alignW,
 
 		glPushAttrib(GL_COLOR_BUFFER_BIT);
 		{
-			glColor4d(_color.red, _color.green, _color.blue, _color.alpha);
+			glColor4f(_color.red, _color.green, _color.blue, _color.alpha);
 
 			_font->Render(_string);
 		}
@@ -340,8 +342,10 @@ void RenderGL::OnWindowResized(uint32_t _width, uint32_t _height)
 	aspectFactor = 1.0f;
 	aspectRatio = static_cast<float>(windowSize.x) / static_cast<float>(windowSize.y);
 	if (aspectRatio >= 1.0f)
+	{
 		aspectFactor = aspectRatio;
+	}
 
 	// Set viewport
-	//glViewport(0, 0, windowSize.x, windowSize.y);
+	glViewport(0, 0, windowSize.x, windowSize.y);
 }

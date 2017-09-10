@@ -18,7 +18,7 @@ public:
 	// Common functional
 
 	OW_GUI_DLL_API void Update();
-	OW_GUI_DLL_API void Render();
+	OW_GUI_DLL_API void RenderUI();
 
 	// Focus
 

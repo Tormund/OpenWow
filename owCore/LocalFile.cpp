@@ -3,7 +3,7 @@
 // General
 #include "LocalFile.h"
 
-const char* LocalFile::gamedata = "D:/_games/World of Warcraft 4.3.4 ExData/";
+const char* LocalFile::gamedata = "D:\\_programming\\OpenWow\\_gamedata\\";
 
 uint64_t LocalFile::GetFileSize(cstring _name)
 {

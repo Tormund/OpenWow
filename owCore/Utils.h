@@ -23,10 +23,8 @@ public:
 
 	// My types
 	static OW_CORE_DLL_API vec2 ToPoint(string& _string);
-	static OW_CORE_DLL_API vec3 ToVector3i(string& _string);
-	static OW_CORE_DLL_API vec3 ToVector3d(string& _string);
-	static OW_CORE_DLL_API vec3 ToVector3f(string& _string);
-	static OW_CORE_DLL_API Rect<int> ToRect(string& _string);
+	static OW_CORE_DLL_API vec3 ToVector3(string& _string);
+	static OW_CORE_DLL_API Rect ToRect(string& _string);
 	static OW_CORE_DLL_API Color ToColorFromName(string& _string);
 	static OW_CORE_DLL_API Color ToColorFromRGB(string& _string);
 	static OW_CORE_DLL_API Color ToColorFromRGBA(string& _string);

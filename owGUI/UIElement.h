@@ -1,6 +1,6 @@
 #pragma once
 
-struct Font;
+class Font;
 class UIMgr;
 class UIWindow;
 

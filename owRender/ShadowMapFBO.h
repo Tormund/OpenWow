@@ -6,7 +6,7 @@ public:
 
 	OW_RENDER_DLL_API ~ShadowMapFBO();
 
-	OW_RENDER_DLL_API bool Init(unsigned int WindowWidth, unsigned int WindowHeight);
+	OW_RENDER_DLL_API bool Init(uint32_t WindowWidth, uint32_t WindowHeight);
 
 	OW_RENDER_DLL_API void BindForWriting();
 

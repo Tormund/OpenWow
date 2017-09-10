@@ -61,13 +61,21 @@ ByteBuffer::ByteBuffer(uint8_t* _data, uint64_t _size) :
 
 ByteBuffer::~ByteBuffer()
 {
-	if (!isOnlyPointerToData)
+	if (!allocated)
 	{
-		if (data != nullptr)
-		{
-			delete[] data;
-		}
+		return;
 	}
+
+	if (isOnlyPointerToData)
+	{
+		return;
+	}
+
+	if (data != nullptr)
+	{
+		//delete data; FIXME
+	}
+
 }
 
 //
@@ -80,8 +88,7 @@ void ByteBuffer::Allocate(uint64_t _size)
 	{
 		if (!allocated)
 		{
-			data = new uint8_t[_size + 1];
-			data[_size] = 0;
+			data = new uint8_t[_size];
 			allocated = true;
 		}
 	}
@@ -137,7 +144,7 @@ const string ByteBuffer::ReadLine()
 {
 	if (isEof)
 	{
-		return 0;
+		return "";
 	}
 
 	// Find first incorrect symbol

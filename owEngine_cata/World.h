@@ -1,6 +1,6 @@
 #pragma once
 
-
+#include "AssimpModel.h"
 
 #include "maptile.h"
 #include "wmo.h"
@@ -17,12 +17,7 @@ const float detail_size = 8.0f;
 
 class World
 {
-public:
-	static World* instance()
-	{
-		static World instance;
-		return &instance;
-	}
+	CLASS_INSTANCE(World);
 
 public:
 	World();
@@ -41,9 +36,6 @@ public: // Getters
 	Map* GetMap() { return &m_map; }
 
 private:
-
-
-private:
 	Map m_map;
 
 public:
@@ -51,8 +43,6 @@ public:
 	short* mapstrip2;
 
 public:
-	
-
 	// Fog params
 	float l_const, l_linear, l_quadratic;
 
@@ -70,6 +60,18 @@ public:
 	float time, animtime;
 
 	GLuint detailtexcoords, alphatexcoords;
+
+public: // SHADERS
+	GBuffer* m_gbuffer;
+
+	DSGeomPassTech* m_DSGeomPassTech;
+	DSPointLightPassTech* m_DSPointLightPassTech;
+	DSDirLightPassTech* m_DSDirLightPassTech;
+	NullTechnique* m_nullTech;
+	SimpleColorTechnique* colorPassTech;
+
+	AssimpModel* quad;
+	AssimpModel* sphere;
 };
 
 #define _World World::instance()

@@ -28,8 +28,17 @@ public:
 	OW_CORE_DLL_API string Name() const override;
 	OW_CORE_DLL_API string Path() const override;
 	OW_CORE_DLL_API string Extension() const override;
-
 	OW_CORE_DLL_API string Path_Name() const override;
+
+	// LocalFile
+	OW_CORE_DLL_API string FullPath();
+
+	// MPQFile
+	//OW_CORE_DLL_API mpq_archive* MPQArchive();
+
+	//
+
+	static OW_CORE_DLL_API void SetDefaultFileLocation(FileLocation _fileLocation);
 
 	//
 
@@ -38,4 +47,7 @@ public:
 private:
 	OW_CORE_DLL_API bool OpenLocalFile() override;
 	OW_CORE_DLL_API bool OpenMPQFile() override;
+
+private:
+	static OW_CORE_DLL_API FileLocation m_DefaultFileLocation;
 };

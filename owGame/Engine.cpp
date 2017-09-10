@@ -16,29 +16,6 @@ void shutdown(int _errCode)
 	Debug::Exit(_errCode);
 }
 
-void Engine::QuickStart(int argumentCount, char * arguments[], GameState* _newGameState)
-{
-	vector<string> argumentQueue;
-	for (int i = 0; i < argumentCount; i++)
-	{
-		argumentQueue.push_back(arguments[i]);
-	}
-
-	if (!Init(argumentQueue))
-	{
-		shutdown(1);
-	}
-
-	if (!SetGameState(_newGameState))
-	{
-		shutdown(2);
-	}
-
-	while (Tick());
-
-	shutdown(0);
-}
-
 bool Engine::Init(vector<string>& _argumentQueue)
 {
 	// Add debug outputs
@@ -53,7 +30,9 @@ bool Engine::Init(vector<string>& _argumentQueue)
 	// Arguments
 	Debug::Print("Engine[]: Arguments count: [%d]", _argumentQueue.size());
 	for (auto it = _argumentQueue.begin(); it != _argumentQueue.end(); ++it)
+	{
 		Debug::Print("Engine[]: Argument: [%s]", (*it).c_str());
+	}
 
 	// Load static classes
 	Debug::Init();
@@ -87,14 +66,18 @@ bool Engine::Init(vector<string>& _argumentQueue)
 	return true;
 }
 
-void Engine::Destroy()
+void Engine::Destroy(uint32_t _errorCode)
 {
 	Debug::Green("Engine[]: Destroy engine.");
 
 	if (currentGameState != nullptr)
+	{
 		currentGameState->Destroy();
+	}
 
 	_ModulesMgr->DestroyAllModules();
+
+	Debug::Exit(_errorCode);
 }
 
 bool Engine::SetGameState(GameState* _newGameState)
@@ -152,22 +135,24 @@ bool Engine::Tick()
 	_UIMgr->Update();
 
 	//
+
 	// Render world
 	_Render->Set3D();
 	if (currentGameState != nullptr)
 	{
-		currentGameState->RenderPhase(ftime, static_cast<double>(dt) / 1000.0);
+		currentGameState->Render(ftime, static_cast<double>(dt) / 1000.0);
 	}
 
 	//
+
 	// Render UI
 	_Render->Set2D();
 	if (currentGameState != nullptr)
 	{
-		currentGameState->RenderUIPhase(ftime, static_cast<double>(dt) / 1000.0);
+		currentGameState->RenderUI(ftime, static_cast<double>(dt) / 1000.0);
 	}
-	_UIMgr->Render();
-	consoleOpenGL->Render();
+	_UIMgr->RenderUI();
+	consoleOpenGL->RenderUI();
 
 	// Swap buffers
 	if (!_GLFW->SwapWindowBuffers())

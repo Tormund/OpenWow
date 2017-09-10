@@ -3,9 +3,12 @@
 class WMO;
 class Liquid;
 
-class WMOGroup {
-	struct WMOGroupInfo {
-		enum WMOGroupInfoFlags {
+class WMOGroup
+{
+	struct WMOGroupInfo
+	{
+		enum WMOGroupInfoFlags
+		{
 			FLAG_HAS_COLLISION = 0x1,					//Has MOBN and MOBR chunk.
 			FLAG_HAS_LIGHTMAP = 0x2,					//Has light map MOLM, MOLD
 			FLAG_HAS_VERTEX_COLORS = 0x4, 				//Has vertex colors(MOCV chunk).
@@ -44,7 +47,8 @@ class WMOGroup {
 		CAaBox bounding_box;
 		int32_t nameoffset;  // name in MOGN chunk (-1 for no name)
 
-		const size_t __size = 32;
+		//
+		static const size_t __size = 32;
 	};
 
 	WMO* wmo;

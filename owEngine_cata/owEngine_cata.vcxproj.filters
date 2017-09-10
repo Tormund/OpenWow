@@ -100,6 +100,7 @@
     </ClInclude>
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="WoWSettings.h" />
+    <ClInclude Include="AssimpModel.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="frustum.cpp" />
@@ -199,6 +200,7 @@
       <Filter>MDX\Particle</Filter>
     </ClCompile>
     <ClCompile Include="WoWSettings.cpp" />
+    <ClCompile Include="AssimpModel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Map">

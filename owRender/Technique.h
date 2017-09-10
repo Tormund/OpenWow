@@ -1,6 +1,7 @@
 #pragma once
 
-class Technique {
+class Technique
+{
 protected:
 	OW_RENDER_DLL_API Technique(cstring _fileName);
 	OW_RENDER_DLL_API ~Technique();

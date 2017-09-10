@@ -2,8 +2,10 @@
 
 #include "WowTypes.h"
 
-class WMOMaterial {
-	struct __WMOMaterial {
+class WMOMaterial
+{
+	struct __WMOMaterial
+	{
 		/*uint32_t F_UNLIT : 1;                    // disable lighting logic in shader (but can still use vertex colors)
 		uint32_t F_UNFOGGED : 1;                 // disable fog shading (rarely used)
 		uint32_t F_UNCULLED : 1;                 // two-sided

@@ -18,7 +18,7 @@ public:
 	OW_CORE_DLL_API void MouseCallback(int button, int action, int mods);
 	OW_CORE_DLL_API void MouseScrollCallback(int yoffset);
 	OW_CORE_DLL_API void KeyboardCallback(int key, int scancode, int action, int mods);
-	OW_CORE_DLL_API void CharCallback(unsigned int _char);
+	OW_CORE_DLL_API void CharCallback(uint32_t _char);
 
 private:
 	bool* keyState;

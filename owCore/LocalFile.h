@@ -9,8 +9,8 @@ public:
 protected:
 	OW_CORE_DLL_API virtual bool OpenLocalFile() = 0;
 
-protected:
-	static const char* gamedata;
+public:
+	OW_CORE_DLL_API static const char* gamedata;
 };
 
 

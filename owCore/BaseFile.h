@@ -2,6 +2,14 @@
 
 #include "ByteBuffer.h"
 
+enum FileLocation
+{
+	FL_Any = 0,
+	FL_MPQ_Only = 3,
+	FL_Local = 2,
+	FL_Local_Only = 4
+};
+
 class BaseFile : public ByteBuffer
 {
 public:

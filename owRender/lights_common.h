@@ -1,39 +1,45 @@
-#ifndef LIGHTS_COMMON_H
-#define	LIGHTS_COMMON_H
+#pragma once
 
 #include <glm/glm.hpp>
 
-struct BaseLight {
+struct BaseLight
+{
 	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;
 
-	BaseLight() {
+	BaseLight()
+	{
 		ambient = vec3(0.0f, 0.0f, 0.0f);
 		diffuse = vec3(0.0f, 0.0f, 0.0f);
 		specular = vec3(0.0f, 0.0f, 0.0f);
 	}
 };
 
-struct DirectionalLight : public BaseLight {
+struct DirectionalLight : public BaseLight
+{
 	vec3 Direction;
 
-	DirectionalLight() {
+	DirectionalLight()
+	{
 		Direction = vec3(0.0f, 0.0f, 0.0f);
 	}
 };
 
-struct PointLight : public BaseLight {
+struct PointLight : public BaseLight
+{
 	vec3 Position;
 	float Radius;
 
-	struct {
+	struct
+	{
 		float Constant;
 		float Linear;
 		float Quadratic;
 	} Attenuation;
 
-	PointLight() {
+	PointLight()
+	{
 		Position = vec3(0.0f, 0.0f, 0.0f);
 		Attenuation.Constant = 0.0f;
 		Attenuation.Linear = 0.0f;
@@ -41,11 +47,13 @@ struct PointLight : public BaseLight {
 	}
 };
 
-struct SpotLight : public PointLight {
+struct SpotLight : public PointLight
+{
 	vec3 Direction;
 	float Cutoff;
 
-	SpotLight() {
+	SpotLight()
+	{
 		Direction = vec3(0.0f, 0.0f, 0.0f);
 		Cutoff = 0.0f;
 	}
@@ -56,5 +64,3 @@ struct SpotLight : public PointLight {
 #define COLOR_GREEN1 vec3(0.0f, 1.0f, 0.0f)
 #define COLOR_CYAN1 vec3(0.0f, 1.0f, 1.0f)
 #define COLOR_BLUE1 vec3(0.0f, 0.0f, 1.0f)
-
-#endif

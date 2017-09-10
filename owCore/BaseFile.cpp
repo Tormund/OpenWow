@@ -53,7 +53,7 @@ BaseFile::~BaseFile()
 void BaseFile::ParsePathAndExtension()
 {
 	// Replace slahes
-	/*size_t index = 0;
+	size_t index = 0;
 	while (true)
 	{
 	index = name.find('/', index);
@@ -62,17 +62,17 @@ void BaseFile::ParsePathAndExtension()
 	break;
 	}
 
-	name.replace(index, 3, "\\");
+	name.replace(index, 1, "\\");
 
 	index += 3;
-	}*/
+	}
 
-	/*auto lastSlashPos = name.find_last_of('\\');
+	auto lastSlashPos = name.find_last_of('\\');
 	if (lastSlashPos != string::npos)
 	{
 	path += name.substr(0, lastSlashPos + 1);
 	name = name.substr(lastSlashPos + 1);
-	}*/
+	}
 
 	auto lastPointPos = name.find_last_of('.');
 	if (lastPointPos != string::npos)

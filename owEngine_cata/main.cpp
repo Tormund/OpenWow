@@ -44,7 +44,7 @@ int main(int argumentCount, char* arguments[])
 	// Init engine
 	if (!_Engine->Init(argumentQueue))
 	{
-		shutdown(1);
+		_Engine->Destroy(1);
 	}
 
 	OpenDBs();
@@ -53,7 +53,7 @@ int main(int argumentCount, char* arguments[])
 	// Setting GameState
 	if (!_Engine->SetGameState(new GameState_Menu))
 	{
-		shutdown(2);
+		_Engine->Destroy(2);
 	}
 
 	// Main loop
@@ -62,11 +62,5 @@ int main(int argumentCount, char* arguments[])
 	// Clear arhives
 	MPQFile::ClearArchives();
 
-	shutdown(0);
-}
-
-void shutdown(int _errCode)
-{
 	_Engine->Destroy();
-	Debug::Exit(_errCode);
 }

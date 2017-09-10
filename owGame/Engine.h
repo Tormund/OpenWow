@@ -5,21 +5,11 @@ class GameState;
 
 class Engine
 {
+	CLASS_INSTANCE_API(Engine, OW_GAME_DLL_API);
+
 public:
-	static OW_GAME_DLL_API Engine* instance()
-	{
-		static Engine instance;
-		return &instance;
-	}
-
-	//-------------------------------------------------
-
-	OW_GAME_DLL_API void QuickStart(int argumentCount, char* arguments[], GameState* _newGameState);
-	
-	//-------------------------------------------------
-
 	OW_GAME_DLL_API bool Init(vector<string>& _argumentQueue);
-	OW_GAME_DLL_API void Destroy();
+	OW_GAME_DLL_API void Destroy(uint32_t _errorCode = 0);
 
 	OW_GAME_DLL_API bool SetGameState(GameState* _newGameState);
 

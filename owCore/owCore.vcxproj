@@ -55,6 +55,7 @@
     <ClInclude Include="..\shared\owCore.h" />
     <ClInclude Include="BaseFile.h" />
     <ClInclude Include="File.h" />
+    <ClInclude Include="GameModule.h" />
     <ClInclude Include="MathUtils.h" />
     <ClInclude Include="MPQFile.h" />
     <ClInclude Include="RefManager1Dim.h" />

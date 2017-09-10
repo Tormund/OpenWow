@@ -22,8 +22,8 @@ public:
 	void Destroy();
 	void InputPhase(double t, double dt);
 	void UpdatePhase(double t, double dt);
-	void RenderPhase(double t, double dt);
-	void RenderUIPhase(double t, double dt);
+	void Render(double t, double dt);
+	void RenderUI(double t, double dt);
 
 	//
 
