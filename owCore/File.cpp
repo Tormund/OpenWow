@@ -169,11 +169,20 @@ bool File::OpenLocalFile()
 		return true;
 	}
 
+	
+
 	// Open stream
 	ifstream stream;
 	stream.clear();
-	stream.open(LocalFile::gamedata + Path_Name(), ios::binary);
-
+	
+	if (Path_Name().find_first_of(':') != -1)
+	{
+		stream.open(Path_Name(), ios::binary);
+	}
+	else
+	{
+		stream.open(LocalFile::gamedata + Path_Name(), ios::binary);
+	}
 
 	// Check stream
 	if (!stream.is_open())

@@ -31,6 +31,16 @@ Camera::Camera(float posX, float posY, float posZ, float upX, float upY, float u
 	updateCameraVectors();
 }
 
+void Camera::Update()
+{
+	updateCameraVectors();
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	glMultMatrixf(glm::value_ptr(viewMatrix));
+}
+
 void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
 {
 	float velocity = MovementSpeed * deltaTime;

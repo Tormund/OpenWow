@@ -20,13 +20,7 @@ public:
 
 	OW_RENDER_DLL_API Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch);
 
-	void Update()
-	{
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-
-		glMultMatrixf(glm::value_ptr(viewMatrix));
-	}
+	OW_RENDER_DLL_API void Update();
 
 	// Returns the view matrix calculated using Eular Angles and the LookAt Matrix
 	inline const glm::mat4* GetViewMatrix()

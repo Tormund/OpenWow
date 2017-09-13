@@ -32,6 +32,7 @@ bool Engine::Init(vector<string>& _argumentQueue)
 	Debug::Print("Engine[]: Arguments count: [%d]", _argumentQueue.size());
 	for (auto it = _argumentQueue.begin(); it != _argumentQueue.end(); ++it)
 	{
+		arguments.push_back(*it);
 		Debug::Print("Engine[]: Argument: [%s]", (*it).c_str());
 	}
 

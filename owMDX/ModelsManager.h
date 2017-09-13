@@ -5,7 +5,7 @@
 class ModelsManager : public Module, public RefManager1Dim<Model>
 {
 public:
-	DEF_MODULE(ModelsManager, OW_MDX_DLL_API);
+	DEF_MODULE_SIMPLE(ModelsManager);
 
 	Model* CreateAction(cstring name) override;
 	bool DeleteAction(cstring name) override;

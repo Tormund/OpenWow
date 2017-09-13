@@ -15,12 +15,24 @@ public:
 
 	OW_GAME_DLL_API bool Tick();
 
+	inline string GetArgument(uint8_t index) 
+	{ 
+		if (arguments.size() > (index + 1))
+		{
+			return arguments[index + 1];
+		}
+		else
+		{
+			return "";
+		}
+	}
 	inline GameState* GetCurrentGameState() const { return currentGameState; }
 
 	OW_GAME_DLL_API unsigned long long GetTicks() const;
 	inline uint32_t GetFPS() const { return framesPerSecond; }
 
 private:
+	vector<string> arguments;
 	bool needExit;
 	GameState* currentGameState;
 

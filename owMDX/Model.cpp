@@ -13,11 +13,6 @@ int globalTime = 0;
 
 Model::Model(cstring name, bool forceAnim) : RefItemNamed(name), forceAnim(forceAnim)
 {
-	if (name.empty())
-	{
-		return;
-	}
-
 	// replace .MDX with .M2
 	char tempname[256];
 	strncpy_s(tempname, name.c_str(), sizeof(tempname));
