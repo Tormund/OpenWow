@@ -13,10 +13,6 @@
 
 #include "world.h"
 #include "liquid.h"
-#include "shaders.h"
-
-#include "ModelsManager.h"
-
 
 WMO::WMO(cstring name) : RefItemNamed(name), groups(0), mat(0)
 {
@@ -441,18 +437,18 @@ bool WMO::Init()
 	return true;
 }
 
-void WMO::draw(int doodadset, cvec3 ofs, const float rot)
+void WMO::draw(int doodadset, cvec3 ofs, const float roll)
 {
 	for (auto it = groups.begin(); it != groups.end(); ++it)
 	{
-		(*it)->draw(ofs, rot);
+		(*it)->draw(ofs, roll);
 	}
 
 	if (_WowSettings->drawdoodads)
 	{
 		for (auto it = groups.begin(); it != groups.end(); ++it)
 		{
-			(*it)->drawDoodads(doodadset, ofs, rot);
+			(*it)->drawDoodads(doodadset, ofs, roll);
 		}
 	}
 

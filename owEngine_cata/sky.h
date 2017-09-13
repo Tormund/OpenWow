@@ -1,7 +1,5 @@
 #pragma once
 
-#include "model.h"
-
 class SkyColor
 {
 public:

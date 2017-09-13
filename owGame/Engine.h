@@ -30,7 +30,7 @@ private:
 	float ftime;
 	uint32_t t;
 	uint32_t last_t;
-	uint32_t time;
+	uint32_t _time;
 
 	ConsoleOpenGL* consoleOpenGL;
 };

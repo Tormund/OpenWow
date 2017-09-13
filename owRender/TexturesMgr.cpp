@@ -6,6 +6,7 @@
 // Additional
 #include <SOIL.h>
 
+
 bool TexturesMgr::Init()
 {
 	ADDCONSOLECOMMAND_CLASS("tm_info", TexturesMgr, PrintAllInfo);
@@ -222,7 +223,7 @@ bool TexturesMgr::LoadBLPTexture(File& _file, Texture* _texture)
 	}
 	else
 	{
-		assert1(false);
+		//assert1(false); FIXME
 	}
 
 	// Params

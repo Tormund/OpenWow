@@ -9,7 +9,6 @@ const uint8_t C_ChunksInTile = 16;
 const uint8_t C_MapBufferSize = 9 * 9 + 8 * 8;
 
 #include "Wmo.h"
-#include "Model.h"
 
 enum load_phases;
 

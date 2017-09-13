@@ -1,17 +1,15 @@
 #pragma once
 
-#include "model.h"
-
 class ModelInstance
 {
 public:
 	ModelInstance() {}
-
 	ModelInstance(Model *m, File &f);
+
 	void draw();
 
 	void InitAsDoodad(Model * m, File& f);
-	void DrawAsDoodad(cvec3 ofs, float rot);
+	void DrawAsDoodad(cvec3 ofs, float roll);
 
 public: // TODO private
 	Model *model;

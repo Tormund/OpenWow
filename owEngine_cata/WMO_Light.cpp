@@ -5,9 +5,6 @@
 // General
 #include "Wmo_Light.h"
 
-// Additional
-#include "WowTypes.h"
-
 struct __WMOLight
 {
 	enum LightType

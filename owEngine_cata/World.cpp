@@ -4,12 +4,8 @@
 #include "world.h"
 
 // Additional
-#include "shaders.h"
 #include "MapChunk.h"
-#include "ModelsManager.h"
 #include "WMO_Instance.h"
-
-#include "WoWSettings.h"
 
 #define COLOR_TEXTURE_UNIT              GL_TEXTURE0
 #define COLOR_TEXTURE_UNIT_INDEX        0
@@ -355,13 +351,10 @@ void World::draw()
 	_ModelsMgr->resetAnim();
 #endif
 
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
-
-
 	// camera is set up
 	frustum.retrieve();
 
-	glDisable(GL_LIGHTING);
+	//--glDisable(GL_LIGHTING);
 	glColor4f(1, 1, 1, 1);
 
 	hadSky = false;
@@ -379,7 +372,7 @@ void World::draw()
 	glDisable(GL_BLEND);
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_DEPTH_TEST);
-	glDisable(GL_FOG);
+	//--glDisable(GL_FOG);
 
 	int daytime = ((int)time) % 2880;
 	dayNightPhase = dayNightCycle->getPhase(daytime);
@@ -389,7 +382,7 @@ void World::draw()
 
 	if (!hadSky)
 	{
-		hadSky = skies->drawSky(vec3(_Camera->Position.x, _Camera->Position.y, _Camera->Position.z));
+		hadSky = skies->drawSky(_Camera->Position);
 	}
 
 	GLbitfield clearmask = GL_DEPTH_BUFFER_BIT;
@@ -402,8 +395,8 @@ void World::draw()
 	glDisable(GL_TEXTURE_2D);
 
 
-	outdoorLighting();
-	outdoorLights(true);
+	//--outdoorLighting();
+	//--outdoorLights(true);
 
 	glFogi(GL_FOG_MODE, GL_LINEAR);
 	setupFog();
@@ -413,7 +406,7 @@ void World::draw()
 	{
 		glEnable(GL_CULL_FACE);
 		glDisable(GL_DEPTH_TEST);
-		glDisable(GL_LIGHTING);
+		//--glDisable(GL_LIGHTING);
 		glColor3fv(glm::value_ptr(this->skies->colorSet[FOG_COLOR]));
 
 		//glDisable(GL_FOG);
@@ -430,29 +423,30 @@ void World::draw()
 	glDepthFunc(GL_LEQUAL); // less z-fighting artifacts this way, I think
 
 	// Lighting
-	glEnable(GL_LIGHTING);
+	//--glEnable(GL_LIGHTING);
 
 	// Material
-	glEnable(GL_COLOR_MATERIAL);
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+	//--glEnable(GL_COLOR_MATERIAL);
+	//--glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 
 	glColor4f(1, 1, 1, 1);
 
 	// if we're using shaders let's give it some specular
-	if (supportShaders && _WowSettings->useshaders)
+	/*--if (supportShaders && _WowSettings->useshaders)
 	{
 		vec4 spec_color(1, 1, 1, 1);
 		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, glm::value_ptr(spec_color));
 		glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, 20);
 
 		glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
-	}
+	}--*/
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glClientActiveTextureARB(GL_TEXTURE0_ARB);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB, detailtexcoords);
 	glTexCoordPointer(2, GL_FLOAT, 0, 0);
 
@@ -480,12 +474,12 @@ void World::draw()
 
 	glEnable(GL_BLEND);
 
-	if (supportShaders && _WowSettings->useshaders)
+	/*--if (supportShaders && _WowSettings->useshaders)
 	{
 		vec4 spec_color(0, 0, 0, 1);
 		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, glm::value_ptr(spec_color));
 		glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, 0);
-	}
+	}--*/
 
 	// unbind hardware buffers
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
@@ -497,13 +491,13 @@ void World::draw()
 	glDisable(GL_ALPHA_TEST);
 
 	// TEMP: for fucking around with lighting
-	for (int i = 0; i < 8; i++)
+	/*--for (int i = 0; i < 8; i++)
 	{
 		GLuint light = GL_LIGHT0 + i;
 		glLightf(light, GL_CONSTANT_ATTENUATION, l_const);
 		glLightf(light, GL_LINEAR_ATTENUATION, l_linear);
 		glLightf(light, GL_QUADRATIC_ATTENUATION, l_quadratic);
-	}
+	}--*/
 
 	if(m_map.MapHasGlobalWMO()) {
 		m_map.SetOutOfBounds(false);
@@ -512,14 +506,14 @@ void World::draw()
 #endif
 	}
 
-	if (supportShaders && _WowSettings->useshaders)
+	/*--if (supportShaders && _WowSettings->useshaders)
 	{
 		vec4 spec_color(1, 1, 1, 1);
 		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, glm::value_ptr(spec_color));
 		glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, 10);
 
 		glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
-	}
+	}--*/
 
 	if (_WowSettings->drawwmo)
 	{
@@ -527,15 +521,15 @@ void World::draw()
 	}
 	
 
-	if (supportShaders && _WowSettings->useshaders)
+	/*--if (supportShaders && _WowSettings->useshaders)
 	{
 		vec4 spec_color(0, 0, 0, 1);
 		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, glm::value_ptr(spec_color));
 		glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, 0);
-	}
+	}--*/
 
-	outdoorLights(true);
-	setupFog();
+	//outdoorLights(true);
+	//setupFog();
 
 	glColor4f(1, 1, 1, 1);
 
@@ -576,4 +570,44 @@ void World::tick(float dt)
 
 	_ModelsMgr->updateEmitters(dt);
 #endif
+}
+
+
+void World::DSGeometryPassBegin()
+{
+	m_gbuffer->BindForGeomPass();
+	m_DSGeomPassTech->Bind();
+
+	// Only the geometry pass updates the depth buffer
+	glDepthMask(GL_TRUE);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
+
+
+
+	/*_Pipeline->Clear();
+	_Pipeline->SetTranslate(0.0f, 0.0f, 0.0f);
+	_Pipeline->SetScale(0.3f);
+	m_DSGeomPassTech->SetWVP(*_Pipeline->GetPVM());
+	m_DSGeomPassTech->SetWorldMatrix(*_Pipeline->GetWorld());
+	mesh->Render();*/
+
+	/*for(unsigned int i = 0; i < m_pointLights.size(); i++) {
+	_Pipeline->Clear();
+	_Pipeline->SetTranslate(m_pointLights[i].Position);
+	_Pipeline->SetScale(10.0f);
+	m_DSGeomPassTech->SetWVP(*_Pipeline->GetPVM());
+	m_DSGeomPassTech->SetWorldMatrix(*_Pipeline->GetWorld());
+
+	sphere->Render();
+	}*/
+
+	// When we get here the depth buffer is already populated and the stencil pass depends on it, but it does not write to it.
+
+}
+
+void World::DSGeometryPassEnd()
+{
+	glDepthMask(GL_FALSE);
+	m_DSGeomPassTech->Unbind();
 }

@@ -34,6 +34,9 @@
 # Project
 .vs/
 
+# zip
+*.zip
+
 Debug/
 Release/
 
@@ -41,7 +44,7 @@ bin/
 bin_x64/
 
 _gamedata/
-Externals/
+Externals/freetype-2.8_project/
 owEngine/
 owTest/
 WowMapView/

@@ -1,5 +1,8 @@
 #pragma once
 
+#define WMO_INCL
+#define MDX_INCL
+
 #define NOMINMAX
 #include <winerror.h>
 
@@ -8,12 +11,6 @@
 
 #define GLFW_DLL
 #include <GLFW/glfw3.h>
-
-// ASSIMP
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-#include <assimp/DefaultLogger.hpp>
 
 #include <owCore.h>
 #pragma comment(lib, "owCore.lib")
@@ -29,3 +26,9 @@
 
 #include <owDBC.h>
 #pragma comment(lib, "owDBC.lib")
+
+#include <owShared.h>
+#pragma comment(lib, "owShared.lib")
+
+#include <owMDX.h>
+#pragma comment(lib, "owMDX.lib")

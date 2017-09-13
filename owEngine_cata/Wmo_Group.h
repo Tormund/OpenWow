@@ -82,8 +82,8 @@ public:
 	void initDisplayList();
 	void initLighting(int nLR, short *useLights);
 
-	void draw(cvec3 ofs, const float rot);
-	void drawDoodads(int doodadset, cvec3 ofs, const float rot);
+	void draw(cvec3 ofs, const float roll);
+	void drawDoodads(int doodadset, cvec3 ofs, const float roll);
 	void drawLiquid();
 
 	void setupFog();

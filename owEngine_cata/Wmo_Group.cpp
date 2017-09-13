@@ -9,7 +9,6 @@
 
 // Additional
 #include "world.h"
-#include "shaders.h"
 #include "Wmo_Fog.h"
 #include "Wmo_Light.h"
 #include "Wmo_Material.h"
@@ -523,12 +522,12 @@ void WMOGroup::initLighting(int nLR, short *useLights)
 	}
 }
 
-void WMOGroup::draw(cvec3 ofs, const float rot)
+void WMOGroup::draw(cvec3 ofs, const float roll)
 {
 	visible = false;
 	// view frustum culling
 	vec3 pos = center + ofs;
-	rotate(ofs.x, ofs.z, &pos.x, &pos.z, rot*PI / 180.0f);
+	rotate(ofs.x, ofs.z, &pos.x, &pos.z, roll*PI / 180.0f);
 	if (!_World->frustum.intersectsSphere(pos, rad)) return;
 	float dist = glm::length(pos - vec3(_Camera->Position.x, _Camera->Position.y, _Camera->Position.z)) - rad;
 	if (dist >= _WowSettings->culldistance) return;
@@ -588,7 +587,7 @@ void WMOGroup::draw(cvec3 ofs, const float rot)
 
 }
 
-void WMOGroup::drawDoodads(int doodadset, cvec3 ofs, const float rot)
+void WMOGroup::drawDoodads(int doodadset, cvec3 ofs, const float roll)
 {
 	if (!visible)
 		return;
@@ -622,7 +621,7 @@ void WMOGroup::drawDoodads(int doodadset, cvec3 ofs, const float rot)
 				WMOLight::setupOnce(GL_LIGHT2, mi.ldir, mi.lcol);
 			}
 
-			wmo->m_MDXInstances[dd].DrawAsDoodad(ofs, rot);
+			wmo->m_MDXInstances[dd].DrawAsDoodad(ofs, roll);
 		}
 #endif
 	}

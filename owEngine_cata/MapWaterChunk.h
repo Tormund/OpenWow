@@ -1,6 +1,7 @@
 #pragma once
 
-struct SWaterLayer {
+struct SWaterLayer
+{
 	uint16_t flags;
 	uint16_t type;
 	float levels[2];
@@ -19,9 +20,11 @@ struct SWaterLayer {
 
 #include "MapChunk.h"
 
-class MapWaterChunk : public MapChunk {
+class MapWaterChunk : public MapChunk
+{
 public:
-	MapWaterChunk() : MapChunk() {
+	MapWaterChunk() : MapChunk()
+	{
 		initTextures("XTextures\\river\\lake_a", 1, 30);
 	}
 

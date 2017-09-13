@@ -1,7 +1,5 @@
 #pragma once
 
-#include "WowTypes.h"
-
 class WMOMaterial
 {
 	struct __WMOMaterial

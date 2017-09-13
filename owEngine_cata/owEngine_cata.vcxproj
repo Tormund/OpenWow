@@ -19,10 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="animated.h" />
     <ClInclude Include="AssimpModel.h" />
     <ClInclude Include="DayNightCycle.h" />
-    <ClInclude Include="frustum.h" />
     <ClInclude Include="GameState_Menu.h" />
     <ClInclude Include="Map_GlobalWMOs.h" />
     <ClInclude Include="liquid.h" />
@@ -30,23 +28,7 @@
     <ClInclude Include="MapChunk.h" />
     <ClInclude Include="MapTile.h" />
     <ClInclude Include="MapWaterChunk.h" />
-    <ClInclude Include="Matrix.h" />
-    <ClInclude Include="Model.h" />
-    <ClInclude Include="modelheaders.h" />
-    <ClInclude Include="ModelsUtils.h" />
-    <ClInclude Include="Model_Color.h" />
-    <ClInclude Include="Model_Bone.h" />
-    <ClInclude Include="Model_Camera.h" />
     <ClInclude Include="Model_Instance.h" />
-    <ClInclude Include="Model_Light.h" />
-    <ClInclude Include="ModelsManager.h" />
-    <ClInclude Include="Model_RenderPass.h" />
-    <ClInclude Include="Model_TextureAnim.h" />
-    <ClInclude Include="Model_Transparency.h" />
-    <ClInclude Include="Particle.h" />
-    <ClInclude Include="ParticleSystem.h" />
-    <ClInclude Include="RibbonEmitter.h" />
-    <ClInclude Include="shaders.h" />
     <ClInclude Include="sky.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Wmo.h" />
@@ -57,36 +39,18 @@
     <ClInclude Include="WMOsManager.h" />
     <ClInclude Include="Wmo_Material.h" />
     <ClInclude Include="World.h" />
-    <ClInclude Include="WoWSettings.h" />
-    <ClInclude Include="WowTypes.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssimpModel.cpp" />
     <ClCompile Include="DayNightCycle.cpp" />
-    <ClCompile Include="frustum.cpp" />
     <ClCompile Include="GameState_Menu.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Map_GlobalWMOs.cpp" />
-    <ClCompile Include="ModelsUtils.cpp" />
-    <ClCompile Include="Model_Color.cpp" />
-    <ClCompile Include="Model_Light.cpp" />
     <ClCompile Include="liquid.cpp" />
     <ClCompile Include="MapChunk.cpp" />
     <ClCompile Include="MapTile.cpp" />
     <ClCompile Include="MapWaterChunk.cpp" />
-    <ClCompile Include="Model.cpp" />
-    <ClCompile Include="Model_Bone.cpp" />
-    <ClCompile Include="Model_Camera.cpp" />
     <ClCompile Include="Model_Instance.cpp" />
-    <ClCompile Include="ModelsManager.cpp" />
-    <ClCompile Include="Model_RenderPass.cpp" />
-    <ClCompile Include="Model_TextureAnim.cpp" />
-    <ClCompile Include="Model_Transparency.cpp" />
-    <ClCompile Include="Particle.cpp" />
-    <ClCompile Include="ParticleEmitters.cpp" />
-    <ClCompile Include="ParticleSystem.cpp" />
-    <ClCompile Include="RibbonEmitter.cpp" />
-    <ClCompile Include="shaders.cpp" />
     <ClCompile Include="sky.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Wmo.cpp" />
@@ -98,7 +62,6 @@
     <ClCompile Include="Wmo_Material.cpp" />
     <ClCompile Include="World.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="WoWSettings.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{645797A4-A484-4D99-A130-88BD45546BD5}</ProjectGuid>
@@ -182,7 +145,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glew32.lib;opengl32.lib;glu32.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glew32.lib;opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\Externals\glew-2.1.0\lib\Release\$(PlatformName);..\bin;D:\_programming\Assimp\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
@@ -201,8 +164,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\Externals\glew-2.1.0\lib\Release\$(PlatformName);..\bin_x64;D:\_programming\Assimp\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32.lib;opengl32.lib;glu32.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\Externals\glew-2.1.0\lib\Release\$(PlatformName);..\bin_x64;D:\_programming\Assimp\lib\x64\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -222,7 +185,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>..\Externals\glew-2.1.0\lib\Release\$(PlatformName);..\bin;D:\_programming\Assimp\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32.lib;opengl32.lib;glu32.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glew32.lib;opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
@@ -244,8 +207,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\Externals\glew-2.1.0\lib\Release\$(PlatformName);..\bin_x64;D:\_programming\Assimp\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32.lib;opengl32.lib;glu32.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\Externals\glew-2.1.0\lib\Release\$(PlatformName);..\bin_x64;D:\_programming\Assimp\lib\x64\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

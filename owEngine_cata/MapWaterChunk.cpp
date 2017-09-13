@@ -6,16 +6,19 @@
 // Additional
 #include "World.h"
 
-void MapWaterChunk::initTextures(const char* basename, int first, int last) {
+void MapWaterChunk::initTextures(const char* basename, int first, int last)
+{
 	char buf[256];
-	for(int i = first; i <= last; i++) {
+	for (int i = first; i <= last; i++)
+	{
 		sprintf_s(buf, "%s.%d.blp", basename, i);
 		wTextures.push_back(_TexturesMgr->Add(buf));
 	}
 }
 
-void MapWaterChunk::drawWater() {
-	if(wTextures.size() == 0)
+void MapWaterChunk::drawWater()
+{
+	if (wTextures.size() == 0)
 		return;
 
 	glActiveTexture(GL_TEXTURE1);
@@ -24,22 +27,23 @@ void MapWaterChunk::drawWater() {
 	glActiveTexture(GL_TEXTURE0);
 	glDisable(GL_TEXTURE_2D);
 
-	size_t texidx = (size_t)(_World->animtime / 60.0f) % wTextures.size();
-	wTextures[texidx]->Bind();
-
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-
 	const float wr = 1.0f;
 
+	size_t texidx = (size_t)(_World->animtime / 60.0f) % wTextures.size();
+
+
+	wTextures[texidx]->Bind();
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_ADD);
 	glEnable(GL_TEXTURE_2D);
 
-
-	for(unsigned l = 0; l < waterLayer.size(); l++) {
+	for (unsigned l = 0; l < waterLayer.size(); l++)
+	{
 		SWaterLayer& layer = waterLayer[l];
 
-		for(uint8_t y = layer.y; y < layer.h + layer.y; y++) {
-			for(uint8_t x = layer.x; x < layer.w + layer.x; x++) {
+		for (uint8_t y = layer.y; y < layer.h + layer.y; y++)
+		{
+			for (uint8_t x = layer.x; x < layer.w + layer.x; x++)
+			{
 
 				unsigned tx = x - layer.x;
 				unsigned ty = y - layer.y;
@@ -55,7 +59,8 @@ void MapWaterChunk::drawWater() {
 				// alpha values helper
 				float a1, a2, a3, a4;
 				a1 = a2 = a3 = a4 = 1.0f;
-				if(layer.depths.size() != 0) {
+				if (layer.depths.size() != 0)
+				{
 					a1 = (float)layer.depths[p1] / 255.f * 1.5f + 0.3f; // whats the magic formular here ???
 					a2 = (float)layer.depths[p2] / 255.f * 1.5f + 0.3f;
 					a3 = (float)layer.depths[p3] / 255.f * 1.5f + 0.3f;
@@ -65,16 +70,21 @@ void MapWaterChunk::drawWater() {
 				// height values helper
 				float h1, h2, h3, h4;
 				h1 = h2 = h3 = h4 = 0.0f;
-				if(layer.heights.size() != 0) {
+				if (layer.heights.size() != 0)
+				{
 					h1 = layer.heights[p1];
 					h2 = layer.heights[p2];
 					h3 = layer.heights[p3];
 					h4 = layer.heights[p4];
 				}
 
-				if(layer.renderTiles.size() != 0)
-					if(!layer.renderTiles[tx + ty * layer.w])
+				if (layer.renderTiles.size() != 0)
+				{
+					if (!layer.renderTiles[tx + ty * layer.w])
+					{
 						continue;
+					}
+				}
 
 				glColor4f(1.0, 1.0, 1.0, 1.0);
 

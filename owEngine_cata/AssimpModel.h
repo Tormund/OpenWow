@@ -1,5 +1,12 @@
 #pragma once
 
+// ASSIMP
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+#include <assimp/DefaultLogger.hpp>
+#pragma comment(lib, "assimp.lib")
+
 struct Vertex
 {
 	vec3 m_pos;
@@ -18,11 +25,10 @@ struct Vertex
 
 struct AssimpMesh
 {
-	OW_RENDER_DLL_API AssimpMesh();
+	AssimpMesh();
 	~AssimpMesh();
 
-	OW_RENDER_DLL_API bool Init(const vector<Vertex>& Vertices, const vector<unsigned>& Indices);
-	OW_RENDER_DLL_API void Render();
+	bool Init(const vector<Vertex>& Vertices, const vector<unsigned>& Indices);
 
 	GLuint vertexBuffer;
 	GLuint indexBuffer;
@@ -39,13 +45,13 @@ struct Material
 class AssimpModel
 {
 public:
-	OW_RENDER_DLL_API AssimpModel() {};
+	AssimpModel() {};
 	~AssimpModel()
 	{
 		Clear();
 	};
-	OW_RENDER_DLL_API bool LoadMesh(const File& _file);
-	OW_RENDER_DLL_API void Render();
+	bool LoadMesh(const File& _file);
+	void Render();
 
 private:
 	bool InitFromScene(const aiScene* pScene, const File& _file);

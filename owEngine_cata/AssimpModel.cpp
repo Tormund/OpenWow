@@ -1,7 +1,5 @@
 #include "stdafx.h"
 
-
-
 // General
 #include "AssimpModel.h"
 
@@ -47,11 +45,6 @@ bool AssimpMesh::Init(const vector<Vertex>& Vertices, const vector<unsigned int>
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 4 * NumIndices, &Indices[0], GL_STATIC_DRAW);
 
 	return true;
-}
-
-void AssimpMesh::Render()
-{
-
 }
 
 // ---------------------------------------------------------------------------------------------------------

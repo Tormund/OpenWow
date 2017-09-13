@@ -237,6 +237,9 @@
     <ClInclude Include="GameModule.h">
       <Filter>Module</Filter>
     </ClInclude>
+    <ClInclude Include="Matrix.h">
+      <Filter>Types</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ModulesMgr.inl">

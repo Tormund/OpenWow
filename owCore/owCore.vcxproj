@@ -57,6 +57,7 @@
     <ClInclude Include="File.h" />
     <ClInclude Include="GameModule.h" />
     <ClInclude Include="MathUtils.h" />
+    <ClInclude Include="Matrix.h" />
     <ClInclude Include="MPQFile.h" />
     <ClInclude Include="RefManager1Dim.h" />
     <ClInclude Include="ByteBuffer.h" />

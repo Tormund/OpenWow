@@ -1,7 +1,5 @@
 #pragma once
 
-#include "WowTypes.h"
-
 struct WMOFog
 {
 	uint32_t flags;

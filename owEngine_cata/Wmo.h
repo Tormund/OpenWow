@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Model_Instance.h"
-#include "WowTypes.h"
 
 class WMOGroup;
 class WMOInstance;
@@ -84,7 +83,7 @@ public:
 
 	bool Init();
 
-	void draw(int doodadset, cvec3 ofs, const float rot);
+	void draw(int doodadset, cvec3 ofs, const float roll);
 	void drawPortals();
 	void drawSkybox();
 

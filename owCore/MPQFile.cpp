@@ -26,11 +26,11 @@ bool MPQFile::IsFileExists(cstring _name)
 
 //
 
-vector<mpq_archive*> m_OpenArchives;
+vector<mpq_archive_s*> m_OpenArchives;
 
-void MPQFile::AddArchive(cstring filename)
+void MPQFile::AddArchive(string filename)
 {
-	mpq_archive* mpq_a;
+	mpq_archive_s* mpq_a;
 	int result = libmpq__archive_open(&mpq_a, (MPQFile::archives + filename).c_str(), -1);
 	Debug::Info("Opening %s", filename.c_str());
 	if (result)
@@ -106,7 +106,7 @@ MPQFileLocation MPQFile::GetFileLocation(cstring filename)
 {
 	for (auto i = m_OpenArchives.begin(); i != m_OpenArchives.end(); ++i)
 	{
-		mpq_archive* mpq_a = *i;
+		mpq_archive_s* mpq_a = *i;
 
 		uint32_t filenum;
 		if (libmpq__file_number(mpq_a, filename.c_str(), &filenum) == LIBMPQ_ERROR_EXIST)

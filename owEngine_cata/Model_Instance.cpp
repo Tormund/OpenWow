@@ -4,13 +4,10 @@
 #include "Model_Instance.h"
 
 // Additional
-#include "ModelsUtils.h"
 #include "World.h"
 
-ModelInstance::ModelInstance(Model * m, File& f) : model(m)
+ModelInstance::ModelInstance(Model* m, File& f) : model(m)
 {
-	model = m;
-
 	//uint32_t d1;
 	f.SeekRelative(4);
 
@@ -79,10 +76,10 @@ void ModelInstance::InitAsDoodad(Model * m, File& f)
 	lcol = fromARGB(d1);
 }
 
-void ModelInstance::DrawAsDoodad(cvec3 ofs, float rot)
+void ModelInstance::DrawAsDoodad(cvec3 ofs, float roll)
 {
 	vec3 tpos(ofs + pos);
-	rotate(ofs.x, ofs.z, &tpos.x, &tpos.z, rot * PI / 180.0f);
+	rotate(ofs.x, ofs.z, &tpos.x, &tpos.z, roll * PI / 180.0f);
 
 	if (glm::length2(tpos - _Camera->Position) > (_WowSettings->doodaddrawdistance2 * model->rad * sc))
 	{

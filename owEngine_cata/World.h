@@ -4,12 +4,10 @@
 
 #include "maptile.h"
 #include "wmo.h"
-#include "frustum.h"
 #include "DayNightCycle.h"
 #include "sky.h"
 
 #include "Map.h"
-#include "WoWSettings.h"
 
 class gMapDBRecord;
 
@@ -27,6 +25,9 @@ public:
 
 	void tick(float dt);
 	void draw();
+
+	void DSGeometryPassBegin();
+	void DSGeometryPassEnd();
 
 	void outdoorLighting();
 	void outdoorLights(bool on);

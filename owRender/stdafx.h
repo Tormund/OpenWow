@@ -14,6 +14,5 @@
 #include <owCore.h>
 #pragma comment(lib, "owCore.lib")
 
-// MAIN
 #define OW_RENDER_DLL_API __declspec(dllexport)
 #include "common.h"

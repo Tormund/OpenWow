@@ -21,10 +21,8 @@ typedef const glm::mat4x4& cmat4;
 typedef glm::quat Quaternion;
 typedef const glm::quat& cQuaternion;
 
-/*float* operator float*(const glm::mat4x4& mat)
-{
-	return (float*)this;
-}*/
+#include "Matrix.h"
+typedef const Matrix& cMatrix;
 
 inline glm::vec3 operator*(cvec3 v, const glm::mat4x4& mat)
 {

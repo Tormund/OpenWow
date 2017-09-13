@@ -47,6 +47,8 @@
     <ClCompile Include="ds_point_light_pass_tech.cpp">
       <Filter>Techniques\Lights</Filter>
     </ClCompile>
+    <ClCompile Include="frustum.cpp" />
+    <ClCompile Include="shaders.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Image.h">
@@ -100,6 +102,8 @@
     <ClInclude Include="ds_point_light_pass_tech.h">
       <Filter>Techniques\Lights</Filter>
     </ClInclude>
+    <ClInclude Include="frustum.h" />
+    <ClInclude Include="shaders.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Types">

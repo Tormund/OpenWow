@@ -1,16 +1,13 @@
 #include "stdafx.h"
 
-// Include
-//#include "DBC_Map.h"
-//#include "MapEntry.h"
-
 // General
 #include "GameState_Menu.h"
 
 // Additional
-#include "ModelsManager.h"
 #include "WMOsManager.h"
-#include "WoWSettings.h"
+
+// FIXME DELETE ME
+GLint currentColor;
 
 bool GameState_Menu::Init()
 {
@@ -72,7 +69,7 @@ bool GameState_Menu::Init()
 	cmd = CMD_NONE;
 
 	backgroundModel = 0;
-	//randBackground();
+	randBackground();
 
 	return true;
 }
@@ -134,7 +131,12 @@ void GameState_Menu::Render(double t, double dt)
 	if (cmd == CMD_IN_WORLD && !minimapActive)
 	{
 		_Camera->Update();
+
+		//_World->m_gbuffer->StartFrame();
+
 		_World->draw();
+
+		//_World->m_gbuffer->BindForFinalPass(currentColor);
 	}
 
 	if (backgroundModel != nullptr)
@@ -161,7 +163,7 @@ void GameState_Menu::Render(double t, double dt)
 		glDepthFunc(GL_LEQUAL);
 		glEnable(GL_LIGHTING);
 
-		backgroundModel->cam.setup(globalTime);
+		backgroundModel->m_ModelCamera->setup(globalTime);
 		backgroundModel->draw();
 	}
 }
@@ -436,6 +438,43 @@ KEYBD_PRESSED(GameState_Menu)
 		minimapActive = !minimapActive;
 		return true;
 	}
+
+	if (_key == GLFW_KEY_1)
+	{
+		currentColor = GL_COLOR_ATTACHMENT0;
+		return true;
+	}
+
+	if (_key == GLFW_KEY_2)
+	{
+		currentColor = GL_COLOR_ATTACHMENT1;
+		return true;
+	}
+
+	if (_key == GLFW_KEY_3)
+	{
+		currentColor = GL_COLOR_ATTACHMENT2;
+		return true;
+	}
+
+	if (_key == GLFW_KEY_4)
+	{
+		currentColor = GL_COLOR_ATTACHMENT3;
+		return true;
+	}
+
+	if (_key == GLFW_KEY_5)
+	{
+		currentColor = GL_COLOR_ATTACHMENT4;
+		return true;
+	}
+
+	if (_key == GLFW_KEY_6)
+	{
+		currentColor = GL_COLOR_ATTACHMENT5;
+		return true;
+	}
+
 	return false;
 }
 
@@ -461,9 +500,9 @@ void GameState_Menu::randBackground()
 
 	char* ui[] = {"MainMenu", "NightElf", "Human", "Dwarf", "Orc", "Tauren", "Scourge"};
 
-	char* randui = ui[Random::GenerateRange(0, 6)];
+	char* randui = ui[Random::GenerateMax(7)];
 	char path[256];
-	sprintf_s(path, "Interface\\Glues\\Models\\UI_%s\\UI_%s.mdx", randui, randui);
+	sprintf_s(path, "Interface\\Glues\\Models\\UI_%s\\UI_%s.m2", randui, randui);
 
 	backgroundModel = new Model(path);
 	backgroundModel->ind = true;

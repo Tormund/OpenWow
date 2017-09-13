@@ -4,7 +4,6 @@
 #include "Map_GlobalWMOs.h"
 
 // Additional
-#include "ModelsManager.h"
 #include "WMOsManager.h"
 
 Map_GlobalWMOs::Map_GlobalWMOs()

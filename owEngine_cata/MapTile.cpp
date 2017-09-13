@@ -9,11 +9,9 @@
 // Additional
 #include "MapWaterChunk.h"
 #include "world.h"
-#include "shaders.h"
 #include "WMO_Instance.h"
 #include "liquid.h"
 
-#include "ModelsManager.h"
 #include "WMOsManager.h"
 
 struct MH2O_Header
@@ -214,7 +212,8 @@ MapTile::~MapTile()
 		{
 			if (chunks[i][j] != nullptr)
 			{
-				chunks[i][j]->destroy();
+				delete chunks[i][j];
+				chunks[i][j] = nullptr;
 			}
 		}
 	}

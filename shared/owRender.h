@@ -16,6 +16,7 @@
 #include "../owRender/ShadowMapFBO.h"
 
 // Techiques
+#include "../owRender/shaders.h"
 #include "../owRender/Technique.h"
 
 #include "../owRender/ds_dir_light_pass_tech.h"
@@ -25,4 +26,6 @@
 #include "../owRender/null_technique.h"
 #include "../owRender/SimpleColorTechnique.h"
 
+//
+#include "../owRender/frustum.h"
 #include "../owRender/Gbuffer.h"

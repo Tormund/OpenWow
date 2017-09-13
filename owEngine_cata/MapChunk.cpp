@@ -8,9 +8,7 @@
 
 // Additional
 #include "MapTile.h"
-#include "shaders.h"
 #include "world.h"
-#include "WoWSettings.h"
 
 bool isHole(int holes, int i, int j)
 {
@@ -55,6 +53,28 @@ MapChunk::MapChunk() :
 
 	colorBufferEnable = false;
 }
+
+MapChunk::~MapChunk()
+{
+	//delete[] alphamaps;
+
+	//delete shadow;
+
+	glDeleteBuffers(1, &vertices);
+	glDeleteBuffers(1, &normals);
+
+	if (hasholes)
+	{
+		delete[] strip;
+	}
+
+	if (haswater)
+	{
+		delete lq;
+	}
+}
+
+//
 
 void MapChunk::init(vector<Texture*>* mt, File& f, load_phases phase)
 {
@@ -364,7 +384,6 @@ void MapChunk::init(vector<Texture*>* mt, File& f, load_phases phase)
 			int16_t effectId;
 			int16_t padding;
 		};
-
 		MCLY mcly[4];
 		memset(mcly, 0, sizeof(struct MCLY) * 4);
 
@@ -400,36 +419,19 @@ void MapChunk::init(vector<Texture*>* mt, File& f, load_phases phase)
 				{
 					alphamaps[i - 1]->GenerateTexture();
 
-					if (!(mcly[i].flags & MCLY::FLAG_USE_ALPHA_MAP))
+					if (!((mcly[i].flags & MCLY::FLAG_USE_ALPHA_MAP) == MCLY::FLAG_USE_ALPHA_MAP))
+					{
 						continue;
+					}
 
+					
 					alphamaps[i - 1]->Bind();
 
 					uint8_t amap[64 * 64];
 					uint8_t* abuf = data + mcly[i].offsetInMCAL;
 
-					if (_World->GetMap()->IsBigAlpha() && (mcly[i].flags & MCLY::FLAG_ALPHA_MAP_COMRESSED))
+					if (_World->GetMap()->IsBigAlpha() && ((mcly[i].flags & MCLY::FLAG_ALPHA_MAP_COMRESSED) == MCLY::FLAG_ALPHA_MAP_COMRESSED))
 					{ // Compressed: MPHD is only about bit depth!
-/*uint32_t offI = 0; //offset IN buffer
-uint32_t offO = 0; //offset OUT buffer
-while(offO < 64 * 64) {
-	// fill or copy mode
-	bool fill = abuf[offI] & 0x80;
-	uint32_t n = abuf[offI] & 0x7F;
-	offI++;
-	for(uint32_t k = 0; k < n; k++) {
-		if(offO >= 64 * 64)
-			break;
-		amap[offO] = abuf[offI];
-		offO++;
-		if(!fill)
-			offI++;
-	}
-	if(fill)
-		offI++;
-}*/
-
-
 						unsigned offI = 0; //offset IN buffer
 						unsigned offO = 0; //offset OUT buffer
 
@@ -458,23 +460,18 @@ while(offO < 64 * 64) {
 							continue;
 						}
 
-						uint8_t* p;
-						p = amap;
+						uint8_t* p = &amap[0];
 						for (int j = 0; j < 64; j++)
 						{
 							for (int i = 0; i < 64; i++)
 							{
 								*p++ = (*abuf++);
 							}
-
 						}
-
-						//memcpy(amap, abuf, 64 * 64);
 					}
 					else
 					{ // Uncompressed (2048)
-						uint8_t *p = amap;
-						p = amap;
+						uint8_t *p = &amap[0];
 						for (int j = 0; j < 64; j++)
 						{
 							for (int k = 0; k < 32; k++)
@@ -492,8 +489,6 @@ while(offO < 64 * 64) {
 								}
 							}
 						}
-						//memcpy(amap + 63 * 64, amap + 62 * 64, 64);
-						//f.seekRelative(64*32);
 					}
 
 					glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, 64, 64, 0, GL_ALPHA, GL_UNSIGNED_BYTE, amap);
@@ -501,6 +496,7 @@ while(offO < 64 * 64) {
 					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+					alphamaps[i - 1]->Unbind();
 
 					if (supportShaders)
 					{
@@ -515,7 +511,7 @@ while(offO < 64 * 64) {
 		}
 
 		// MCSH sub-chunk (shadow maps)
-		if (header->flags & MCNK_Header::FLAG_HAS_MCSH)
+		if (header->flags & MCNK_Header::FLAG_HAS_MCSH == MCNK_Header::FLAG_HAS_MCSH)
 		{
 			f.Seek(header->ofsShadow);
 
@@ -540,6 +536,7 @@ while(offO < 64 * 64) {
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			shadow->Unbind();
 
 			if (supportShaders)
 			{
@@ -596,27 +593,6 @@ void MapChunk::initStrip(int holes)
 		}
 	}
 	striplen = (int)(s - strip);
-}
-
-void MapChunk::destroy()
-{
-
-	//delete[] alphamaps;
-
-	//delete shadow;
-
-	glDeleteBuffers(1, &vertices);
-	glDeleteBuffers(1, &normals);
-
-	if (hasholes)
-	{
-		delete[] strip;
-	}
-
-	if (haswater)
-	{
-		delete lq;
-	}
 }
 
 //

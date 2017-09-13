@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="Model.cpp">
+      <Filter>MDX</Filter>
+    </ClCompile>
+    <ClCompile Include="Model_Bone.cpp">
+      <Filter>MDX</Filter>
+    </ClCompile>
+    <ClCompile Include="Model_Camera.cpp">
+      <Filter>MDX</Filter>
+    </ClCompile>
+    <ClCompile Include="Model_Color.cpp">
+      <Filter>MDX</Filter>
+    </ClCompile>
+    <ClCompile Include="Model_Light.cpp">
+      <Filter>MDX</Filter>
+    </ClCompile>
+    <ClCompile Include="Model_RenderPass.cpp">
+      <Filter>MDX</Filter>
+    </ClCompile>
+    <ClCompile Include="Model_TextureAnim.cpp">
+      <Filter>MDX</Filter>
+    </ClCompile>
+    <ClCompile Include="Model_Transparency.cpp">
+      <Filter>MDX</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelsManager.cpp">
+      <Filter>MDX</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelsUtils.cpp">
+      <Filter>MDX</Filter>
+    </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleEmitters.cpp">
+      <Filter>Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleSystem.cpp">
+      <Filter>Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="RibbonEmitter.cpp">
+      <Filter>Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelHeaders.cpp">
+      <Filter>MDX</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="..\shared\owMDX.h" />
+    <ClInclude Include="Model.h">
+      <Filter>MDX</Filter>
+    </ClInclude>
+    <ClInclude Include="Model_Bone.h">
+      <Filter>MDX</Filter>
+    </ClInclude>
+    <ClInclude Include="Model_Camera.h">
+      <Filter>MDX</Filter>
+    </ClInclude>
+    <ClInclude Include="Model_Color.h">
+      <Filter>MDX</Filter>
+    </ClInclude>
+    <ClInclude Include="Model_Light.h">
+      <Filter>MDX</Filter>
+    </ClInclude>
+    <ClInclude Include="Model_RenderPass.h">
+      <Filter>MDX</Filter>
+    </ClInclude>
+    <ClInclude Include="Model_TextureAnim.h">
+      <Filter>MDX</Filter>
+    </ClInclude>
+    <ClInclude Include="Model_Transparency.h">
+      <Filter>MDX</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelsManager.h">
+      <Filter>MDX</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelsUtils.h">
+      <Filter>MDX</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleSystem.h">
+      <Filter>Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="RibbonEmitter.h">
+      <Filter>Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelHeaders.h">
+      <Filter>MDX</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="MDX">
+      <UniqueIdentifier>{227316c9-1d48-44c6-a294-45e472371133}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Particle">
+      <UniqueIdentifier>{6286908f-a052-483e-a3df-cd6defc192de}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

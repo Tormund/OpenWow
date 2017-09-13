@@ -7,6 +7,7 @@
 #include "Engine.h"
 
 // Additional
+#include <ctime>
 #include "ConsoleOpenGL.h"
 #include "GameState_Empty.h"
 
@@ -36,7 +37,7 @@ bool Engine::Init(vector<string>& _argumentQueue)
 
 	// Load static classes
 	Debug::Init();
-	Random::SetSeed(static_cast<unsigned long>(GetTicks()));
+	Random::SetSeed(static_cast<unsigned long>(time(0)));
 
 	// Load modules
 	_ModulesMgr->LoadModule(_Render, true);
@@ -111,15 +112,15 @@ bool Engine::Tick()
 {
 	if (currentGameState == nullptr)
 	{
-		Debug::Warn("Current game state is null. Set empty GameState.");
-		this->SetGameState(new GameState_Empty);
+		Debug::Warn("Egnine[]: Current game state is null. Set empty GameState.");
+		SetGameState(new GameState_Empty);
 	}
 
 	last_t = t;
 	t = GetTicks();
 	uint32_t dt = t - last_t;
-	time += dt;
-	ftime = static_cast<float>(time) / 1000.0f;
+	_time += dt;
+	ftime = static_cast<float>(_time) / 1000.0f;
 
 	// Input
 	if (currentGameState != nullptr)
@@ -153,6 +154,8 @@ bool Engine::Tick()
 	}
 	_UIMgr->RenderUI();
 	consoleOpenGL->RenderUI();
+
+	//
 
 	// Swap buffers
 	if (!_GLFW->SwapWindowBuffers())

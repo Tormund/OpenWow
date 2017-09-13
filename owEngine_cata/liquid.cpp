@@ -6,9 +6,6 @@
 // General
 #include "liquid.h"
 #include "world.h"
-#include "shaders.h"
-
-#include "WoWSettings.h"
 
 struct LiquidVertex {
 	//uint8_t c[4];

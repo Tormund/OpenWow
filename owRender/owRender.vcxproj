@@ -100,7 +100,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\Externals\glfw-3.2.1.bin.WIN32\lib-vc2015;..\Externals\glew-2.1.0\lib\Release\$(PlatformName);..\Externals\glfx\glfx\x86;..\Externals\soil\$(PlatformName)\$(Configuration);..\Externals\freetype\lib\$(PlatformName);..\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\Externals\glfw-3.2.1.bin.WIN32\lib-vc2015;..\Externals\glew-2.1.0\lib\Release\$(PlatformName);..\Externals\glfx\glfx\x86;..\Externals\freetype\lib\$(PlatformName);..\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>glfw3dll.lib;glfw3.lib;opengl32.lib;glu32.lib;freetype28d.lib;SOIL.lib;glew32.lib;glfx.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -117,7 +117,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\Externals\glfw-3.2.1.bin.WIN64\lib-vc2015;..\Externals\glew-2.1.0\lib\Release\$(PlatformName);..\Externals\glfx\glfx\$(PlatformShortName);..\Externals\soil\$(PlatformName)\$(Configuration);..\Externals\freetype\lib\$(PlatformName);..\bin_x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\Externals\glfw-3.2.1.bin.WIN64\lib-vc2015;..\Externals\glew-2.1.0\lib\Release\$(PlatformName);..\Externals\glfx\glfx\$(PlatformShortName);..\Externals\freetype\lib\$(PlatformName);..\bin_x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>glfw3dll.lib;glfw3.lib;opengl32.lib;glu32.lib;freetype28d.lib;SOIL.lib;glew32.lib;glfx.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -138,7 +138,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\Externals\glfw-3.2.1.bin.WIN32\lib-vc2015;..\Externals\glew-2.1.0\lib\Release\$(PlatformName);..\Externals\glfx\glfx\x86;..\Externals\soil\$(PlatformName)\$(Configuration);..\Externals\freetype\lib\$(PlatformName);..\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\Externals\glfw-3.2.1.bin.WIN32\lib-vc2015;..\Externals\glew-2.1.0\lib\Release\$(PlatformName);..\Externals\glfx\glfx\x86;..\Externals\freetype\lib\$(PlatformName);..\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>glfw3dll.lib;glfw3.lib;opengl32.lib;glu32.lib;freetype28.lib;SOIL.lib;glew32.lib;glfx.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -159,7 +159,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\Externals\glfw-3.2.1.bin.WIN64\lib-vc2015;..\Externals\glew-2.1.0\lib\Release\$(PlatformName);..\Externals\glfx\glfx\$(PlatformShortName);..\Externals\soil\$(PlatformName)\$(Configuration);..\Externals\freetype\lib\$(PlatformName);..\bin_x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\Externals\glfw-3.2.1.bin.WIN64\lib-vc2015;..\Externals\glew-2.1.0\lib\Release\$(PlatformName);..\Externals\glfx\glfx\$(PlatformShortName);..\Externals\freetype\lib\$(PlatformName);..\bin_x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>glfw3dll.lib;glfw3.lib;opengl32.lib;glu32.lib;freetype28.lib;SOIL.lib;glew32.lib;glfx.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -171,6 +171,7 @@
     <ClCompile Include="ds_point_light_pass_tech.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FontsMgr.cpp" />
+    <ClCompile Include="frustum.cpp" />
     <ClCompile Include="Gbuffer.cpp" />
     <ClCompile Include="GLFWBackend.cpp" />
     <ClCompile Include="Image.cpp" />
@@ -181,6 +182,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="shaders.cpp" />
     <ClCompile Include="ShadowMapFBO.cpp" />
     <ClCompile Include="SimpleColorTechnique.cpp" />
     <ClCompile Include="Technique.cpp" />
@@ -198,6 +200,7 @@
     <ClInclude Include="ds_point_light_pass_tech.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="FontsMgr.h" />
+    <ClInclude Include="frustum.h" />
     <ClInclude Include="Gbuffer.h" />
     <ClInclude Include="GLFWBackend.h" />
     <ClInclude Include="Image.h" />
@@ -209,6 +212,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="shaders.h" />
     <ClInclude Include="ShadowMapFBO.h" />
     <ClInclude Include="SimpleColorTechnique.h" />
     <ClInclude Include="Technique.h" />

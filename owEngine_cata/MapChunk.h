@@ -1,7 +1,5 @@
 #pragma once
 
-#include "WowTypes.h"
-
 class Liquid;
 
 struct MCNK_Header
@@ -125,9 +123,10 @@ public:
 
 public:
 	MapChunk();
+	~MapChunk();
 
 	void init(vector<Texture*>* mt, File& f, load_phases _phase);
-	void destroy();
+
 	void initStrip(int holes);
 
 	void draw();

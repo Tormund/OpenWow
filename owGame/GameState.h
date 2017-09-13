@@ -1,6 +1,5 @@
 #pragma once
 
-class GameModule;
 class InputListener;
 
 class GameState : public GameModule, public InputListener

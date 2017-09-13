@@ -5,7 +5,6 @@
 
 // Additional
 #include "MapChunk.h"
-#include "ModelsManager.h"
 #include "WMOsManager.h"
 #include "World.h"
 

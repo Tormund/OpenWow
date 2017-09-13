@@ -2,14 +2,10 @@
 
 #include "GameState_Menu.h"
 
-#include "shaders.h"
-
 void shutdown(int _errCode);
 
 int main(int argumentCount, char* arguments[])
 {
-	//_Engine->QuickStart(argumentCount, arguments, new GameState_Menu);
-
 	vector<string> argumentQueue;
 	for (int i = 0; i < argumentCount; i++)
 	{

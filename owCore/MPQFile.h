@@ -1,8 +1,8 @@
 #pragma once
 
 // MPQ Files
-#include <owLibMPQ.h>
-#pragma comment(lib, "owLibMPQ.lib")
+#include <libmpq/mpq.h>
+#pragma comment(lib, "libmpq.lib")
 
 struct MPQFileLocation
 {
@@ -27,7 +27,7 @@ protected:
 	static const char* archives;
 
 public: // MPQ File
-	static OW_CORE_DLL_API void AddArchive(cstring filename);
+	static OW_CORE_DLL_API void AddArchive(string filename);
 	static OW_CORE_DLL_API MPQFileLocation GetFileLocation(cstring filename);
 	static OW_CORE_DLL_API void ClearArchives();	
 };
