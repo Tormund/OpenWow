@@ -2,7 +2,7 @@
 
 #include "modelheaders.h"
 
-struct ModelCameraDef
+/*struct ModelCameraDef
 {
 	int32_t type;                 // 0 is potrait camera, 1 characterinfo camera; -1 if none; referenced in CamLookup_Table
 	float farclip;                // Where it stops to be drawn.
@@ -13,12 +13,12 @@ struct ModelCameraDef
 	vec3 target;                  // float, Where the camera points to.
 	AnimationBlock roll;          // (Quat) The camera can have some roll-effect. Its 0 to 2*Pi. 3 Floats!
 	AnimationBlock FoV;           // (Float) One Float. cataclysm
-};
+};*/
 
 class ModelCamera
 {
 public:
-	OW_MDX_DLL_API void init(File& f, ModelCameraDef& mcd, uint32_t* global);
+	OW_MDX_DLL_API void init(File& f, M2Camera& mcd, uint32_t* global);
 	OW_MDX_DLL_API void setup(int time = 0);
 
 private:

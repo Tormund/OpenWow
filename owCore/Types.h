@@ -33,6 +33,9 @@ inline glm::vec3 operator*(cvec3 v, const glm::mat4x4& mat)
 	return o;
 }
 
+typedef glm::vec2 C2Vector;
+typedef glm::vec3 C3Vector;
+
 
 // STL Types
 #include <map>

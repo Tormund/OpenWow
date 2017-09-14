@@ -4,11 +4,11 @@
 #include "Model_TextureAnim.h"
 
 
-void ModelTextureAnim::init(File& f, ModelTexAnimDef& mta, uint32_t * global)
+void ModelTextureAnim::init(File& f, M2TextureTransform& mta, uint32_t * global)
 {
-	trans.init(mta.trans, f, global);
-	roll.init(mta.roll, f, global);
-	scale.init(mta.scale, f, global);
+	trans.init(mta.translation, f, global);
+	roll.init(mta.rotation, f, global);
+	scale.init(mta.scaling, f, global);
 }
 
 void ModelTextureAnim::calc(int anim, int time)

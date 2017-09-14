@@ -12,7 +12,7 @@ struct RibbonSegment
 class RibbonEmitter
 {
 public:
-	void init(File &f, ModelRibbonEmitterDef &mta, uint32_t *globals);
+	void init(File &f, M2Ribbon &mta, uint32_t *globals);
 	void setup(int anim, int time);
 	void draw();
 
@@ -21,7 +21,7 @@ public:
 
 private:
 	Animated<vec3> color;
-	AnimatedShort opacity;
+	Animated<float, short, ShortToFloat> opacity;
 	Animated<float> above;
 	Animated<float> below;
 

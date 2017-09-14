@@ -6,16 +6,16 @@
 // Additional
 #include "ModelsUtils.h"
 
-void ModelLight::init(File &f, ModelLightDef &mld, uint32_t *global)
+void ModelLight::init(File &f, M2Light &mld, uint32_t *global)
 {
-	tpos = pos = fixCoordSystem(mld.pos);
+	tpos = pos = fixCoordSystem(mld.position);
 	tdir = dir = vec3(0, 1, 0); // no idea
 	type = mld.type;
 	parent = mld.bone;
-	ambColor.init(mld.ambColor, f, global);
-	ambIntensity.init(mld.ambIntensity, f, global);
-	diffColor.init(mld.color, f, global);
-	diffIntensity.init(mld.intensity, f, global);
+	ambColor.init(mld.ambient_color, f, global);
+	ambIntensity.init(mld.ambient_intensity, f, global);
+	diffColor.init(mld.diffuse_color, f, global);
+	diffIntensity.init(mld.diffuse_intensity, f, global);
 }
 
 void ModelLight::setup(int time, GLuint l)

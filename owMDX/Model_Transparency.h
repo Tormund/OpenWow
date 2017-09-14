@@ -1,20 +1,15 @@
 #pragma once
 
-#include "modelheaders.h"
-
-struct ModelTransDef
-{
-	AnimationBlock trans;
-};
+#include "ModelHeaders.h"
 
 struct ModelTransparency
 {
 public:
-	void init(File& f, ModelTransDef& mtd, uint32_t* global)
+	void init(File& f, M2TextureWeight& mtd, uint32_t* global)
 	{
-		trans.init(mtd.trans, f, global);
+		trans.init(mtd.weight, f, global);
 	}
 
 public:
-	AnimatedShort trans;
+	Animated<float, short, ShortToFloat> trans;
 };

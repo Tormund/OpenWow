@@ -6,15 +6,15 @@
 // Additional
 #include "ModelsUtils.h"
 
-void Bone::init(File &f, ModelBoneDef &b, uint32_t *global, File *animfiles)
+void Bone::init(File &f, M2CompBone &b, uint32_t *global, File *animfiles)
 {
-	parent = b.parent;
+	parent = b.parent_bone;
 	pivot = fixCoordSystem(b.pivot);
 	billboard = (b.flags & MODELBONE_BILLBOARD) != 0;
 
 	trans.init(b.translation, f, global, animfiles);
 	roll.init(b.rotation, f, global, animfiles);
-	scale.init(b.scaling, f, global, animfiles);
+	scale.init(b.scale, f, global, animfiles);
 
 	trans.fix(fixCoordSystem);
 	roll.fix(fixCoordSystemQuat);

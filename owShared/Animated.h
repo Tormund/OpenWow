@@ -1,20 +1,31 @@
 #pragma once
 
-struct AnimationBlockHeader
+#pragma pack(push, 1)
+
+template<typename T>
+struct M2Array
 {
-	uint32_t nEntrys;
-	uint32_t ofsEntrys;
+	uint32_t size;
+	uint32_t offset; // pointer to T, relative to begin of m2 data block (i.e. MD21 chunk content or begin of file)
 };
 
-struct AnimationBlock
+struct M2TrackBase
 {
-	int16_t type;		// interpolation type (0=none, 1=linear, 2=hermite)
-	int16_t seq;		// global sequence id or -1
-	uint32_t nTimes;
-	uint32_t ofsTimes;
-	uint32_t nKeys;
-	uint32_t ofsKeys;
+	int16_t interpolation_type;
+	int16_t global_sequence;
+	M2Array<M2Array<uint32_t>> timestamps;
 };
+
+template<typename T>
+struct M2Track
+{
+	int16_t interpolation_type;
+	int16_t global_sequence;
+	M2Array<M2Array<uint32_t>> timestamps;
+	M2Array<M2Array<T>> values;
+};
+
+#pragma pack(pop)
 
 //
 
@@ -53,6 +64,7 @@ typedef pair<size_t, size_t> AnimRange;
 // global time for global sequences
 extern int globalTime;
 
+
 enum Interpolations
 {
 	INTERPOLATION_NONE,
@@ -70,7 +82,7 @@ public:
 	}
 };
 
-struct PACK_QUATERNION
+struct M2CompQuat
 {
 	__int16 x, y, z, w;
 };
@@ -78,7 +90,7 @@ struct PACK_QUATERNION
 class Quat16ToQuat32
 {
 public:
-	static const Quaternion conv(const PACK_QUATERNION t)
+	static const Quaternion conv(const M2CompQuat t)
 	{
 		return Quaternion(
 			float(t.w > 0 ? t.w - 32767 : t.w + 32767) / 32767.0f,
@@ -97,44 +109,23 @@ public:
 	}
 };
 
-#ifdef LESS_MEMORY
-#define	MAX_ANIMATED	1
-#else
+
 #define	MAX_ANIMATED	500
-#endif
+
 /*
 	Generic animated value class:
 
 	T is the data type to animate
 	D is the data type stored in the file (by default this is the same as T)
-	Conv is a conversion object that defines T conv(D) to convert from D to T (by default this is an identity function)
-	(there might be a nicer way to do this? meh meh)
+	Conv is a conversion object that defines T conv(D) to convert from D to T (by default this is an identity function)	(there might be a nicer way to do this? meh meh)
 */
 template <class T, class D = T, class Conv = Identity<T> >
 class Animated
 {
 public:
-	int type, seq;
-	uint32_t* globals;
-
-	vector<int> times[MAX_ANIMATED];
-	vector<T> data[MAX_ANIMATED];
-
-	// for nonlinear interpolations:
-	vector<T> in[MAX_ANIMATED];
-	vector<T> out[MAX_ANIMATED];
-	size_t sizes;
-
 	bool uses(uint32_t anim)
 	{
-#ifdef LESS_MEMORY
-		if (anim >= MAX_ANIMATED)
-		{
-			anim = 0;
-		}
-#endif
-
-		if (seq > -1)
+		if (global_sequence > -1)
 		{
 			anim = 0;
 		}
@@ -144,24 +135,17 @@ public:
 
 	T getValue(int anim, int time)
 	{
-#ifdef LESS_MEMORY
-		if (anim >= MAX_ANIMATED)
-		{
-			anim = 0;
-		}
-#endif
-
 		// obtain a time value and a data range
-		if (seq > -1)
+		if (global_sequence > -1)
 		{
 			// TODO
-			if (globals[seq] == 0)
+			if (globals[global_sequence] == 0)
 			{
 				time = 0;
 			}
 			else
 			{
-				time = globalTime % globals[seq];
+				time = globalTime % globals[global_sequence];
 			}
 			anim = 0;
 		}
@@ -187,11 +171,11 @@ public:
 			t2 = times[anim][pos + 1];
 			float r = (time - t1) / (float)(t2 - t1);
 
-			if (type == INTERPOLATION_LINEAR)
+			if (interpolation_type == INTERPOLATION_LINEAR)
 			{
 				return interpolate<T>(r, data[anim][pos], data[anim][pos + 1]);
 			}
-			else if (type == INTERPOLATION_NONE)
+			else if (interpolation_type == INTERPOLATION_NONE)
 			{
 				return data[anim][pos];
 			}
@@ -215,123 +199,127 @@ public:
 		}
 	}
 
-	void init(AnimationBlock& b, File& f, uint32_t* gs)
+	void init(M2Track<D>& b, File& f, uint32_t* gs)
 	{
 		globals = gs;
-		type = b.type;
-		seq = b.seq;
-		if (seq != -1)
+		interpolation_type = b.interpolation_type;
+		global_sequence = b.global_sequence;
+		if (global_sequence != -1)
 		{
 			assert1(gs);
 		}
 
-
-		// times
-		assert1(b.nTimes == b.nKeys);
-		sizes = b.nTimes;
-		if (b.nTimes == 0)
+		if (b.timestamps.size != b.values.size)
 		{
-			return;
+			Debug::Error("123");
 		}
 
-#ifdef LESS_MEMORY
-		sizes = b.nTimes = b.nKeys = MAX_ANIMATED;
-#endif
+		assert1(b.timestamps.size == b.values.size);
+		sizes = b.timestamps.size;
+		if (b.timestamps.size == 0)	return;
 
-		for (size_t j = 0; j < b.nTimes; j++)
+		// times
+		for (size_t j = 0; j < b.timestamps.size; j++)
 		{
-			AnimationBlockHeader* pHeadTimes = (AnimationBlockHeader*)(f.GetData() + b.ofsTimes + j * sizeof(AnimationBlockHeader));
+			M2Array<uint32_t>* pHeadTimes = (M2Array<uint32_t>*)(f.GetData() + b.timestamps.offset + j * sizeof(M2Array<uint32_t>));
 
-			uint32_t *ptimes = (uint32_t*)(f.GetData() + pHeadTimes->ofsEntrys);
-			for (size_t i = 0; i < pHeadTimes->nEntrys; i++)
+			uint32_t* ptimes = (uint32_t*)(f.GetData() + pHeadTimes->offset);
+			for (size_t i = 0; i < pHeadTimes->size; i++)
 			{
 				times[j].push_back(ptimes[i]);
 			}
 		}
 
 		// keyframes
-		for (size_t j = 0; j < b.nKeys; j++)
+		for (size_t j = 0; j < b.values.size; j++)
 		{
-			AnimationBlockHeader* pHeadKeys = (AnimationBlockHeader*)(f.GetData() + b.ofsKeys + j * sizeof(AnimationBlockHeader));
+			M2Array<D>* pHeadKeys = (M2Array<D>*)(f.GetData() + b.values.offset + j * sizeof(M2Array<D>));
 
-			D* keys = (D*)(f.GetData() + pHeadKeys->ofsEntrys);
-			switch (type)
+			D* keys = (D*)(f.GetData() + pHeadKeys->offset);
+			switch (interpolation_type)
 			{
 				case INTERPOLATION_NONE:
 				case INTERPOLATION_LINEAR:
-				for (size_t i = 0; i < pHeadKeys->nEntrys; i++)
+				for (size_t i = 0; i < pHeadKeys->size; i++)
+				{
 					data[j].push_back(Conv::conv(keys[i]));
+				}
 				break;
 
 				case INTERPOLATION_HERMITE:
-				for (size_t i = 0; i < pHeadKeys->nEntrys; i++)
+				for (size_t i = 0; i < pHeadKeys->size; i++)
 				{
-					data[j].push_back(Conv::conv(keys[i * 3]));
-					in[j].push_back(Conv::conv(keys[i * 3 + 1]));
-					out[j].push_back(Conv::conv(keys[i * 3 + 2]));
+					data[j].push_back(Conv::conv(keys[i * 3 + 0]));
+					in[j].push_back(  Conv::conv(keys[i * 3 + 1]));
+					out[j].push_back( Conv::conv(keys[i * 3 + 2]));
 				}
 				break;
 			}
 		}
 	}
 
-	void init(AnimationBlock &b, File &f, uint32_t *gs, File *animfiles)
+	void init(M2Track<D>& b, File& f, uint32_t* gs, File* animfiles)
 	{
 		globals = gs;
-		type = b.type;
-		seq = b.seq;
-		if (seq != -1)
+		interpolation_type = b.interpolation_type;
+		global_sequence = b.global_sequence;
+		if (global_sequence != -1)
 		{
 			assert1(gs);
 		}
 
-		// times
-		assert1(b.nTimes == b.nKeys);
-		sizes = b.nTimes;
-		if (b.nTimes == 0)
-			return;
-
-#ifdef LESS_MEMORY
-		sizes = b.nTimes = b.nKeys = MAX_ANIMATED;
-#endif
-
-		for (size_t j = 0; j < b.nTimes; j++)
+		if (b.timestamps.size != b.values.size)
 		{
-			AnimationBlockHeader* pHeadTimes = (AnimationBlockHeader*)(f.GetData() + b.ofsTimes + j * sizeof(AnimationBlockHeader));
-			uint32_t *ptimes;
-			if (animfiles[j].GetSize() > 0)
-				ptimes = (uint32_t*)(animfiles[j].GetData() + pHeadTimes->ofsEntrys);
-			else
-				ptimes = (uint32_t*)(f.GetData() + pHeadTimes->ofsEntrys);
+			Debug::Error("123");
+		}
 
-			for (size_t i = 0; i < pHeadTimes->nEntrys; i++)
+		assert1(b.timestamps.size == b.values.size);
+		sizes = b.timestamps.size;
+		if (b.timestamps.size == 0)	return;
+
+		// times
+		for (size_t j = 0; j < b.timestamps.size; j++)
+		{
+			M2Array<uint32_t>* pHeadTimes = (M2Array<uint32_t>*)(f.GetData() + b.timestamps.offset + j * sizeof(M2Array<uint32_t>));
+			
+			uint32_t* ptimes;
+			if (animfiles[j].GetSize() > 0)
+				ptimes = (uint32_t*)(animfiles[j].GetData() + pHeadTimes->offset);
+			else
+				ptimes = (uint32_t*)(f.GetData() + pHeadTimes->offset);
+
+			for (size_t i = 0; i < pHeadTimes->size; i++)
+			{
 				times[j].push_back(ptimes[i]);
+			}
 		}
 
 		// keyframes
-		for (size_t j = 0; j < b.nKeys; j++)
+		for (size_t j = 0; j < b.values.size; j++)
 		{
-			AnimationBlockHeader* pHeadKeys = (AnimationBlockHeader*)(f.GetData() + b.ofsKeys + j * sizeof(AnimationBlockHeader));
-			assert1((D*)(f.GetData() + pHeadKeys->ofsEntrys));
+			M2Array<D>* pHeadKeys = (M2Array<D>*)(f.GetData() + b.values.offset + j * sizeof(M2Array<D>));
+			assert1((D*)(f.GetData() + pHeadKeys->offset));
+
 			D *keys;
 			if (animfiles[j].GetSize() > 0)
-				keys = (D*)(animfiles[j].GetData() + pHeadKeys->ofsEntrys);
+				keys = (D*)(animfiles[j].GetData() + pHeadKeys->offset);
 			else
-				keys = (D*)(f.GetData() + pHeadKeys->ofsEntrys);
+				keys = (D*)(f.GetData() + pHeadKeys->offset);
 
-			switch (type)
+			switch (interpolation_type)
 			{
 				case INTERPOLATION_NONE:
 				case INTERPOLATION_LINEAR:
-				for (size_t i = 0; i < pHeadKeys->nEntrys; i++)
+				for (size_t i = 0; i < pHeadKeys->size; i++)
 					data[j].push_back(Conv::conv(keys[i]));
 				break;
+
 				case INTERPOLATION_HERMITE:
-				for (size_t i = 0; i < pHeadKeys->nEntrys; i++)
+				for (size_t i = 0; i < pHeadKeys->size; i++)
 				{
-					data[j].push_back(Conv::conv(keys[i * 3]));
-					in[j].push_back(Conv::conv(keys[i * 3 + 1]));
-					out[j].push_back(Conv::conv(keys[i * 3 + 2]));
+					data[j].push_back(Conv::conv(keys[i * 3 + 0]));
+					in[j].push_back(  Conv::conv(keys[i * 3 + 1]));
+					out[j].push_back( Conv::conv(keys[i * 3 + 2]));
 				}
 				break;
 			}
@@ -340,7 +328,7 @@ public:
 
 	void fix(T fixfunc(const T&))
 	{
-		switch (type)
+		switch (interpolation_type)
 		{
 			case INTERPOLATION_NONE:
 			case INTERPOLATION_LINEAR:
@@ -367,6 +355,16 @@ public:
 		}
 	}
 
-};
+private:
+	int32_t interpolation_type;
+	int32_t global_sequence;
+	uint32_t* globals;
 
-typedef Animated<float, short, ShortToFloat> AnimatedShort;
+	size_t sizes;
+	vector<int32_t> times[MAX_ANIMATED];
+	vector<T> data[MAX_ANIMATED];
+
+	// Hermite interpolation
+	vector<T> in[MAX_ANIMATED];
+	vector<T> out[MAX_ANIMATED];
+};

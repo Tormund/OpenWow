@@ -42,7 +42,7 @@ Model::Model(cstring name, bool forceAnim) : RefItemNamed(name), forceAnim(force
 		//|| name=="World\\Kalimdor\\Orgrimmar\\Passivedoodads\\Orgrimmarbonfire\\Orgrimmarbonfire01.Mdx"	
 		)
 	{
-		header.nParticleEmitters = 0;
+		header.particle_emitters.size = 0;
 	}
 
 	animated = isAnimated(f) || forceAnim;  // isAnimated will set animGeometry and animTextures
@@ -62,18 +62,19 @@ Model::Model(cstring name, bool forceAnim) : RefItemNamed(name), forceAnim(force
 	showGeosets = 0;
 	vbuf = nbuf = tbuf = 0;
 
-	globalSequences = 0;
+	globalSequences = nullptr;
 	animtime = 0;
 	anim = 0;
-	colors = 0;
-	lights = 0;
-	transparency = 0;
-	particleSystems = 0;
-	ribbons = 0;
-	if (header.nGlobalSequences)
+	colors = nullptr;
+	lights = nullptr;
+	transparency = nullptr;
+	particleSystems = nullptr;
+	ribbons = nullptr;
+
+	if (header.global_loops.size)
 	{
-		globalSequences = new uint32_t[header.nGlobalSequences];
-		memcpy(globalSequences, (f.GetData() + header.ofsGlobalSequences), header.nGlobalSequences * 4);
+		globalSequences = new uint32_t[header.global_loops.size];
+		memcpy(globalSequences, (f.GetData() + header.global_loops.offset), sizeof(M2Loop) * header.global_loops.size);
 	}
 
 	if (animated)
@@ -90,14 +91,13 @@ Model::~Model()
 	{
 		//Debug::Info("Unloading model %s", name.c_str());
 
-		if (header.nTextures)
+		if (header.textures.size)
 		{
-			for (size_t i = 0; i < header.nTextures; i++)
+			for (size_t i = 0; i < header.textures.size; i++)
 			{
-				if (textures[i] != 0)
+				if (textures[i] != nullptr)
 				{
-					//Texture *tex = (Texture*)video.textures.items[textures[i]];
-					//video.textures.del(textures[i]); // BOUZI
+					_TexturesMgr->Delete(textures[i]);
 				}
 			}
 			delete[] textures;
@@ -145,7 +145,7 @@ Model::~Model()
 bool Model::isAnimated(File &f)
 {
 	// see if we have any animated bones
-	ModelBoneDef *bo = (ModelBoneDef*)(f.GetData() + header.ofsBones);
+	M2CompBone *bo = (M2CompBone*)(f.GetData() + header.bones.offset);
 
 	animGeometry = false;
 	animBones = false;
@@ -158,8 +158,8 @@ bool Model::isAnimated(File &f)
 		{
 			if (verts[i].weights[b] > 0)
 			{
-				ModelBoneDef &bb = bo[verts[i].bones[b]];
-				if (bb.translation.type || bb.rotation.type || bb.scaling.type || (bb.flags & 8))
+				M2CompBone &bb = bo[verts[i].bones[b]];
+				if (bb.translation.interpolation_type || bb.rotation.interpolation_type || bb.scale.interpolation_type || (bb.flags & 8))
 				{
 					if (bb.flags & 8)
 					{
@@ -177,10 +177,10 @@ bool Model::isAnimated(File &f)
 		animBones = true;
 	else
 	{
-		for (size_t i = 0; i < header.nBones; i++)
+		for (size_t i = 0; i < header.bones.size; i++)
 		{
-			ModelBoneDef &bb = bo[i];
-			if (bb.translation.type || bb.rotation.type || bb.scaling.type)
+			M2CompBone &bb = bo[i];
+			if (bb.translation.interpolation_type || bb.rotation.interpolation_type || bb.scale.interpolation_type)
 			{
 				animBones = true;
 				break;
@@ -188,22 +188,22 @@ bool Model::isAnimated(File &f)
 		}
 	}
 
-	animTextures = header.nTexAnims > 0;
+	animTextures = header.texture_transforms.size > 0;
 
-	bool animMisc = header.nCameras > 0 || // why waste time, pretty much all models with cameras need animation
-		header.nLights > 0 || // same here
-		header.nParticleEmitters > 0 ||
-		header.nRibbonEmitters > 0;
+	bool animMisc = header.cameras.size > 0 || // why waste time, pretty much all models with cameras need animation
+		header.lights.size > 0 || // same here
+		header.particle_emitters.size > 0 ||
+		header.ribbon_emitters.size > 0;
 
 	if (animMisc) animBones = true;
 
 	// animated colors
-	if (header.nColors)
+	if (header.colors.size)
 	{
-		ModelColorDef *cols = (ModelColorDef*)(f.GetData() + header.ofsColors);
-		for (size_t i = 0; i < header.nColors; i++)
+		M2Color* cols = (M2Color*)(f.GetData() + header.colors.offset);
+		for (size_t i = 0; i < header.colors.size; i++)
 		{
-			if (cols[i].color.type != 0 || cols[i].opacity.type != 0)
+			if (cols[i].color.interpolation_type != 0 || cols[i].alpha.interpolation_type != 0)
 			{
 				animMisc = true;
 				break;
@@ -212,12 +212,12 @@ bool Model::isAnimated(File &f)
 	}
 
 	// animated opacity
-	if (header.nTransparency && !animMisc)
+	if (header.texture_weights.size && !animMisc)
 	{
-		ModelTransDef *trs = (ModelTransDef*)(f.GetData() + header.ofsTransparency);
-		for (size_t i = 0; i < header.nTransparency; i++)
+		M2TextureWeight* trs = (M2TextureWeight*)(f.GetData() + header.texture_weights.offset);
+		for (size_t i = 0; i < header.texture_weights.size; i++)
 		{
-			if (trs[i].trans.type != 0)
+			if (trs[i].weight.interpolation_type != 0)
 			{
 				animMisc = true;
 				break;
@@ -270,24 +270,25 @@ void Model::initCommon(File& f)
 	//rad = max(vmin.length(),vmax.length());
 
 	// textures
-	ModelTextureDef *texdef = (ModelTextureDef*)(f.GetData() + header.ofsTextures);
-	if (header.nTextures)
+	M2Texture* texdef = nullptr;
+	if (header.textures.size)
 	{
-		textures = new Texture*[header.nTextures];
+		texdef = (M2Texture*)(f.GetData() + header.textures.offset);
+		textures = new Texture*[header.textures.size];
 		char texname[256];
-		for (size_t i = 0; i < header.nTextures; i++)
+		for (size_t i = 0; i < header.textures.size; i++)
 		{
 			// Error check
 			if (i > TEXTURE_MAX - 1)
 			{
-				Debug::Info("Error: Model Texture %d over %d", header.nTextures, TEXTURE_MAX);
+				Debug::Info("Error: Model Texture %d over %d", header.textures.size, TEXTURE_MAX);
 				break;
 			}
 
 			if (texdef[i].type == 0)
 			{
-				strncpy_s(texname, (const char*)(f.GetData() + texdef[i].nameOfs), texdef[i].nameLen);
-				texname[texdef[i].nameLen] = 0;
+				strncpy_s(texname, (const char*)(f.GetData() + texdef[i].filename.offset), texdef[i].filename.size);
+				texname[texdef[i].filename.size] = 0;
 				textures[i] = _TexturesMgr->Add(texname);
 			}
 			else
@@ -309,27 +310,29 @@ void Model::initCommon(File& f)
 	}
 
 	// init colors
-	if (header.nColors)
+	if (header.colors.size)
 	{
-		colors = new ModelColor[header.nColors];
-		ModelColorDef *colorDefs = (ModelColorDef*)(f.GetData() + header.ofsColors);
-		for (size_t i = 0; i < header.nColors; i++)
+		colors = new ModelColor[header.colors.size];
+		M2Color *colorDefs = (M2Color*)(f.GetData() + header.colors.offset);
+		for (size_t i = 0; i < header.colors.size; i++)
 			colors[i].init(f, colorDefs[i], globalSequences);
 	}
 
 	// init transparency
-	int16_t *transLookup = (int16_t*)(f.GetData() + header.ofsTransparencyLookup);
-	if (header.nTransparency)
+	int16_t* transLookup = nullptr;
+	if (header.texture_weights.size)
 	{
-		transparency = new ModelTransparency[header.nTransparency];
-		ModelTransDef *trDefs = (ModelTransDef*)(f.GetData() + header.ofsTransparency);
-		for (size_t i = 0; i < header.nTransparency; i++)
+		transLookup = (int16_t*)(f.GetData() + header.ofsTransparencyLookup);
+		transparency = new ModelTransparency[header.texture_weights.size];
+		M2TextureWeight *trDefs = (M2TextureWeight*)(f.GetData() + header.texture_weights.offset);
+		for (size_t i = 0; i < header.texture_weights.size; i++)
+		{
 			transparency[i].init(f, trDefs[i], globalSequences);
+		}
 	}
 
 	// just use the first LOD/view
-
-	if (header.nViews > 0)
+	if (header.num_skin_profiles > 0)
 	{
 		// indices - allocate space, too
 		string lodname = fullname.substr(0, fullname.length() - 3);
@@ -501,9 +504,9 @@ void Model::initAnimated(File &f)
 	if (animBones)
 	{
 		// init bones...
-		bones = new Bone[header.nBones];
-		ModelBoneDef *mb = (ModelBoneDef*)(f.GetData() + header.ofsBones);
-		for (size_t i = 0; i < header.nBones; i++)
+		bones = new Bone[header.bones.size];
+		M2CompBone *mb = (M2CompBone*)(f.GetData() + header.bones.offset);
+		for (size_t i = 0; i < header.bones.size; i++)
 		{
 			bones[i].init(f, mb[i], globalSequences, animfiles);
 		}
@@ -528,32 +531,33 @@ void Model::initAnimated(File &f)
 
 	if (animTextures)
 	{
-		texAnims = new ModelTextureAnim[header.nTexAnims];
-		ModelTexAnimDef *ta = (ModelTexAnimDef*)(f.GetData() + header.ofsTexAnims);
-		for (size_t i = 0; i < header.nTexAnims; i++)
+		texAnims = new ModelTextureAnim[header.texture_transforms.size];
+		M2TextureTransform *ta = (M2TextureTransform*)(f.GetData() + header.texture_transforms.offset);
+		for (size_t i = 0; i < header.texture_transforms.size; i++)
 		{
 			texAnims[i].init(f, ta[i], globalSequences);
 		}
 	}
 
 	// particle systems
-	if (header.nParticleEmitters)
+	header.particle_emitters.size = 0;
+	/*if (header.particle_emitters.size)
 	{
-		ModelParticleEmitterDef *pdefs = (ModelParticleEmitterDef *)(f.GetData() + header.ofsParticleEmitters);
-		particleSystems = new ParticleSystem[header.nParticleEmitters];
-		for (size_t i = 0; i < header.nParticleEmitters; i++)
+		M2ParticleOld* pdefs = (M2ParticleOld*)(f.GetData() + header.particle_emitters.offset);
+		particleSystems = new ParticleSystem[header.particle_emitters.size];
+		for (size_t i = 0; i < header.particle_emitters.size; i++)
 		{
 			particleSystems[i].model = this;
 			particleSystems[i].init(f, pdefs[i], globalSequences);
 		}
-	}
+	}*/
 
 	// ribbons
-	if (header.nRibbonEmitters)
+	if (header.ribbon_emitters.size)
 	{
-		ModelRibbonEmitterDef *rdefs = (ModelRibbonEmitterDef *)(f.GetData() + header.ofsRibbonEmitters);
-		ribbons = new RibbonEmitter[header.nRibbonEmitters];
-		for (size_t i = 0; i < header.nRibbonEmitters; i++)
+		M2Ribbon* rdefs = (M2Ribbon*)(f.GetData() + header.ribbon_emitters.offset);
+		ribbons = new RibbonEmitter[header.ribbon_emitters.size];
+		for (size_t i = 0; i < header.ribbon_emitters.size; i++)
 		{
 			ribbons[i].model = this;
 			ribbons[i].init(f, rdefs[i], globalSequences);
@@ -561,19 +565,19 @@ void Model::initAnimated(File &f)
 	}
 
 	// just use the first camera, meh
-	if (header.nCameras > 0)
+	if (header.cameras.size > 0)
 	{
-		ModelCameraDef* camDefs = (ModelCameraDef*)(f.GetData() + header.ofsCameras);
+		M2Camera* camDefs = (M2Camera*)(f.GetData() + header.cameras.offset);
 		m_ModelCamera = new ModelCamera();
 		m_ModelCamera->init(f, camDefs[0], globalSequences);
 	}
 
 	// init lights
-	if (header.nLights)
+	if (header.lights.size)
 	{
-		lights = new ModelLight[header.nLights];
-		ModelLightDef *lDefs = (ModelLightDef*)(f.GetData() + header.ofsLights);
-		for (size_t i = 0; i < header.nLights; i++)
+		lights = new ModelLight[header.lights.size];
+		M2Light* lDefs = (M2Light*)(f.GetData() + header.lights.offset);
+		for (size_t i = 0; i < header.lights.size; i++)
 			lights[i].init(f, lDefs[i], globalSequences);
 	}
 
@@ -582,12 +586,12 @@ void Model::initAnimated(File &f)
 
 void Model::calcBones(int anim, int time)
 {
-	for (size_t i = 0; i < header.nBones; i++)
+	for (size_t i = 0; i < header.bones.size; i++)
 	{
 		bones[i].calc = false;
 	}
 
-	for (size_t i = 0; i < header.nBones; i++)
+	for (size_t i = 0; i < header.bones.size; i++)
 	{
 		bones[i].calcMatrix(bones, anim, time);
 	}
@@ -643,7 +647,7 @@ void Model::animate(int anim)
 
 	}
 
-	for (size_t i = 0; i < header.nLights; i++)
+	for (size_t i = 0; i < header.lights.size; i++)
 	{
 		if (lights[i].parent >= 0)
 		{
@@ -652,21 +656,21 @@ void Model::animate(int anim)
 		}
 	}
 
-	for (size_t i = 0; i < header.nParticleEmitters; i++)
+	for (size_t i = 0; i < header.particle_emitters.size; i++)
 	{
 		// random time distribution for teh win ..?
 		int pt = (t + (int)(tmax*particleSystems[i].tofs)) % tmax;
 		particleSystems[i].setup(anim, pt);
 	}
 
-	for (size_t i = 0; i < header.nRibbonEmitters; i++)
+	for (size_t i = 0; i < header.ribbon_emitters.size; i++)
 	{
 		ribbons[i].setup(anim, t);
 	}
 
 	if (animTextures)
 	{
-		for (size_t i = 0; i < header.nTexAnims; i++)
+		for (size_t i = 0; i < header.texture_transforms.size; i++)
 		{
 			texAnims[i].calc(anim, t);
 		}
@@ -797,13 +801,13 @@ void Model::draw()
 		glDisable(GL_FOG);
 
 		// draw particle systems
-		for (size_t i = 0; i < header.nParticleEmitters; i++)
+		for (size_t i = 0; i < header.particle_emitters.size; i++)
 		{
 			particleSystems[i].draw();
 		}
 
 		// draw ribbons
-		for (size_t i = 0; i < header.nRibbonEmitters; i++)
+		for (size_t i = 0; i < header.ribbon_emitters.size; i++)
 		{
 			ribbons[i].draw();
 		}
@@ -818,7 +822,7 @@ void Model::draw()
 void Model::lightsOn(GLuint lbase)
 {
 	// setup lights
-	for (uint32_t i = 0, l = lbase; i < header.nLights; i++)
+	for (uint32_t i = 0, l = lbase; i < header.lights.size; i++)
 	{
 		lights[i].setup(animtime, l++);
 	}
@@ -826,7 +830,7 @@ void Model::lightsOn(GLuint lbase)
 
 void Model::lightsOff(GLuint lbase)
 {
-	for (uint32_t i = 0, l = lbase; i < header.nLights; i++)
+	for (uint32_t i = 0, l = lbase; i < header.lights.size; i++)
 	{
 		glDisable(l++);
 	}
@@ -835,7 +839,7 @@ void Model::lightsOff(GLuint lbase)
 void Model::updateEmitters(float dt)
 {
 	if (!ok) return;
-	for (size_t i = 0; i < header.nParticleEmitters; i++)
+	for (size_t i = 0; i < header.particle_emitters.size; i++)
 	{
 		particleSystems[i].update(dt);
 	}

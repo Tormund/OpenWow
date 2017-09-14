@@ -6,18 +6,18 @@
 // Additional
 #include "ModelsUtils.h"
 
-void ModelCamera::init(File& f, ModelCameraDef& mcd, uint32_t* global)
+void ModelCamera::init(File& f, M2Camera& mcd, uint32_t* global)
 {
-	nearclip = mcd.nearclip;
-	farclip = mcd.farclip;
+	nearclip = mcd.near_clip;
+	farclip = mcd.far_clip;
 
-	pos = fixCoordSystem(mcd.pos);
-	target = fixCoordSystem(mcd.target);
+	pos = fixCoordSystem(mcd.position_base);
+	target = fixCoordSystem(mcd.target_position_base);
 
-	tPos.init(mcd.transPos, f, global);
+	tPos.init(mcd.positions, f, global);
 	tPos.fix(fixCoordSystem);
 
-	tTarget.init(mcd.transTarget, f, global);
+	tTarget.init(mcd.target_position, f, global);
 	tTarget.fix(fixCoordSystem);
 
 	tRoll.init(mcd.roll, f, global);

@@ -10,26 +10,26 @@
 // Additional
 #include "ModelsUtils.h"
 
-void RibbonEmitter::init(File& f, ModelRibbonEmitterDef& mta, uint32_t * globals)
+void RibbonEmitter::init(File& f, M2Ribbon& mta, uint32_t * globals)
 {
-	color.init(mta.color, f, globals);
-	opacity.init(mta.opacity, f, globals);
-	above.init(mta.above, f, globals);
-	below.init(mta.below, f, globals);
+	color.init(mta.colorTrack, f, globals);
+	opacity.init(mta.alphaTrack, f, globals);
+	above.init(mta.heightAboveTrack, f, globals);
+	below.init(mta.heightBelowTrack, f, globals);
 
-	parent = model->bones + mta.bone;
-	int *texlist = (int*)(f.GetData() + mta.ofsTextures);
+	parent = model->bones + mta.boneIndex;
+	int *texlist = (int*)(f.GetData() + mta.textureIndices.offset);
 	// just use the first texture for now; most models I've checked only had one
 	texture = model->textures[texlist[0]];
 
-	tpos = pos = fixCoordSystem(mta.pos);
+	tpos = pos = fixCoordSystem(mta.position);
 
 	// TODO: figure out actual correct way to calculate length
 	// in BFD, res is 60 and len is 0.6, the trails are very short (too long here)
 	// in CoT, res and len are like 10 but the trails are supposed to be much longer (too short here)
-	numsegs = (int)mta.res;
-	seglen = mta.length;
-	length = mta.res * seglen;
+	numsegs = (int)mta.edgesPerSecond;
+	seglen = mta.edgeLifetime;
+	length = mta.edgesPerSecond * seglen;
 
 	// create first segment
 	RibbonSegment rs;

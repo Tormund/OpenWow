@@ -33,43 +33,45 @@ ParticleSystem::~ParticleSystem()
 	delete emitter;
 }
 
-void ParticleSystem::init(File& f, ModelParticleEmitterDef& mta, uint32_t * globals)
+void ParticleSystem::init(File& f, M2ParticleOld& mta, uint32_t* globals)
 {
-	speed.init(mta.EmissionSpeed, f, globals);
-	variation.init(mta.SpeedVariation, f, globals);
-	spread.init(mta.VerticalRange, f, globals);
-	lat.init(mta.HorizontalRange, f, globals);
-	gravity.init(mta.Gravity, f, globals);
-	lifespan.init(mta.Lifespan, f, globals);
-	rate.init(mta.EmissionRate, f, globals);
-	areal.init(mta.EmissionAreaLength, f, globals);
-	areaw.init(mta.EmissionAreaWidth, f, globals);
-	deacceleration.init(mta.Gravity2, f, globals);
-	enabled.init(mta.en, f, globals);
+	speed.init(mta.emissionSpeed, f, globals);
+	variation.init(mta.speedVariation, f, globals);
+
+	spread.init(mta.verticalRange, f, globals);
+	lat.init(mta.horizontalRange, f, globals);
+
+	gravity.init(mta.gravity, f, globals);
+	lifespan.init(mta.lifespan, f, globals);
+	rate.init(mta.emissionRate, f, globals);
+	areal.init(mta.emissionAreaLength, f, globals);
+	areaw.init(mta.emissionAreaWidth, f, globals);
+	deacceleration.init(mta.zSource, f, globals);
+	enabled.init(mta.enabledIn /*FIXME ???*/, f, globals);
 
 	vec3 colors2[3];
-	memcpy(colors2, f.GetData() + mta.p.colors.ofsKeys, sizeof(vec3) * 3);
+	memcpy(colors2, f.GetData() + mta.colorTrack.ofsKeys, sizeof(vec3) * 3);
 	for (size_t i = 0; i < 3; i++)
 	{
-		float opacity = *(short*)(f.GetData() + mta.p.opacity.ofsKeys + i * 2);
+		float opacity = *(short*)(f.GetData() + mta.alphaTrack.ofsKeys + i * 2);
 		colors[i] = vec4(colors2[i].x / 255.0f, colors2[i].y / 255.0f, colors2[i].z / 255.0f, opacity / 32767.0f);
-		sizes[i] = (*(float*)(f.GetData() + mta.p.sizes.ofsKeys + i * 4))*mta.p.scales[i];
+		sizes[i] = (*(float*)(f.GetData() + mta.scaleTrack.ofsKeys + i * 4)) * mta.scales[i];
 	}
 
 	mid = 0.5;
-	slowdown = mta.p.slowdown;
-	rotation = mta.p.rotation;
-	pos = fixCoordSystem(mta.pos);
+	slowdown = mta.slowdown; // FIXME
+	rotation = mta.rotation; // FIXME
+	pos = fixCoordSystem(mta.Position);
 	texture = model->textures[mta.texture];
-	blend = mta.blend;
-	rows = mta.rows;
-	cols = mta.cols;
-	type = mta.ParticleType;
+	blend = mta.blendingType;
+	rows = mta.textureDimensions_rows;
+	cols = mta.textureDimensions_columns;
+	type = mta.particleColorIndex;
 	//order = mta.s2;
-	order = mta.ParticleType > 0 ? -1 : 0;
+	order = mta.particleColorIndex > 0 ? -1 : 0;
 	parent = model->bones + mta.bone;
 
-	switch (mta.EmitterType)
+	switch (mta.emitterType)
 	{
 		case 1:
 		emitter = new PlaneParticleEmitter(this);

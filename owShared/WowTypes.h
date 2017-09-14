@@ -2,18 +2,18 @@
 
 #include <cstdint>
 
-struct C2Vector
+/*struct C2Vector //typedef vec2
 {
 	float x;
 	float y;
-};
+};*/
 
-struct C3Vector
+/*struct C3Vector //typedef vec3
 {
 	float x;
 	float y;
 	float z;
-};
+};*/
 
 struct C3iVector
 {
@@ -62,7 +62,7 @@ struct C4Quaternion
 	float w; // Unlike Quaternions elsewhere, the scalar part ('w') is the last element in the struct instead of the first
 };
 
-struct Range
+struct CRange
 {
 	float min;
 	float max;

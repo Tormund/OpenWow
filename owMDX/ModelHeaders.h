@@ -1,42 +1,12 @@
-#ifndef MODELHEADERS_H
-#define MODELHEADERS_H
+﻿#pragma once
 
 #pragma pack(push, 1)
-
-struct PhysicsSettings
-{
-	vec3 VertexBox[2];
-	float VertexRadius;
-	vec3 BoundingBox[2];
-	float BoundingRadius;
-};
 
 struct M2Bounds
 {
 	CAaBox extent;
 	float radius;
 };
-
-template<typename T>
-struct M2Array
-{
-	uint32_t size;
-	uint32_t offset; // pointer to T, relative to begin of m2 data block (i.e. MD21 chunk content or begin of file)
-};
-
-/*struct M2TrackBase
-{
-	uint16_t trackType;
-	uint16_t loopIndex;
-	M2Array<M2SequenceTimes> sequenceTimes;
-};*/
-
-/*template<typename T>
-struct M2PartTrack
-{
-	M2Array<fixed16> times;
-	M2Array<T> values;
-};*/
 
 template<typename T>
 struct M2SplineKey
@@ -46,72 +16,363 @@ struct M2SplineKey
 	T outTan;
 };
 
+struct M2Box
+{
+	C3Vector ModelRotationSpeedMin;
+	C3Vector ModelRotationSpeedMax;
+};
+
 struct M2Range
 {
 	uint32_t minimum;
 	uint32_t maximum;
 };
 
-struct M2TrackBase
-{
-	uint16_t interpolation_type;
-	uint16_t global_sequence;
-	M2Array<M2Array<uint32_t>> timestamps;
-};
-
 template<typename T>
-struct M2Track : M2TrackBase
+struct FBlock
 {
-	M2Array<M2Array<T>> values;
+	uint32_t nTimes;
+	uint32_t ofsTimes;
+	uint32_t nKeys;
+	uint32_t ofsKeys;
 };
 
 
 ////////
 
+struct M2Loop
+{
+	uint32_t timestamp;
+};
+
+//
+
+struct M2CompBone                 // probably M2Bone ≤ Vanilla
+{
+	int32_t key_bone_id;            // Back-reference to the key bone lookup table. -1 if this is no key bone.
+	enum
+	{
+		spherical_billboard = 0x8,
+		cylindrical_billboard_lock_x = 0x10,
+		cylindrical_billboard_lock_y = 0x20,
+		cylindrical_billboard_lock_z = 0x40,
+		transformed = 0x200,
+		kinematic_bone = 0x400,       // MoP+: allow physics to influence this bone
+		helmet_anim_scaled = 0x1000,  // set blend_modificator to helmetAnimScalingRec.m_amount for this bone
+	};
+	uint32_t flags;
+	int16_t parent_bone;            // Parent bone ID or -1 if there is none.
+	uint16_t submesh_id;            // Mesh part ID OR uDistToParent?
+
+	union
+	{                         // only ≥ BC?
+		struct
+		{
+			uint16_t uDistToFurthDesc;
+			uint16_t uZRatioOfChain;
+		} CompressData;
+		uint32_t boneNameCRC;         // these are for debugging only. their bone names match those in key bone lookup.
+	};
+
+	M2Track<C3Vector> translation;
+	M2Track<M2CompQuat> rotation;   // compressed values, default is (32767,32767,32767,65535) == (0,0,0,1) == identity
+	M2Track<C3Vector> scale;
+
+	C3Vector pivot;                 // The pivot point of that bone.
+};
+
+//
+
+//
+
+struct M2Color
+{
+	M2Track<C3Vector> color;                                          // vertex colors in rgb order
+	M2Track<short> alpha;    // FIXED 16                              // 0 - transparent, 0x7FFF - opaque. Normaly NonInterp
+};
+
+//
+
+struct M2Texture
+{
+	uint32_t type;          // see below
+	uint32_t flags;         // see below
+	M2Array<char> filename; // for non-hardcoded textures (type != 0), this still points to a zero-sized string
+};
+
+//
+
+struct M2TextureWeight
+{
+	M2Track<short> weight; // FIXED 16
+};
+
+//
+
+struct M2TextureTransform
+{
+	M2Track<C3Vector> translation;
+	// FIXME M2Track<C4Quaternion> rotation;    // rotation center is texture center (0.5, 0.5)
+	M2Track<C3Vector> rotation;    // rotation center is texture center (0.5, 0.5)
+	M2Track<C3Vector> scaling;
+};
+
+//
+
+struct M2Attachment
+{
+	uint32_t id;                        // Referenced in the lookup-block below.
+	uint16_t bone;                      // attachment base
+	uint16_t unknown;                   // see BogBeast.m2 in vanilla for a model having values here
+	vec3 position;                  // relative to bone; Often this value is the same as bone's pivot point 
+	M2Track<uint8_t> animate_attached;  // whether or not the attached model is animated when this model is. only a bool is used. default is true.
+};
+
+//
+
+struct M2Event
+{
+	uint32_t identifier;  // mostly a 3 character name prefixed with '$'.
+	uint32_t data;        // This data is passed when the event is fired. 
+	uint32_t bone;        // Somewhere it has to be attached.
+	vec3 position;    // Relative to that bone of course, animated. Pivot without animating.
+	M2TrackBase enabled;  // This is a timestamp-only animation block. It is built up the same as a normal AnimationBlocks, but is missing values, as every timestamp is an implicit "fire now".
+};
+
+//
+
+struct M2Light
+{
+	uint16_t type;                      // Types are listed below.
+	int16_t bone;                       // -1 if not attached to a bone
+	vec3 position;                 // relative to bone, if given
+
+	M2Track<vec3> ambient_color;
+	M2Track<float> ambient_intensity;   // defaults to 1.0
+
+	M2Track<vec3> diffuse_color;
+	M2Track<float> diffuse_intensity;   // defaults to 1.0
+
+	M2Track<float> attenuation_start;
+	M2Track<float> attenuation_end;
+
+	M2Track<uint8_t> visibility;          // enabled?
+};
+
+//
+
+struct M2Camera // TODO Spline keys
+{
+	uint32_t type; // 0: portrait, 1: characterinfo; -1: else (flyby etc.); referenced backwards in the lookup table.
+	
+	float far_clip;
+	float near_clip;
+
+	M2Track<vec3> positions; // How the camera's position moves. Should be 3*3 floats.
+	vec3 position_base;
+
+	M2Track<vec3> target_position; // How the target moves. Should be 3*3 floats.
+	vec3 target_position_base;
+
+	M2Track<float> roll; // The camera can have some roll-effect. Its 0 to 2*Pi. 
+	M2Track<float> FoV;  // Units are not radians. Multiplying by 35 seems to be the correct # of degrees. This is incredibly important, as otherwise e.g. loading screen models will look totally wrong.
+};
+
+//
+
+struct M2Ribbon
+{
+	uint32_t ribbonId;                  // Always (as I have seen): -1.
+	uint32_t boneIndex;                 // A bone to attach to.
+	C3Vector position;                 // And a position, relative to that bone.
+	M2Array<uint16_t> textureIndices;   // into textures
+	M2Array<uint16_t> materialIndices;  // into materials
+
+	M2Track<C3Vector> colorTrack;
+	M2Track<short> alphaTrack;          // FIXME FIXED 16               // And an alpha value in a short, where: 0 - transparent, 0x7FFF - opaque.
+	M2Track<float> heightAboveTrack;
+	M2Track<float> heightBelowTrack;        // do not set to same!
+
+	float edgesPerSecond;                  // this defines how smooth the ribbon is. A low value may produce a lot of edges.
+	float edgeLifetime;                    // the length aka Lifespan. in seconds
+	float gravity;                      // use arcsin(val) to get the emission angle in degree
+
+	uint16_t textureRows;                    // tiles in texture
+	uint16_t textureCols;
+
+	M2Track<uint16_t> texSlotTrack;
+	M2Track<uint8_t> visibilityTrack;
+
+	int16_t priorityPlane;
+	uint16_t padding;
+
+};
+
+//
+
+#define	MODELPARTICLE_DONOTTRAIL		0x10
+#define	MODELPARTICLE_DONOTBILLBOARD	0x1000
+
+struct M2ParticleOld
+{
+	uint32_t particleId;                      // Always (as I have seen): -1.
+	uint32_t flags;                           // See Below
+	C3Vector Position;                        // The position. Relative to the following bone.
+	uint16_t bone;                            // The bone its attached to.
+
+
+	//union
+	//{
+		uint16_t texture;                         // And the textures that are used. 
+
+		/*struct                                    // For multi-textured particles actually three ids
+		{
+			uint16_t texture_0 : 5;
+			uint16_t texture_1 : 5;
+			uint16_t texture_2 : 5;
+			uint16_t : 1;
+		};*/
+	//};
+
+
+	M2Array<char> geometry_model_filename;    // if given, this emitter spawns models
+	M2Array<char> recursion_model_filename;   // if given, this emitter is an alias for the (maximum 4) emitters of the given model
+
+
+	uint8_t blendingType;                     // A blending type for the particle. See Below
+	uint8_t emitterType;                      // 1 - Plane (rectangle), 2 - Sphere, 3 - Spline, 4 - Bone
+	uint16_t particleColorIndex;              // This one is used for ParticleColor.dbc. See below.
+
+	uint8_t particleType;                     // Found below.
+	uint8_t headorTail;                       // 0 - Head, 1 - Tail, 2 - Both 
+
+	uint16_t textureTileRotation;             // Rotation for the texture tile. (Values: -1,0,1) -- priorityPlane
+	uint16_t textureDimensions_rows;          // for tiled textures
+	uint16_t textureDimensions_columns;
+
+	M2Track<float> emissionSpeed;             // Base velocity at which particles are emitted.
+	M2Track<float> speedVariation;            // Random variation in particle emission speed. (range: 0 to 1)
+	M2Track<float> verticalRange;             // Drifting away vertically. (range: 0 to pi) For plane generators, this is the maximum polar angle of the initial velocity; 
+											  // 0 makes the velocity straight up (+z). For sphere generators, this is the maximum elevation of the initial position; 
+											  // 0 makes the initial position entirely in the x-y plane (z=0).
+	M2Track<float> horizontalRange;           // They can do it horizontally too! (range: 0 to 2*pi) For plane generators, this is the maximum azimuth angle of the initial velocity; 
+											  // 0 makes the velocity have no sideways (y-axis) component. 
+											  // For sphere generators, this is the maximum azimuth angle of the initial position.
+	M2Track<float> gravity;                   // Not necessarily a float; see below.
+
+
+	M2Track<float> lifespan;
+	float lifespanVary;                       // An individual particle's lifespan is added to by lifespanVary * random(-1, 1)
+
+
+	M2Track<float> emissionRate;
+	float emissionRateVary;                   // This adds to the base emissionRate value the same way as lifespanVary. The random value is different every update.
+
+	M2Track<float> emissionAreaLength;        // For plane generators, this is the width of the plane in the x-axis.
+											  // For sphere generators, this is the minimum radius.
+
+	M2Track<float> emissionAreaWidth;         // For plane generators, this is the width of the plane in the y-axis.
+											  // For sphere generators, this is the maximum radius.
+
+	M2Track<float> zSource;                   // When greater than 0, the initial velocity of the particle is (particle.position - C3Vector(0, 0, zSource)).Normalize()
+
+	// Params BEGIN
+
+	FBlock<C3Vector> colorTrack;              // Most likely they all have 3 timestamps for {start, middle, end}.
+	FBlock<short> alphaTrack;                 // FIXME FIXED16
+	FBlock<C2Vector> scaleTrack;
+	C2Vector scaleVary;                       // A percentage amount to randomly vary the scale of each particle
+	FBlock<uint16_t> headCellTrack;           // Some kind of intensity values seen: 0,16,17,32 (if set to different it will have high intensity)
+	FBlock<uint16_t> tailCellTrack;
+
+	float unk[3];
+	float scales[3];
+	float slowdown;
+	float unknown1[2];
+	float rotation;				//Sprite Rotation
+	float unknown2[2];
+
+	/*float tailLength;                         // TailCellTime?
+	float TwinkleSpeed;                       // has something to do with the spread
+	float TwinklePercent;                     // has something to do with the spread
+	
+	CRange twinkleScale;
+	float BurstMultiplier;                    // ivelScale
+	float drag;                               // For a non-zero values, instead of travelling linearly the particles seem to slow down sooner. Speed is multiplied by exp( -drag * t ).
+
+	float baseSpin;                           // Initial rotation of the particle quad
+	float baseSpinVary;
+	
+	float Spin;                               // Rotation of the particle quad per second
+	float spinVary;*/
+
+
+	M2Box tumble;
+	C3Vector WindVector;
+	//float WindTime;
+
+	float followSpeed1;
+	float followScale1;
+	float followSpeed2;
+	float followScale2;
+
+	M2Array<C3Vector> splinePoints;            //Set only for spline praticle emitter. Contains array of points for spline
+	
+    // Params END
+	
+	M2Track<uint8_t> enabledIn;                // (boolean) Appears to be used sparely now, probably there's a flag that links particles to animation sets where they are enabled.
+};
+
+//---------------------------
+
 struct ModelHeader
 {
 	char id[4];                   // MD20 Magic
-	uint8_t version[4];
-	uint32_t nameLength;
-	uint32_t nameOfs;
-	//M2Array<char> name;
-	uint32_t GlobalModelFlags; // 1: tilt x, 2: tilt y, 4:, 8: add another field in header, 16: ; (no other flags as of 3.1.1);
+	uint32_t version;
+	M2Array<char> name;
 
-	uint32_t nGlobalSequences; // AnimationRelated
-	uint32_t ofsGlobalSequences; // A list of timestamps.
+	struct
+	{
+		uint32_t flag_tilt_x : 1;
+		uint32_t flag_tilt_y : 1;
+		uint32_t : 1;
+
+		uint32_t flag_has_blend_maps : 1;                   // add BlendMaps fields in header
+		uint32_t : 1;
+
+		uint32_t : 27;
+	} global_flags;
+
+	M2Array<M2Loop> global_loops;
+
 	uint32_t nAnimations; // AnimationRelated
 	uint32_t ofsAnimations; // Information about the animations in the model.
+
 	uint32_t nAnimationLookup; // AnimationRelated
 	uint32_t ofsAnimationLookup; // Mapping of global IDs to the entries in the Animation sequences block.
-	//uint32_t nD;
-	//uint32_t ofsD;
-	uint32_t nBones; // BonesAndLookups
-	uint32_t ofsBones; // Information about the bones in this model.
+
+	M2Array<M2CompBone> bones;
+
 	uint32_t nKeyBoneLookup; // BonesAndLookups
 	uint32_t ofsKeyBoneLookup; // Lookup table for key skeletal bones.
 
 	uint32_t nVertices; // GeometryAndRendering
 	uint32_t ofsVertices; // Vertices of the model.
-	uint32_t nViews; // GeometryAndRendering
-	//uint32_t ofsViews; // Views (LOD) are now in .skins.
 
-	uint32_t nColors; // ColorsAndTransparency
-	uint32_t ofsColors; // Color definitions.
+	uint32_t num_skin_profiles; // GeometryAndRendering
 
-	uint32_t nTextures; // TextureAndTheifAnimation
-	uint32_t ofsTextures; // Textures of this model.
+	M2Array<M2Color> colors;
 
-	uint32_t nTransparency; // H,  ColorsAndTransparency
-	uint32_t ofsTransparency; // Transparency of textures.
-	//uint32_t nI;   // always unused ?
-	//uint32_t ofsI;
-	uint32_t nTexAnims;	// J, TextureAndTheifAnimation
-	uint32_t ofsTexAnims;
+	M2Array<M2Texture> textures;
+	M2Array<M2TextureWeight> texture_weights;
+	M2Array<M2TextureTransform> texture_transforms;
+
 	uint32_t nTexReplace; // TextureAndTheifAnimation
 	uint32_t ofsTexReplace; // Replaceable Textures.
 
 	uint32_t nTexFlags; // Render Flags
 	uint32_t ofsTexFlags; // Blending modes / render flags.
+
 	uint32_t nBoneLookup; // BonesAndLookups
 	uint32_t ofsBoneLookup; // A bone lookup table.
 
@@ -120,37 +381,34 @@ struct ModelHeader
 
 	uint32_t nTexUnitLookup;		// L, TextureAndTheifAnimation
 	uint32_t ofsTexUnitLookup; // And texture units. Somewhere they have to be too.
+	
 	uint32_t nTransparencyLookup; // M, ColorsAndTransparency
 	uint32_t ofsTransparencyLookup; // Everything needs its lookup. Here are the transparencies.
+	
 	uint32_t nTexAnimLookup; // TextureAndTheifAnimation
 	uint32_t ofsTexAnimLookup; // Wait. Do we have animated Textures? Wasn't ofsTexAnims deleted? oO
 
-	struct PhysicsSettings ps;
+	CAaBox bounding_box;                                 // min/max( [1].z, 2.0277779f ) - 0.16f seems to be the maximum camera height
+	float bounding_sphere_radius;                        // detail doodad draw dist = clamp (bounding_sphere_radius * detailDoodadDensityFade * detailDoodadDist, …)
+	
+	CAaBox collision_box;
+	float collision_sphere_radius;
 
-	uint32_t nBoundingTriangles; // Miscellaneous
-	uint32_t ofsBoundingTriangles;
-	uint32_t nBoundingVertices; // Miscellaneous
-	uint32_t ofsBoundingVertices;
-	uint32_t nBoundingNormals; // Miscellaneous
-	uint32_t ofsBoundingNormals;
+	M2Array<uint16_t> m_CollisionTriangles;
+	M2Array<vec3> m_CollisionVertices;
+	M2Array<vec3> m_CollisionNormals;
 
-	uint32_t nAttachments; // O, Miscellaneous
-	uint32_t ofsAttachments; // Attachments are for weapons etc.
-	uint32_t nAttachLookup; // P, Miscellaneous
-	uint32_t ofsAttachLookup; // Of course with a lookup.
-	uint32_t nEvents; // 
-	uint32_t ofsEvents; // Used for playing sounds when dying and a lot else.
-	uint32_t nLights; // R
-	uint32_t ofsLights; // Lights are mainly used in loginscreens but in wands and some doodads too.
-	uint32_t nCameras; // S, Miscellaneous
-	uint32_t ofsCameras; // The cameras are present in most models for having a model in the Character-Tab.
-	uint32_t nCameraLookup; // Miscellaneous
-	uint32_t ofsCameraLookup; // And lookup-time again.
-	uint32_t nRibbonEmitters; // U, Effects
-	uint32_t ofsRibbonEmitters; // Things swirling around. See the CoT-entrance for light-trails.
-	uint32_t nParticleEmitters; // V, Effects
-	uint32_t ofsParticleEmitters; // Spells and weapons, doodads and loginscreens use them. Blood dripping of a blade? Particles.
+	M2Array<M2Attachment> attachments;
+	M2Array<uint16_t> attachment_lookup_table;
+	
+	M2Array<M2Event> events;
+	M2Array<M2Light> lights;
 
+	M2Array<M2Camera> cameras;
+	M2Array<uint16_t> camera_lookup_table;
+
+	M2Array<M2Ribbon> ribbon_emitters;
+	M2Array<M2ParticleOld> particle_emitters;
 };
 
 // block B - animations
@@ -263,18 +521,6 @@ struct ModelRenderFlags
 
 
 #define	TEXTURE_MAX	32
-struct ModelTextureDef
-{
-	uint32_t type;
-	uint32_t flags;
-	uint32_t nameLen;
-	uint32_t nameOfs;
-};
-
-
-
-
-
 
 struct FakeAnimationBlock
 {
@@ -284,95 +530,6 @@ struct FakeAnimationBlock
 	uint32_t ofsKeys;
 };
 
-struct ModelParticleParams
-{
-	FakeAnimationBlock colors; 	// (short, vec3)	This one points to 3 floats defining red, green and blue.
-	FakeAnimationBlock opacity;      // (short, short)		Looks like opacity (short), Most likely they all have 3 timestamps for {start, middle, end}.
-	FakeAnimationBlock sizes; 		// (short, vec2)	It carries two floats per key. (x and y scale)
-	int32_t d[2];
-	FakeAnimationBlock Intensity; 	// Some kind of intensity values seen: 0,16,17,32(if set to different it will have high intensity) (short, short)
-	FakeAnimationBlock unk2; 		// (short, short)
-	float unk[3];
-	float scales[3];
-	float slowdown;
-	float unknown1[2];
-	float rotation;				//Sprite Rotation
-	float unknown2[2];
-	float Rot1[3];					//Model Rotation 1
-	float Rot2[3];					//Model Rotation 2
-	float Trans[3];				//Model Translation
-	float f2[4];
-	int32_t nUnknownReference;
-	int32_t ofsUnknownReferenc;
-};
-
-#define	MODELPARTICLE_DONOTTRAIL			0x10
-#define	MODELPARTICLE_DONOTBILLBOARD	0x1000
-struct ModelParticleEmitterDef
-{
-	int32_t id;
-	int32_t flags;
-	vec3 pos; // The position. Relative to the following bone.
-	int16_t bone; // The bone its attached to.
-	int16_t texture; // And the texture that is used.
-	int32_t nModelFileName;
-	int32_t ofsModelFileName;
-	int32_t nParticleFileName;
-	int32_t ofsParticleFileName; // TODO
-	int8_t blend;
-	int8_t EmitterType; // EmitterType	 1 - Plane (rectangle), 2 - Sphere, 3 - Spline? (can't be bothered to find one)
-	int16_t ParticleColor; // This one is used so you can assign a color to specific particles. They loop over all 
-						 // particles and compare +0x2A to 11, 12 and 13. If that matches, the colors from the dbc get applied.
-	int8_t ParticleType; // 0 "normal" particle, 
-					   // 1 large quad from the particle's origin to its position (used in Moonwell water effects)
-					   // 2 seems to be the same as 0 (found some in the Deeprun Tram blinky-lights-sign thing)
-	int8_t HeaderTail; // 0 - Head, 1 - Tail, 2 - Both
-	int16_t TextureTileRotation; // TODO, Rotation for the texture m_TileExists. (Values: -1,0,1)
-	int16_t cols; // How many different frames are on that texture? People should learn what rows and cols are.
-	int16_t rows; // (2, 2) means slice texture to 2*2 pieces
-	AnimationBlock EmissionSpeed; // (Float) All of the following blocks should be floats.
-	AnimationBlock SpeedVariation; // (Float) Variation in the flying-speed. (range: 0 to 1)
-	AnimationBlock VerticalRange; // (Float) Drifting away vertically. (range: 0 to pi)
-	AnimationBlock HorizontalRange; // (Float) They can do it horizontally too! (range: 0 to 2*pi)
-	AnimationBlock Gravity; // (Float) Fall down, apple!
-	AnimationBlock Lifespan; // (Float) Everyone has to die.
-	int32_t unknown;
-	AnimationBlock EmissionRate; // (Float) Stread your particles, emitter.
-	int32_t unknown2;
-	AnimationBlock EmissionAreaLength; // (Float) Well, you can do that in this area.
-	AnimationBlock EmissionAreaWidth; // (Float) 
-	AnimationBlock Gravity2; // (Float) A second gravity? Its strong.
-	ModelParticleParams p;
-	AnimationBlock en; // (UInt16), seems unused in cataclysm
-	int32_t unknown3; // 12319, cataclysm
-	int32_t unknown4; // 12319, cataclysm
-	int32_t unknown5; // 12319, cataclysm
-	int32_t unknown6; // 12319, cataclysm
-};
-
-
-struct ModelRibbonEmitterDef
-{
-	int32_t id;
-	int32_t bone;
-	vec3 pos;
-	int32_t nTextures;
-	int32_t ofsTextures;
-	int32_t nUnknown;
-	int32_t ofsUnknown;
-	AnimationBlock color;
-	AnimationBlock opacity;
-	AnimationBlock above;
-	AnimationBlock below;
-	float res, length, Emissionangle;
-	int16_t s1, s2;
-	AnimationBlock unk1;
-	AnimationBlock unk2;
-	int32_t unknown;
-};
 
 
 #pragma pack(pop)
-
-
-#endif

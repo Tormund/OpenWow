@@ -1,22 +1,17 @@
 #pragma once
 
-// block G - color defs
-struct ModelColorDef
-{
-	AnimationBlock color;
-	AnimationBlock opacity;
-};
+#include "ModelHeaders.h"
 
 class ModelColor
 {
 public:
-	void init(File& f, ModelColorDef& mcd, uint32_t * global)
+	void init(File& f, M2Color& mcd, uint32_t * global)
 	{
 		color.init(mcd.color, f, global);
-		opacity.init(mcd.opacity, f, global);
+		opacity.init(mcd.alpha, f, global);
 	}
 
 public:
 	Animated<vec3> color;
-	AnimatedShort opacity;
+	Animated<float, short, ShortToFloat> opacity;
 };

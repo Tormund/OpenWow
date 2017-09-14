@@ -53,7 +53,7 @@ public:
 	ParticleSystem();
 	~ParticleSystem();
 
-	void init(File& f, ModelParticleEmitterDef& mta, uint32_t * globals);
+	void init(File& f, M2ParticleOld& mta, uint32_t * globals);
 	void update(float dt);
 	void setup(int anim, int time);
 	void draw();
