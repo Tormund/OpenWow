@@ -28,20 +28,12 @@ public:
 	static OW_CORE_DLL_API void Fatal(const char* _title, const char* _message, ...);
 	static OW_CORE_DLL_API void Exit(int _exitCode);
 
-	//
-
-	static OW_CORE_DLL_API void SetInfoPortion(cstring _infoPortionName);
-	static OW_CORE_DLL_API void DeleteInfoPortion(cstring _infoPortionName);
-	static OW_CORE_DLL_API bool GetInfoPortion(cstring _infoPortionName);
-
 private:
 	static void PushMessageToAllDebugOutputs(const char* _message, int _type, va_list& _vaList);
 	static void ShowErrorMessageBox(const char* _message, const char* _title);
 
 private:
 	vector<DebugOutput*> debugOutputs;
-
-	vector<string> debugInfoPortions;
 };
 
 #include "DebugMacros.h"

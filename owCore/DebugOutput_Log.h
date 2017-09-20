@@ -12,5 +12,4 @@ protected:
 
 private:
 	ofstream logStream;
-	string fileName;
 };

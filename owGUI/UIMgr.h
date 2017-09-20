@@ -9,7 +9,7 @@ class UIMgr : public Module, public InputListener {
 	friend UIElement;
 	friend UIWindow;
 public:
-	DEF_MODULE(UIMgr, OW_GUI_DLL_API);
+	DEF_MODULE_API(UIMgr, OW_GUI_DLL_API);
 
 	//
 

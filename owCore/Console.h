@@ -1,8 +1,9 @@
 #pragma once
 
-class ConsoleCommandBase {
+class ConsoleCommandBase
+{
 public:
-	ConsoleCommandBase(cstring _commandName, bool _hasArgs = false) : commandName(Utils::ToLower(_commandName)), hasArgs(_hasArgs) { }
+	ConsoleCommandBase(cstring _commandName, bool _hasArgs = false) : commandName(Utils::ToLower(_commandName)), hasArgs(_hasArgs) {}
 
 	virtual void Execute() = 0;
 	virtual void Execute(cstring _args) = 0;
@@ -20,21 +21,28 @@ protected:
 //
 
 template <class T>
-class ConsoleCommand : public ConsoleCommandBase {
+class ConsoleCommand : public ConsoleCommandBase
+{
 public:
-	ConsoleCommand(cstring _commandName, Function<T>* _function, bool _hasArgs = false) : ConsoleCommandBase(_commandName, _hasArgs), function(_function) {	}
+	ConsoleCommand(cstring _commandName, Function<T>* _function, bool _hasArgs = false) : ConsoleCommandBase(_commandName, _hasArgs), function(_function) {}
 
-	void Execute() override {
+	void Execute() override
+	{
 		function->operator()();
 	}
 
-	void Execute(cstring _args) override {
+	void Execute(cstring _args) override
+	{
 		T* value = new T;
 
-		if(Utils::TryParse(typeid(T), _args, value))
+		if (Utils::TryParse(typeid(T), _args, value))
+		{
 			function->operator()(T(*(&value[0])));
+		}
 		else
+		{
 			Debug::Error("ConsoleCommand[%s]: Can't parse argument [%s] to [%s].", commandName.c_str(), _args.c_str(), typeid(T).name());
+		}
 
 		delete value;
 	}
@@ -45,7 +53,8 @@ private:
 
 //
 
-class Console {
+class Console
+{
 public:
 	typedef vector<ConsoleCommandBase*> ConsoleCommands;
 

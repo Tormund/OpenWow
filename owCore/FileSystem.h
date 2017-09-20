@@ -14,7 +14,7 @@ private:
 	typedef map<string, SectionData*> fsDataType;
 
 public:
-	DEF_MODULE(FileSystem, OW_CORE_DLL_API);
+	DEF_MODULE_API(FileSystem, OW_CORE_DLL_API);
 
 	OW_CORE_DLL_API void Print();
 	OW_CORE_DLL_API string Get(cstring _sectionName, cstring _keyName) const;

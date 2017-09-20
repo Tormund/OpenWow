@@ -90,9 +90,6 @@
     <ClCompile Include="RefSimpleManagers.cpp">
       <Filter>RefManager\2 Dim\Simple</Filter>
     </ClCompile>
-    <ClCompile Include="RefManager.cpp">
-      <Filter>RefManager\2 Dim</Filter>
-    </ClCompile>
     <ClCompile Include="RefManager1Dim.cpp">
       <Filter>RefManager\1 Dim</Filter>
     </ClCompile>
@@ -131,6 +128,9 @@
     </ClCompile>
     <ClCompile Include="INIFile.cpp">
       <Filter>Files\INIFile</Filter>
+    </ClCompile>
+    <ClCompile Include="RefManager2Dim.cpp">
+      <Filter>RefManager\2 Dim</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -195,9 +195,6 @@
     <ClInclude Include="RefSimpleManagers.h">
       <Filter>RefManager\2 Dim\Simple</Filter>
     </ClInclude>
-    <ClInclude Include="RefManager.h">
-      <Filter>RefManager\2 Dim</Filter>
-    </ClInclude>
     <ClInclude Include="RefManager1Dim.h">
       <Filter>RefManager\1 Dim</Filter>
     </ClInclude>
@@ -240,16 +237,19 @@
     <ClInclude Include="Matrix.h">
       <Filter>Types</Filter>
     </ClInclude>
+    <ClInclude Include="RefManager2Dim.h">
+      <Filter>RefManager\2 Dim</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ModulesMgr.inl">
       <Filter>Module</Filter>
     </None>
-    <None Include="RefManager.inl">
-      <Filter>RefManager\2 Dim</Filter>
-    </None>
     <None Include="RefManager1Dim.inl">
       <Filter>RefManager\1 Dim</Filter>
+    </None>
+    <None Include="RefManager2Dim.inl">
+      <Filter>RefManager\2 Dim</Filter>
     </None>
   </ItemGroup>
 </Project>

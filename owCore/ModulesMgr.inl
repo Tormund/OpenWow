@@ -1,7 +1,7 @@
 #pragma once
 
 template<class MODULE>
-inline MODULE * ModulesMgr::GetModule()
+inline MODULE* ModulesMgr::GetModule()
 {
 	for (auto it = modules.begin(); it != modules.end(); ++it)
 	{

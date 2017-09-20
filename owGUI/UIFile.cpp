@@ -15,11 +15,13 @@
 #include "UIScrollBar.h"
 #include "UIMgr.h"
 
-bool UIFile::Load(cstring _filename) {
+bool UIFile::Load(cstring _filename)
+{
 	filename = _filename;
 
 	XMLFile xmlFile;
-	if (!xmlFile.Open(_filename)) {
+	if (!xmlFile.Open(_filename))
+	{
 		Debug::Error("UIFile[%s]: Loading file error.", filename.c_str());
 		return false;
 	}
@@ -28,13 +30,15 @@ bool UIFile::Load(cstring _filename) {
 	rootElement = nullptr;
 	XMLNode* rootXMLNode = xmlFile.GetRootNode();
 
-	if (!ProcessXMLNode(rootXMLNode, nullptr)) {
+	if (!ProcessXMLNode(rootXMLNode, nullptr))
+	{
 		Debug::Error("UIFile[%s]: Error while parsing data.", filename.c_str());
 		xmlFile.Destroy();
 		return false;
 	}
 
-	if (rootXMLNode == nullptr) {
+	if (rootXMLNode == nullptr)
+	{
 		Debug::Error("UIFile[%s]: Can't init root node.", filename.c_str());
 		xmlFile.Destroy();
 		return false;
@@ -45,17 +49,21 @@ bool UIFile::Load(cstring _filename) {
 	return true;
 }
 
-void UIFile::Destroy() {
+void UIFile::Destroy()
+{
 	assert1(rootElement != nullptr);
 	rootElement->Delete();
 }
 
-bool UIFile::IsElementExists(cstring _name) const {
+bool UIFile::IsElementExists(cstring _name) const
+{
 	return elements.find(_name) != elements.end();
 }
 
-UIElement* UIFile::operator[](cstring _name) {
-	if(!IsElementExists(_name)) {
+UIElement* UIFile::operator[](cstring _name)
+{
+	if (!IsElementExists(_name))
+	{
 		assert4(false, "Element not found!", _name.c_str(), filename.c_str());
 		return nullptr;
 	}
@@ -63,11 +71,13 @@ UIElement* UIFile::operator[](cstring _name) {
 	return elements.find(_name)->second;
 }
 
-void UIFile::SetParent(UIWindow* _parent) {
+void UIFile::SetParent(UIWindow* _parent)
+{
 	parent = _parent;
 }
 
-void UIFile::Show() const {
+void UIFile::Show() const
+{
 	assert1(rootElement != nullptr);
 	if (parent != nullptr)
 		rootElement->Attach(parent);
@@ -75,12 +85,14 @@ void UIFile::Show() const {
 		_UIMgr->Attach(rootElement);
 }
 
-void UIFile::Hide() const {
+void UIFile::Hide() const
+{
 	assert1(rootElement != nullptr);
 	rootElement->Detach();
 }
 
-bool UIFile::ProcessXMLNode(XMLNode* _node, UIElement* _parent) {
+bool UIFile::ProcessXMLNode(XMLNode* _node, UIElement* _parent)
+{
 	assert1(_node != nullptr);
 
 	string nodeClassType = Utils::ToLower(_node->GetName());
@@ -91,12 +103,16 @@ bool UIFile::ProcessXMLNode(XMLNode* _node, UIElement* _parent) {
 	// Create new element
 	UIElement* element = LoadUIElement(_node);
 	if (element == nullptr)
+	{
 		return false;
+	}
 
 	// Attach to parent
-	if (_parent != nullptr) {
+	if (_parent != nullptr)
+	{
 		UIWindow* parentAsUIWindow = dynamic_cast<UIWindow*>(_parent);
-		if (parentAsUIWindow == nullptr) {
+		if (parentAsUIWindow == nullptr)
+		{
 			Debug::Error("UIFile[%s]: Can't attach node [%s] to parent node (is not UIWindow).", nodeClassType.c_str());
 			return false;
 		}
@@ -106,32 +122,39 @@ bool UIFile::ProcessXMLNode(XMLNode* _node, UIElement* _parent) {
 	UIWindow* elementAsUIWindow = dynamic_cast<UIWindow*>(element);
 
 	// Set root window
-	if (elementAsUIWindow != nullptr && rootElement == nullptr) {
+	if (elementAsUIWindow != nullptr && rootElement == nullptr)
+	{
 		Debug::Print("UIFile[%s]: Node [%s] is UIWindow and set as rootElement.", filename.c_str(), _node->GetName().c_str());
 		rootElement = elementAsUIWindow;
 	}
 
 	// Add childs
-	for (auto it = _node->GetChilds().begin(); it != _node->GetChilds().end(); ++it) {
+	for (auto it = _node->GetChilds().begin(); it != _node->GetChilds().end(); ++it)
+	{
 		assert1(*it != nullptr);
 		if (!ProcessXMLNode(*it, element))
+		{
 			return false;
+		}
 	}
 
 	return true;
 }
 
-UIElement* UIFile::LoadUIElement(XMLNode* _node) {
+UIElement* UIFile::LoadUIElement(XMLNode* _node)
+{
 	UIElement* _element = nullptr;
 
 	// Try create UIElement by node name
-	if (!CreateUIElementByXMLNode(_element, _node)) {
+	if (!CreateUIElementByXMLNode(_element, _node))
+	{
 		Debug::Error("UIFile[%s]: Can't create node [%s].", filename.c_str(), _node->GetName().c_str());
 		return nullptr;
 	}
 
 	// Load common params
-	if (!LoadCommonParams(_element, _node)) {
+	if (!LoadCommonParams(_element, _node))
+	{
 		Debug::Error("UIFile[%s]: Can't load common params to node [%s].", filename.c_str(), _element->GetName().c_str());
 		return nullptr;
 	}
@@ -139,7 +162,8 @@ UIElement* UIFile::LoadUIElement(XMLNode* _node) {
 	return _element;
 }
 
-bool UIFile::CreateUIElementByXMLNode(UIElement*& _element, XMLNode* _node) {
+bool UIFile::CreateUIElementByXMLNode(UIElement*& _element, XMLNode* _node)
+{
 	string elementClassName = Utils::ToLower(_node->GetName());
 	string elementName = _node->GetKeyValue("name");
 
@@ -155,14 +179,15 @@ bool UIFile::CreateUIElementByXMLNode(UIElement*& _element, XMLNode* _node) {
 	else if (elementClassName == "uibutton3t")
 		_element = new UIButton3t();
 
-	else if(elementClassName == "uibutton")
+	else if (elementClassName == "uibutton")
 		_element = new UIButton();
 
 	else if (elementClassName == "uiscrollbar")
 		_element = new UIScrollBar();
 
 	//
-	if (_element == nullptr) {
+	if (_element == nullptr)
+	{
 		Debug::Warn("UIFile[%s]: Unknown element class [%s].", filename.c_str(), elementClassName.c_str());
 		return true;
 	}
@@ -171,7 +196,8 @@ bool UIFile::CreateUIElementByXMLNode(UIElement*& _element, XMLNode* _node) {
 	string resultElementName = elementName.empty() ? elementClassName : elementName;
 
 	// Check dublicates
-	if (IsElementExists(resultElementName)) {
+	if (IsElementExists(resultElementName))
+	{
 		int cntr = 0;
 		while (IsElementExists(resultElementName + "_" + to_string(cntr))) cntr++;
 		resultElementName += "_" + to_string(cntr);
@@ -185,7 +211,8 @@ bool UIFile::CreateUIElementByXMLNode(UIElement*& _element, XMLNode* _node) {
 	return true;
 }
 
-bool UIFile::LoadCommonParams(UIElement*& _element, XMLNode* _node) {
+bool UIFile::LoadCommonParams(UIElement*& _element, XMLNode* _node)
+{
 	// Position
 	string buff = _node->GetKeyValue("pos");
 	auto pos = Utils::ToPoint(buff);
@@ -202,18 +229,22 @@ bool UIFile::LoadCommonParams(UIElement*& _element, XMLNode* _node) {
 	auto color = Utils::ToColorFromName(buff);
 
 	// Init elemetns
-	if (auto cast = dynamic_cast<UIWindow*>(_element)) {
+	if (auto cast = dynamic_cast<UIWindow*>(_element))
+	{
 		cast->Init(pos, size, image, color);
 	}
-	else if (auto cast = dynamic_cast<UIInput*>(_element)) {
+	else if (auto cast = dynamic_cast<UIInput*>(_element))
+	{
 		auto inputMode = Utils::ToInputMode(_node->GetKeyValue("mode"));
 		cast->Init(pos, size, inputMode);
 	}
-	else if (auto cast = dynamic_cast<UIButton3t*>(_element)) {
+	else if (auto cast = dynamic_cast<UIButton3t*>(_element))
+	{
 		auto textureName = _node->GetKeyValue("texture");
 		cast->Init(pos, textureName);
 	}
-	else if (auto cast = dynamic_cast<UIScrollBar*>(_element)) {
+	else if (auto cast = dynamic_cast<UIScrollBar*>(_element))
+	{
 		cast->Init(pos, size);
 	}
 	else
@@ -221,7 +252,8 @@ bool UIFile::LoadCommonParams(UIElement*& _element, XMLNode* _node) {
 
 	// Text
 	buff = _node->GetKeyValue("text");
-	if (!buff.empty()) {
+	if (!buff.empty())
+	{
 		_element->SetText(buff);
 		_element->ShowText();
 	}
@@ -243,12 +275,15 @@ bool UIFile::LoadCommonParams(UIElement*& _element, XMLNode* _node) {
 	return true;
 }
 
-Image* UIFile::GetImage(XMLNode* _node) {
+Image* UIFile::GetImage(XMLNode* _node)
+{
 	XMLNode* imageNode = nullptr;
 
 	for (auto it = _node->GetChilds().begin(); it != _node->GetChilds().end(); ++it)
-		if ((*it)->GetName() == "image") {
-			if (imageNode != nullptr) {
+		if ((*it)->GetName() == "image")
+		{
+			if (imageNode != nullptr)
+			{
 				Debug::Error("UIFile[%s]: Node[%s]: Image: Dublicate param.", filename.c_str(), _node->GetName().c_str());
 				return nullptr;
 			}
@@ -260,13 +295,15 @@ Image* UIFile::GetImage(XMLNode* _node) {
 		return nullptr;
 
 	string textureName = imageNode->GetKeyValue("textureName");
-	if (textureName.empty()) {
+	if (textureName.empty())
+	{
 		Debug::Error("UIFile[%s]: Node[%s]: Image: 'textureName' is empty.", filename.c_str(), _node->GetName().c_str());
 		return nullptr;
 	}
 
 	auto texture = _TexturesMgr->Add(textureName);
-	if (texture == nullptr) {
+	if (texture == nullptr)
+	{
 		Debug::Error("UIFile[%s]: Node[%s]: Image: Can't find texture [%s].", filename.c_str(), _node->GetName().c_str(), textureName.c_str());
 		return nullptr;
 	}
@@ -276,7 +313,8 @@ Image* UIFile::GetImage(XMLNode* _node) {
 
 	buff = imageNode->GetKeyValue("size");
 	vec2 imageSize = Utils::ToPoint(buff);
-	if (imageSize == VECTOR_ZERO) {
+	if (imageSize == VECTOR_ZERO)
+	{
 		Debug::Warn("UIFile[%s]: Node[%s]: Image: Size is zero. Set as texture size.", filename.c_str(), _node->GetName().c_str());
 		imageSize = texture->GetSize();
 	}

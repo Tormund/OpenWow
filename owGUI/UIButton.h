@@ -45,9 +45,11 @@ protected:
 
 #define SETBUTTONACTION_ARG(_uielement, _className, _instance, _funcName, argType, arg)\
 {\
-	if(_uielement != nullptr){\
+	if(_uielement != nullptr) \
+	{\
 		UIButton* elemAsBtn = dynamic_cast<UIButton*>(_uielement);\
-		if (elemAsBtn != nullptr) { \
+		if (elemAsBtn != nullptr) \
+		{ \
 			elemAsBtn->SetAction(CLASS_ARG_FUNCTION(_className, _instance, _funcName, argType, arg));\
 		}\
 	}\

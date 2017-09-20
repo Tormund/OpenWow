@@ -3,7 +3,7 @@
 #include <map>
 
 template <class OBJECT_TYPE, class ID_TYPE>
-inline OBJECT_TYPE* RefManager<OBJECT_TYPE, ID_TYPE>::Add(cstring name)
+inline OBJECT_TYPE* RefManager2Dim<OBJECT_TYPE, ID_TYPE>::Add(cstring name)
 {
 	ID_TYPE id;
 
@@ -34,7 +34,7 @@ inline OBJECT_TYPE* RefManager<OBJECT_TYPE, ID_TYPE>::Add(cstring name)
 // Delete
 
 template <class OBJECT_TYPE, class ID_TYPE>
-inline void RefManager<OBJECT_TYPE, ID_TYPE>::Delete(cstring name)
+inline void RefManager2Dim<OBJECT_TYPE, ID_TYPE>::Delete(cstring name)
 {
 	std::map<string, ID_TYPE>::iterator name_id = names.find(name);
 	if (name_id != names.end())
@@ -44,7 +44,7 @@ inline void RefManager<OBJECT_TYPE, ID_TYPE>::Delete(cstring name)
 }
 
 template <class OBJECT_TYPE, class ID_TYPE>
-inline void RefManager<OBJECT_TYPE, ID_TYPE>::Delete(ID_TYPE id)
+inline void RefManager2Dim<OBJECT_TYPE, ID_TYPE>::Delete(ID_TYPE id)
 {
 	OBJECT_TYPE* item = GetItemByID(id);
 	if (item != nullptr)
@@ -60,7 +60,7 @@ inline void RefManager<OBJECT_TYPE, ID_TYPE>::Delete(ID_TYPE id)
 }
 
 template <class OBJECT_TYPE, class ID_TYPE>
-inline void RefManager<OBJECT_TYPE, ID_TYPE>::Delete(OBJECT_TYPE* item)
+inline void RefManager2Dim<OBJECT_TYPE, ID_TYPE>::Delete(OBJECT_TYPE* item)
 {
 	for (auto it = items.begin(); it != items.end(); ++it)
 	{
@@ -73,7 +73,7 @@ inline void RefManager<OBJECT_TYPE, ID_TYPE>::Delete(OBJECT_TYPE* item)
 }
 
 template <class OBJECT_TYPE, class ID_TYPE>
-inline void RefManager<OBJECT_TYPE, ID_TYPE>::DeleteAll()
+inline void RefManager2Dim<OBJECT_TYPE, ID_TYPE>::DeleteAll()
 {
 	for (auto it = items.begin(); it != items.end(); ++it)
 	{
@@ -84,7 +84,7 @@ inline void RefManager<OBJECT_TYPE, ID_TYPE>::DeleteAll()
 // Getters
 
 template <class OBJECT_TYPE, class ID_TYPE>
-inline ID_TYPE RefManager<OBJECT_TYPE, ID_TYPE>::GetIDByName(cstring name)
+inline ID_TYPE RefManager2Dim<OBJECT_TYPE, ID_TYPE>::GetIDByName(cstring name)
 {
 	std::map<string, ID_TYPE>::iterator name_id = names.find(name);
 	if (name_id != names.end())
@@ -96,7 +96,7 @@ inline ID_TYPE RefManager<OBJECT_TYPE, ID_TYPE>::GetIDByName(cstring name)
 }
 
 template <class OBJECT_TYPE, class ID_TYPE>
-inline OBJECT_TYPE* RefManager<OBJECT_TYPE, ID_TYPE>::GetItemByID(ID_TYPE id)
+inline OBJECT_TYPE* RefManager2Dim<OBJECT_TYPE, ID_TYPE>::GetItemByID(ID_TYPE id)
 {
 	std::map<ID_TYPE, OBJECT_TYPE*>::iterator id_item = items.find(id);
 	if (id_item != items.end())
@@ -108,7 +108,7 @@ inline OBJECT_TYPE* RefManager<OBJECT_TYPE, ID_TYPE>::GetItemByID(ID_TYPE id)
 }
 
 template <class OBJECT_TYPE, class ID_TYPE>
-inline OBJECT_TYPE* RefManager<OBJECT_TYPE, ID_TYPE>::GetItemByName(cstring name)
+inline OBJECT_TYPE* RefManager2Dim<OBJECT_TYPE, ID_TYPE>::GetItemByName(cstring name)
 {
 	OBJECT_TYPE* item = nullptr;
 
@@ -120,7 +120,7 @@ inline OBJECT_TYPE* RefManager<OBJECT_TYPE, ID_TYPE>::GetItemByName(cstring name
 }
 
 template <class OBJECT_TYPE, class ID_TYPE>
-inline void RefManager<OBJECT_TYPE, ID_TYPE>::PrintAllInfo()
+inline void RefManager2Dim<OBJECT_TYPE, ID_TYPE>::PrintAllInfo()
 {
 	uint32_t refsCnt = 0;
 	for (auto it = names.begin(); it != names.end(); ++it)

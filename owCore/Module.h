@@ -2,10 +2,10 @@
 
 //-----------------------------------------
 
-#define DEF_MODULE_SIMPLE(_className) \
+#define DEF_MODULE(_className) \
 CLASS_INSTANCE(_className)\
-\
-_className() { \
+_className() \
+{ \
 	inited = false; \
 	moduleName = typeid(this).name(); \
 	systemModule = false;\
@@ -16,14 +16,10 @@ void Destroy();
 
 //------------------------------------------
 
-#define DEF_MODULE(_className, _dllApi) \
-public:\
-static _dllApi _className* instance() { \
-	static _className instance; \
-	return &instance; \
-}\
-\
-_className() { \
+#define DEF_MODULE_API(_className, _dllApi) \
+CLASS_INSTANCE_API(_className, _dllApi) \
+_className() \
+{ \
 	inited = false; \
 	moduleName = typeid(this).name(); \
 	systemModule = false;\
@@ -34,7 +30,8 @@ _dllApi void Destroy();
 
 //------------------------------------------
 
-class Module {
+class Module
+{
 public:
 	virtual bool Init() = 0;
 	virtual void Destroy() = 0;

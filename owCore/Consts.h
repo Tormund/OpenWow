@@ -24,22 +24,24 @@ OW_CORE_DLL_API extern vec2 VECTOR_ZERO;
 #define ZERO_MEM(a) memset(a, 0, sizeof(a))
 #define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
 
+#define GL_BUFFER_OFFSET(i) ((char*)(0) + (i))
+
 
 #define CLASS_INSTANCE(_className)\
 public:\
-	static _className* instance()\
-	{\
-		static _className instance;\
-		return &instance;\
-	}
+static _className* instance()\
+{\
+	static _className instance;\
+	return &instance;\
+}
 
 #define CLASS_INSTANCE_API(_className, _dllApi)\
 public:\
-	static _dllApi _className* instance()\
-	{\
-		static _className instance;\
-		return &instance;\
-	}
+static _dllApi _className* instance()\
+{\
+	static _className instance;\
+	return &instance;\
+}
 
 enum TextAlignW {
 	TEXT_ALIGNW_LEFT = 0,

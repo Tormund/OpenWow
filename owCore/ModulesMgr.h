@@ -2,7 +2,8 @@
 
 class Module;
 
-class ModulesMgr {
+class ModulesMgr
+{
 	CLASS_INSTANCE_API(ModulesMgr, OW_CORE_DLL_API);
 
 public:
@@ -14,7 +15,7 @@ public:
 	OW_CORE_DLL_API bool IsModuleLoaded(Module* _module) const;
 
 	template<class MODULE>
-	inline MODULE * GetModule();
+	inline MODULE* GetModule();
 
 	inline size_t GetModulesCount() { return modules.size(); }
 

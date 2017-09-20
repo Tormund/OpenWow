@@ -3,7 +3,7 @@
 #include "RefItem.h"
 
 template <class OBJECT_TYPE, class ID_TYPE>
-class RefManager
+class RefManager2Dim
 {
 public:
 	inline OBJECT_TYPE* Add(cstring name);
@@ -92,4 +92,4 @@ public:
 	map<ID_TYPE, OBJECT_TYPE*> items; //id - item
 };
 
-#include "RefManager.inl"
+#include "RefManager2Dim.inl"

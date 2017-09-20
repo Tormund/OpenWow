@@ -4,7 +4,7 @@ class InputListener;
 
 class Input : public Module {
 public:
-	DEF_MODULE(Input, OW_CORE_DLL_API);
+	DEF_MODULE_API(Input, OW_CORE_DLL_API);
 
 	OW_CORE_DLL_API void AddInputListener(InputListener* _inputListener);
 	OW_CORE_DLL_API void DeleteInputListener(InputListener* _inputListener);

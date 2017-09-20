@@ -3,12 +3,14 @@
 // General
 #include "ModulesMgr.h"
 
-bool ModulesMgr::LoadModule(Module* _module, bool isSystemModule) {
+bool ModulesMgr::LoadModule(Module* _module, bool isSystemModule)
+{
 	assert1(_module != nullptr);
 
 	Debug::Green("Module [%s] initializating...", _module->GetName().c_str());
 
-	if (!_module->Init()) {
+	if (!_module->Init())
+	{
 		Debug::Error("Module [%s] failed init.", _module->GetName().c_str());
 		return false;
 	}
@@ -16,7 +18,9 @@ bool ModulesMgr::LoadModule(Module* _module, bool isSystemModule) {
 	_module->SetInited();
 
 	if (isSystemModule)
+	{
 		_module->SetSystemModule();
+	}
 
 	modules.push_back(_module);
 
@@ -24,7 +28,8 @@ bool ModulesMgr::LoadModule(Module* _module, bool isSystemModule) {
 	return true;
 }
 
-void ModulesMgr::DestroyModule(Module* _module) {
+void ModulesMgr::DestroyModule(Module* _module)
+{
 	assert1(_module != nullptr);
 
 	Debug::Green("Module [%s] destroying...", _module->GetName().c_str());
@@ -34,8 +39,10 @@ void ModulesMgr::DestroyModule(Module* _module) {
 	modules.erase(std::remove(modules.begin(), modules.end(), _module), modules.end());
 }
 
-void ModulesMgr::DestroyAllModules(bool _includeSystem) {
-	while (!modules.empty()) {
+void ModulesMgr::DestroyAllModules(bool _includeSystem)
+{
+	while (!modules.empty())
+	{
 		auto _module = modules.back();
 
 		if (!_includeSystem && _module->IsSystemModule())
@@ -47,6 +54,7 @@ void ModulesMgr::DestroyAllModules(bool _includeSystem) {
 	}
 }
 
-bool ModulesMgr::IsModuleLoaded(Module* _module) const {
+bool ModulesMgr::IsModuleLoaded(Module* _module) const
+{
 	return find(modules.begin(), modules.end(), _module) != modules.end();
 }

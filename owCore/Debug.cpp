@@ -9,27 +9,32 @@
 // Additional
 #include <iostream>
 
-bool Debug::Init() {
+bool Debug::Init()
+{
 	return true;
 }
 
-void Debug::Destroy() {
+void Debug::Destroy()
+{
 	instance()->debugOutputs.clear();
 }
 
 // Debug outputs functional
 
-bool Debug::AddDebugOutput(DebugOutput* _debugOutput) {
-	if(_debugOutput == nullptr)
-		return false;
+bool Debug::AddDebugOutput(DebugOutput* _debugOutput)
+{
+	assert1(_debugOutput != nullptr);
 
 	auto _debugOutputs = &(instance()->debugOutputs);
 
-	if(find(_debugOutputs->begin(), _debugOutputs->end(), _debugOutput) != _debugOutputs->end())
+	if (find(_debugOutputs->begin(), _debugOutputs->end(), _debugOutput) != _debugOutputs->end())
+	{
 		return false;
+	}
 
-	if(!_debugOutput->Init()) {
-		Debug::Error("Can't init debug output.");
+	if (!_debugOutput->Init())
+	{
+		Debug::Error("Debug[]: Can't init debug output.");
 		return false;
 	}
 
@@ -38,18 +43,19 @@ bool Debug::AddDebugOutput(DebugOutput* _debugOutput) {
 	return true;
 }
 
-bool Debug::DeleteDebugOutput(DebugOutput* _debugOutput) {
-	if(_debugOutput == nullptr)
-		return false;
+bool Debug::DeleteDebugOutput(DebugOutput* _debugOutput)
+{
+	assert1(_debugOutput != nullptr);
 
 	auto _debugOutputs = &(instance()->debugOutputs);
 	auto _debugOutputsIt = find(_debugOutputs->begin(), _debugOutputs->end(), _debugOutput);
 
 	// Not exists
-	if(_debugOutputsIt == _debugOutputs->end())
+	if (_debugOutputsIt == _debugOutputs->end())
+	{
 		return false;
+	}
 
-	// Erase
 	_debugOutputs->erase(_debugOutputsIt);
 
 	return true;
@@ -57,7 +63,8 @@ bool Debug::DeleteDebugOutput(DebugOutput* _debugOutput) {
 
 // Logs
 
-void Debug::Info(const char* _message, ...) {
+void Debug::Info(const char* _message, ...)
+{
 	va_list args;
 	va_start(args, _message);
 
@@ -66,7 +73,8 @@ void Debug::Info(const char* _message, ...) {
 	va_end(args);
 }
 
-void Debug::Print(const char* _message, ...) {
+void Debug::Print(const char* _message, ...)
+{
 	va_list args;
 	va_start(args, _message);
 
@@ -75,7 +83,8 @@ void Debug::Print(const char* _message, ...) {
 	va_end(args);
 }
 
-void Debug::Green(const char* _message, ...) {
+void Debug::Green(const char* _message, ...)
+{
 	va_list args;
 	va_start(args, _message);
 
@@ -84,7 +93,8 @@ void Debug::Green(const char* _message, ...) {
 	va_end(args);
 }
 
-void Debug::Warn(const char* _message, ...) {
+void Debug::Warn(const char* _message, ...)
+{
 	va_list args;
 	va_start(args, _message);
 
@@ -93,7 +103,8 @@ void Debug::Warn(const char* _message, ...) {
 	va_end(args);
 }
 
-void Debug::Error(const char* _message, ...) {
+void Debug::Error(const char* _message, ...)
+{
 	va_list args;
 	va_start(args, _message);
 
@@ -104,13 +115,15 @@ void Debug::Error(const char* _message, ...) {
 
 // Fatal & exit
 
-void Debug::Fatal(const char* _title, const char* _message, ...) {
+void Debug::Fatal(const char* _title, const char* _message, ...)
+{
 	va_list args;
 	va_start(args, _message);
 
 	int len = vsnprintf(NULL, 0, _message, args);
 	char* buff = nullptr;
-	if(len > 0) {
+	if (len > 0)
+	{
 		buff = new char[len + 1];
 		vsnprintf(&buff[0], len + 1, _message, args);
 		ShowErrorMessageBox(buff, _title);
@@ -122,58 +135,34 @@ void Debug::Fatal(const char* _title, const char* _message, ...) {
 	Debug::Exit(1);
 }
 
-void Debug::Exit(int _exitCode) {
+void Debug::Exit(int _exitCode)
+{
 	//system("pause");
 	exit(_exitCode);
 }
 
 //
 
-void Debug::PushMessageToAllDebugOutputs(const char* _message, int _type, va_list& _vaList) {
+void Debug::PushMessageToAllDebugOutputs(const char* _message, int _type, va_list& _vaList)
+{
 	auto _debugOutputs = &(instance()->debugOutputs);
 
-	if(_debugOutputs->empty())
+	if (_debugOutputs->empty())
+	{
 		return;
+	}
 
-	for(auto it = _debugOutputs->begin(); it != _debugOutputs->end(); ++it)
+	for (auto it = _debugOutputs->begin(); it != _debugOutputs->end(); ++it)
+	{
 		(*it)->PushMessage(static_cast<DebugOutput::DebugMessageType>(_type), _message, _vaList);
+	}
 }
 
-void Debug::ShowErrorMessageBox(const char* _message, const char* _title) {
-	/*int msgBoxId = */MessageBoxA(HWND_DESKTOP, _message, _title, MB_ICONERROR | MB_OK);
+void Debug::ShowErrorMessageBox(const char* _message, const char* _title)
+{
+	MessageBoxA(HWND_DESKTOP, _message, _title, MB_ICONERROR | MB_OK);
 }
 
 //
 
-void Debug::SetInfoPortion(cstring _infoPortionName) {
-	auto _debugInfoPortions = &(instance()->debugInfoPortions);
 
-	// Already exists
-	if(find(_debugInfoPortions->begin(), _debugInfoPortions->end(), _infoPortionName) != _debugInfoPortions->end())
-		return;
-
-	_debugInfoPortions->push_back(_infoPortionName);
-}
-
-void Debug::DeleteInfoPortion(cstring _infoPortionName) {
-	auto _debugInfoPortions = &(instance()->debugInfoPortions);
-	auto _debugInfoPortionsIt = find(_debugInfoPortions->begin(), _debugInfoPortions->end(), _infoPortionName);
-
-	// Not exists
-	if(_debugInfoPortionsIt == _debugInfoPortions->end())
-		return;
-
-	// Erase
-	_debugInfoPortions->erase(_debugInfoPortionsIt);
-}
-
-bool Debug::GetInfoPortion(cstring _infoPortionName) {
-	auto _debugInfoPortions = &(instance()->debugInfoPortions);
-	auto _debugInfoPortionsIt = find(_debugInfoPortions->begin(), _debugInfoPortions->end(), _infoPortionName);
-
-	// Not exists
-	if(_debugInfoPortionsIt == _debugInfoPortions->end())
-		return false;
-
-	return true;
-}

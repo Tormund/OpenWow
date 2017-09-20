@@ -7,18 +7,18 @@
 
 bool DebugOutput_Log::Init()
 {
-	fileName = string(LOGFILENAME);
+	string fileName = string(LOGFILENAME);
 
 	if (fileName.empty())
 	{
-		Debug::Error("LogFile: No such file [%s] or directory!", fileName.c_str());
+		Debug::Error("LogFile[%s]: No such file or directory!", fileName.c_str());
 		return false;
 	}
 
 	logStream.open(fileName.c_str(), ios::out);
 	if (!logStream.is_open())
 	{
-		Debug::Error("LogFile: Can not open file [%s]!", fileName.c_str());
+		Debug::Error("LogFile[%s]: Can not open file!", fileName.c_str());
 		logStream.clear();
 		return false;
 	}

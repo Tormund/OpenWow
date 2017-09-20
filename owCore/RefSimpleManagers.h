@@ -1,9 +1,9 @@
 #pragma once
 
-#include "RefManager.h"
+#include "RefManager2Dim.h"
 
 template <class OBJECT_TYPE>
-class IntManager : public RefManager<OBJECT_TYPE, uint32_t>
+class IntManager : public RefManager2Dim<OBJECT_TYPE, uint32_t>
 {
 public:
 	IntManager() : baseid(1) {}

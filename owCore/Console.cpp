@@ -4,17 +4,20 @@
 #include "Console.h"
 
 
-void Test(vector<string>& _args) {
+void Test(vector<string>& _args)
+{
 	Debug::Print("00000000Args size[%d]", _args.size());
-	for(auto it = _args.begin(); it != _args.end(); ++it)
+	for (auto it = _args.begin(); it != _args.end(); ++it)
 		Debug::Print("000000000Arg [%s]", (*it).c_str());
 }
 
-void Test1(int _argInt) {
+void Test1(int _argInt)
+{
 	Debug::Print("11111111Arg = [%d]", _argInt);
 }
 
-void Test11(uint32_t _argInt) {
+void Test11(uint32_t _argInt)
+{
 	Debug::Print("11111111Arg = [%d]", _argInt);
 }
 
@@ -24,25 +27,29 @@ void Test2() { Debug::Print("TEST2"); }
 
 Console::ConsoleCommands Console::consoleCommands;
 
-void Console::AddCommonCommands() {
+void Console::AddCommonCommands()
+{
 	ADDCONSOLECOMMAND_WITHARGS("test1_with_1", Test1, int32_t);
 	ADDCONSOLECOMMAND_WITHARGS("test11_with_1", Test11, uint32_t);
 	ADDCONSOLECOMMAND("test2_with_0", Test2);
 }
 
-bool Console::AddConsoleCommand(ConsoleCommandBase* _command) {
-	if(_command == nullptr)
+bool Console::AddConsoleCommand(ConsoleCommandBase* _command)
+{
+	if (_command == nullptr)
 		return false;
 
 	// Name is empty
-	if(_command->GetName().empty()) {
+	if (_command->GetName().empty())
+	{
 		Debug::Error("Command name is empty.");
 		return false;
 	}
 
 	// Already exists
-	for(auto it = consoleCommands.begin(); it != consoleCommands.end(); ++it)
-		if((*it)->GetName() == _command->GetName()) {
+	for (auto it = consoleCommands.begin(); it != consoleCommands.end(); ++it)
+		if ((*it)->GetName() == _command->GetName())
+		{
 			Debug::Error("Command [%s] already exists.", _command->GetName().c_str());
 			return false;
 		}
@@ -53,44 +60,49 @@ bool Console::AddConsoleCommand(ConsoleCommandBase* _command) {
 	return true;
 }
 
-ConsoleCommandBase* Console::GetConsoleCommandByName(cstring _commandName) {
-	if(_commandName.empty())
+ConsoleCommandBase* Console::GetConsoleCommandByName(cstring _commandName)
+{
+	if (_commandName.empty())
 		return nullptr;
 
-	for(auto it = consoleCommands.begin(); it != consoleCommands.end(); ++it)
-		if((*it)->GetName() == _commandName)
+	for (auto it = consoleCommands.begin(); it != consoleCommands.end(); ++it)
+		if ((*it)->GetName() == _commandName)
 			return *it;
 
 	return nullptr;
 }
 
-Console::ConsoleCommands Console::GetConsoleCommandHelp(string _input) {
+Console::ConsoleCommands Console::GetConsoleCommandHelp(string _input)
+{
 	Utils::ToLower(_input);
 
-	if(_input.empty())
+	if (_input.empty())
 		return Console::ConsoleCommands();
 
 	Console::ConsoleCommands commands;
-	for(auto it = consoleCommands.begin(); it != consoleCommands.end(); ++it) {
+	for (auto it = consoleCommands.begin(); it != consoleCommands.end(); ++it)
+	{
 		auto consoleCommandName = (*it)->GetName();
 
 		consoleCommandName = consoleCommandName.substr(0, _input.length());
 
-		if(consoleCommandName == _input) {
+		if (consoleCommandName == _input)
+		{
 			commands.push_back(*it);
 		}
 
-		if(commands.size() == consoleCommandHelpMaxSize)
+		if (commands.size() == consoleCommandHelpMaxSize)
 			break;
 	}
 
 	return commands;
 }
 
-bool Console::ProcessConsoleCommand(string _line) {
+bool Console::ProcessConsoleCommand(string _line)
+{
 	Utils::ToLower(_line);
 
-	if(_line.empty())
+	if (_line.empty())
 		return false;
 
 	string command;
@@ -98,11 +110,13 @@ bool Console::ProcessConsoleCommand(string _line) {
 
 	// Divide line to command and args by first finded space
 	auto spacePos = _line.find_first_of(' ');
-	if(spacePos != string::npos) {
+	if (spacePos != string::npos)
+	{
 		command = Utils::Trim(_line.substr(0, spacePos));
 		args = Utils::Trim(_line.substr(spacePos + 1));
 	}
-	else {
+	else
+	{
 		command = _line;
 		args = "";
 	}
@@ -110,13 +124,14 @@ bool Console::ProcessConsoleCommand(string _line) {
 	// Find command in array
 	ConsoleCommandBase* consoleCommand = GetConsoleCommandByName(command);
 
-	if(consoleCommand == nullptr) {
+	if (consoleCommand == nullptr)
+	{
 		Debug::Warn("Command [%s] not found.", command.c_str());
 		return false;
 	}
 
 	// Execute
-	if(consoleCommand->HasArgs())
+	if (consoleCommand->HasArgs())
 		consoleCommand->Execute(args);
 	else
 		consoleCommand->Execute();

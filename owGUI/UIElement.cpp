@@ -7,7 +7,8 @@
 #include "UIMgr.h"
 #include "UIWindow.h"
 
-UIElement::UIElement() {
+UIElement::UIElement()
+{
 	// Internal
 	name = _UIMgr->GetNewName();
 	parent = nullptr;
@@ -34,14 +35,16 @@ UIElement::UIElement() {
 	Debug::Info("UI: [%s] created.", name.c_str());
 }
 
-UIElement::~UIElement() {
+UIElement::~UIElement()
+{
 	if (image != nullptr)
 		delete image;
 
 	Debug::Info("UI: [%s] destroyed.", name.c_str());
 }
 
-void UIElement::Init(cvec2 _position, cvec2 _size, Image* _image, Color _color) {
+void UIElement::Init(cvec2 _position, cvec2 _size, Image* _image, Color _color)
+{
 	position = _position;
 	size = _size;
 	image = _image;
@@ -50,7 +53,8 @@ void UIElement::Init(cvec2 _position, cvec2 _size, Image* _image, Color _color) 
 
 // Name functional
 
-void UIElement::SetName(cstring _newName) {
+void UIElement::SetName(cstring _newName)
+{
 	if (_newName.empty())
 		return;
 
@@ -59,8 +63,10 @@ void UIElement::SetName(cstring _newName) {
 
 // Parent & childs functional
 
-void UIElement::Attach(UIWindow* _parent) {
-	if (parent != nullptr) {
+void UIElement::Attach(UIWindow* _parent)
+{
+	if (parent != nullptr)
+	{
 		Debug::Error("UIElement: Can't attach element, because element already have a parent!");
 		return;
 	}
@@ -69,7 +75,8 @@ void UIElement::Attach(UIWindow* _parent) {
 	this->parent = _parent;
 }
 
-void UIElement::Detach() {
+void UIElement::Detach()
+{
 	/*if (parent != nullptr) {
 		for (auto chIt = parent->childs.begin(); chIt != parent->childs.end(); ++chIt)
 			if (*chIt == this) {
@@ -81,24 +88,29 @@ void UIElement::Detach() {
 	_UIMgr->SetForDetach(this);
 }
 
-void UIElement::Delete() {
+void UIElement::Delete()
+{
 	_UIMgr->SetForDelete(this);
 }
 
 // Enable / disable functional
 
-void UIElement::Enable() {
+void UIElement::Enable()
+{
 	disabled = false;
 }
 
-void UIElement::Disable() {
+void UIElement::Disable()
+{
 	disabled = true;
 }
 
 // Mouse hover functional
 
-bool UIElement::CheckMouseHover() {
-	if (size == VECTOR_ZERO) {
+bool UIElement::CheckMouseHover()
+{
+	if (size == VECTOR_ZERO)
+	{
 		mouseHover = false;
 		return false;
 	}
@@ -113,7 +125,8 @@ bool UIElement::CheckMouseHover() {
 
 // Position & size functional
 
-vec2 UIElement::GetPosition() const {
+vec2 UIElement::GetPosition() const
+{
 	if (parent != nullptr)
 		return parent->GetPosition() + position;
 	return position;
@@ -121,11 +134,13 @@ vec2 UIElement::GetPosition() const {
 
 // Text functional
 
-void UIElement::SetText(cstring _text) {
+void UIElement::SetText(cstring _text)
+{
 	text = _text;
 }
 
-void UIElement::SetTextFont(Font* _font) {
+void UIElement::SetTextFont(Font* _font)
+{
 	if (_font == nullptr)
 		return;
 
@@ -134,10 +149,11 @@ void UIElement::SetTextFont(Font* _font) {
 
 // Common functional
 
-void UIElement::Update() {
-}
+void UIElement::Update()
+{}
 
-void UIElement::Render() {
+void UIElement::Render()
+{
 	// Render debug
 	if (IsMouseHover())
 		_Render->RenderRectangle(GetPosition(), size, false, COLOR_BLUE);
@@ -150,7 +166,8 @@ void UIElement::Render() {
 			_Render->RenderRectangle(GetPosition(), size, true, color);
 
 	// Render text
-	if (textEnable) {
+	if (textEnable)
+	{
 		_Render->RenderText(GetPosition() + textOffset, text, textAlignW, textAlignH, textFont);
 	}
 }

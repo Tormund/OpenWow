@@ -40,7 +40,7 @@
     <ClCompile Include="ModulesMgr.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="RefItemNamed.cpp" />
-    <ClCompile Include="RefManager.cpp" />
+    <ClCompile Include="RefManager2Dim.cpp" />
     <ClCompile Include="RefSimpleManagers.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Timer.cpp">
@@ -86,7 +86,7 @@
     <ClInclude Include="pushpack.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="Rect.h" />
-    <ClInclude Include="RefManager.h" />
+    <ClInclude Include="RefManager2Dim.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Timer.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -98,7 +98,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ModulesMgr.inl" />
-    <None Include="RefManager.inl" />
+    <None Include="RefManager2Dim.inl" />
     <None Include="RefManager1Dim.inl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

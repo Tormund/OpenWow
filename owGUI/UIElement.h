@@ -4,11 +4,14 @@ class Font;
 class UIMgr;
 class UIWindow;
 
-class UIElement : public InputListener {
+class UIElement : public InputListener
+{
 	friend UIMgr;
 public:
 	OW_GUI_DLL_API UIElement();
 	virtual ~UIElement();
+
+	//
 
 	OW_GUI_DLL_API void Init(cvec2 _position, cvec2 _size, Image* _image, Color _color = COLOR_EMPTY);
 

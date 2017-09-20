@@ -3,10 +3,10 @@
 // General
 #include "Settings.h"
 
-void test()
+/*void test()
 {
 	_Settings->Set_zaloopa(9.0);
-}
+}*/
 
 Settings::Settings()
 {
