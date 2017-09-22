@@ -3,7 +3,7 @@
 #include <map>
 
 template <class OBJECT_TYPE>
-inline OBJECT_TYPE* RefManager1Dim<OBJECT_TYPE>::Add(cstring name)
+inline OBJECT_TYPE* RefManager1DimAssync<OBJECT_TYPE>::Add(cstring name)
 {
 	OBJECT_TYPE* item;
 
@@ -15,12 +15,17 @@ inline OBJECT_TYPE* RefManager1Dim<OBJECT_TYPE>::Add(cstring name)
 		return item;
 	}
 
-	// else create
+	// else create empty element
 	item = CreateAction(name);
-	//if (item == nullptr)
-	//{
-	//	return nullptr;
-	//}
+
+	// Add to load list
+	m_ObjectsToLoad.add(name, item);
+
+	// Start thread if stopped
+	if (m_ObjectsToLoad.size() > 0)
+	{
+		SetEvent(m_Event_Add);
+	}
 
 	// Add item
 	do_add(name, item);
@@ -31,7 +36,7 @@ inline OBJECT_TYPE* RefManager1Dim<OBJECT_TYPE>::Add(cstring name)
 // Delete
 
 template <class OBJECT_TYPE>
-inline void RefManager1Dim<OBJECT_TYPE>::Delete(cstring name)
+inline void RefManager1DimAssync<OBJECT_TYPE>::Delete(cstring name)
 {
 	OBJECT_TYPE* item = GetItemByName(name);
 	if (item != nullptr)
@@ -48,20 +53,20 @@ inline void RefManager1Dim<OBJECT_TYPE>::Delete(cstring name)
 }
 
 template <class OBJECT_TYPE>
-inline void RefManager1Dim<OBJECT_TYPE>::Delete(OBJECT_TYPE* item)
+inline void RefManager1DimAssync<OBJECT_TYPE>::Delete(OBJECT_TYPE* item)
 {
 	for (auto it = objects.begin(); it != objects.end(); ++it)
 	{
 		if (it->second == item)
 		{
-			this.Delete(it->first);
+			this->Delete(it->first);
 			return;
 		}
 	}
 }
 
 template <class OBJECT_TYPE>
-inline void RefManager1Dim<OBJECT_TYPE>::DeleteAll()
+inline void RefManager1DimAssync<OBJECT_TYPE>::DeleteAll()
 {
 	for (auto it = objects.begin(); it != objects.end(); ++it)
 	{
@@ -72,7 +77,7 @@ inline void RefManager1Dim<OBJECT_TYPE>::DeleteAll()
 // Getters
 
 template <class OBJECT_TYPE>
-inline OBJECT_TYPE* RefManager1Dim<OBJECT_TYPE>::GetItemByName(cstring name) const
+inline OBJECT_TYPE* RefManager1DimAssync<OBJECT_TYPE>::GetItemByName(cstring name) const
 {
 	auto name_item = objects.find(name);
 	if (name_item != objects.end())
@@ -84,7 +89,7 @@ inline OBJECT_TYPE* RefManager1Dim<OBJECT_TYPE>::GetItemByName(cstring name) con
 }
 
 template <class OBJECT_TYPE>
-inline std::string RefManager1Dim<OBJECT_TYPE>::GetNameByItem(OBJECT_TYPE* item) const
+inline std::string RefManager1DimAssync<OBJECT_TYPE>::GetNameByItem(OBJECT_TYPE* item) const
 {
 	for (auto it = objects.begin(); it != objects.end(); ++it)
 	{
@@ -100,7 +105,7 @@ inline std::string RefManager1Dim<OBJECT_TYPE>::GetNameByItem(OBJECT_TYPE* item)
 // Debug
 
 template <class OBJECT_TYPE>
-inline void RefManager1Dim<OBJECT_TYPE>::PrintAllInfo()
+inline void RefManager1DimAssync<OBJECT_TYPE>::PrintAllInfo()
 {
 	uint32_t refsCnt = 0;
 	for (auto it = objects.begin(); it != objects.end(); ++it)

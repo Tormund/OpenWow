@@ -85,11 +85,7 @@ void GameState_MDXViewer::UpdatePhase(double t, double dt)
 
 void GameState_MDXViewer::Render(double t, double dt)
 {
-	glDisable(GL_FOG);
-
 	_Camera->Update();
-
-
 
 	if (currentModel != nullptr)
 	{
@@ -115,7 +111,7 @@ void GameState_MDXViewer::Render(double t, double dt)
 		glDepthFunc(GL_LEQUAL);
 		glEnable(GL_LIGHTING);
 
-		//backgroundModel->m_ModelCamera->setup(globalTime);
+		//currentModel->m_ModelCamera->setup(globalTime);
 		currentModel->draw();
 	}
 }

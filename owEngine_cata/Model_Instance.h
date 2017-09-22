@@ -4,7 +4,7 @@ class ModelInstance
 {
 public:
 	ModelInstance() {}
-	ModelInstance(Model *m, File &f);
+	ModelInstance(Model *m, File& f);
 
 	void draw();
 

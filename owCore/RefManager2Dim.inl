@@ -20,10 +20,10 @@ inline OBJECT_TYPE* RefManager2Dim<OBJECT_TYPE, ID_TYPE>::Add(cstring name)
 
 	// Create item
 	OBJECT_TYPE* item = CreateAction(name, id);
-	if (item == nullptr)
-	{
-		return nullptr;
-	}
+	//if (item == nullptr)
+	//{
+	//	return nullptr;
+	//}
 
 	// Add item
 	do_add(name, id, item);

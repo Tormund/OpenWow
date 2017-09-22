@@ -502,8 +502,9 @@ void GameState_Menu::randBackground()
 
 	char* randui = ui[Random::GenerateMax(7)];
 	char path[256];
-	sprintf_s(path, "Interface\\Glues\\Models\\UI_%s\\UI_%s.m2", randui, randui);
+	//sprintf_s(path, "Interface\\Glues\\Models\\UI_%s\\UI_%s.m2", randui, randui);
 
-	backgroundModel = new Model(path);
+	backgroundModel = new Model("Interface\\Glues\\Models\\UI_Scourge\\UI_Scourge.m2");
+	backgroundModel->Init();
 	backgroundModel->ind = true;
 }

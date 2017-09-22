@@ -1,15 +1,19 @@
 #pragma once
 
+#include <iostream>
+#include <chrono>
+#include <thread>
+#include <mutex>
+
 class Module;
 class File;
 class Texture;
 
-class TexturesMgr : public Module, public RefManager<Texture, GLuint>
+class TexturesMgr : public Module, public RefManager1DimAssync<Texture>
 {
 public:
-	DEF_MODULE(TexturesMgr, OW_RENDER_DLL_API);
+	DEF_MODULE_API(TexturesMgr, OW_RENDER_DLL_API);
 
-	OW_RENDER_DLL_API Texture* Generate();
 	OW_RENDER_DLL_API Texture* Add(cstring _textureFileName);
 	OW_RENDER_DLL_API Texture* Add(File& _textureFile);
 
@@ -17,17 +21,24 @@ public:
 	inline Texture* White() { return white; }
 
 protected:
-	GLuint GenerateID() override;
-	Texture* CreateAction(cstring name, GLuint id) override;
-	bool DeleteAction(cstring name, GLuint id) override;
+	Texture* CreateAction(cstring name) override;
+	void LoadAction(string _name, Texture* _texture) override;
+	bool DeleteAction(cstring name) override;
 
-private:
+public:
 	bool LoadSoilTexture(File& _file, Texture* _texture);
 	bool LoadBLPTexture(File& _file, Texture* _texture);
+	bool loadBLP(File& _file, Texture* _texture);
+	void decompressDXTC(GLint format, int w, int h, size_t size, unsigned char* src, unsigned char* dest);
 
 private:
 	Texture* black;
 	Texture* white;
+
+public:
+	HANDLE m_TextureLoader;
+	HANDLE m_TextureAddedEvent;
+	ContainerAssync<string, Texture*> textures;
 };
 
 #define _TexturesMgr TexturesMgr::instance()

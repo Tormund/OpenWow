@@ -14,6 +14,8 @@ class WMOMaterial
 		uint32_t F_CLAMP_T : 1;                  // tex clamp T (force this material's textures to use clamp t addressing)*/
 
 		uint32_t flags;
+
+
 		uint32_t shader;                 // Index into CMapObj::s_wmoShaderMetaData. See below (shader types).
 		uint32_t blendMode;              // Blending: see Blend_State_Table
 		uint32_t diffuseNameIndex;       // offset into MOTX

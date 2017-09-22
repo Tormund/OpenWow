@@ -2,10 +2,10 @@
 
 #include "Font.h"
 
-class FontsMgr : public Module, public RefManager<Font, GLuint>
+class FontsMgr : public Module, public RefManager2Dim<Font, GLuint>
 {
 public:
-	DEF_MODULE(FontsMgr, OW_RENDER_DLL_API);
+	DEF_MODULE_API(FontsMgr, OW_RENDER_DLL_API);
 
 	OW_RENDER_DLL_API Font* Add(cstring _fontFileName, uint32_t _fontSize);
 	OW_RENDER_DLL_API Font* Add(File& _fontFileName, uint32_t _fontSize);

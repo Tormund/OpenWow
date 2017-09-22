@@ -14,7 +14,7 @@ struct LiquidVertex {
 };
 
 
-void Liquid::initFromTerrain(File &f, int flags)
+void Liquid::initFromTerrain(File& f, int flags)
 {
 	texRepeats = 4.0f;
 	/*
@@ -49,7 +49,7 @@ void Liquid::initFromTerrain(File &f, int flags)
 	trans = false;
 }
 
-void Liquid::initFromWMO(File &f, WMOMaterial &mat, bool indoor)
+void Liquid::initFromWMO(File& f, WMOMaterial &mat, bool indoor)
 {
 	texRepeats = 4.0f;
 	ydir = -1.0f;
@@ -107,7 +107,7 @@ void Liquid::initFromWMO(File &f, WMOMaterial &mat, bool indoor)
 }
 
 
-void Liquid::initGeometry(File &f)
+void Liquid::initGeometry(File& f)
 {
 	// assume: f is at the appropriate starting position
 

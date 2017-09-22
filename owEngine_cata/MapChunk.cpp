@@ -43,12 +43,12 @@ MapChunk::MapChunk() :
 	waterlevel[0] = 0;
 	waterlevel[1] = 0;
 
-	shadow = _TexturesMgr->Generate();
-	blend = _TexturesMgr->Generate();
+	shadow = new Texture();
+	blend = new Texture();
 
 	for (int i = 0; i < 3; i++)
 	{
-		alphamaps[i] = _TexturesMgr->Generate();
+		alphamaps[i] = new Texture();
 	}
 
 	colorBufferEnable = false;

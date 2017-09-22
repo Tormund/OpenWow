@@ -9,80 +9,9 @@
 
 int globalTime = 0;
 
-#define GL_BUFFER_OFFSET(i) ((char *)(0) + (i))
-
-Model::Model(cstring name, bool forceAnim) : RefItemNamed(name), forceAnim(forceAnim)
+Model::Model(cstring name) : RefItemNamed(name)
 {
-	// replace .MDX with .M2
-	char tempname[256];
-	strncpy_s(tempname, name.c_str(), sizeof(tempname));
-	if (tempname[name.length() - 1] != '2')
-	{
-		tempname[name.length() - 2] = '2';
-		tempname[name.length() - 1] = 0;
-	}
-
-	File f(tempname);
-	f.Open();
-	ok = !f.IsEof();
-
-	if (!ok)
-	{
-		Debug::Info("Error: loading model [%s]", tempname);
-		return;
-	}
-	fullname = tempname;
-
-	memcpy(&header, f.GetData(), sizeof(ModelHeader));
-
-	// HACK: these particle systems are way too active and cause horrible horrible slowdowns
-	// I'm removing them until I can fix emission speed so it doesn't get this crazy
-	if (false
-		|| name == "World\\Kalimdor\\Orgrimmar\\Passivedoodads\\Orgrimmarbonfire\\Orgrimmarsmokeemitter.Mdx"
-		//|| name=="World\\Kalimdor\\Orgrimmar\\Passivedoodads\\Orgrimmarbonfire\\Orgrimmarbonfire01.Mdx"	
-		)
-	{
-		header.particle_emitters.size = 0;
-	}
-
-	animated = isAnimated(f) || forceAnim;  // isAnimated will set animGeometry and animTextures
-
-	Debug::Info("Loading model %s%s", tempname, animated ? " (animated)" : "");
-
-	// Initiate our model variables.
-	trans = 1.0f;
-
-	for (int i = 0; i < TEXTURE_MAX; i++)
-	{
-		specialTextures[i] = -1;
-		replaceTextures[i] = 0;
-		useReplaceTextures[i] = false;
-	}
-
-	showGeosets = 0;
-	vbuf = nbuf = tbuf = 0;
-
-	globalSequences = nullptr;
-	animtime = 0;
-	anim = 0;
-	colors = nullptr;
-	lights = nullptr;
-	transparency = nullptr;
-	particleSystems = nullptr;
-	ribbons = nullptr;
-
-	if (header.global_loops.size)
-	{
-		globalSequences = new uint32_t[header.global_loops.size];
-		memcpy(globalSequences, (f.GetData() + header.global_loops.offset), sizeof(M2Loop) * header.global_loops.size);
-	}
-
-	if (animated)
-		initAnimated(f);
-	else
-		initStatic(f);
-
-	//f.close();
+	ok = false;
 }
 
 Model::~Model()
@@ -142,7 +71,77 @@ Model::~Model()
 	}
 }
 
-bool Model::isAnimated(File &f)
+void Model::Init(bool forceAnim)
+{
+	m_ModelFileName = GetName();
+
+	Debug::Info("MDX[%s]: Loading model.", m_ModelFileName.c_str());
+
+	// Replace .MDX with .M2
+	if (m_ModelFileName.back() != '2')
+	{
+		//m_ModelFileName.resize(m_ModelFileName.length() - 1, 0x00);
+		m_ModelFileName[m_ModelFileName.length() - 2] = '2';
+		m_ModelFileName[m_ModelFileName.length() - 1] = '\0';
+		m_ModelFileName.resize(m_ModelFileName.length() - 1);
+	}
+
+	m_ModelName = m_ModelFileName.substr(0, m_ModelFileName.length() - 3);
+
+	File f(m_ModelFileName);
+	if (!f.Open())
+	{
+		Debug::Info("MDX[%s]: Unable to open file.", m_ModelFileName.c_str());
+		return;
+	}
+
+
+
+	memcpy(&header, f.GetData(), sizeof(ModelHeader));
+
+	animated = isAnimated(f) || forceAnim;
+
+	// Initiate our model variables.
+	trans = 1.0f;
+
+	for (int i = 0; i < TEXTURE_MAX; i++)
+	{
+		specialTextures[i] = -1;
+		replaceTextures[i] = 0;
+		useReplaceTextures[i] = false;
+	}
+
+	showGeosets = 0;
+	vbuf = nbuf = tbuf = 0;
+
+	globalSequences = nullptr;
+	animtime = 0;
+	anim = 0;
+	colors = nullptr;
+	lights = nullptr;
+	transparency = nullptr;
+	particleSystems = nullptr;
+	ribbons = nullptr;
+
+	if (header.global_loops.size)
+	{
+		globalSequences = new uint32_t[header.global_loops.size];
+		memcpy(globalSequences, (f.GetData() + header.global_loops.offset), sizeof(M2Loop) * header.global_loops.size);
+	}
+
+	if (animated)
+	{
+		initAnimated(f);
+	}
+	else
+	{
+		initStatic(f);
+	}
+
+	ok = true;
+}
+
+bool Model::isAnimated(File& f)
 {
 	// see if we have any animated bones
 	M2CompBone *bo = (M2CompBone*)(f.GetData() + header.bones.offset);
@@ -151,14 +150,14 @@ bool Model::isAnimated(File &f)
 	animBones = false;
 	ind = false;
 
-	ModelVertex *verts = (ModelVertex*)(f.GetData() + header.ofsVertices);
-	for (size_t i = 0; i < header.nVertices && !animGeometry; i++)
+	M2Vertex *verts = (M2Vertex*)(f.GetData() + header.vertices.offset);
+	for (size_t i = 0; i < header.vertices.size && !animGeometry; i++)
 	{
 		for (size_t b = 0; b < 4; b++)
 		{
-			if (verts[i].weights[b] > 0)
+			if (verts[i].bone_weights[b] > 0)
 			{
-				M2CompBone &bb = bo[verts[i].bones[b]];
+				M2CompBone &bb = bo[verts[i].bone_indices[b]];
 				if (bb.translation.interpolation_type || bb.rotation.interpolation_type || bb.scale.interpolation_type || (bb.flags & 8))
 				{
 					if (bb.flags & 8)
@@ -234,14 +233,14 @@ void Model::initCommon(File& f)
 	// assume: origVertices already set
 	if (!animGeometry)
 	{
-		vertices = new vec3[header.nVertices];
-		normals = new vec3[header.nVertices];
+		vertices = new vec3[header.vertices.size];
+		normals = new vec3[header.vertices.size];
 	}
 
 	//vec3 vmin = vec3( 9999999.0f, 9999999.0f, 9999999.0f);
 	//vec3 vmax = vec3(-9999999.0f,-9999999.0f,-9999999.0f);
 	// vertices, normals
-	for (size_t i = 0; i < header.nVertices; i++)
+	for (size_t i = 0; i < header.vertices.size; i++)
 	{
 		origVertices[i].pos = fixCoordSystem(origVertices[i].pos);
 		origVertices[i].normal = fixCoordSystem(origVertices[i].normal);
@@ -281,7 +280,7 @@ void Model::initCommon(File& f)
 			// Error check
 			if (i > TEXTURE_MAX - 1)
 			{
-				Debug::Info("Error: Model Texture %d over %d", header.textures.size, TEXTURE_MAX);
+				Debug::Error("Error: Model Texture %d over %d", header.textures.size, TEXTURE_MAX);
 				break;
 			}
 
@@ -322,7 +321,7 @@ void Model::initCommon(File& f)
 	int16_t* transLookup = nullptr;
 	if (header.texture_weights.size)
 	{
-		transLookup = (int16_t*)(f.GetData() + header.ofsTransparencyLookup);
+		transLookup = (int16_t*)(f.GetData() + header.transparency_lookup_table.offset);
 		transparency = new ModelTransparency[header.texture_weights.size];
 		M2TextureWeight *trDefs = (M2TextureWeight*)(f.GetData() + header.texture_weights.offset);
 		for (size_t i = 0; i < header.texture_weights.size; i++)
@@ -335,22 +334,21 @@ void Model::initCommon(File& f)
 	if (header.num_skin_profiles > 0)
 	{
 		// indices - allocate space, too
-		string lodname = fullname.substr(0, fullname.length() - 3);
-		fullname = lodname;
+		string lodname = m_ModelName;
 		lodname.append("00.skin");
-		File g(lodname.c_str());
-		g.Open();
-		if (g.IsEof())
+
+		File g(lodname);
+		if (!g.Open())
 		{
 			Debug::Info("Error: loading lod [%s]", lodname.c_str());
-			//g.close();
 			return;
 		}
-		ModelView *view = (ModelView*)(g.GetData());
 
-		uint16_t *indexLookup = (uint16_t*)(g.GetData() + view->ofsIndex);
-		uint16_t *triangles = (uint16_t*)(g.GetData() + view->ofsTris);
-		nIndices = view->nTris;
+		M2SkinProfile *view = (M2SkinProfile*)(g.GetData());
+
+		uint16_t *indexLookup = (uint16_t*)(g.GetData() + view->vertices.offset);
+		uint16_t *triangles = (uint16_t*)(g.GetData() + view->indices.offset);
+		nIndices = view->indices.size;
 		indices = new uint16_t[nIndices];
 		for (size_t i = 0; i < nIndices; i++)
 		{
@@ -358,20 +356,20 @@ void Model::initCommon(File& f)
 		}
 
 		// render ops
-		ModelGeoset *ops = (ModelGeoset*)(g.GetData() + view->ofsSub);
-		ModelTexUnit *tex = (ModelTexUnit*)(g.GetData() + view->ofsTex);
-		ModelRenderFlags *renderFlags = (ModelRenderFlags*)(f.GetData() + header.ofsTexFlags);
-		uint16_t *texlookup = (uint16_t*)(f.GetData() + header.ofsTexLookup);
-		uint16_t *texanimlookup = (uint16_t*)(f.GetData() + header.ofsTexAnimLookup);
-		int16_t *texunitlookup = (int16_t*)(f.GetData() + header.ofsTexUnitLookup);
+		M2SkinSection *ops = (M2SkinSection*)(g.GetData() + view->submeshes.offset);
+		M2Batch *tex = (M2Batch*)(g.GetData() + view->batches.offset);
+		M2Material *renderFlags = (M2Material*)(f.GetData() + header.materials.offset);
+		uint16_t *texlookup = (uint16_t*)(f.GetData() + header.texture_lookup_table.offset);
+		uint16_t *texanimlookup = (uint16_t*)(f.GetData() + header.texture_transforms_lookup_table.offset);
+		int16_t *texunitlookup = (int16_t*)(f.GetData() + header.tex_unit_lookup_table.offset);
 
-		showGeosets = new bool[view->nSub];
-		for (size_t i = 0; i < view->nSub; i++)
+		showGeosets = new bool[view->submeshes.size];
+		for (size_t i = 0; i < view->submeshes.size; i++)
 		{
 			showGeosets[i] = true;
 		}
 
-		for (size_t j = 0; j < view->nTex; j++)
+		for (size_t j = 0; j < view->batches.size; j++)
 		{
 			ModelRenderPass pass;
 
@@ -383,45 +381,45 @@ void Model::initCommon(File& f)
 			pass.noZWrite = false;
 			pass.billboard = false;
 
-			size_t geoset = tex[j].op;
+			size_t geoset = tex[j].skinSectionIndex;
 
 			pass.geoset = (int)geoset;
 
-			pass.indexStart = ops[geoset].istart;
-			pass.indexCount = ops[geoset].icount;
-			pass.vertexStart = ops[geoset].vstart;
-			pass.vertexEnd = pass.vertexStart + ops[geoset].vcount;
+			pass.indexStart = ops[geoset].indexStart;
+			pass.indexCount = ops[geoset].indexCount;
+			pass.vertexStart = ops[geoset].vertexStart;
+			pass.vertexEnd = pass.vertexStart + ops[geoset].vertexCount;
 
-			pass.order = tex[j].shading;
+			pass.order = tex[j].shader_id;
 
 			//Texture* texid = textures[texlookup[tex[j].textureid]];
 			//pass.texture = texid;
-			pass.tex = texlookup[tex[j].textureid];
+			pass.tex = texlookup[tex[j].textureComboIndex];
 
 			// TODO: figure out these flags properly -_-
-			ModelRenderFlags &rf = renderFlags[tex[j].flagsIndex];
+			M2Material &rf = renderFlags[tex[j].materialIndex];
 
 
-			pass.blendmode = rf.blend;
+			pass.blendmode = rf.blending_mode;
 			pass.color = tex[j].colorIndex;
-			pass.opacity = transLookup[tex[j].transid];
+			pass.opacity = transLookup[tex[j].textureWeightComboIndex];
 
-			pass.unlit = (rf.flags & RENDERFLAGS_UNLIT) != 0;
-			pass.cull = (rf.flags & RENDERFLAGS_TWOSIDED) == 0 && rf.blend == 0;
+			pass.unlit = (rf.flags & M2MATERIAL_FLAGS_UNLIT) != 0;
+			pass.cull = (rf.flags & M2MATERIAL_FLAGS_TWOSIDED) == 0 && rf.blending_mode == 0;
 
-			pass.billboard = (rf.flags & RENDERFLAGS_BILLBOARD) != 0;
+			pass.billboard = (rf.flags & M2MATERIAL_FLAGS_DEPTHTESTBILLBOARD) != 0;
 
-			pass.useEnvMap = (texunitlookup[tex[j].texunit] == -1) && pass.billboard && rf.blend > 2;
-			pass.noZWrite = (rf.flags & RENDERFLAGS_ZBUFFERED) != 0;
+			pass.useEnvMap = (texunitlookup[tex[j].materialLayer] == -1) && pass.billboard && rf.blending_mode > 2;
+			pass.noZWrite = (rf.flags & M2MATERIAL_FLAGS_DEPTHWRITE) != 0;
 
 			// ToDo: Work out the correct way to get the true/false of transparency
 			pass.trans = (pass.blendmode > 0) && (pass.opacity > 0);	// Transparency - not the correct way to get transparency
 
-			pass.p = ops[geoset].BoundingBox[0].x;
+			pass.p = ops[geoset].centerPosition.x;
 
 			// Texture flags
-			pass.swrap = (texdef[pass.tex].flags & TEXTURE_WRAPX) != 0; // Texture wrap X
-			pass.twrap = (texdef[pass.tex].flags & TEXTURE_WRAPY) != 0; // Texture wrap Y
+			pass.swrap = (texdef[pass.tex].flags & M2TEXTURE_FLAGS_WRAPX) != 0; // Texture wrap X
+			pass.twrap = (texdef[pass.tex].flags & M2TEXTURE_FLAGS_WRAPY) != 0; // Texture wrap Y
 
 			if (animTextures)
 			{
@@ -431,7 +429,7 @@ void Model::initCommon(File& f)
 				}
 				else
 				{
-					pass.texanim = texanimlookup[tex[j].texanimid];
+					pass.texanim = texanimlookup[tex[j].textureTransformComboIndex];
 				}
 			}
 			else
@@ -445,13 +443,11 @@ void Model::initCommon(File& f)
 		// transparent parts come later
 		sort(passes.begin(), passes.end());
 	}
-
-	// zomg done
 }
 
-void Model::initStatic(File &f)
+void Model::initStatic(File& f)
 {
-	origVertices = (ModelVertex*)(f.GetData() + header.ofsVertices);
+	origVertices = (M2Vertex*)(f.GetData() + header.vertices.offset);
 
 	initCommon(f);
 
@@ -471,32 +467,36 @@ void Model::initStatic(File &f)
 	if (transparency) delete[] transparency;
 }
 
-void Model::initAnimated(File &f)
+void Model::initAnimated(File& f)
 {
-	origVertices = new ModelVertex[header.nVertices];
-	memcpy(origVertices, f.GetData() + header.ofsVertices, header.nVertices * sizeof(ModelVertex));
+	origVertices = new M2Vertex[header.vertices.size];
+	memcpy(origVertices, f.GetData() + header.vertices.offset, header.vertices.size * sizeof(M2Vertex));
 
 	glGenBuffersARB(1, &vbuf);
 	glGenBuffersARB(1, &tbuf);
-	const size_t size = header.nVertices * sizeof(float);
+	const size_t size = header.vertices.size * sizeof(float);
 	vbufsize = 3 * size;
 
 	initCommon(f);
 
-	if (header.nAnimations > 0)
+	if (header.sequences.size > 0)
 	{
-		anims = new ModelAnimation[header.nAnimations];
-		memcpy(anims, f.GetData() + header.ofsAnimations, header.nAnimations * sizeof(ModelAnimation));
+		anims = new M2Sequence[header.sequences.size];
+		memcpy(anims, f.GetData() + header.sequences.offset, header.sequences.size * sizeof(M2Sequence));
 
-		animfiles = new File[header.nAnimations];
+		animfiles = new File[header.sequences.size];
 		char tempname[256];
-		for (size_t i = 0; i < header.nAnimations; i++)
+		for (size_t i = 0; i < header.sequences.size; i++)
 		{
-			sprintf_s(tempname, "%s%04d-%02d.anim", fullname.c_str(), anims[i].animID, anims[i].subAnimID);
+			sprintf_s(tempname, "%s%04d-%02d.anim", m_ModelName.c_str(), anims[i].id, anims[i].variationIndex);
 			if (MPQFile::GetFileSize(tempname) > 0)
 			{
 				animfiles[i].SetName(tempname);
 				animfiles[i].Open();
+			} 
+			else
+			{
+				Debug::Warn("MDX[%s]: Animation doesn't exists.", tempname);
 			}
 		}
 	}
@@ -522,9 +522,9 @@ void Model::initAnimated(File &f)
 		delete[] vertices;
 		delete[] normals;
 	}
-	vec2 *texcoords = new vec2[header.nVertices];
-	for (size_t i = 0; i < header.nVertices; i++)
-		texcoords[i] = origVertices[i].texcoords;
+	vec2 *texcoords = new vec2[header.vertices.size];
+	for (size_t i = 0; i < header.vertices.size; i++)
+		texcoords[i] = origVertices[i].tex_coords[0];
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB, tbuf);
 	glBufferDataARB(GL_ARRAY_BUFFER_ARB, 2 * size, texcoords, GL_STATIC_DRAW_ARB);
 	delete[] texcoords;
@@ -540,17 +540,16 @@ void Model::initAnimated(File &f)
 	}
 
 	// particle systems
-	header.particle_emitters.size = 0;
-	/*if (header.particle_emitters.size)
+	if (header.particle_emitters.size)
 	{
-		M2ParticleOld* pdefs = (M2ParticleOld*)(f.GetData() + header.particle_emitters.offset);
+		M2Particle* pdefs = (M2Particle*)(f.GetData() + header.particle_emitters.offset);
 		particleSystems = new ParticleSystem[header.particle_emitters.size];
 		for (size_t i = 0; i < header.particle_emitters.size; i++)
 		{
 			particleSystems[i].model = this;
 			particleSystems[i].init(f, pdefs[i], globalSequences);
 		}
-	}*/
+	}
 
 	// ribbons
 	if (header.ribbon_emitters.size)
@@ -599,9 +598,9 @@ void Model::calcBones(int anim, int time)
 
 void Model::animate(int anim)
 {
-	ModelAnimation &a = anims[anim];
+	M2Sequence &a = anims[anim];
 	int t = globalTime; //(int)(_World->animtime /* / a.playSpeed*/);
-	int tmax = a.length;
+	int tmax = a.duration;
 	t %= tmax;
 	animtime = t;
 	this->anim = anim;
@@ -619,19 +618,19 @@ void Model::animate(int anim)
 		vertices = (vec3*)glMapBufferARB(GL_ARRAY_BUFFER_ARB, GL_WRITE_ONLY);
 
 		// transform vertices
-		ModelVertex *ov = origVertices;
-		for (size_t i = 0, k = 0; i < header.nVertices; ++i, ++ov)
+		M2Vertex *ov = origVertices;
+		for (size_t i = 0, k = 0; i < header.vertices.size; ++i, ++ov)
 		{
 			vec3 v(0, 0, 0), n(0, 0, 0);
 
 			for (size_t b = 0; b < 4; b++)
 			{
-				if (ov->weights[b] > 0)
+				if (ov->bone_weights[b] > 0)
 				{
-					vec3 tv = bones[ov->bones[b]].mat * ov->pos;
-					vec3 tn = bones[ov->bones[b]].mrot * ov->normal;
-					v += tv * ((float)ov->weights[b] / 255.0f);
-					n += tn * ((float)ov->weights[b] / 255.0f);
+					vec3 tv = bones[ov->bone_indices[b]].mat * ov->pos;
+					vec3 tn = bones[ov->bone_indices[b]].mrot * ov->normal;
+					v += tv * ((float)ov->bone_weights[b] / 255.0f);
+					n += tn * ((float)ov->bone_weights[b] / 255.0f);
 				}
 			}
 
@@ -640,7 +639,7 @@ void Model::animate(int anim)
 			normals[i] = n;
 			*/
 			vertices[i] = v;
-			vertices[header.nVertices + i] = glm::normalize(n); // shouldn't these be normal by default?
+			vertices[header.vertices.size + i] = glm::normalize(n); // shouldn't these be normal by default?
 		}
 
 		glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
@@ -704,8 +703,6 @@ void Model::drawModel()
 
 		glBindBufferARB(GL_ARRAY_BUFFER_ARB, tbuf);
 		glTexCoordPointer(2, GL_FLOAT, 0, 0);
-
-		//glTexCoordPointer(2, GL_FLOAT, sizeof(ModelVertex), &origVertices[0].texcoords);
 	}
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -738,7 +735,7 @@ void Model::drawModel()
 					{
 						uint16_t a = indices[b];
 						glNormal3fv(glm::value_ptr(normals[a]));
-						glTexCoord2fv(glm::value_ptr(origVertices[a].texcoords));
+						glTexCoord2fv(glm::value_ptr(origVertices[a].tex_coords[0]));
 						glVertex3fv(glm::value_ptr(vertices[a]));
 					}
 					glEnd();
@@ -751,7 +748,7 @@ void Model::drawModel()
 				{
 					uint16_t a = indices[b];
 					glNormal3fv(glm::value_ptr(normals[a]));
-					glTexCoord2fv(glm::value_ptr(origVertices[a].texcoords));
+					glTexCoord2fv(glm::value_ptr(origVertices[a].tex_coords[0]));
 					glVertex3fv(glm::value_ptr(vertices[a]));
 				}
 				glEnd();

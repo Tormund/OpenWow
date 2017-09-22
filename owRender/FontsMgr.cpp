@@ -30,12 +30,12 @@ void FontsMgr::Destroy()
 
 Font* FontsMgr::Add(cstring _fontFileName, uint32_t _fontSize)
 {
-	return RefManager::Add(_fontFileName + "__" + std::to_string(_fontSize));
+	return RefManager2Dim::Add(_fontFileName + "__" + std::to_string(_fontSize));
 }
 
 Font* FontsMgr::Add(File& _fontFileName, uint32_t _fontSize)
 {
-	return RefManager::Add(_fontFileName.Path_Name() + "__" + std::to_string(_fontSize));
+	return RefManager2Dim::Add(_fontFileName.Path_Name() + "__" + std::to_string(_fontSize));
 }
 
 //

@@ -2,12 +2,13 @@
 
 #include "Wmo.h"
 
-class WMOsManager : public Module, public RefManager1Dim<WMO>
+class WMOsManager : public Module, public RefManager1DimAssync<WMO>
 {
 public:
-	DEF_MODULE_SIMPLE(WMOsManager);
+	DEF_MODULE(WMOsManager);
 
 	WMO* CreateAction(cstring name) override;
+	void LoadAction(string name, WMO* _wmo) override;
 	bool DeleteAction(cstring name) override;
 };
 

@@ -6,7 +6,7 @@
 // General
 //#include "Model_RenderPass.h"
 
-bool ModelRenderPass::init(Model * m)
+bool ModelRenderPass::init(Model* m)
 {
 	// May aswell check that we're going to render the geoset before doing all this crap.
 	if (m->showGeosets[geoset])

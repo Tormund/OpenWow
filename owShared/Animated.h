@@ -25,6 +25,13 @@ struct M2Track
 	M2Array<M2Array<T>> values;
 };
 
+template<typename T>
+struct M2TrackFake
+{
+	M2Array<M2Array<uint32_t>> timestamps;
+	M2Array<M2Array<T>> values;
+};
+
 #pragma pack(pop)
 
 //

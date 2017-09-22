@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Model_Instance.h"
 
@@ -24,29 +24,20 @@ struct WMOHeader
 	uint32_t wmoID;				// &WMOAreaTableRec::m_WMOID
 	CAaBox bounding_box;
 
+	uint16_t flag_attenuate_vertices_based_on_distance_to_portal : 1;
+	uint16_t flag_skip_base_color : 1;                       // do not add base (ambient) color (of MOHD) to MOCVs. apparently does more, e.g. required for multiple MOCVs
+	uint16_t flag_use_liquid_type_dbc_id : 1;                // use real liquid type ID from DBCs instead of local one. See MLIQ for further reference.
+	uint16_t flag_lighten_interiors : 1;                     // makes iterior groups much brighter, effects MOCV rendering. Used e.g.in Stormwind for having shiny bright interiors,
+	uint16_t Flag_Lod : 1;                                   // ≥ Legion (20740)
+	uint16_t : 11;                                           // unused as of Legion (20994)
+	
+	uint16_t numLod;                                         // ≥ Legion (21108) includes base lod (→ numLod = 3 means '.wmo', 'lod0.wmo' and 'lod1.wmo')
+
 	//
+
 	static const size_t __size = 64;
 };
 
-
-/*struct WMOMaterial1 {
-	int flags;
-	int specular;
-	int transparent; // Blending: 0 for opaque, 1 for transparent
-	int nameStart; // Start position for the first texture filename in the MOTX data block
-	uint32_t col1; // color
-	int d3; // flag
-	int nameEnd; // Start position for the second texture filename in the MOTX data block
-	uint32_t col2; // color
-	int d4; // flag
-	uint32_t col3;
-	float f2;
-	float diffColor[3];
-	int texture1; // this is the first texture object. of course only in RAM. leave this alone. :D
-	int texture2; // this is the second texture object.
-	// read up to here -_-
-	Texture* tex;
-};*/
 
 enum LightType
 {

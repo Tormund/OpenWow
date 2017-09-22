@@ -24,16 +24,6 @@ void setGLColor(uint32_t col)
 	glColor4ub(r, g, b, 1);
 }
 
-vec4 colorFromInt(uint32_t col)
-{
-	GLubyte r, g, b, a;
-	a = (col & 0xFF000000) >> 24;
-	r = (col & 0x00FF0000) >> 16;
-	g = (col & 0x0000FF00) >> 8;
-	b = (col & 0x000000FF);
-	return vec4(r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f);
-}
-
 /*
 The fields referenced from the MOPR chunk indicate portals leading out of the WMO group in question.
 For the "Number of batches" fields, A + B + C == the total number of batches in the WMO group (in the MOBA chunk). This might be some kind of LOD thing, or just separating the batches into different types/groups...?
@@ -433,7 +423,7 @@ void WMOGroup::initDisplayList()
 
 		if (spec_shader)
 		{
-			glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, glm::value_ptr(colorFromInt(mat->GetDiffuseColor())));
+			glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, glm::value_ptr(fromARGB(mat->GetDiffuseColor())));
 		}
 		else
 		{
@@ -476,6 +466,9 @@ void WMOGroup::initDisplayList()
 		}
 
 		glEndList();
+
+
+
 		lists.push_back(currentList);
 	}
 }
@@ -521,6 +514,8 @@ void WMOGroup::initLighting(int nLR, short *useLights)
 		outdoorLights = true;
 	}
 }
+
+//
 
 void WMOGroup::draw(cvec3 ofs, const float roll)
 {

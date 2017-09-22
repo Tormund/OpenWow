@@ -25,7 +25,7 @@ struct __WMOLight
 	float unk[4];
 };
 
-void WMOLight::init(File &f)
+void WMOLight::init(File& f)
 {
 	f.ReadBytes(&LightType, 1);
 	f.ReadBytes(&type, 1);

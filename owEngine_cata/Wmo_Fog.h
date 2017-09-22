@@ -23,7 +23,7 @@ struct WMOFog
 		CImVector color;
 	} underwater_fog;
 
-	static const size_t __size = 0x30;
+	static const size_t __size = 48;
 
 public:
 	void init(File& f);

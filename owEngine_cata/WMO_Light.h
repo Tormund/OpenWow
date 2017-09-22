@@ -16,7 +16,7 @@ struct WMOLight
 	// struct read stop
 	vec4 fcolor;
 
-	void init(File &f);
+	void init(File& f);
 	void setup(GLint light);
 
 	static void setupOnce(GLint light, vec3 dir, vec4 lcol);

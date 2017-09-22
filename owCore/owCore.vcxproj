@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseFile.cpp" />
+    <ClCompile Include="ContainerAssync.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="MathUtils.cpp" />
     <ClCompile Include="MPQFile.cpp" />
@@ -40,6 +41,7 @@
     <ClCompile Include="ModulesMgr.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="RefItemNamed.cpp" />
+    <ClCompile Include="RefManager1DimAssync.cpp" />
     <ClCompile Include="RefManager2Dim.cpp" />
     <ClCompile Include="RefSimpleManagers.cpp" />
     <ClCompile Include="stdafx.cpp" />
@@ -54,6 +56,7 @@
   <ItemGroup>
     <ClInclude Include="..\shared\owCore.h" />
     <ClInclude Include="BaseFile.h" />
+    <ClInclude Include="ContainerAssync.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="GameModule.h" />
     <ClInclude Include="MathUtils.h" />
@@ -77,13 +80,12 @@
     <ClInclude Include="InputListener.h" />
     <ClInclude Include="DebugOutput_Log.h" />
     <ClInclude Include="RefItemNamed.h" />
+    <ClInclude Include="RefManager1DimAssync.h" />
     <ClInclude Include="RefSimpleManagers.h" />
     <ClInclude Include="RefItem.h" />
     <ClInclude Include="Manager.h" />
     <ClInclude Include="Module.h" />
     <ClInclude Include="ModulesMgr.h" />
-    <ClInclude Include="poppack.h" />
-    <ClInclude Include="pushpack.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="Rect.h" />
     <ClInclude Include="RefManager2Dim.h" />
@@ -98,6 +100,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ModulesMgr.inl" />
+    <None Include="RefManager1DimAssync.inl" />
     <None Include="RefManager2Dim.inl" />
     <None Include="RefManager1Dim.inl" />
   </ItemGroup>
@@ -212,6 +215,8 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;OW_CORE_DLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <SDLCheck>false</SDLCheck>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -232,6 +237,8 @@
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;;OW_CORE_DLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
       <AdditionalIncludeDirectories>..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

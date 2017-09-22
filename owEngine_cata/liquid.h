@@ -21,7 +21,7 @@ class Liquid {
 	float ydir;
 	float texRepeats;
 
-	void initGeometry(File &f);
+	void initGeometry(File& f);
 	void initTextures(const char *basename, int first, int last);
 
 	int type;
@@ -42,9 +42,9 @@ public:
 	}
 	~Liquid();
 
-	//void init(File &f);
-	void initFromTerrain(File &f, int flags);
-	void initFromWMO(File &f, WMOMaterial &mat, bool indoor);
+	//void init(File& f);
+	void initFromTerrain(File& f, int flags);
+	void initFromWMO(File& f, WMOMaterial &mat, bool indoor);
 
 	void draw();
 

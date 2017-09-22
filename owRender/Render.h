@@ -6,7 +6,7 @@ class GLFWBackend;
 class RenderGL : public Module {
 	friend GLFWBackend;
 public:
-	DEF_MODULE(RenderGL, OW_RENDER_DLL_API);
+	DEF_MODULE_API(RenderGL, OW_RENDER_DLL_API);
 
 	OW_RENDER_DLL_API void Set3D();
 	OW_RENDER_DLL_API void Set2D();
@@ -28,6 +28,12 @@ public:
 	inline vec2 GetWindowSize() const { return windowSize; }
 	inline float GetAspectRatio() const { return aspectRatio; }
 
+	HDC dc;
+	HGLRC glrc1;
+	HGLRC glrc2;
+	HGLRC glrc3;
+	HGLRC glrc4;
+
 private:
 	void OnWindowResized(uint32_t _width, uint32_t _height);
 
@@ -36,6 +42,9 @@ private:
 
 	vec2 windowSize;
 	float aspectRatio, aspectFactor;
+
+
+
 };
 
 #define _Render RenderGL::instance()

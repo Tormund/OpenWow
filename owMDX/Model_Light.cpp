@@ -6,12 +6,13 @@
 // Additional
 #include "ModelsUtils.h"
 
-void ModelLight::init(File &f, M2Light &mld, uint32_t *global)
+void ModelLight::init(File& f, M2Light& mld, uint32_t* global)
 {
 	tpos = pos = fixCoordSystem(mld.position);
 	tdir = dir = vec3(0, 1, 0); // no idea
 	type = mld.type;
 	parent = mld.bone;
+
 	ambColor.init(mld.ambient_color, f, global);
 	ambIntensity.init(mld.ambient_intensity, f, global);
 	diffColor.init(mld.diffuse_color, f, global);
@@ -36,8 +37,8 @@ void ModelLight::setup(int time, GLuint l)
 	}
 	else
 	{
-		p = vec4(tpos, 1.0f);
-		Debug::Info("Error: Light type %d is unknown.", type);
+		Debug::Error("ModelLight[]: Error: Light type [%d] is unknown.", type);
+		return;
 	}
 
 	//Debug::Info("Light %d (%f,%f,%f) (%f,%f,%f) [%f,%f,%f]", l-GL_LIGHT4, ambcol.x, ambcol.y, ambcol.z, diffcol.x, diffcol.y, diffcol.z, p.x, p.y, p.z);

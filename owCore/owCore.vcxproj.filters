@@ -52,6 +52,9 @@
     <Filter Include="Files\INIFile">
       <UniqueIdentifier>{bb2177ab-e922-4b42-878d-49a18a36fc63}</UniqueIdentifier>
     </Filter>
+    <Filter Include="RefManager\1 Dim Assync">
+      <UniqueIdentifier>{5c44a7fc-a9a9-4eb0-91bf-99900a34046c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Timer.cpp">
@@ -132,6 +135,12 @@
     <ClCompile Include="RefManager2Dim.cpp">
       <Filter>RefManager\2 Dim</Filter>
     </ClCompile>
+    <ClCompile Include="ContainerAssync.cpp">
+      <Filter>RefManager</Filter>
+    </ClCompile>
+    <ClCompile Include="RefManager1DimAssync.cpp">
+      <Filter>RefManager\1 Dim Assync</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Function.h">
@@ -189,8 +198,6 @@
     <ClInclude Include="common.h" />
     <ClInclude Include="Consts.h" />
     <ClInclude Include="..\shared\owCore.h" />
-    <ClInclude Include="poppack.h" />
-    <ClInclude Include="pushpack.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="RefSimpleManagers.h">
       <Filter>RefManager\2 Dim\Simple</Filter>
@@ -240,6 +247,12 @@
     <ClInclude Include="RefManager2Dim.h">
       <Filter>RefManager\2 Dim</Filter>
     </ClInclude>
+    <ClInclude Include="ContainerAssync.h">
+      <Filter>RefManager</Filter>
+    </ClInclude>
+    <ClInclude Include="RefManager1DimAssync.h">
+      <Filter>RefManager\1 Dim Assync</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ModulesMgr.inl">
@@ -250,6 +263,9 @@
     </None>
     <None Include="RefManager2Dim.inl">
       <Filter>RefManager\2 Dim</Filter>
+    </None>
+    <None Include="RefManager1DimAssync.inl">
+      <Filter>RefManager\1 Dim Assync</Filter>
     </None>
   </ItemGroup>
 </Project>

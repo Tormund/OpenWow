@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#pragma pack(push, 1)
+#include "../shared/pack_begin.h"
 
 struct M2Bounds
 {
@@ -28,14 +28,7 @@ struct M2Range
 	uint32_t maximum;
 };
 
-template<typename T>
-struct FBlock
-{
-	uint32_t nTimes;
-	uint32_t ofsTimes;
-	uint32_t nKeys;
-	uint32_t ofsKeys;
-};
+
 
 
 ////////
@@ -43,6 +36,26 @@ struct FBlock
 struct M2Loop
 {
 	uint32_t timestamp;
+};
+
+//
+
+struct M2Sequence
+{
+	uint16_t id;                   // Animation id in AnimationData.dbc
+	uint16_t variationIndex;       // Sub-animation id: Which number in a row of animations this one is.
+	uint32_t duration;             // The length of this animation sequence in milliseconds.
+
+	float movespeed;               // This is the speed the character moves with in this animation.
+	uint32_t flags;                // See below.
+	int16_t frequency;             // This is used to determine how often the animation is played. For all animations of the same type, this adds up to 0x7FFF (32767).
+	uint16_t _padding;
+	M2Range replay;                // May both be 0 to not repeat. Client will pick a random number of repetitions within bounds if given.
+	uint32_t blendTime;
+
+	M2Bounds bounds;
+	int16_t variationNext;         // id of the following animation of this AnimationID, points to an Index or is -1 if none.
+	uint16_t aliasNext;            // id in the list of animations. Used to find actual animation if this sequence is an alias (flags & 0x40)
 };
 
 //
@@ -83,6 +96,15 @@ struct M2CompBone                 // probably M2Bone ≤ Vanilla
 
 //
 
+struct M2Vertex
+{
+	C3Vector pos;
+	uint8_t bone_weights[4];
+	uint8_t bone_indices[4];
+	C3Vector normal;
+	C2Vector tex_coords[2];  // two textures, depending on shader used
+};
+
 //
 
 struct M2Color
@@ -93,6 +115,8 @@ struct M2Color
 
 //
 
+#define	M2TEXTURE_FLAGS_WRAPX 0x01
+#define	M2TEXTURE_FLAGS_WRAPY 0x02
 struct M2Texture
 {
 	uint32_t type;          // see below
@@ -115,6 +139,19 @@ struct M2TextureTransform
 	// FIXME M2Track<C4Quaternion> rotation;    // rotation center is texture center (0.5, 0.5)
 	M2Track<C3Vector> rotation;    // rotation center is texture center (0.5, 0.5)
 	M2Track<C3Vector> scaling;
+};
+
+//
+
+#define	M2MATERIAL_FLAGS_UNLIT	             0x01
+#define	M2MATERIAL_FLAGS_UNFOGGED	         0x02
+#define	M2MATERIAL_FLAGS_TWOSIDED	         0x04
+#define	M2MATERIAL_FLAGS_DEPTHTESTBILLBOARD	 0x08
+#define	M2MATERIAL_FLAGS_DEPTHWRITE	         0x10
+struct M2Material
+{
+	uint16_t flags;
+	uint16_t blending_mode; // apparently a bitfield
 };
 
 //
@@ -210,10 +247,12 @@ struct M2Ribbon
 
 //
 
-#define	MODELPARTICLE_DONOTTRAIL		0x10
-#define	MODELPARTICLE_DONOTBILLBOARD	0x1000
-
-struct M2ParticleOld
+#define	M2PARTICLE_FLAGS_AFFECTEDBYLIGHTING		0x1
+#define	M2PARTICLE_FLAGS_WORLDUP		        0x8
+#define	M2PARTICLE_FLAGS_DONOTTRAIL		        0x10
+#define	M2PARTICLE_FLAGS_INLIGHTING		        0x20
+#define	M2PARTICLE_FLAGS_DONOTBILLBOARD	        0x1000
+struct M2Particle
 {
 	uint32_t particleId;                      // Always (as I have seen): -1.
 	uint32_t flags;                           // See Below
@@ -221,18 +260,18 @@ struct M2ParticleOld
 	uint16_t bone;                            // The bone its attached to.
 
 
-	//union
-	//{
+	union
+	{
 		uint16_t texture;                         // And the textures that are used. 
 
-		/*struct                                    // For multi-textured particles actually three ids
+		struct                                    // For multi-textured particles actually three ids
 		{
 			uint16_t texture_0 : 5;
 			uint16_t texture_1 : 5;
 			uint16_t texture_2 : 5;
 			uint16_t : 1;
-		};*/
-	//};
+		};
+	};
 
 
 	M2Array<char> geometry_model_filename;    // if given, this emitter spawns models
@@ -278,12 +317,12 @@ struct M2ParticleOld
 
 	// Params BEGIN
 
-	FBlock<C3Vector> colorTrack;              // Most likely they all have 3 timestamps for {start, middle, end}.
-	FBlock<short> alphaTrack;                 // FIXME FIXED16
-	FBlock<C2Vector> scaleTrack;
+	M2TrackFake<C3Vector> colorTrack;              // Most likely they all have 3 timestamps for {start, middle, end}.
+	M2TrackFake<short> alphaTrack;                 // FIXME FIXED16
+	M2TrackFake<C2Vector> scaleTrack;
 	C2Vector scaleVary;                       // A percentage amount to randomly vary the scale of each particle
-	FBlock<uint16_t> headCellTrack;           // Some kind of intensity values seen: 0,16,17,32 (if set to different it will have high intensity)
-	FBlock<uint16_t> tailCellTrack;
+	M2TrackFake<uint16_t> headCellTrack;           // Some kind of intensity values seen: 0,16,17,32 (if set to different it will have high intensity)
+	M2TrackFake<uint16_t> tailCellTrack;
 
 	float unk[3];
 	float scales[3];
@@ -321,15 +360,20 @@ struct M2ParticleOld
     // Params END
 	
 	M2Track<uint8_t> enabledIn;                // (boolean) Appears to be used sparely now, probably there's a flag that links particles to animation sets where they are enabled.
+
+	struct vector_2fp_6_9 { short x; short y; };
+
+	vector_2fp_6_9 multiTextureParam0[2];
+	vector_2fp_6_9 multiTextureParam1[2];
 };
 
 //---------------------------
 
 struct ModelHeader
 {
-	char id[4];                   // MD20 Magic
+	char id[4];                                          // MD20 Magic
 	uint32_t version;
-	M2Array<char> name;
+	M2Array<char> name;                                  // should be globally unique, used to reload by name in internal clients
 
 	struct
 	{
@@ -343,50 +387,31 @@ struct ModelHeader
 		uint32_t : 27;
 	} global_flags;
 
-	M2Array<M2Loop> global_loops;
+	M2Array<M2Loop> global_loops;                        // Timestamps used in global looping animations.
 
-	uint32_t nAnimations; // AnimationRelated
-	uint32_t ofsAnimations; // Information about the animations in the model.
+	M2Array<M2Sequence> sequences;                       // Information about the animations in the model.
+	M2Array<uint16_t> sequence_lookups;                  // Mapping of sequence IDs to the entries in the Animation sequences block.
 
-	uint32_t nAnimationLookup; // AnimationRelated
-	uint32_t ofsAnimationLookup; // Mapping of global IDs to the entries in the Animation sequences block.
+	M2Array<M2CompBone> bones;                           // MAX_BONES = 0x100
+	M2Array<uint16_t> key_bone_lookup;                   // Lookup table for key skeletal bones.
 
-	M2Array<M2CompBone> bones;
+	M2Array<M2Vertex> vertices;
 
-	uint32_t nKeyBoneLookup; // BonesAndLookups
-	uint32_t ofsKeyBoneLookup; // Lookup table for key skeletal bones.
+	uint32_t num_skin_profiles;                          // Views (LOD) are now in .skins.
 
-	uint32_t nVertices; // GeometryAndRendering
-	uint32_t ofsVertices; // Vertices of the model.
-
-	uint32_t num_skin_profiles; // GeometryAndRendering
-
-	M2Array<M2Color> colors;
+	M2Array<M2Color> colors;                             // Color and alpha animations definitions.
 
 	M2Array<M2Texture> textures;
-	M2Array<M2TextureWeight> texture_weights;
+	M2Array<M2TextureWeight> texture_weights;            // Transparency of textures.
 	M2Array<M2TextureTransform> texture_transforms;
-
-	uint32_t nTexReplace; // TextureAndTheifAnimation
-	uint32_t ofsTexReplace; // Replaceable Textures.
-
-	uint32_t nTexFlags; // Render Flags
-	uint32_t ofsTexFlags; // Blending modes / render flags.
-
-	uint32_t nBoneLookup; // BonesAndLookups
-	uint32_t ofsBoneLookup; // A bone lookup table.
-
-	uint32_t nTexLookup; // TextureAndTheifAnimation
-	uint32_t ofsTexLookup; // The same for textures.
-
-	uint32_t nTexUnitLookup;		// L, TextureAndTheifAnimation
-	uint32_t ofsTexUnitLookup; // And texture units. Somewhere they have to be too.
 	
-	uint32_t nTransparencyLookup; // M, ColorsAndTransparency
-	uint32_t ofsTransparencyLookup; // Everything needs its lookup. Here are the transparencies.
-	
-	uint32_t nTexAnimLookup; // TextureAndTheifAnimation
-	uint32_t ofsTexAnimLookup; // Wait. Do we have animated Textures? Wasn't ofsTexAnims deleted? oO
+	M2Array<uint16_t> replacable_texture_lookup;
+	M2Array<M2Material> materials;                       // Blending modes / render flags.
+	M2Array<uint16_t> bone_lookup_table;
+	M2Array<uint16_t> texture_lookup_table;
+	M2Array<uint16_t> tex_unit_lookup_table;             // ≥ Cata: unused
+	M2Array<uint16_t> transparency_lookup_table;
+	M2Array<uint16_t> texture_transforms_lookup_table;
 
 	CAaBox bounding_box;                                 // min/max( [1].z, 2.0277779f ) - 0.16f seems to be the maximum camera height
 	float bounding_sphere_radius;                        // detail doodad draw dist = clamp (bounding_sphere_radius * detailDoodadDensityFade * detailDoodadDist, …)
@@ -402,134 +427,96 @@ struct ModelHeader
 	M2Array<uint16_t> attachment_lookup_table;
 	
 	M2Array<M2Event> events;
+
 	M2Array<M2Light> lights;
 
 	M2Array<M2Camera> cameras;
 	M2Array<uint16_t> camera_lookup_table;
 
 	M2Array<M2Ribbon> ribbon_emitters;
-	M2Array<M2ParticleOld> particle_emitters;
-};
 
-// block B - animations
-struct ModelAnimation
-{
-	uint16_t animID;
-	uint16_t subAnimID;
-	uint32_t length;
-
-	float moveSpeed;
-
-	uint32_t loopType;
-	uint32_t flags;
-	uint32_t d1;
-	uint32_t d2;
-	uint32_t playSpeed;  // note: this can't be play speed because it's 0 for some models
-
-	vec3 boxA, boxB;
-	float rad;
-
-	int16_t NextAnimation;
-	int16_t Index;
+	M2Array<M2Particle> particle_emitters;
 };
 
 
+///////////////////
+///////////////////
+///////////////////
 
 
-
-
-
-
-
-struct ModelVertex
+struct M2SkinSection
 {
-	vec3 pos;
-	uint8_t weights[4];
-	uint8_t bones[4];
-	vec3 normal;
-	vec2 texcoords;
-	int unk1, unk2; // always 0,0 so this is probably unused
+	uint16_t skinSectionId;       // Mesh part ID, see below.
+	uint16_t Level;               // (level << 16) is added (|ed) to startTriangle and alike to avoid having to increase those fields to uint32s.
+	uint16_t vertexStart;         // Starting vertex number.
+	uint16_t vertexCount;         // Number of vertices.
+	uint16_t indexStart;          // Starting triangle index (that's 3* the number of triangles drawn so far).
+	uint16_t indexCount;          // Number of triangle indices.
+	uint16_t boneCount;           // Number of elements in the bone lookup table.
+	uint16_t boneComboIndex;      // Starting index in the bone lookup table.
+	uint16_t boneInfluences;      // <= 4
+								  // from <=BC documentation: Highest number of bones needed at one time in this Submesh --Tinyn (wowdev.org) 
+								  // In 2.x this is the amount of of bones up the parent-chain affecting the submesh --NaK
+	uint16_t centerBoneIndex;
+	C3Vector centerPosition;     // Average position of all the vertices in the sub mesh.
+
+	C3Vector sortCenterPosition; // The center of the box when an axis aligned box is built around the vertices in the submesh.
+	float sortRadius;             // Distance of the vertex farthest from CenterBoundingBox.
+
 };
 
-struct ModelView
+struct M2Batch
 {
-	char id[4];				 // Signature
-	uint32_t nIndex, ofsIndex; // Vertices in this model (index into vertices[])
-	uint32_t nTris, ofsTris;	 // indices
-	uint32_t nProps, ofsProps; // additional vtx properties
-	uint32_t nSub, ofsSub;	 // materials/renderops/submeshes
-	uint32_t nTex, ofsTex;	 // material properties/textures
-	int32_t lod;				 // LOD bias?
+	uint8_t flags;                       // Usually 16 for static textures, and 0 for animated textures. &0x1: materials invert something; &0x2: transform &0x4: projected texture; &0x10: something batch compatible; &0x20: projected texture?; &0x40: use textureWeights
+	int8_t priorityPlane;
+	uint16_t shader_id;                  // See below.
+	uint16_t skinSectionIndex;           // A duplicate entry of a submesh from the list above.
+	uint16_t geosetIndex;                // See below.
+	uint16_t colorIndex;                 // A Color out of the Colors-Block or -1 if none.
+	uint16_t materialIndex;              // The renderflags used on this texture-unit.
+	uint16_t materialLayer;              // Capped at 7 (see CM2Scene::BeginDraw)
+	uint16_t textureCount;               // 1 to 4. See below. Also seems to be the number of textures to load, starting at the texture lookup in the next field (0x10).
+	uint16_t textureComboIndex;          // Index into Texture lookup table
+	uint16_t textureCoordComboIndex;     // Index into the texture unit lookup table.
+	uint16_t textureWeightComboIndex;    // Index into transparency lookup table.
+	uint16_t textureTransformComboIndex; // Index into uvanimation lookup table. 
+};
+
+struct M2ShadowBatch
+{
+	uint8_t flags;              // if auto-generated: M2Batch.flags & 0xFF
+	uint8_t flags2;             // if auto-generated: (renderFlag[i].flags & 0x04 ? 0x01 : 0x00)
+								//                  | (!renderFlag[i].blendingmode ? 0x02 : 0x00)
+								//                  | (renderFlag[i].flags & 0x80 ? 0x04 : 0x00)
+								//                  | (renderFlag[i].flags & 0x400 ? 0x06 : 0x00)
+	uint16_t _unknown1;
+	uint16_t submesh_id;
+	uint16_t texture_id;        // already looked-up
+	uint16_t color_id;
+	uint16_t transparency_id;   // already looked-up
 };
 
 
-/// One material + render operation
-struct ModelGeoset
+
+// GENERAL HEADER
+
+struct M2SkinProfile
 {
-	uint32_t id;		// mesh part id?
-	uint16_t vstart;	// first vertex
-	uint16_t vcount;	// num vertices
-	uint16_t istart;	// first index
-	uint16_t icount;	// num indices
-	uint16_t nBones;		// number of bone indices, Number of elements in the bone lookup table.
-	uint16_t StartBones;		// ? always 1 to 4, Starting index in the bone lookup table.
-	uint16_t d5;		// ?
-	uint16_t rootBone;		// root bone?
-	vec3 BoundingBox[2];
-	float radius;
+	uint32_t magic;                         // 'SKIN'
+	M2Array<uint16_t> vertices;
+	M2Array<uint16_t> indices;
+	M2Array<uint8_t> bones;                 // uint4t FIXME
+	M2Array<M2SkinSection> submeshes;
+	M2Array<M2Batch> batches;
+	uint32_t boneCountMax;                  // WoW takes this and divides it by the number of bones in each submesh, then stores the biggest one.
+											// Maximum number of bones per drawcall for each view. Related to (old) GPU numbers of registers. 
+											// Values seen : 256, 64, 53, 21
+
+	M2Array<M2ShadowBatch> shadow_batches;
 };
 
 #define	TEXTUREUNIT_STATIC	16
-/// A texture unit (sub of material)
-struct ModelTexUnit
-{
-	// probably the texture units
-	// size always >=number of materials it seems
-	uint16_t flags;		// Flags
-	uint16_t shading;		// If set to 0x8000: shaders. Used in skyboxes to ditch the need for depth buffering. See below.
-	uint16_t op;			// Material this texture is part of (index into mat)
-	uint16_t op2;			// Always same as above?
-	int16_t colorIndex;	// color or -1
-	uint16_t flagsIndex;	// more flags...
-	uint16_t texunit;		// Texture unit (0 or 1)
-	uint16_t mode;			// ? (seems to be always 1)
-	uint16_t textureid;	// Texture id (index into global texture list)
-	uint16_t texunit2;	// copy of texture unit value?
-	uint16_t transid;		// transparency id (index into transparency list)
-	uint16_t texanimid;	// texture animation id
-};
 
-enum TextureFlags
-{
-	TEXTURE_WRAPX = 1,
-	TEXTURE_WRAPY
-};
-#define	RENDERFLAGS_UNLIT	1
-#define	RENDERFLAGS_UNFOGGED	2
-#define	RENDERFLAGS_TWOSIDED	4
-#define	RENDERFLAGS_BILLBOARD	8
-#define	RENDERFLAGS_ZBUFFERED	16
-// block X - render flags
-struct ModelRenderFlags
-{
-	uint16_t flags;
-	uint16_t blend;
-};
+#define	TEXTURE_MAX	128
 
-
-
-
-
-#define	TEXTURE_MAX	32
-
-struct FakeAnimationBlock
-{
-	uint32_t nTimes;
-	uint32_t ofsTimes;
-	uint32_t nKeys;
-	uint32_t ofsKeys;
-};
-
-
-
-#pragma pack(pop)
+#include "../shared/pack_end.h"

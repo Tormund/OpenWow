@@ -72,6 +72,22 @@ enum BlendModes
 
 class Model : public RefItemNamed
 {
+public:
+	OW_MDX_DLL_API Model(cstring name);
+	~Model();
+
+	OW_MDX_DLL_API void Init(bool forceAnim = false);
+
+	OW_MDX_DLL_API void draw();
+	OW_MDX_DLL_API void updateEmitters(float dt);
+
+
+private:
+	string m_ModelName;
+	string m_ModelFileName;
+	string m_ModelInternalName;
+
+private:
 	GLuint dlist;
 	GLuint vbuf, nbuf, tbuf;
 	size_t vbufsize;
@@ -81,26 +97,24 @@ class Model : public RefItemNamed
 	bool forceAnim;
 	File *animfiles;
 
-	void init(File& f);
-
 	ModelHeader header;
 
-	ModelTextureAnim * texAnims;
-	ModelAnimation * anims;
-	uint32_t * globalSequences;
-	ModelColor * colors;
-	ModelTransparency * transparency;
-	ModelLight * lights;
-	ParticleSystem * particleSystems;
-	RibbonEmitter * ribbons;
+	ModelTextureAnim* texAnims;
+	M2Sequence* anims;
+	uint32_t* globalSequences;
+	ModelColor* colors;
+	ModelTransparency* transparency;
+	ModelLight* lights;
+	ParticleSystem* particleSystems;
+	RibbonEmitter* ribbons;
 
 	OW_MDX_DLL_API void drawModel();
-	OW_MDX_DLL_API void initCommon(File &f);
-	OW_MDX_DLL_API bool isAnimated(File &f);
-	OW_MDX_DLL_API void initAnimated(File &f);
-	OW_MDX_DLL_API void initStatic(File &f);
+	OW_MDX_DLL_API void initCommon(File& f);
+	OW_MDX_DLL_API bool isAnimated(File& f);
+	OW_MDX_DLL_API void initAnimated(File& f);
+	OW_MDX_DLL_API void initStatic(File& f);
 
-	ModelVertex * origVertices;
+	M2Vertex * origVertices;
 	vec3* vertices;
 	vec3* normals;
 
@@ -108,6 +122,9 @@ class Model : public RefItemNamed
 	size_t nIndices;
 
 	vector<ModelRenderPass> passes;
+
+
+
 
 	void animate(int anim);
 	void calcBones(int anim, int time);
@@ -117,11 +134,11 @@ class Model : public RefItemNamed
 
 public:
 	ModelCamera* m_ModelCamera;
-	Bone *bones;
+	Bone* bones;
 
 	// ===============================
 	// Toggles
-	bool *showGeosets;
+	bool* showGeosets;
 
 	// ===============================
 	// Texture data
@@ -139,13 +156,9 @@ public:
 	float trans;
 	bool animcalc;
 	int anim, animtime;
-	string fullname;
 
-	OW_MDX_DLL_API Model(cstring name, bool forceAnim = false);
-	~Model();
 
-	OW_MDX_DLL_API void draw();
-	OW_MDX_DLL_API void updateEmitters(float dt);
+
 
 	friend class ModelRenderPass;
 };

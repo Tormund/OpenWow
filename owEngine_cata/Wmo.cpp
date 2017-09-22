@@ -79,27 +79,21 @@ bool WMO::Init()
 		if (size == 0) continue;
 		size_t nextpos = f.GetPos() + size;
 
-		if (strcmp(fourcc, "MVER") == 0)
+		if (strcmp(fourcc, "MVER") == 0)                    // Version
 		{
 			uint32_t version;
 			f.ReadBytes(&version, 4);
 			assert3(version == 17, "Version mismatch != 17", std::to_string(version).c_str());
 		}
-		else if (strcmp(fourcc, "MOHD") == 0)
+		else if (strcmp(fourcc, "MOHD") == 0)               // Header
 		{
-			// Header for the map object.
 			f.ReadBytes(&header, header.__size);
-
-			//f.ReadBytes(&LiquidType, 4); // LiquidType related, see below in the MLIQ chunk.
-
-			//groups = new WMOGroup[header.nGroups];
 		}
-		else if (strcmp(fourcc, "MOTX") == 0)
+		else if (strcmp(fourcc, "MOTX") == 0)              // List of textures (BLP Files) used in this map object.
 		{
-			// List of textures (BLP Files) used in this map object.
 			texbuf = new char[size + 1];
 			f.ReadBytes(texbuf, size);
-			texbuf[size] = 0;
+			texbuf[size] = 0x00;
 		}
 		else if (strcmp(fourcc, "MOMT") == 0)
 		{
@@ -121,24 +115,6 @@ bool WMO::Init()
 				WMOMaterial* _mat = new WMOMaterial(f);
 				_mat->initTexture(texbuf);
 				mat.push_back(_mat);
-
-				/*WMOMaterial* m = mat[i];
-				f.ReadBytes(m, 0x40); // read 64 bytes, struct WMOMaterial is 68 bytes
-
-				string texpath(texbuf + m->nameStart);
-				fixname(texpath);
-
-				m->tex = _TexturesMgr->Add(texpath);
-				textures.push_back(texpath);*/
-
-				/*
-				// material logging
-				Debug::Info("Material %d:\t%d\t%d\t%d\t%X\t%d\t%X\t%d\t%f\t%f",
-				i, m->flags, m->d1, m->transparent, m->col1, m->d3, m->col2, m->d4, m->f1, m->f2);
-				for (int j=0; j<2; j++) Debug::Info("\t%d", m->dx[j]);
-				Debug::Info("\t - %s", texpath.c_str());
-				*/
-
 			}
 		}
 		else if (strcmp(fourcc, "MOGN") == 0)
@@ -169,6 +145,7 @@ bool WMO::Init()
 				{
 					Debug::Warn("SKYBOX:");
 
+#ifdef MDX_INCL
 					skybox = _ModelsMgr->Add(path);
 
 					if (!skybox->ok)
@@ -176,6 +153,8 @@ bool WMO::Init()
 						_ModelsMgr->Delete(path);
 						skybox = nullptr;
 					}
+
+#endif
 				}
 			}
 		}
@@ -262,40 +241,6 @@ bool WMO::Init()
 		}
 		else if (strcmp(fourcc, "MOLT") == 0)
 		{
-			/*
-			Lighting information. 48 bytes per light, nLights entries
-			Offset 	Type 		Description
-			0x00 	4 * uint8_t 	Flags or something? Mostly (0,1,1,1)
-			0x04 	4 * uint8_t 	Color (B,G,R,A)
-			0x08 	3 * float 	Position (X,Z,-Y)
-			0x14 	7 * float 	Unknown (light properties?)
-			enum LightType
-			{
-			OMNI_LGT,
-			SPOT_LGT,
-			DIRECT_LGT,
-			AMBIENT_LGT
-			};
-			struct SMOLight // 04-29-2005 By ObscuR
-			{
-			000h  UINT8 LightType;
-			001h  UINT8 type;
-			002h  UINT8 useAtten;
-			003h  UINT8 pad;
-			004h  UINT8 color[4];
-			008h  float position[3];
-			014h  float intensity;
-			018h  float attenStart;
-			01Ch  float attenEnd;
-			020h  float unk1;
-			024h  float unk2;
-			028h  float unk3;
-			02Ch  float unk4;
-			030h
-			};
-			I haven't quite figured out how WoW actually does lighting, as it seems much smoother than the regular vertex lighting in my screenshots. The light paramters might be range or attenuation information, or something else entirely. Some WMO groups reference a lot of lights at once.
-			The WoW client (at least on my system) uses only one light, which is always directional. Attenuation is always (0, 0.7, 0.03). So I suppose for models/doodads (both are M2 files anyway) it selects an appropriate light to turn on. Global light is handled similarly. Some WMO textures (BLP files) have specular maps in the alpha channel, the pixel shader renderpath uses these. Still don't know how to determine direction/color for either the outdoor light or WMO local lights... :)
-			*/
 			for (uint32_t i = 0; i < header.nLights; i++)
 			{
 				WMOLight l;
@@ -402,7 +347,7 @@ bool WMO::Init()
 		else if (strcmp(fourcc, "MFOG") == 0)
 		{
 			// Fog information
-			int fogsCount = size / 0x30;
+			int fogsCount = size / WMOFog::__size;
 			for (int i = 0; i < fogsCount; i++)
 			{
 				WMOFog fog;
@@ -430,9 +375,6 @@ bool WMO::Init()
 	{
 		(*it)->initDisplayList();
 	}
-
-	//for(int i = 0; i < header.nGroups; i++)
-	//	groups[i].initDisplayList();
 
 	return true;
 }

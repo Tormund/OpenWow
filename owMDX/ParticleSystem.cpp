@@ -33,7 +33,7 @@ ParticleSystem::~ParticleSystem()
 	delete emitter;
 }
 
-void ParticleSystem::init(File& f, M2ParticleOld& mta, uint32_t* globals)
+void ParticleSystem::init(File& f, M2Particle& mta, uint32_t* globals)
 {
 	speed.init(mta.emissionSpeed, f, globals);
 	variation.init(mta.speedVariation, f, globals);
@@ -50,12 +50,12 @@ void ParticleSystem::init(File& f, M2ParticleOld& mta, uint32_t* globals)
 	enabled.init(mta.enabledIn /*FIXME ???*/, f, globals);
 
 	vec3 colors2[3];
-	memcpy(colors2, f.GetData() + mta.colorTrack.ofsKeys, sizeof(vec3) * 3);
+	memcpy(colors2, f.GetData() + mta.colorTrack.values.offset, sizeof(vec3) * 3);
 	for (size_t i = 0; i < 3; i++)
 	{
-		float opacity = *(short*)(f.GetData() + mta.alphaTrack.ofsKeys + i * 2);
+		float opacity = *(short*)(f.GetData() + mta.alphaTrack.values.offset + i * 2);
 		colors[i] = vec4(colors2[i].x / 255.0f, colors2[i].y / 255.0f, colors2[i].z / 255.0f, opacity / 32767.0f);
-		sizes[i] = (*(float*)(f.GetData() + mta.scaleTrack.ofsKeys + i * 4)) * mta.scales[i];
+		sizes[i] = (*(float*)(f.GetData() + mta.scaleTrack.values.offset + i * 4)) * mta.scales[i];
 	}
 
 	mid = 0.5;
@@ -95,7 +95,7 @@ void ParticleSystem::init(File& f, M2ParticleOld& mta, uint32_t* globals)
 	// 57 = Faith halo, ring?
 	// 9 = water elemental
 
-	billboard = !(mta.flags & MODELPARTICLE_DONOTBILLBOARD);
+	billboard = !(mta.flags & M2PARTICLE_FLAGS_DONOTBILLBOARD);
 
 
 	manim = mtime = 0;
@@ -214,21 +214,6 @@ void ParticleSystem::setup(int anim, int time)
 
 void ParticleSystem::draw()
 {
-	/*
-	// just draw points:
-	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_LIGHTING);
-	glColor4f(1,1,1,1);
-	glBegin(GL_POINTS);
-	for (ParticleList::iterator it = particles.begin(); it != particles.end(); ++it) {
-	glVertex3fv(it->tpos);
-	}
-	glEnd();
-	glEnable(GL_LIGHTING);
-	glEnable(GL_TEXTURE_2D);
-	*/
-	//blend = 1;
-	// setup blend mode
 	switch (blend)
 	{
 		case 0:
@@ -239,15 +224,14 @@ void ParticleSystem::draw()
 		case 1:
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_COLOR, GL_ONE);
+
 		glDisable(GL_ALPHA_TEST);
 		break;
 
 		case 2:
 		glEnable(GL_BLEND);
-		// originally
-		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
-		// Changed blending mode to this in 0.5.08, seems to fix a few of the render problems
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
+
 		glDisable(GL_ALPHA_TEST);
 		break;
 
@@ -259,68 +243,16 @@ void ParticleSystem::draw()
 		case 4:
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+
 		glDisable(GL_ALPHA_TEST);
 		break;
-
-		default:
-		break;
 	}
 
-	//glDisable(GL_LIGHTING);
-	//glDisable(GL_CULL_FACE);
-	//glDepthMask(GL_FALSE);
+	glDisable(GL_LIGHTING);
+	glDisable(GL_CULL_FACE);
+	glDepthMask(GL_FALSE);
 
 	texture->Bind();
-
-	/*
-	if (supportPointSprites && rows==1 && cols==1) {
-	// This is how will our point sprite's size will be modified by
-	// distance from the viewer
-	float quadratic[] = {0.1f, 0.0f, 0.5f};
-	//float quadratic[] = {0.88f, 0.001f, 0.000004f};
-	glPointParameterfvARB( GL_POINT_DISTANCE_ATTENUATION_ARB, quadratic);
-
-	// Query for the max point size supported by the hardware
-	float maxSize = 512.0f;
-	//glGetFloatv(GL_POINT_SIZE_MAX_ARB, &maxSize );
-
-	// Clamp size to 100.0f or the sprites could get a little too big on some
-	// of the newer graphic cards. My ATI card at home supports a max point
-	// size of 1024.0f!
-	//if( maxSize > 100.0f )
-	//	maxSize = 100.0f;
-
-	glPointSize(maxSize);
-
-	// The alpha of a point is calculated to allow the fading of points
-	// instead of shrinking them past a defined threshold size. The threshold
-	// is defined by GL_POINT_FADE_THRESHOLD_SIZE_ARB and is not clamped to
-	// the minimum and maximum point sizes.
-	glPointParameterfARB(GL_POINT_FADE_THRESHOLD_SIZE_ARB, 60.0f);
-
-	glPointParameterfARB(GL_POINT_SIZE_MIN_ARB, 1.0f );
-	glPointParameterfARB(GL_POINT_SIZE_MAX_ARB, maxSize );
-
-	// Specify point sprite texture coordinate replacement mode for each texture unit
-	glTexEnvf(GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE);
-	// Render point sprites...
-	glEnable(GL_POINT_SPRITE_ARB);
-
-	glBegin(GL_POINTS);
-	{
-	for (ParticleList::iterator it = particles.begin(); it != particles.end(); ++it) {
-	glPointSize(it->size);
-	glTexCoord2fv(tiles[it->m_TileExists].tc[0]);
-	glColor4fv(it->color);
-	glVertex3fv(it->pos);
-	}
-	}
-	glEnd();
-
-	glDisable(GL_POINT_SPRITE_ARB);
-	glTexEnvf(GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_FALSE);
-
-	} else { // Old slow method */
 
 	vec3 vRight(1, 0, 0);
 	vec3 vUp(0, 1, 0);
@@ -338,9 +270,9 @@ void ParticleSystem::draw()
 		glGetFloatv(GL_MODELVIEW_MATRIX, modelview);
 
 		vRight = vec3(modelview[0], modelview[4], modelview[8]);
-		vUp = vec3(modelview[1], modelview[5], modelview[9]); // Spherical billboarding
-															  //vUp = vec3(0,1,0); // Cylindrical billboarding
+		vUp = vec3(modelview[1], modelview[5], modelview[9]);
 	}
+
 	/*
 	* type:
 	* 0	 "normal" particle
@@ -349,19 +281,14 @@ void ParticleSystem::draw()
 	*/
 	if (type == 0 || type == 2)
 	{
-		// TODO: figure out type 2 (deeprun tram subway sign)
-		// - doesn't seem to be any different from 0 -_-
-		// regular particles
-
 		if (billboard)
 		{
 			glBegin(GL_QUADS);
-			// TODO: per-particle rotation in a non-expensive way?? :|
-			for (ParticleList::iterator it = particles.begin(); it != particles.end(); ++it)
+			for (auto it = particles.begin(); it != particles.end(); ++it)
 			{
-				if (tiles.size() - 1 < it->m_TileExists) // Alfred, 2009.08.07, error prevent
-					break;
-				const float size = it->size;// / 2;
+				if (tiles.size() - 1 < it->m_TileExists) break;
+
+				const float size = it->size;
 				glColor4fv(glm::value_ptr(it->color));
 
 				glTexCoord2fv(glm::value_ptr(tiles[it->m_TileExists].tc[0]));
@@ -382,10 +309,10 @@ void ParticleSystem::draw()
 		else
 		{
 			glBegin(GL_QUADS);
-			for (ParticleList::iterator it = particles.begin(); it != particles.end(); ++it)
+			for (auto it = particles.begin(); it != particles.end(); ++it)
 			{
-				if (tiles.size() - 1 < it->m_TileExists) // Alfred, 2009.08.07, error prevent
-					break;
+				if (tiles.size() - 1 < it->m_TileExists) break;
+
 				glColor4fv(glm::value_ptr(it->color));
 
 				glTexCoord2fv(glm::value_ptr(tiles[it->m_TileExists].tc[0]));
@@ -416,10 +343,11 @@ void ParticleSystem::draw()
 	  */
 
 		glBegin(GL_QUADS);
-		for (ParticleList::iterator it = particles.begin(); it != particles.end(); ++it)
+		for (auto it = particles.begin(); it != particles.end(); ++it)
 		{
-			if (tiles.size() - 1 < it->m_TileExists) // Alfred, 2009.08.07, error prevent
-				break;
+			if (tiles.size() - 1 < it->m_TileExists) break;
+
+
 			glColor4fv(glm::value_ptr(it->color));
 
 			glTexCoord2fv(glm::value_ptr(tiles[it->m_TileExists].tc[0]));
@@ -437,12 +365,11 @@ void ParticleSystem::draw()
 		glEnd();
 
 	}
-	//}
 
-	//glEnable(GL_LIGHTING);
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	//glDepthMask(GL_TRUE);
-	//glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_CULL_FACE);
+	glDepthMask(GL_TRUE);
+
 }
 
 //

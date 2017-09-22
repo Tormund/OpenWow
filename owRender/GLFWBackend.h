@@ -5,7 +5,7 @@ class Module;
 class GLFWBackend : public Module
 {
 public:
-	DEF_MODULE(GLFWBackend, OW_RENDER_DLL_API);
+	DEF_MODULE_API(GLFWBackend, OW_RENDER_DLL_API);
 
 	//
 

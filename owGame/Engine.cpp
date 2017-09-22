@@ -19,6 +19,8 @@ void shutdown(int _errCode)
 
 bool Engine::Init(vector<string>& _argumentQueue)
 {
+	File::InitCriticalSect();
+
 	// Add debug outputs
 	Debug::AddDebugOutput(new DebugOutput_ConsoleWindows);
 	Debug::AddDebugOutput(new DebugOutput_Log);

@@ -49,6 +49,9 @@
     </ClCompile>
     <ClCompile Include="frustum.cpp" />
     <ClCompile Include="shaders.cpp" />
+    <ClCompile Include="ddslib.cpp">
+      <Filter>Textures</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Image.h">
@@ -104,6 +107,9 @@
     </ClInclude>
     <ClInclude Include="frustum.h" />
     <ClInclude Include="shaders.h" />
+    <ClInclude Include="ddslib.h">
+      <Filter>Textures</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Types">

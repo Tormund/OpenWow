@@ -50,6 +50,29 @@ void APIENTRY glDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severi
 
 bool RenderGL::Init()
 {
+	dc = wglGetCurrentDC();
+	glrc1 = wglCreateContext(dc);
+	glrc2 = wglCreateContext(dc);
+	glrc3 = wglCreateContext(dc);
+	glrc4 = wglCreateContext(dc);
+
+	if (wglShareLists(glrc1, glrc2) == FALSE)
+	{
+		Debug::Error("Mega error !!!!1111");
+	}
+
+	if (wglShareLists(glrc1, glrc3) == FALSE)
+	{
+		Debug::Error("Mega error !!!!2222");
+	}
+
+	if (wglShareLists(glrc1, glrc4) == FALSE)
+	{
+		Debug::Error("Mega error !!!!3333");
+	}
+
+	wglMakeCurrent(dc, glrc1);
+
 	// Window size
 	windowSize = vec2(1024.0f, 768.0f);
 
@@ -133,6 +156,7 @@ bool RenderGL::Init()
 
 	// Viewport
 	glViewport(0, 0, windowSize.x, windowSize.y);
+
 	return true;
 }
 
@@ -141,6 +165,8 @@ void RenderGL::Destroy()
 
 void RenderGL::Set3D()
 {
+	wglMakeCurrent(dc, glrc1);
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glEnable(GL_DEPTH_TEST);
@@ -161,6 +187,8 @@ void RenderGL::Set3D()
 
 void RenderGL::Set2D()
 {
+	wglMakeCurrent(dc, glrc1);
+
 	// Disable depth test
 	glDisable(GL_DEPTH_TEST);
 
@@ -188,6 +216,8 @@ void RenderGL::Set2D()
 	glLoadIdentity();
 
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
+
 
 	/*glActiveTexture(GL_TEXTURE5);
 	glBindTexture(GL_TEXTURE_2D, 0);

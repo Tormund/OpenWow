@@ -6,7 +6,7 @@
 // Additional
 #include "ModelsUtils.h"
 
-void Bone::init(File &f, M2CompBone &b, uint32_t *global, File *animfiles)
+void Bone::init(File& f, M2CompBone &b, uint32_t *global, File *animfiles)
 {
 	parent = b.parent_bone;
 	pivot = fixCoordSystem(b.pivot);

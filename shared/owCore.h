@@ -10,11 +10,12 @@
 // Ref manager
 #include "../owCore/RefItem.h"
 #include "../owCore/RefItemNamed.h"
-#include "../owCore/RefManager.h"
+#include "../owCore/RefManager1Dim.h"
+#include "../owCore/RefManager2Dim.h"
 #include "../owCore/RefSimpleManagers.h"
 
-// Ref manager 1 Dim
-#include "../owCore/RefManager1Dim.h"
+#include "../owCore/ContainerAssync.h"
+#include "../owCore/RefManager1DimAssync.h"
 
 // Debug outputs
 #include "../owCore/DebugOutput.h"

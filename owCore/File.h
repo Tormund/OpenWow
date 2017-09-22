@@ -14,6 +14,15 @@ public:
 	OW_CORE_DLL_API File(cstring _name, cstring _path);
 	OW_CORE_DLL_API ~File();
 
+	//
+
+	static OW_CORE_DLL_API void InitCriticalSect()
+	{
+		InitializeCriticalSection(&cs);
+	}
+
+	//
+
 	OW_CORE_DLL_API File& operator=(const File& _file);
 	OW_CORE_DLL_API File& operator=(cstring _fullFileName);
 	OW_CORE_DLL_API File& operator=(const char* _fullFileName);
@@ -47,6 +56,9 @@ public:
 private:
 	OW_CORE_DLL_API bool OpenLocalFile() override;
 	OW_CORE_DLL_API bool OpenMPQFile() override;
+
+private:
+	static CRITICAL_SECTION cs;
 
 private:
 	static OW_CORE_DLL_API FileLocation m_DefaultFileLocation;

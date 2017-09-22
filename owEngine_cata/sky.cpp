@@ -125,7 +125,8 @@ MapSkies::MapSkies(int mapid)
 	// smaller skies will have precedence when calculating weights to achieve smooth transitions etc.
 	sort(skies.begin(), skies.end());
 
-	stars = new Model("Environments\\Stars\\Stars.m2", true);
+	stars = new Model("Environments\\Stars\\Stars.m2");
+	stars->Init(true);
 
 }
 

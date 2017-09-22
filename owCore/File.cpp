@@ -4,13 +4,13 @@
 #include "File.h"
 
 FileLocation File::m_DefaultFileLocation = FL_Any;;
+CRITICAL_SECTION File::cs;
 
 File::File() : BaseFile()
 {}
 
 File::File(const File& _file) : BaseFile(_file)
-{
-}
+{}
 
 File::File(cstring _fullFileName) : BaseFile(_fullFileName)
 {}
@@ -109,18 +109,21 @@ void File::SetDefaultFileLocation(FileLocation _fileLocation)
 
 bool File::Open()
 {
+	EnterCriticalSection(&cs); // THREAD
+
+	bool result = false;
+
 	switch (m_DefaultFileLocation)
-	{ 
+	{
 		case FL_Any:
 		{
 			if (OpenMPQFile())
 			{
-				return true;
+				result = true;
 			}
-
-			if (OpenLocalFile())
+			else if (OpenLocalFile())
 			{
-				return true;
+				result = true;
 			}
 		}
 		break;
@@ -129,13 +132,12 @@ bool File::Open()
 		{
 			if (OpenLocalFile())
 			{
-				return true;
+				result = true;
 			}
-
-			if (OpenMPQFile())
+			else if (OpenMPQFile())
 			{
-				return true;
-			}			
+				result = true;
+			}
 		}
 		break;
 
@@ -143,7 +145,7 @@ bool File::Open()
 		{
 			if (OpenLocalFile())
 			{
-				return true;
+				result = true;
 			}
 		}
 		break;
@@ -152,13 +154,15 @@ bool File::Open()
 		{
 			if (OpenMPQFile())
 			{
-				return true;
+				result = true;
 			}
 		}
 		break;
 	}
 
-	return false;
+	LeaveCriticalSection(&cs); // THREAD
+
+	return result;
 }
 
 bool File::OpenLocalFile()
@@ -169,12 +173,12 @@ bool File::OpenLocalFile()
 		return true;
 	}
 
-	
+
 
 	// Open stream
 	ifstream stream;
 	stream.clear();
-	
+
 	if (Path_Name().find_first_of(':') != -1)
 	{
 		stream.open(Path_Name(), ios::binary);
