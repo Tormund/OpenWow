@@ -258,42 +258,41 @@ void World::outdoorLighting()
 	vec4 ambient(skies->colorSet[LIGHT_GLOBAL_AMBIENT], 1);
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, glm::value_ptr(ambient));
 
-	float di = dayNightPhase.dayIntensity, ni = dayNightPhase.nightIntensity;
-	//di = 1;
-	//ni = 0;
 
-	//vec3 dd = outdoorLightStats.dayDir;
-	// HACK: let's just keep the light source in place for now
-	vec4 pos(-1, 1, -1, 0);
-	vec4 col(skies->colorSet[LIGHT_GLOBAL_DIFFUSE] * di, 1);
+	// Day diffuse
+	vec4 posDay(0, 0, 0, 0);
+	vec4 colorDay(skies->colorSet[LIGHT_GLOBAL_DIFFUSE] * dayNightPhase.dayIntensity, 1.0f);
 	glLightfv(GL_LIGHT0, GL_AMBIENT, glm::value_ptr(black));
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, glm::value_ptr(col));
-	glLightfv(GL_LIGHT0, GL_POSITION, glm::value_ptr(pos));
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, glm::value_ptr(colorDay));
+	glLightfv(GL_LIGHT0, GL_POSITION, glm::value_ptr(posDay));
 
-	const float spc = _WowSettings->useshaders ? 1.4f : 0; // specular light intensity...
-	vec4 spcol(spc, spc, spc, 1);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, glm::value_ptr(spcol)); // ???
+	const float spc = _WowSettings->useshaders ? 1.4f : 0.0f;
+	vec4 spcol(spc, spc, spc, 1.0f);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, glm::value_ptr(spcol));
 
 
-	/*
-	vec3 dd = outdoorLightStats.nightDir;
-	vec4 pos(-dd.x, -dd.z, dd.y, 0);
-	vec4 col(skies->colorSet[LIGHT_GLOBAL_DIFFUSE] * ni, 1);
-	glLightfv(GL_LIGHT1, GL_AMBIENT, black);
-	glLightfv(GL_LIGHT1, GL_DIFFUSE, col);
-	glLightfv(GL_LIGHT1, GL_POSITION, pos);
-	*/
+	// Night diffuse
+	vec4 posNight(0, 0, 0, 0);
+	vec4 colorNight(skies->colorSet[LIGHT_GLOBAL_DIFFUSE] * dayNightPhase.nightIntensity, 1.0f);
+	glLightfv(GL_LIGHT1, GL_AMBIENT, glm::value_ptr(black));
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, glm::value_ptr(colorNight));
+	glLightfv(GL_LIGHT1, GL_POSITION, glm::value_ptr(posNight));
+
+	const float spcNight = _WowSettings->useshaders ? 1.4f : 0.0f;
+	vec4 spcolorNight(spcNight, spcNight, spcNight, 1.0f);
+	glLightfv(GL_LIGHT1, GL_SPECULAR, glm::value_ptr(spcolorNight));
 }
 
-void World::outdoorLights(bool on)
-{
-	float di = dayNightPhase.dayIntensity, ni = dayNightPhase.nightIntensity;
 
+
+void World::SetAmbientLights(bool on)
+{
 	if (on)
 	{
 		vec4 ambient(skies->colorSet[LIGHT_GLOBAL_AMBIENT], 1);
 		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, glm::value_ptr(ambient));
-		if (di > 0)
+
+		if (dayNightPhase.dayIntensity > 0)
 		{
 			glEnable(GL_LIGHT0);
 		}
@@ -301,7 +300,8 @@ void World::outdoorLights(bool on)
 		{
 			glDisable(GL_LIGHT0);
 		}
-		if (ni > 0)
+
+		if (dayNightPhase.nightIntensity > 0)
 		{
 			glEnable(GL_LIGHT1);
 		}
@@ -319,7 +319,7 @@ void World::outdoorLights(bool on)
 	}
 }
 
-void World::setupFog()
+void World::SetFog()
 {
 	if (_WowSettings->drawfog)
 	{
@@ -341,6 +341,9 @@ void World::setupFog()
 	}
 }
 
+
+
+
 void World::draw()
 {
 #ifdef WMO_INCL
@@ -352,9 +355,9 @@ void World::draw()
 #endif
 
 	// camera is set up
-	frustum.retrieve();
+	_Render->frustum.retrieve();
 
-	//--glDisable(GL_LIGHTING);
+	glDisable(GL_LIGHTING);
 	glColor4f(1, 1, 1, 1);
 
 	hadSky = false;
@@ -372,7 +375,7 @@ void World::draw()
 	glDisable(GL_BLEND);
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_DEPTH_TEST);
-	//--glDisable(GL_FOG);
+	glDisable(GL_FOG);
 
 	int daytime = ((int)time) % 2880;
 	dayNightPhase = dayNightCycle->getPhase(daytime);
@@ -395,11 +398,11 @@ void World::draw()
 	glDisable(GL_TEXTURE_2D);
 
 
-	//--outdoorLighting();
-	//--outdoorLights(true);
+	outdoorLighting();
+	SetAmbientLights(true);
 
 	glFogi(GL_FOG_MODE, GL_LINEAR);
-	setupFog();
+	SetFog();
 
 	// Draw verylowres heightmap
 	if (/*_WowSettings->drawfog && */_WowSettings->drawterrain)
@@ -423,11 +426,11 @@ void World::draw()
 	glDepthFunc(GL_LEQUAL); // less z-fighting artifacts this way, I think
 
 	// Lighting
-	//--glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHTING);
 
 	// Material
-	//--glEnable(GL_COLOR_MATERIAL);
-	//--glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+	glEnable(GL_COLOR_MATERIAL);
+	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 
 	glColor4f(1, 1, 1, 1);
 
@@ -528,8 +531,8 @@ void World::draw()
 		glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, 0);
 	}--*/
 
-	//outdoorLights(true);
-	//setupFog();
+	SetAmbientLights(true);
+	SetFog();
 
 	glColor4f(1, 1, 1, 1);
 

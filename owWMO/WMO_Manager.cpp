@@ -3,7 +3,7 @@
 // Includes
 
 // General
-#include "WMOsManager.h"
+#include "WMO_Manager.h"
 
 // Additional
 #include "Wmo.h"
@@ -20,23 +20,30 @@ bool WMOsManager::Init()
 void WMOsManager::Destroy()
 {
 	RefManager1DimAssync::Destroy();
+
 	DeleteAll();
 	Debug::Info("WMOsManager: All WMOs destroyed.");
 }
 
 WMO* WMOsManager::CreateAction(cstring name)
 {
-	return new WMO(name);
+	WMO* wmo = new WMO(name);
+
+	if (!wmo->Init())
+	{
+		Debug::Error("WMOsManager[%s]: Failed init WMO.", name.c_str());
+	}
+	return wmo;
 }
 
 void WMOsManager::LoadAction(string name, WMO* _wmo)
 {
-	wglMakeCurrent(_Render->dc, _Render->glrc4);
+	/*wglMakeCurrent(_Render->dc, _Render->glrc4);
 
 	if (!_wmo->Init())
 	{
 		Debug::Error("WMOsManager[%s]: Failed init WMO.", name.c_str());
-	}
+	}*/
 }
 
 bool WMOsManager::DeleteAction(cstring name)

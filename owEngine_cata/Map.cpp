@@ -5,7 +5,6 @@
 
 // Additional
 #include "MapChunk.h"
-#include "WMOsManager.h"
 #include "World.h"
 
 Map::Map()

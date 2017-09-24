@@ -1,11 +1,18 @@
 #pragma once
 
-struct WMOFog
+struct WMOFogDef
 {
-	uint32_t flags;
+	struct
+	{
+		uint32_t flag_infinite_radius : 1; // F_IEBLEND: Ignore radius in CWorldView::QueryCameraFog
+		uint32_t : 3;                      // unused as of 7.0.1.20994
+		uint32_t flag_0x10 : 1;
+		uint32_t : 27;                     // unused as of 7.0.1.20994
+	} flags;
+
 	vec3 position;
 	float smallerRadius; // Smaller radius
-	float largerRadius; // Larger radius
+	float largerRadius;  // Larger radius
 
 	// Fog
 	struct
@@ -23,12 +30,21 @@ struct WMOFog
 		CImVector color;
 	} underwater_fog;
 
+	//
 	static const size_t __size = 48;
+};
 
+
+struct WMOFog
+{
 public:
-	void init(File& f);
+	WMOFog(File& f);
+
 	void setup();
 
 public:
 	vec4 color;
+
+public:
+	WMOFogDef fogDef;
 };

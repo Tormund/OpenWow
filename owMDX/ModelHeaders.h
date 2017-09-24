@@ -507,7 +507,7 @@ struct M2SkinProfile
 	M2Array<uint16_t> indices;
 	M2Array<uint8_t> bones;                 // uint4t FIXME
 	M2Array<M2SkinSection> submeshes;
-	M2Array<M2Batch> batches;
+	M2Array<M2Batch> m_WMOBatchIndexes;
 	uint32_t boneCountMax;                  // WoW takes this and divides it by the number of bones in each submesh, then stores the biggest one.
 											// Maximum number of bones per drawcall for each view. Related to (old) GPU numbers of registers. 
 											// Values seen : 256, 64, 53, 21

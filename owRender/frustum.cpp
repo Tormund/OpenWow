@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 // General
-#include "frustum.h"
+#include "Frustum.h"
 
 void Plane::normalize()
 {

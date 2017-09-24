@@ -3,9 +3,6 @@
 // General
 #include "Map_GlobalWMOs.h"
 
-// Additional
-#include "WMOsManager.h"
-
 Map_GlobalWMOs::Map_GlobalWMOs()
 {
 	// Global WMO

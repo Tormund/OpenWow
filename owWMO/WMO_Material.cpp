@@ -3,24 +3,19 @@
 // General
 #include "Wmo_Material.h"
 
-// Additional
-#include "world.h"
-
 WMOMaterial::WMOMaterial(File& _file)
 {
-	data = new WMOMaterial::__WMOMaterial;
-	_file.ReadBytes(data, sizeof(WMOMaterial::__WMOMaterial));
+	_file.ReadBytes(&matDef, WMOMaterialDef::__size);
 }
 
 WMOMaterial::~WMOMaterial()
 {
 	_TexturesMgr->Delete(texture);
-	delete data;
 }
 
 void WMOMaterial::initTexture(const char* _texturesFileNames)
 {
-	string texpath(_texturesFileNames + data->diffuseNameIndex);
+	string texpath(_texturesFileNames + matDef.diffuseNameIndex);
 
 	texture = _TexturesMgr->Add(texpath);
 }
@@ -52,7 +47,7 @@ void GLSetBlend(bool _enable, GLenum _srcColor, GLenum _descColor, GLenum _srcAl
 
 void WMOMaterial::SetBlendMode()
 {
-	switch (data->blendMode)
+	switch (matDef.blendMode)
 	{
 		case 0:
 		//GxBlend_Opaque	

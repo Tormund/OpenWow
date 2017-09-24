@@ -2,19 +2,6 @@
 
 #include <cstdint>
 
-/*struct C2Vector //typedef vec2
-{
-	float x;
-	float y;
-};*/
-
-/*struct C3Vector //typedef vec3
-{
-	float x;
-	float y;
-	float z;
-};*/
-
 struct C3iVector
 {
 	int x;

@@ -5,7 +5,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <assimp/DefaultLogger.hpp>
-#pragma comment(lib, "assimp.lib")
+//#pragma comment(lib, "assimp.lib")
 
 struct Vertex
 {

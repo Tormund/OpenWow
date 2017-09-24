@@ -167,6 +167,8 @@ void RenderGL::Set3D()
 {
 	wglMakeCurrent(dc, glrc1);
 
+	//frustum.retrieve();
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glEnable(GL_DEPTH_TEST);

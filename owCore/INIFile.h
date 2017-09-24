@@ -27,13 +27,13 @@ public:
 	OW_CORE_DLL_API void Clear();
 
 	OW_CORE_DLL_API vector<SectionStruct> GetSections(string _sectionName);
-	OW_CORE_DLL_API SectionStruct& GetFirstSection(string _sectionName);
+	OW_CORE_DLL_API SectionStruct* GetFirstSection(string _sectionName);
 
 	template<typename T>
-	OW_CORE_DLL_API bool Assign(T& addr, string _keyName);
+	bool Assign(T& addr, string _keyName);
 
 	template<typename T>
-	OW_CORE_DLL_API bool Assign(T& addr, string _section, string _keyName);
+	bool Assign(T& addr, string _section, string _keyName);
 
 	OW_CORE_DLL_API vector<SectionStruct> Data() const { return data; }
 
@@ -43,3 +43,25 @@ private:
 
 	vector<SectionStruct> data;
 };
+
+template<typename T>
+inline bool INIFile::Assign(T& addr, string _keyName)
+{
+	return Assign(addr, "root", _keyName);
+}
+
+template<typename T>
+inline bool INIFile::Assign(T& addr, string _section, string _keyName)
+{
+	auto section = GetFirstSection(_section);
+	if (section.data.size() == 0)
+		return false;
+
+	for (auto it = section.data.begin(); it != section.data.end(); ++it)
+		if ((*it).key == _keyName)
+			return Utils::TryParse(typeid(addr), (*it).value, (void*)&addr);
+
+	Debug::Warn("INIFile[%s]: Can't load key[%s] in section[%s]", iniFilename.c_str(), _keyName.c_str(), _section.c_str());
+
+	return false;
+}

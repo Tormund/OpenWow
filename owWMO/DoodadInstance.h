@@ -1,15 +1,13 @@
 #pragma once
 
-class ModelInstance
+class DoodadInstance
 {
 public:
-	ModelInstance() {}
-	ModelInstance(Model *m, File& f);
-
-	void draw();
+	DoodadInstance(Model* m, File& f);
+	void Draw(cvec3 ofs, float roll);
 
 public: // TODO private
-	Model *model;
+	Model* model;
 
 	int id;
 

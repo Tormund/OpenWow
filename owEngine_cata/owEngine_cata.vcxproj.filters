@@ -13,34 +13,13 @@
     <ClInclude Include="MapWaterChunk.h">
       <Filter>Map</Filter>
     </ClInclude>
-    <ClInclude Include="Wmo.h">
-      <Filter>WMO</Filter>
-    </ClInclude>
     <ClInclude Include="DayNightCycle.h">
       <Filter>Environment</Filter>
     </ClInclude>
     <ClInclude Include="sky.h">
       <Filter>Environment</Filter>
     </ClInclude>
-    <ClInclude Include="Wmo_Group.h">
-      <Filter>WMO</Filter>
-    </ClInclude>
-    <ClInclude Include="Wmo_Fog.h">
-      <Filter>WMO</Filter>
-    </ClInclude>
-    <ClInclude Include="liquid.h">
-      <Filter>Liquid</Filter>
-    </ClInclude>
-    <ClInclude Include="Wmo_Material.h">
-      <Filter>WMO</Filter>
-    </ClInclude>
     <ClInclude Include="WMO_Instance.h">
-      <Filter>WMO</Filter>
-    </ClInclude>
-    <ClInclude Include="WMO_Light.h">
-      <Filter>WMO</Filter>
-    </ClInclude>
-    <ClInclude Include="WMOsManager.h">
       <Filter>WMO</Filter>
     </ClInclude>
     <ClInclude Include="Map.h">
@@ -67,35 +46,14 @@
     <ClCompile Include="MapWaterChunk.cpp">
       <Filter>Map</Filter>
     </ClCompile>
-    <ClCompile Include="Wmo.cpp">
-      <Filter>WMO</Filter>
-    </ClCompile>
     <ClCompile Include="DayNightCycle.cpp">
       <Filter>Environment</Filter>
     </ClCompile>
     <ClCompile Include="sky.cpp">
       <Filter>Environment</Filter>
     </ClCompile>
-    <ClCompile Include="Wmo_Group.cpp">
-      <Filter>WMO</Filter>
-    </ClCompile>
-    <ClCompile Include="Wmo_Fog.cpp">
-      <Filter>WMO</Filter>
-    </ClCompile>
-    <ClCompile Include="liquid.cpp">
-      <Filter>Liquid</Filter>
-    </ClCompile>
-    <ClCompile Include="Wmo_Material.cpp">
-      <Filter>WMO</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="WMO_Instance.cpp">
-      <Filter>WMO</Filter>
-    </ClCompile>
-    <ClCompile Include="WMO_Light.cpp">
-      <Filter>WMO</Filter>
-    </ClCompile>
-    <ClCompile Include="WMOsManager.cpp">
       <Filter>WMO</Filter>
     </ClCompile>
     <ClCompile Include="Map.cpp">
@@ -118,9 +76,6 @@
     </Filter>
     <Filter Include="Environment">
       <UniqueIdentifier>{b33963f5-50ac-4649-8480-7176f28c9ecb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Liquid">
-      <UniqueIdentifier>{a9971b09-250b-467b-9410-1b11376a202c}</UniqueIdentifier>
     </Filter>
     <Filter Include="MDX">
       <UniqueIdentifier>{b01ff1df-ce50-45da-b5f8-c3c7ce9a7c18}</UniqueIdentifier>

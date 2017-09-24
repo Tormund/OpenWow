@@ -1,37 +1,27 @@
 #pragma once
 
-#define WMO_INCL
 #define MDX_INCL
 
-#define NOMINMAX
-#include <winerror.h>
-
-// INCLUDES
+// GLEW
 #include <GL/glew.h>
 
+// GLFW
 #define GLFW_DLL
 #include <GLFW/glfw3.h>
 
+// Core
 #include <owCore.h>
 #pragma comment(lib, "owCore.lib")
 
+// Render utils
 #include <owRender.h>
 #pragma comment(lib, "owRender.lib")
 
-#include <owGUI.h>
-#pragma comment(lib, "owGUI.lib")
-
-#include <owGame.h>
-#pragma comment(lib, "owGame.lib")
-
-#include <owDBC.h>
-#pragma comment(lib, "owDBC.lib")
-
+// Shared
 #include <owShared.h>
 #pragma comment(lib, "owShared.lib")
 
 #include <owMDX.h>
 #pragma comment(lib, "owMDX.lib")
 
-#include <owWMO.h>
-#pragma comment(lib, "owWMO.lib")
+#define OW_WMO_DLL_API __declspec(dllexport)

@@ -5,11 +5,11 @@
 
 // General
 #include "liquid.h"
-#include "world.h"
 
-struct LiquidVertex {
+struct LiquidVertex
+{
 	//uint8_t c[4];
-	unsigned short w1,w2;
+	unsigned short w1, w2;
 	float h;
 };
 
@@ -24,18 +24,21 @@ void Liquid::initFromTerrain(File& f, int flags)
 	16 - magma
 	*/
 	ydir = 1.0f;
-	if (flags & 16) {
+	if (flags & 16)
+	{
 		// magma:
 		initTextures("XTextures\\lava\\lava", 1, 30);
 		type = 0; // not colored
 	}
-	else if (flags & 4) {
+	else if (flags & 4)
+	{
 		// river/lake
 		initTextures("XTextures\\river\\lake_a", 1, 30); // TODO: rivers etc.?
 		type = 2; // dynamic colors
 		shader = 0;
 	}
-	else {
+	else
+	{
 		// ocean
 		initTextures("XTextures\\ocean\\ocean_h", 1, 30);
 		/*
@@ -49,7 +52,7 @@ void Liquid::initFromTerrain(File& f, int flags)
 	trans = false;
 }
 
-void Liquid::initFromWMO(File& f, WMOMaterial &mat, bool indoor)
+void Liquid::initFromWMO(File& f, WMOMaterial& mat, bool indoor)
 {
 	texRepeats = 4.0f;
 	ydir = -1.0f;
@@ -59,23 +62,29 @@ void Liquid::initFromWMO(File& f, WMOMaterial &mat, bool indoor)
 	trans = false;
 
 	// tmpflag is the flags value for the last drawn m_TileExists
-	if (tmpflag & 1) {
+	if (tmpflag & 1)
+	{
 		initTextures("XTextures\\slime\\slime", 1, 30);
 		type = 0;
 		texRepeats = 2.0f;
 	}
-	else if (tmpflag & 2) {
+	else if (tmpflag & 2)
+	{
 		initTextures("XTextures\\lava\\lava", 1, 30);
 		type = 0;
 	}
-	else {
+	else
+	{
 		initTextures("XTextures\\river\\lake_a", 1, 30);
-		if (indoor) {
+		if (indoor)
+		{
 			trans = true;
 			type = 1;
-			col = vec3( ((mat.GetDiffuseColor() &0xFF0000)>>16)/255.0f, ((mat.GetDiffuseColor() &0xFF00)>>8)/255.0f, (mat.GetDiffuseColor() &0xFF)/255.0f);
+			col = vec3(((mat.GetDiffuseColor() & 0xFF0000) >> 16) / 255.0f, ((mat.GetDiffuseColor() & 0xFF00) >> 8) / 255.0f, (mat.GetDiffuseColor() & 0xFF) / 255.0f);
 			shader = 0;
-		} else {
+		}
+		else
+		{
 			type = 2; // outdoor water (...?)
 			shader = 0;
 		}
@@ -111,19 +120,21 @@ void Liquid::initGeometry(File& f)
 {
 	// assume: f is at the appropriate starting position
 
-	LiquidVertex *map = (LiquidVertex*) f.GetDataFromCurrent();
-	uint8_t *flags = (uint8_t*) (f.GetDataFromCurrent() + (xtiles+1)*(ytiles+1)*sizeof(LiquidVertex));
+	LiquidVertex *map = (LiquidVertex*)f.GetDataFromCurrent();
+	uint8_t *flags = (uint8_t*)(f.GetDataFromCurrent() + (xtiles + 1)*(ytiles + 1) * sizeof(LiquidVertex));
 
 	// generate vertices
-	vec3 *verts = new vec3[(xtiles+1)*(ytiles+1)];
-	float *col = new float[(xtiles+1)*(ytiles+1)];
+	vec3 *verts = new vec3[(xtiles + 1)*(ytiles + 1)];
+	float *col = new float[(xtiles + 1)*(ytiles + 1)];
 
-	for (int j=0; j<ytiles+1; j++) {
-		for (int i=0; i<xtiles+1; i++) {
-			size_t p = j*(xtiles+1)+i;
+	for (int j = 0; j < ytiles + 1; j++)
+	{
+		for (int i = 0; i < xtiles + 1; i++)
+		{
+			size_t p = j*(xtiles + 1) + i;
 			float h = map[p].h;
 			if (h > 100000) h = pos.y;
-            verts[p] = vec3(pos.x + tilesize * i, h, pos.z + ydir * tilesize * j);
+			verts[p] = vec3(pos.x + tilesize * i, h, pos.z + ydir * tilesize * j);
 			col[p] = (map[p].w1 / 255.0f)*0.5f + 0.5f;
 		}
 	}
@@ -135,28 +146,31 @@ void Liquid::initGeometry(File& f)
 	glNormal3f(0, 1, 0);
 	glBegin(GL_QUADS);
 	// draw tiles
-	for (int j=0; j<ytiles; j++) {
-		for (int i=0; i<xtiles; i++) {
-			uint8_t f = flags[j*xtiles+i];
-			if ((f&8)==0) {
+	for (int j = 0; j < ytiles; j++)
+	{
+		for (int i = 0; i < xtiles; i++)
+		{
+			uint8_t f = flags[j*xtiles + i];
+			if ((f & 8) == 0)
+			{
 				tmpflag = f;
 				// 15 seems to be "don't draw"
-				size_t p = j*(xtiles+1)+i;
+				size_t p = j*(xtiles + 1) + i;
 
 				// HACK: pack the vertex color selection into the 2nd texture coordinate
 				//float fc;
-				
+
 				glTexCoord3f(i / texRepeats, j / texRepeats, col[p]);
 				glVertex3fv(&verts[p].x);
-				
-				glTexCoord3f((i+1) / texRepeats, j / texRepeats, col[p+1]);
-				glVertex3fv(glm::value_ptr(verts[p+1]));
-				
-				glTexCoord3f((i+1) / texRepeats, (j+1) / texRepeats, col[p+xtiles+1+1]);
-				glVertex3fv(glm::value_ptr(verts[p+xtiles+1+1]));
-				
-				glTexCoord3f(i / texRepeats, (j+1) / texRepeats, col[p+xtiles+1]);
-				glVertex3fv(glm::value_ptr(verts[p+xtiles+1]));
+
+				glTexCoord3f((i + 1) / texRepeats, j / texRepeats, col[p + 1]);
+				glVertex3fv(glm::value_ptr(verts[p + 1]));
+
+				glTexCoord3f((i + 1) / texRepeats, (j + 1) / texRepeats, col[p + xtiles + 1 + 1]);
+				glVertex3fv(glm::value_ptr(verts[p + xtiles + 1 + 1]));
+
+				glTexCoord3f(i / texRepeats, (j + 1) / texRepeats, col[p + xtiles + 1]);
+				glVertex3fv(glm::value_ptr(verts[p + xtiles + 1]));
 
 			}
 		}
@@ -193,7 +207,7 @@ void Liquid::initGeometry(File& f)
 	glEnable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);
 	*/
-	
+
 
 	/*
 	// temp: draw outlines
@@ -239,7 +253,7 @@ void Liquid::initGeometry(File& f)
 		uint8_t bval;
 		f.ReadBytes(&bval,1);
 		if (bval==15) {
-            sprintf(buf,"    ");			
+			sprintf(buf,"    ");
 		} else sprintf(buf, "%3d ", bval);
 		slq.append(buf);
 		if ( ((i+1)%xtiles) == 0 ) slq.append("");
@@ -254,51 +268,67 @@ void Liquid::draw()
 
 	glDisable(GL_CULL_FACE);
 	glDepthFunc(GL_LESS);
-	size_t texidx = (size_t)(_World->animtime / 60.0f) % textures.size();
+	size_t texidx = (size_t)(/*_World->animtime*/30.0f / 60.0f) % textures.size();
 	textures[texidx]->Bind();
 
 	const float tcol = trans ? 0.9f : 1.0f;
-	if (trans) {
+	if (trans)
+	{
 		glEnable(GL_BLEND);
 		glDepthMask(GL_FALSE);
 	}
 
-	if (supportShaders && _WowSettings->useshaders && (shader>=0)) {
+	if (supportShaders && _WowSettings->useshaders && (shader >= 0))
+	{
 		// SHADER-BASED
 		vec3 col2;
 		waterShaders[shader]->bind();
-		if (type==2) {
-			col = _World->skies->colorSet[WATER_COLOR_LIGHT];
-			col2 = _World->skies->colorSet[WATER_COLOR_DARK];
-		} else {
+		if (type == 2)
+		{
+			//col = _World->skies->colorSet[WATER_COLOR_LIGHT];  // BOUZI
+			//col2 = _World->skies->colorSet[WATER_COLOR_DARK];  // BOUZI
+			col = vec4(1, 1, 1, 1);  // BOUZI
+			col2 = vec4(1, 1, 1, 1);  // BOUZI
+		}
+		else
+		{
 			col2 = col;
 		}
 
-		glProgramLocalParameter4fARB(GL_FRAGMENT_PROGRAM_ARB, 0, col.x,col.y,col.z,tcol);
-		glProgramLocalParameter4fARB(GL_FRAGMENT_PROGRAM_ARB, 1, col2.x,col2.y,col2.z,tcol);
+		glProgramLocalParameter4fARB(GL_FRAGMENT_PROGRAM_ARB, 0, col.x, col.y, col.z, tcol);
+		glProgramLocalParameter4fARB(GL_FRAGMENT_PROGRAM_ARB, 1, col2.x, col2.y, col2.z, tcol);
 
 		glCallList(dlist);
 		waterShaders[shader]->unbind();
-	} else {
+	}
+	else
+	{
 		// FIXED-FUNCTION
 
-		if (type==0) glColor4f(1,1,1,tcol);
-		else {
-			if (type==2) {
+		if (type == 0)
+		{
+			glColor4f(1, 1, 1, tcol);
+		}
+		else
+		{
+			if (type == 2)
+			{
 				// dynamic color lookup! ^_^
-				col = _World->skies->colorSet[WATER_COLOR_LIGHT]; // TODO: add variable water color
+				//col = _World->skies->colorSet[WATER_COLOR_LIGHT]; // TODO: add variable water color // BOUZI
+				col = vec4(1, 1, 1, 1);  // BOUZI
 			}
 			glColor4f(col.x, col.y, col.z, tcol);
 			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_ADD); // TODO: check if ARB_texture_env_add is supported? :(
 		}
 		glCallList(dlist);
-		
-		if (type!=0) glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+		if (type != 0) glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	}
 
 	glDepthFunc(GL_LEQUAL);
-	glColor4f(1,1,1,1);
-	if (trans) {
+	glColor4f(1, 1, 1, 1);
+	if (trans)
+	{
 		glDepthMask(GL_TRUE);
 		glDisable(GL_BLEND);
 	}
@@ -307,7 +337,8 @@ void Liquid::draw()
 void Liquid::initTextures(const char *basename, int first, int last)
 {
 	char buf[256];
-	for (int i=first; i<=last; i++) {
+	for (int i = first; i <= last; i++)
+	{
 		sprintf_s(buf, "%s.%d.blp", basename, i);
 		textures.push_back(_TexturesMgr->Add(buf));
 	}
@@ -316,7 +347,8 @@ void Liquid::initTextures(const char *basename, int first, int last)
 
 Liquid::~Liquid()
 {
-	for (size_t i=0; i<textures.size(); i++) {
+	for (size_t i = 0; i < textures.size(); i++)
+	{
 		//video.textures.del(textures[i]); // BOUZI
 	}
 }

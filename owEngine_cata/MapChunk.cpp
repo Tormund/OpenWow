@@ -1,8 +1,5 @@
 #include "stdafx.h"
 
-// Include
-#include "liquid.h"
-
 // General
 #include "MapChunk.h"
 
@@ -629,7 +626,7 @@ void MapChunk::drawPass(int anim)
 
 void MapChunk::draw()
 {
-	if (!_World->frustum.intersects(vmin, vmax))
+	if (!_Render->frustum.intersects(vmin, vmax))
 	{
 		return;
 	}

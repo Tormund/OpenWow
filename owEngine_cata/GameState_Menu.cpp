@@ -3,9 +3,6 @@
 // General
 #include "GameState_Menu.h"
 
-// Additional
-#include "WMOsManager.h"
-
 // FIXME DELETE ME
 GLint currentColor;
 

@@ -1,16 +1,13 @@
-#ifndef LIQUID_H
-#define LIQUID_H
+#pragma once
 
 class Liquid;
-
 class WMOMaterial;
 
-#include "maptile.h"
-
-const float LQ_DEFAULT_TILESIZE = C_ChunkSize / 8.0f;
+const float LQ_DEFAULT_TILESIZE = ((533.33333f / 16.0f) / 8.0f);
 
 // handle liquids like oceans, lakes, rivers, slime, magma
-class Liquid {
+class Liquid
+{
 
 	int xtiles, ytiles;
 	GLuint dlist;
@@ -25,7 +22,7 @@ class Liquid {
 	void initTextures(const char *basename, int first, int last);
 
 	int type;
-	
+
 	vec3 col;
 	int tmpflag;
 	bool trans;
@@ -36,10 +33,9 @@ public:
 
 	vector<Texture*> textures;
 
-	Liquid(int x, int y, vec3 base, float tilesize = LQ_DEFAULT_TILESIZE):
+	Liquid(int x, int y, vec3 base, float tilesize = LQ_DEFAULT_TILESIZE) :
 		xtiles(x), ytiles(y), pos(base), tilesize(tilesize), shader(-1), ydir(1.0f)
-	{
-	}
+	{}
 	~Liquid();
 
 	//void init(File& f);
@@ -50,7 +46,3 @@ public:
 
 
 };
-
-
-
-#endif

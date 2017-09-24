@@ -357,7 +357,7 @@ void Model::initCommon(File& f)
 
 		// render ops
 		M2SkinSection *ops = (M2SkinSection*)(g.GetData() + view->submeshes.offset);
-		M2Batch *tex = (M2Batch*)(g.GetData() + view->batches.offset);
+		M2Batch *tex = (M2Batch*)(g.GetData() + view->m_WMOBatchIndexes.offset);
 		M2Material *renderFlags = (M2Material*)(f.GetData() + header.materials.offset);
 		uint16_t *texlookup = (uint16_t*)(f.GetData() + header.texture_lookup_table.offset);
 		uint16_t *texanimlookup = (uint16_t*)(f.GetData() + header.texture_transforms_lookup_table.offset);
@@ -369,7 +369,7 @@ void Model::initCommon(File& f)
 			showGeosets[i] = true;
 		}
 
-		for (size_t j = 0; j < view->batches.size; j++)
+		for (size_t j = 0; j < view->m_WMOBatchIndexes.size; j++)
 		{
 			ModelRenderPass pass;
 

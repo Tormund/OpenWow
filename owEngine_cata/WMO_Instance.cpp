@@ -1,21 +1,21 @@
 #include "stdafx.h"
 
-// Include
-#include "Wmo.h"
-
 // General
 #include "WMO_Instance.h"
 
-WMOInstance::WMOInstance(WMO* _wmoObject, WMOPlacementInfo* _placementInfo) : wmoObject(_wmoObject) {
+WMOInstance::WMOInstance(WMO* _wmoObject, WMOPlacementInfo* _placementInfo) : wmoObject(_wmoObject)
+{
 	assert1(_placementInfo != nullptr);
 	placementInfo = _placementInfo;
 }
 
-WMOInstance::~WMOInstance() {
+WMOInstance::~WMOInstance()
+{
 	//delete placementInfo;
 }
 
-void WMOInstance::draw() {
+void WMOInstance::draw()
+{
 	if (alreadyDraw.find(placementInfo->uniqueId) != alreadyDraw.end())
 	{
 		return;
@@ -36,7 +36,8 @@ void WMOInstance::draw() {
 	glPopMatrix();
 }
 
-void WMOInstance::reset() {
+void WMOInstance::reset()
+{
 	alreadyDraw.clear();
 }
 

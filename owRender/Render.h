@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Frustum.h"
+
 class Module;
 class GLFWBackend;
 
@@ -43,7 +45,8 @@ private:
 	vec2 windowSize;
 	float aspectRatio, aspectFactor;
 
-
+public:
+	Frustum frustum;
 
 };
 

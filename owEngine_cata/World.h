@@ -3,7 +3,6 @@
 #include "AssimpModel.h"
 
 #include "maptile.h"
-#include "wmo.h"
 #include "DayNightCycle.h"
 #include "sky.h"
 
@@ -30,8 +29,8 @@ public:
 	void DSGeometryPassEnd();
 
 	void outdoorLighting();
-	void outdoorLights(bool on);
-	void setupFog();
+	void SetAmbientLights(bool on);
+	void SetFog();
 
 public: // Getters
 	Map* GetMap() { return &m_map; }
@@ -51,7 +50,7 @@ public:
 	bool hadSky;
 	MapSkies* skies;
 
-	Frustum frustum;
+	
 
 	// Lighting
 	DayNightCycle* dayNightCycle;

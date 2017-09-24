@@ -11,20 +11,19 @@
 // Additional
 #include "Wmo_Group.h"
 
-#include "world.h"
 #include "liquid.h"
 
-WMO::WMO(cstring name) : RefItemNamed(name), groups(0), mat(0)
+WMO::WMO(cstring name) : RefItemNamed(name)
 {
-	//skybox = nullptr;
+	skybox = nullptr;
 }
 
 WMO::~WMO()
 {
-	Debug::Info("Unloading WMO %s", GetName().c_str());
+	Debug::Info("WMO[%s]: Unloading...", GetName().c_str());
 
-	//if(groups)
-	//	delete[] groups;
+	delete[] texbuf;
+	delete[] groupnames;
 
 	for (auto it = mat.begin(); it != mat.end(); ++it)
 	{
@@ -60,22 +59,17 @@ bool WMO::Init()
 
 	Debug::Info("WMO[%s]: Loading...", GetName().c_str());
 
-	skybox = nullptr;
-
-	char *ddnames = nullptr;
-	char *groupnames = nullptr;
-	char *texbuf = nullptr;
-
 	char fourcc[5];
 	uint32_t size;
 	while (!f.IsEof())
 	{
 		memset(fourcc, 0, 4);
-		size = 0;
 		f.ReadBytes(fourcc, 4);
-		f.ReadBytes(&size, 4);
-		flipcc(fourcc);
+        flipcc(fourcc);
 		fourcc[4] = 0;
+
+		size = 0;
+		f.ReadBytes(&size, 4);
 		if (size == 0) continue;
 		size_t nextpos = f.GetPos() + size;
 
@@ -89,27 +83,14 @@ bool WMO::Init()
 		{
 			f.ReadBytes(&header, header.__size);
 		}
-		else if (strcmp(fourcc, "MOTX") == 0)              // List of textures (BLP Files) used in this map object.
+		else if (strcmp(fourcc, "MOTX") == 0)               // List of textures (BLP Files) used in this map object.
 		{
 			texbuf = new char[size + 1];
 			f.ReadBytes(texbuf, size);
 			texbuf[size] = 0x00;
 		}
-		else if (strcmp(fourcc, "MOMT") == 0)
+		else if (strcmp(fourcc, "MOMT") == 0)               // Materials used in this map object, 64 bytes per texture (BLP file), nMaterials entries.
 		{
-			// Materials used in this map object, 64 bytes per texture (BLP file), nMaterials entries.
-			// WMOMaterialBlock bl;
-			/*
-			The flags might used to tweak alpha testing values, I'm not sure about it, but some grates and flags in IF seem to require an alpha testing threshold of 0, at other places this is greater than 0.
-			flag2 		Meaning
-			0x01 		?(I'm not sure atm I tend to use lightmap or something like this)
-			0x04 		Two-sided (disable backface culling)
-			0x10 		Bright at night (unshaded) (used on windows and lamps in Stormwind, for example) -ProFeT: i think that is Unshaded becase external face of windows are flagged like this.
-			0x20 		?
-			0x28 		Darkned ?, the intern face of windows are flagged 0x28
-			0x40 		looks like GL_CLAMP
-			0x80 		looks like GL_REPEAT
-			*/
 			for (uint32_t i = 0; i < header.nTextures; i++)
 			{
 				WMOMaterial* _mat = new WMOMaterial(f);
@@ -117,12 +98,11 @@ bool WMO::Init()
 				mat.push_back(_mat);
 			}
 		}
-		else if (strcmp(fourcc, "MOGN") == 0)
+		else if (strcmp(fourcc, "MOGN") == 0)              // List of group names for the groups in this map object.
 		{
-			// List of group names for the groups in this map object. There are nGroups entries in this chunk.
-			// A contiguous block of zero-terminated strings. The names are purely informational, they aren't used elsewhere (to my knowledge)
-			// i think think that his realy is zero terminated and just a name list .. but so far im not sure _what_ else it could be - tharo
-			groupnames = (char*)f.GetDataFromCurrent();
+			groupnames = new char[size + 1];
+			f.ReadBytes(groupnames, size);
+			groupnames[size] = 0x00;
 		}
 		else if (strcmp(fourcc, "MOGI") == 0)
 		{
@@ -167,7 +147,7 @@ bool WMO::Init()
 			So.... What happens when you're flying around on a gryphon, and you fly into that arch-shaped portal into Ironforge? How is that portal calculated? It's all cool as long as you're inside "legal" areas, I suppose.
 			It's fun, you can actually map out the topology of the WMO using this and the MOPR chunk. This could be used to speed up the rendering once/if I figure out how.
 			*/
-			WMOPV p;
+			WMO_PortalVertices p;
 			for (uint32_t i = 0; i < header.nPortals; i++)
 			{
 				float ff[3];
@@ -184,7 +164,7 @@ bool WMO::Init()
 				f.ReadBytes(ff, 12);
 				p.d = vec3(ff[0], ff[2], -ff[1]);
 
-				pvs.push_back(p);
+				m_PortalVertices.push_back(p);
 			}
 		}
 		else if (strcmp(fourcc, "MOPT") == 0)
@@ -200,28 +180,11 @@ bool WMO::Init()
 		}
 		else if (strcmp(fourcc, "MOPR") == 0)
 		{
-			/*
-			Portal <> group relationship? 2*nPortals entries of 8 bytes.
-			I think this might specify the two WMO groups that a portal connects.
-			Offset 	Type 		Description
-			0x0 	uint16_t 		Portal index
-			0x2 	uint16_t 		WMO group index
-			0x4 	int16_t 		1 or -1
-			0x6 	uint16_t 		always 0
-			struct SMOPortalRef
+			uint32_t nn = size / WMO_PortalReferences::__size;
+			WMO_PortalReferences* pr = (WMO_PortalReferences*)f.GetDataFromCurrent();
+			for (uint32_t i = 0; i < nn; i++)
 			{
-			000h  UINT16 portalIndex;
-			000h  UINT16 groupIndex;
-			004h  UINT16 side;
-			006h  UINT16 filler;
-			008h
-			};
-			*/
-			int nn = (int)size / sizeof(WMOPR);
-			WMOPR *pr = (WMOPR*)f.GetDataFromCurrent();
-			for (int i = 0; i < nn; i++)
-			{
-				prs.push_back(*pr++);
+				m_PortalReferences.push_back(*pr++);
 			}
 		}
 		else if (strcmp(fourcc, "MOVV") == 0)
@@ -243,35 +206,21 @@ bool WMO::Init()
 		{
 			for (uint32_t i = 0; i < header.nLights; i++)
 			{
-				WMOLight l;
-				l.init(f);
+				WMOLight l(f);
 				lights.push_back(l);
 			}
 		}
 		else if (strcmp(fourcc, "MODS") == 0)
 		{
-			/*
-			This chunk defines doodad sets.
-			Doodads in WoW are M2 model files. There are 32 bytes per doodad set, and nSets entries. Doodad sets specify several versions of "interior decoration" for a WMO. Like, a small house might have tables and a bed laid out neatly in one set called "Set_$DefaultGlobal", and have a horrible mess of abandoned broken things in another set called "Set_Abandoned01". The names are only informative.
-			The doodad set number for every WMO instance is specified in the ADT files.
-			Offset 	Type 		Description
-			0x00 	20 * char 	Set name
-			0x14 	uint32_t 		index of first doodad instance in this set
-			0x18 	uint32_t 		number of doodad instances in this set
-			0x1C 	uint32_t 		unused? (always 0)
-			struct SMODoodadSet // --Schlumpf 17:03, 31 July 2007 (CEST)
-			{
-			000h  char   name[20];
-			014h  UINT32 firstinstanceindex;
-			018h  UINT32 numDoodads;
-			01Ch  UINT32 nulls;
-			}
-			*/
 			for (uint32_t i = 0; i < header.nDoodadSets; i++)
 			{
-				WMODoodadSet dds;
-				f.ReadBytes(&dds, sizeof(WMODoodadSet));
+#ifdef MDX_INCL
+				WMO_DoodadSet dds;
+				f.ReadBytes(&dds, WMO_DoodadSet::__size);
 				doodadsets.push_back(dds);
+#else
+				f.SeekRelative(WMO_DoodadSet::__size);
+#endif
 			}
 		}
 		else if (strcmp(fourcc, "MODN") == 0)
@@ -283,21 +232,23 @@ bool WMO::Init()
 
 			if (size)
 			{
-				ddnames = (char*)f.GetDataFromCurrent();
+#ifdef MDX_INCL
+				m_MDXFilenames = (char*)f.GetDataFromCurrent();
 
-				char *p = ddnames, *end = p + size;
+				char *p = m_MDXFilenames, *end = p + size;
 				int t = 0;
 				while (p < end)
 				{
 					string path(p);
 					p += strlen(p) + 1;
 					while ((p < end) && (*p == 0)) p++;
-#ifdef MDX_INCL
+
 					_ModelsMgr->Add(path);
 					m_MDXNames.push_back(path);
-#endif
+
 				}
-				f.SeekRelative((int)size);
+#endif
+				f.SeekRelative(size);
 			}
 
 		}
@@ -316,29 +267,20 @@ bool WMO::Init()
 			0x24 	4 * uint8_t 	(B,G,R,A) Lightning-color.
 			Are you sure the order of the quaternion components is W,X,Y,Z? It seems it is X,Y,Z,W -andhansen
 			struct SMODoodadDef // 03-29-2005 By ObscuR
-			{
-			000h  UINT32 nameIndex
-			004h  float pos[3];
-			010h  float rot[4];
-			020h  float scale;
-			024h  UINT8 color[4];
-			028h
-			};
 			*/
-			header.nDoodadNames = (int)size / 0x28;
+			header.nDoodadNames = size / 0x40;
 			for (uint32_t i = 0; i < header.nDoodadNames; i++)
 			{
 				int ofs;
 				f.ReadBytes(&ofs, 4);
-				if (!ddnames)
+#ifdef MDX_INCL
+				if (!m_MDXFilenames)
 				{
 					continue;
 				}
 
-#ifdef MDX_INCL
-				Model *m = (Model*)_ModelsMgr->objects[ddnames + ofs];
-				ModelInstance mi;
-				mi.InitAsDoodad(m, f);
+				Model *m = (Model*)_ModelsMgr->objects[m_MDXFilenames + ofs];
+				DoodadInstance mi(m, f);
 				m_MDXInstances.push_back(mi);
 #endif
 			}
@@ -347,11 +289,10 @@ bool WMO::Init()
 		else if (strcmp(fourcc, "MFOG") == 0)
 		{
 			// Fog information
-			int fogsCount = size / WMOFog::__size;
-			for (int i = 0; i < fogsCount; i++)
+			int fogsCount = size / WMOFogDef::__size;
+			for (uint32_t i = 0; i < fogsCount; i++)
 			{
-				WMOFog fog;
-				fog.init(f);
+				WMOFog fog(f);
 				fogs.push_back(fog);
 			}
 		}
@@ -367,8 +308,6 @@ bool WMO::Init()
 
 		f.Seek(nextpos);
 	}
-
-	delete[] texbuf;
 
 	// Init groups
 	for (auto it = groups.begin(); it != groups.end(); ++it)
@@ -462,9 +401,9 @@ void WMO::draw(int doodadset, cvec3 ofs, const float roll)
 
 	// draw portal relations
 	glBegin(GL_LINES);
-	for (size_t i=0; i<prs.size(); i++) {
-		WMOPR &pr = prs[i];
-		WMOPV &pv = pvs[pr.portal];
+	for (size_t i=0; i<m_PortalReferences.size(); i++) {
+		WMO_PortalReferences &pr = m_PortalReferences[i];
+		WMO_PortalVertices &pv = m_PortalVertices[pr.portal];
 		if (pr.dir>0) glColor4f(1,0,0,1);
 		else glColor4f(0,0,1,1);
 		vec3 pc = (pv.a+pv.b+pv.c+pv.d)*0.25f;
@@ -479,12 +418,13 @@ void WMO::draw(int doodadset, cvec3 ofs, const float roll)
 	// draw portals
 	for (int i=0; i<header.nPortals; i++) {
 		glBegin(GL_LINE_STRIP);
-		glVertex3fv(pvs[i].d);
-		glVertex3fv(pvs[i].c);
-		glVertex3fv(pvs[i].b);
-		glVertex3fv(pvs[i].a);
+		glVertex3fv(m_PortalVertices[i].d);
+		glVertex3fv(m_PortalVertices[i].c);
+		glVertex3fv(m_PortalVertices[i].b);
+		glVertex3fv(m_PortalVertices[i].a);
 		glEnd();
 	}
+
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_LIGHTING);*/
 
@@ -492,8 +432,9 @@ void WMO::draw(int doodadset, cvec3 ofs, const float roll)
 
 void WMO::drawSkybox()
 {
-	skybox = nullptr;
-	if (this->skybox != nullptr)
+	skybox = nullptr; // HACK
+
+	if (skybox != nullptr)
 	{
 		// TODO: only draw sky if we are "inside" the WMO... ?
 
@@ -507,28 +448,31 @@ void WMO::drawSkybox()
 
 		glDisable(GL_CULL_FACE);
 		glDisable(GL_DEPTH_TEST);
+
 		glPushMatrix();
 		{
 			glTranslatef(_Camera->Position.x, _Camera->Position.y, _Camera->Position.z);
 			const float sc = 2.0f;
 			glScalef(sc, sc, sc);
-			this->skybox->draw();
+			skybox->draw();
 		}
 		glPopMatrix();
-		_World->hadSky = true;
+
+		// _World->hadSky = true; FIXME WORLD
+
 		glEnable(GL_DEPTH_TEST);
 	}
 }
 
 void WMO::drawPortals()
 {
-	glBegin(GL_QUADS);
+	glBegin(GL_LINE_STRIP);
 	for (uint32_t i = 0; i < header.nPortals; i++)
 	{
-		glVertex3fv(glm::value_ptr(pvs[i].d));
-		glVertex3fv(glm::value_ptr(pvs[i].c));
-		glVertex3fv(glm::value_ptr(pvs[i].b));
-		glVertex3fv(glm::value_ptr(pvs[i].a));
+		glVertex3fv(glm::value_ptr(m_PortalVertices[i].d));
+		glVertex3fv(glm::value_ptr(m_PortalVertices[i].c));
+		glVertex3fv(glm::value_ptr(m_PortalVertices[i].b));
+		glVertex3fv(glm::value_ptr(m_PortalVertices[i].a));
 	}
 	glEnd();
 }

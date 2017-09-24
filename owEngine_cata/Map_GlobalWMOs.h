@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Wmo.h"
 #include "WMO_Instance.h"
 
 class Map_GlobalWMOs

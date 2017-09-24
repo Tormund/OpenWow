@@ -10,9 +10,6 @@
 #include "MapWaterChunk.h"
 #include "world.h"
 #include "WMO_Instance.h"
-#include "liquid.h"
-
-#include "WMOsManager.h"
 
 struct MH2O_Header
 {
