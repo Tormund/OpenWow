@@ -1,5 +1,7 @@
 #pragma once
 
+class WMO;
+
 struct WMOMaterialDef
 {
 	struct
@@ -36,10 +38,9 @@ struct WMOMaterialDef
 class WMOMaterial
 {
 public:
-	WMOMaterial(File& _file);
+	WMOMaterial(const WMO* _parentWMO, File& _file);
 	~WMOMaterial();
 
-	void initTexture(const char* _texturesFileNames);
 	void setup();
 
 	void SetBlendMode();
@@ -61,6 +62,9 @@ public:
 	uint32_t GetShader() const { return matDef.shader; }
 
 private:
+	const WMO* m_ParentWMO;
+
+public:
 	WMOMaterialDef matDef;
 	Texture* texture;
 };

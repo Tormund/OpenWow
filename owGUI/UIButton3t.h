@@ -5,10 +5,10 @@ struct Image;
 class UIButton3t : public UIButton {
 	typedef UIButton base;
 public:
-	OW_GUI_DLL_API UIButton3t();
+	 UIButton3t();
 	virtual ~UIButton3t();
 
-	OW_GUI_DLL_API void Init(cvec2 _position, cstring _textureName);
+	 void Init(cvec2 _position, cstring _textureName);
 
 	virtual void Render();
 

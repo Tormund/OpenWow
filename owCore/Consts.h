@@ -1,6 +1,6 @@
 #pragma once
 
-OW_CORE_DLL_API extern vec2 VECTOR_ZERO;
+extern vec2 VECTOR_ZERO;
 
 #define MAX_FRAMES_PER_SEC 60
 
@@ -43,19 +43,30 @@ static _dllApi _className* instance()\
 	return &instance;\
 }
 
-enum TextAlignW {
+#define ERASE_VECTOR(_name) \
+for (auto it = _name.begin(); it != _name.end();) \
+{ \
+    auto obj = *it; \
+    it = _name.erase(it); \
+    delete obj; \
+}
+
+enum TextAlignW
+{
 	TEXT_ALIGNW_LEFT = 0,
 	TEXT_ALIGNW_CENTER,
 	TEXT_ALIGNW_RIGHT
 };
 
-enum TextAlignH {
+enum TextAlignH
+{
 	TEXT_ALIGNH_TOP = 0,
 	TEXT_ALIGNH_CENTER,
 	TEXT_ALIGNH_BOTTOM
 };
 
-enum InputMode {
+enum InputMode
+{
 	MODE_CHARACTERS = 0,
 	MODE_NUMBERS,
 	MODE_ANY

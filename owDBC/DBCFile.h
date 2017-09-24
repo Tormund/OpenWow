@@ -24,7 +24,7 @@ const char* Get_##name##_cstr(int8_t _locale = -1) const { \
 
 #define __DBC_DEF_BEGIN(accessName) \
 class CONCAT_CLASS(accessName); \
-OW_DBC_DLL_API extern DBCFile<CONCAT_CLASS(accessName)> accessName; \
+ extern DBCFile<CONCAT_CLASS(accessName)> accessName; \
 class CONCAT_CLASS(accessName) : public Record { \
 public: \
 	CONCAT_CLASS(accessName)(const DBCFile<CONCAT_CLASS(accessName)>::Iterator& _iterator) : Record(_iterator->dbcStats, _iterator->offset) { } \

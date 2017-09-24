@@ -18,7 +18,7 @@ struct WMOGroupInfoDef
 		uint32_t FLAG_IS_UNREACHABLE : 1;                 // = 0x80			//UNREACHABLE
 
 		uint32_t FLAG_UNK_0x100 : 1;                      // = 0x100
-		uint32_t FLAG_HAS_LIGHTS : 1;                     // = 0x200		//Has lights (MOLR chunk)
+		uint32_t FLAG_HAS_LIGHTS : 1;                     // = 0x200		//Has m_Lights (MOLR chunk)
 		uint32_t FLAG_UNK_0x400 : 1;                      // = 0x400
 		uint32_t FLAG_HAS_DOODADS : 1;                    // = 0x800		//Has doodads(MODR chunk)
 
@@ -29,7 +29,7 @@ struct WMOGroupInfoDef
 
 		uint32_t FLAG_ALWAYS_DRAW : 1;                    // = 0x10000		//ALWAYSDRAW -- clear 0x8 after CMapObjGroup::Create() in MOGP and MOGI
 		uint32_t FLAG_UNK_0x20000 : 1;                    // = 0x20000		(UNUSED: 20740) Has MORI and MORB chunks.
-		uint32_t FLAG_HAS_SKYBOX : 1;                     // = 0x40000		//Show skybox -- automatically unset if MOSB not present.
+		uint32_t FLAG_HAS_SKYBOX : 1;                     // = 0x40000		//Show m_Skybox -- automatically unset if MOSB not present.
 		uint32_t FLAG_UNK_0x80000 : 1;                    // = 0x80000		is_not_water_but_ocean, LiquidType related, see below in the MLIQ chunk.
 
 		uint32_t FLAG_HAS_2_VERTEX_COLORS_BUFFERS : 1;    // = 0x1000000	//CVERTS2: Has two MOCV chunks : Just add two or don't set 0x4 to only use cverts2.
@@ -71,7 +71,7 @@ struct WMOGroupHeader
 	uint16_t extBatchCount;
 	uint16_t padding_or_batch_type_d; // probably padding, but might be data?
 
-	uint8_t fogs[4]; // Up to four indices into the WMO fog list
+	uint8_t m_Fogs[4]; // Up to four indices into the WMO fog list
 	uint32_t liquidType; // LiquidType related, see below in the MLIQ chunk.
 
 	uint32_t wmoGroupId; // WMO group ID (column 4 in WMOAreaTable.dbc)
@@ -149,24 +149,27 @@ struct WMOLiquidHeader
 class WMOGroup
 {
 public:
-	WMOGroup();
+	WMOGroup(const WMO* _parentWMO, const uint32_t m_GroupIndex, File& f, char* names);
 	~WMOGroup();
 
-	void init(WMO* wmo, File& f, int num, char* names);
 	void initDisplayList();
 	void initLighting();
 
-	void draw(cvec3 ofs, const float roll);
-	void drawDoodads(int doodadset, cvec3 ofs, const float roll);
+	void draw(cvec3 ofs, float roll);
+	void drawDoodads(int doodadset, cvec3 ofs, float roll);
 	void drawLiquid();
 
 	void setupFog();
 
-	WMO* wmo;
 
+public:
+	const WMO* m_ParentWMO;
+	const uint32_t m_GroupIndex;
+
+public:
 	vec3 center;
 	float rad;
-	int num;
+
 	int fog;
 
 	vector< pair<GLuint, int> > lists;

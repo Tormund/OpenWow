@@ -58,10 +58,10 @@ public:
 	static const size_t Filename = 1;		// string
 };
 
-OW_DBC_DLL_API void OpenDBs();
+ void OpenDBs();
 
-OW_DBC_DLL_API extern LightIntBandDB gLightIntBandDB;
-OW_DBC_DLL_API extern LightFloatBandDB gLightFloatBandDB;
-OW_DBC_DLL_API extern GroundEffectDoodadDB gGroundEffectDoodadDB;
-OW_DBC_DLL_API extern GroundEffectTextureDB gGroundEffectTextureDB;
-//OW_DBC_DLL_API extern LiquidTypeDB gLiquidTypeDB;
+ extern LightIntBandDB gLightIntBandDB;
+ extern LightFloatBandDB gLightFloatBandDB;
+ extern GroundEffectDoodadDB gGroundEffectDoodadDB;
+ extern GroundEffectTextureDB gGroundEffectTextureDB;
+// extern LiquidTypeDB gLiquidTypeDB;

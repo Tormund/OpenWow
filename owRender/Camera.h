@@ -16,12 +16,12 @@ const float SENSITIVTY = 20.1f;
 class Camera
 {
 public:
-	OW_RENDER_DLL_API Camera(vec3 position = vec3(0.0f, 0.0f, 0.0f), vec3 up = vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH);
-	OW_RENDER_DLL_API Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch);
+	 Camera(vec3 position = vec3(0.0f, 0.0f, 0.0f), vec3 up = vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH);
+	 Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch);
 
 	//
 
-	OW_RENDER_DLL_API void Update();
+	 void Update();
 
 	// Returns the view matrix calculated using Eular Angles and the LookAt Matrix
 	inline const glm::mat4* GetViewMatrix()
@@ -30,10 +30,10 @@ public:
 	}
 
 	// Processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
-	OW_RENDER_DLL_API void ProcessKeyboard(Camera_Movement direction, float deltaTime);
+	 void ProcessKeyboard(Camera_Movement direction, float deltaTime);
 
 	// Processes input received from a mouse input system. Expects the offset value in both the x and y direction.
-	OW_RENDER_DLL_API void ProcessMouseMovement(float xoffset, float yoffset, bool constrainPitch = true);
+	 void ProcessMouseMovement(float xoffset, float yoffset, bool constrainPitch = true);
 
 private:
 	void updateCameraVectors();

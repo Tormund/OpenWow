@@ -6,10 +6,10 @@
 
 class DSPointLightPassTech : public DSLightPassTech {
 public:
-	OW_RENDER_DLL_API DSPointLightPassTech();
-	OW_RENDER_DLL_API bool Init();
+	 DSPointLightPassTech();
+	 bool Init();
 
-	OW_RENDER_DLL_API void SetPointLight(const PointLight& Lights);
+	 void SetPointLight(const PointLight& Lights);
 };
 
 

@@ -8,7 +8,7 @@ public:
 	UIScrollBar();
 	~UIScrollBar();
 
-	OW_GUI_DLL_API void Init(cvec2 _position, cvec2 _size);
+	 void Init(cvec2 _position, cvec2 _size);
 
 	//
 

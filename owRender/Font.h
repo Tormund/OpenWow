@@ -3,7 +3,7 @@
 class Font : public RefItem
 {
 public:
-	OW_RENDER_DLL_API Font(GLuint textureOpenglId, GLuint listOpenglId, uint32_t* charWidthArray, uint32_t charHeight) :
+	 Font(GLuint textureOpenglId, GLuint listOpenglId, uint32_t* charWidthArray, uint32_t charHeight) :
 		RefItem(),
 		m_TextureOpenglId(textureOpenglId),
 		m_ListOpenglId(listOpenglId),
@@ -26,10 +26,10 @@ public:
 		delete[] m_CharWidthArray;
 	}
 
-	OW_RENDER_DLL_API void Render(cstring _string) const;
+	 void Render(cstring _string) const;
 
-	OW_RENDER_DLL_API uint32_t GetStringWidth(cstring _string) const;
-	OW_RENDER_DLL_API uint32_t GetHeight() const;
+	 uint32_t GetStringWidth(cstring _string) const;
+	 uint32_t GetHeight() const;
 
 public:
 	static const uint32_t SPACE = 32;

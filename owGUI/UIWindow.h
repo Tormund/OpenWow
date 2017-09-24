@@ -8,9 +8,9 @@ class UIWindow : public UIElement {
 	typedef UIElement base;
 
 public:
-	OW_GUI_DLL_API UIWindow();
+	 UIWindow();
 
-	OW_GUI_DLL_API void Init(cvec2 _position, cvec2 _size, Image* _image, Color _color = COLOR_EMPTY);
+	 void Init(cvec2 _position, cvec2 _size, Image* _image, Color _color = COLOR_EMPTY);
 
 	// Parent & childs functional
 

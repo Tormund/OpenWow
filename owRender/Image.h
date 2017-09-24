@@ -38,7 +38,7 @@ struct Image
 		CalculateCoords();
 	}
 
-	OW_RENDER_DLL_API void CalculateCoords();
+	 void CalculateCoords();
 
 	Texture* texture;
 	vec2 start;

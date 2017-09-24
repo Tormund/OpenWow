@@ -1,23 +1,21 @@
 #include "stdafx.h"
 
+// Include
+#include "Wmo.h"
+
 // General
 #include "Wmo_Material.h"
 
-WMOMaterial::WMOMaterial(File& _file)
+WMOMaterial::WMOMaterial(const WMO* _parentWMO, File& _file) : m_ParentWMO(_parentWMO)
 {
 	_file.ReadBytes(&matDef, WMOMaterialDef::__size);
+
+	texture = _TexturesMgr->Add(_parentWMO->m_TexturesNames + matDef.diffuseNameIndex);
 }
 
 WMOMaterial::~WMOMaterial()
 {
 	_TexturesMgr->Delete(texture);
-}
-
-void WMOMaterial::initTexture(const char* _texturesFileNames)
-{
-	string texpath(_texturesFileNames + matDef.diffuseNameIndex);
-
-	texture = _TexturesMgr->Add(texpath);
 }
 
 void WMOMaterial::setup()

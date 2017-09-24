@@ -2,7 +2,7 @@
 
 #include "ContainerAssync.h"
 
-OW_CORE_DLL_API DWORD WINAPI ThreadProc(LPVOID lpParam);
+ DWORD WINAPI ThreadProc(LPVOID lpParam);
 
 template <class OBJECT_TYPE>
 class RefManager1DimAssync

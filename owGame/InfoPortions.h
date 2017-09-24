@@ -2,12 +2,12 @@
 
 class InfoPortions
 {
-	CLASS_INSTANCE_API(InfoPortions, OW_GAME_DLL_API);
+	CLASS_INSTANCE_API(InfoPortions, );
 
 public:
-	OW_GAME_DLL_API void SetInfoPortion(cstring _infoPortionName);
-	OW_GAME_DLL_API void DeleteInfoPortion(cstring _infoPortionName);
-	OW_GAME_DLL_API bool GetInfoPortion(cstring _infoPortionName);
+	 void SetInfoPortion(cstring _infoPortionName);
+	 void DeleteInfoPortion(cstring _infoPortionName);
+	 bool GetInfoPortion(cstring _infoPortionName);
 
 private:
 	vector<string> debugInfoPortions;

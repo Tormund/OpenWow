@@ -1,11 +1,6 @@
 #pragma once
 
-#define OW_CORE_DLL_API __declspec(dllimport)
-
 #include "../owCore/common.h"
-
-// Maths
-#include "../owCore/MathUtils.h"
 
 // Ref manager
 #include "../owCore/RefItem.h"

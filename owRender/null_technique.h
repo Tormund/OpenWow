@@ -5,10 +5,10 @@
 
 class NullTechnique : public Technique {
 public:
-	OW_RENDER_DLL_API NullTechnique();
-	OW_RENDER_DLL_API virtual bool Init();
+	 NullTechnique();
+	 virtual bool Init();
 
-	OW_RENDER_DLL_API void SetWVP(cmat4 WVP);
+	 void SetWVP(cmat4 WVP);
 };
 
 

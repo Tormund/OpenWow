@@ -5,15 +5,15 @@ class GameState;
 
 class Engine
 {
-	CLASS_INSTANCE_API(Engine, OW_GAME_DLL_API);
+	CLASS_INSTANCE_API(Engine, );
 
 public:
-	OW_GAME_DLL_API bool Init(vector<string>& _argumentQueue);
-	OW_GAME_DLL_API void Destroy(uint32_t _errorCode = 0);
+	 bool Init(vector<string>& _argumentQueue);
+	 void Destroy(uint32_t _errorCode = 0);
 
-	OW_GAME_DLL_API bool SetGameState(GameState* _newGameState);
+	 bool SetGameState(GameState* _newGameState);
 
-	OW_GAME_DLL_API bool Tick();
+	 bool Tick();
 
 	inline string GetArgument(uint8_t index) 
 	{ 
@@ -28,7 +28,7 @@ public:
 	}
 	inline GameState* GetCurrentGameState() const { return currentGameState; }
 
-	OW_GAME_DLL_API unsigned long long GetTicks() const;
+	 unsigned long long GetTicks() const;
 	inline uint32_t GetFPS() const { return framesPerSecond; }
 
 private:

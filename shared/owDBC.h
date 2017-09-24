@@ -1,7 +1,5 @@
 #pragma once
 
-#define OW_DBC_DLL_API __declspec(dllimport)
-
 // General
 #include "../owDBC/DBCs.h"
 

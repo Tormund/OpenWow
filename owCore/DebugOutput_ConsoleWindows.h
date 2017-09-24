@@ -17,11 +17,11 @@ class DebugOutput_ConsoleWindows : public DebugOutput
 	};
 
 public:
-	OW_CORE_DLL_API bool Init();
-	OW_CORE_DLL_API void Destroy();
+	 bool Init();
+	 void Destroy();
 
 protected:
-	OW_CORE_DLL_API void Print(string _messageFmt, DebugOutput::DebugMessageType _type);
+	 void Print(string _messageFmt, DebugOutput::DebugMessageType _type);
 
 private:
 	HANDLE hConsole;

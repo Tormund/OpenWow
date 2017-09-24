@@ -59,16 +59,16 @@ public:
 	typedef vector<ConsoleCommandBase*> ConsoleCommands;
 
 public:
-	static OW_CORE_DLL_API void AddCommonCommands();
+	static  void AddCommonCommands();
 
 	//
 
-	static OW_CORE_DLL_API bool AddConsoleCommand(ConsoleCommandBase* _command);
-	static OW_CORE_DLL_API ConsoleCommandBase* GetConsoleCommandByName(cstring _commandName);
+	static  bool AddConsoleCommand(ConsoleCommandBase* _command);
+	static  ConsoleCommandBase* GetConsoleCommandByName(cstring _commandName);
 
 protected:
-	static OW_CORE_DLL_API ConsoleCommands GetConsoleCommandHelp(string _input);
-	static OW_CORE_DLL_API bool ProcessConsoleCommand(string _line);
+	static  ConsoleCommands GetConsoleCommandHelp(string _input);
+	static  bool ProcessConsoleCommand(string _line);
 
 private:
 	static const unsigned consoleCommandHelpMaxSize = 7;

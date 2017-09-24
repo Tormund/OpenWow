@@ -118,9 +118,6 @@ void Map::PreloadMap(gMapDBRecord* _map)
 				Map_Loaded = 0x04,
 			};
 
-			// uint32_t flags
-			// uint32_t asyncId
-
 			for (int i = 0; i < 64; i++)
 			{
 				for (int j = 0; j < 64; j++)

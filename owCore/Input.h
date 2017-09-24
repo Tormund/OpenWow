@@ -4,21 +4,21 @@ class InputListener;
 
 class Input : public Module {
 public:
-	DEF_MODULE_API(Input, OW_CORE_DLL_API);
+	DEF_MODULE_API(Input, );
 
-	OW_CORE_DLL_API void AddInputListener(InputListener* _inputListener);
-	OW_CORE_DLL_API void DeleteInputListener(InputListener* _inputListener);
+	 void AddInputListener(InputListener* _inputListener);
+	 void DeleteInputListener(InputListener* _inputListener);
 
-	OW_CORE_DLL_API vec2 GetMouse() const { return mousePos; }
-	OW_CORE_DLL_API bool IsKeyPressed(int key) { return keyState[key]; }
-	OW_CORE_DLL_API bool IsMousePressed(int button) { return mouseButtonState[button]; }
+	 vec2 GetMouse() const { return mousePos; }
+	 bool IsKeyPressed(int key) { return keyState[key]; }
+	 bool IsMousePressed(int button) { return mouseButtonState[button]; }
 
 	// GLFW Connector
-	OW_CORE_DLL_API void MousePositionCallback(cvec2 _mousePos);
-	OW_CORE_DLL_API void MouseCallback(int button, int action, int mods);
-	OW_CORE_DLL_API void MouseScrollCallback(int yoffset);
-	OW_CORE_DLL_API void KeyboardCallback(int key, int scancode, int action, int mods);
-	OW_CORE_DLL_API void CharCallback(uint32_t _char);
+	 void MousePositionCallback(cvec2 _mousePos);
+	 void MouseCallback(int button, int action, int mods);
+	 void MouseScrollCallback(int yoffset);
+	 void KeyboardCallback(int key, int scancode, int action, int mods);
+	 void CharCallback(uint32_t _char);
 
 private:
 	bool* keyState;

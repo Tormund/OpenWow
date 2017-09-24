@@ -3,23 +3,23 @@
 class ByteBuffer
 {
 public:
-	OW_CORE_DLL_API ByteBuffer();
-	OW_CORE_DLL_API ByteBuffer(const ByteBuffer& _other);
+	 ByteBuffer();
+	 ByteBuffer(const ByteBuffer& _other);
 
-	OW_CORE_DLL_API ByteBuffer(uint64_t _size);
-	OW_CORE_DLL_API ByteBuffer(uint8_t* _data, uint64_t _size);
-	OW_CORE_DLL_API ~ByteBuffer();
-
-	//
-
-	OW_CORE_DLL_API void Allocate(uint64_t _size);
-	OW_CORE_DLL_API void CopyData(uint8_t* _data, uint64_t _size);
-	OW_CORE_DLL_API void Init(uint8_t* _dataPtr, uint64_t _size);
+	 ByteBuffer(uint64_t _size);
+	 ByteBuffer(uint8_t* _data, uint64_t _size);
+	 ~ByteBuffer();
 
 	//
 
-	OW_CORE_DLL_API const string ReadLine();
-	OW_CORE_DLL_API const void ReadBytes(void* _destination, uint64_t _size);
+	 void Allocate(uint64_t _size);
+	 void CopyData(uint8_t* _data, uint64_t _size);
+	 void Init(uint8_t* _dataPtr, uint64_t _size);
+
+	//
+
+	 const string ReadLine();
+	 const void ReadBytes(void* _destination, uint64_t _size);
 
 	//
 
@@ -29,8 +29,8 @@ public:
 	inline uint8_t* GetDataFromCurrent() { return data + position; }
 	inline bool IsEof() const { return isEof; }
 
-	OW_CORE_DLL_API void Seek(uint64_t _bufferOffsetAbsolute);
-	OW_CORE_DLL_API void SeekRelative(uint64_t _bufferOffsetRelative);
+	 void Seek(uint64_t _bufferOffsetAbsolute);
+	 void SeekRelative(uint64_t _bufferOffsetRelative);
 
 protected:
 	bool isFilled;

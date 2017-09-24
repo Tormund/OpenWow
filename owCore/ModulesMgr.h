@@ -4,15 +4,15 @@ class Module;
 
 class ModulesMgr
 {
-	CLASS_INSTANCE_API(ModulesMgr, OW_CORE_DLL_API);
+	CLASS_INSTANCE_API(ModulesMgr, );
 
 public:
-	OW_CORE_DLL_API bool LoadModule(Module* _module, bool isSystemModule = false);
-	OW_CORE_DLL_API void DestroyModule(Module* _module);
+	 bool LoadModule(Module* _module, bool isSystemModule = false);
+	 void DestroyModule(Module* _module);
 
-	OW_CORE_DLL_API void DestroyAllModules(bool _includeSystem = true);
+	 void DestroyAllModules(bool _includeSystem = true);
 
-	OW_CORE_DLL_API bool IsModuleLoaded(Module* _module) const;
+	 bool IsModuleLoaded(Module* _module) const;
 
 	template<class MODULE>
 	inline MODULE* GetModule();

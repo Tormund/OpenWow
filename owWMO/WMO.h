@@ -29,7 +29,7 @@ struct WMOHeaderDef
 		uint16_t FLAG_attenuate_vertices_based_on_distance_to_portal : 1;
 		uint16_t FLAG_skip_base_color : 1;                       // do not add base (ambient) color (of MOHD) to MOCVs. apparently does more, e.g. required for multiple MOCVs
 		uint16_t FLAG_use_liquid_type_dbc_id : 1;                // use real liquid type ID from DBCs instead of local one. See MLIQ for further reference.
-		uint16_t FLAG_lighten_interiors : 1;                     // makes iterior groups much brighter, effects MOCV rendering. Used e.g.in Stormwind for having shiny bright interiors,
+		uint16_t FLAG_lighten_interiors : 1;                     // makes iterior m_Groups much brighter, effects MOCV rendering. Used e.g.in Stormwind for having shiny bright interiors,
 		uint16_t FLAG_Lod : 1;                                   // ≥ Legion (20740)
 		uint16_t : 11;                                           // unused as of Legion (20994)
 	} flags;
@@ -92,50 +92,57 @@ public:
 	bool Init();
 
 	void draw(int doodadset, cvec3 ofs, const float roll);
-	void drawPortals();
 	void drawSkybox();
+
+#ifdef _DEBUG
+	void DEBUG_DrawLightPlaceHolders();
+	void DEBUG_DrawFogPositions();
+	void DEBUG_DrawBoundingBoxes();
+	void DEBUG_DrawPortalsRelations();
+	void DEBUG_DrawPortals();
+#endif
 
 public:
 	WMOHeaderDef header;                                   // MOHD chunk
 
 	//-- Materials --//
-	char* texbuf;                                          // MOTX chunk
-	vector<WMOMaterial*> mat;                              // MOMT chunk
+	char* m_TexturesNames;                                          // MOTX chunk
+	vector<WMOMaterial*> m_Materials;                              // MOMT chunk
 
 
 	//-- Groups --//
-	char* groupnames;									   // MOGN chunk
-	vector<WMOGroup*> groups;                              // MOGI chunk
+	char* m_GroupsNames;									   // MOGN chunk
+	vector<WMOGroup*> m_Groups;                              // MOGI chunk
 
 
 	//-- Skybox --//
-	char* skybox_filename;                                 // MOSB chunk
-	Model* skybox;
+	char* m_Skybox_Filename;                                 // MOSB chunk
+	Model* m_Skybox;
 
 
 	//-- Portals --//
-	vector<WMO_PortalVertices> m_PortalVertices;           // MOPV chunk
-	vector<WMO_PortalInformation> m_PortalInformation;     // MOPT chunk
-	vector<WMO_PortalReferences> m_PortalReferences;       // MOPR chunk
+	vector<WMO_PortalVertices*> m_PortalVertices;           // MOPV chunk
+	vector<WMO_PortalInformation*> m_PortalInformation;     // MOPT chunk
+	vector<WMO_PortalReferences*> m_PortalReferences;       // MOPR chunk
 	// MOVV chunk
 	// MOVB chunk
 
 
 	// -- Lights --//
-	vector<WMOLight> lights;                               // MOLT chunk
+	vector<WMOLight*> m_Lights;                               // MOLT chunk
 
 
 	//-- Doodads --//
 #ifdef MDX_INCL
-	vector<WMO_DoodadSet> doodadsets;                      // MODS chunk
-	char* m_MDXFilenames;                                  // MODN chunk
+	vector<WMO_DoodadSet*> doodadsets;                      // MODS chunk
+	char* m_MDXFilenames;                                   // MODN chunk
 	vector<string> m_MDXNames;                             
-	vector<DoodadInstance> m_MDXInstances;                 // MODD chunk
+	vector<DoodadInstance*> m_MDXInstances;                 // MODD chunk
 #endif
 
 
 	//-- Fog --//
-	vector<WMOFog> fogs;                                   // MFOG chunk
+	vector<WMOFog*> m_Fogs;                                   // MFOG chunk
 
 
 	//-- Volumes plane --//

@@ -48,8 +48,3 @@ inline void rotate(float x0, float y0, float *x, float *y, float angle)
 	*y = xa * sinf(angle) + ya * cosf(angle) + y0;
 }
 
-inline void flipcc(char* fcc)
-{
-	std::swap(fcc[0], fcc[3]);
-	std::swap(fcc[1], fcc[2]);
-}

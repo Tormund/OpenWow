@@ -5,17 +5,17 @@
 class UIInput : public UIElement {
 	typedef UIElement base;
 public:
-	OW_GUI_DLL_API UIInput();
+	 UIInput();
 
-	OW_GUI_DLL_API void Init(cvec2 _position, cvec2 _size, InputMode _inputMode = MODE_ANY);
+	 void Init(cvec2 _position, cvec2 _size, InputMode _inputMode = MODE_ANY);
 
 	//
 
-	OW_GUI_DLL_API void SetInputString(cstring _inputString) { text = _inputString; }
-	OW_GUI_DLL_API void SetInputMaxLenght(int _inputStringMaxLenght) { inputStringMaxLenght = _inputStringMaxLenght; }
-	OW_GUI_DLL_API void SetInputMode(InputMode _inputMode) { inputMode = _inputMode; }
+	 void SetInputString(cstring _inputString) { text = _inputString; }
+	 void SetInputMaxLenght(int _inputStringMaxLenght) { inputStringMaxLenght = _inputStringMaxLenght; }
+	 void SetInputMode(InputMode _inputMode) { inputMode = _inputMode; }
 
-	OW_GUI_DLL_API string Data() const { return text; }
+	 string Data() const { return text; }
 
 	//
 

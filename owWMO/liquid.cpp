@@ -52,7 +52,7 @@ void Liquid::initFromTerrain(File& f, int flags)
 	trans = false;
 }
 
-void Liquid::initFromWMO(File& f, WMOMaterial& mat, bool indoor)
+void Liquid::initFromWMO(File& f, WMOMaterial* mat, bool indoor)
 {
 	texRepeats = 4.0f;
 	ydir = -1.0f;
@@ -80,7 +80,7 @@ void Liquid::initFromWMO(File& f, WMOMaterial& mat, bool indoor)
 		{
 			trans = true;
 			type = 1;
-			col = vec3(((mat.GetDiffuseColor() & 0xFF0000) >> 16) / 255.0f, ((mat.GetDiffuseColor() & 0xFF00) >> 8) / 255.0f, (mat.GetDiffuseColor() & 0xFF) / 255.0f);
+			col = vec3(((mat->GetDiffuseColor() & 0xFF0000) >> 16) / 255.0f, ((mat->GetDiffuseColor() & 0xFF00) >> 8) / 255.0f, (mat->GetDiffuseColor() & 0xFF) / 255.0f);
 			shader = 0;
 		}
 		else

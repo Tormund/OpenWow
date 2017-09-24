@@ -2,10 +2,10 @@
 
 #define ADD_SETTING(_type, name) \
 public:\
-OW_GAME_DLL_API _type Get_##name##() const { \
+ _type Get_##name##() const { \
 return m_##name; \
 }\
-OW_GAME_DLL_API void Set_##name##(_type _value)\
+ void Set_##name##(_type _value)\
 {\
 m_##name = _value;\
 }\
@@ -15,10 +15,10 @@ _type m_##name;
 
 class Settings
 {
-	CLASS_INSTANCE_API(Settings, OW_GAME_DLL_API);
+	CLASS_INSTANCE_API(Settings, );
 
 public:
-	OW_GAME_DLL_API Settings();
+	 Settings();
 
 	ADD_SETTING(double, zaloopa);
 };

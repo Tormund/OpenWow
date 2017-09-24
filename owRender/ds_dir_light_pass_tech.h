@@ -5,9 +5,9 @@
 
 class DSDirLightPassTech : public DSLightPassTech {
 public:
-	OW_RENDER_DLL_API DSDirLightPassTech();
-	OW_RENDER_DLL_API virtual bool Init();
+	 DSDirLightPassTech();
+	 virtual bool Init();
 
-	OW_RENDER_DLL_API void SetDirectionalLight(const DirectionalLight& Light);
+	 void SetDirectionalLight(const DirectionalLight& Light);
 
 };

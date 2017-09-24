@@ -9,16 +9,16 @@ public:
 		GBUFFER_TEXTURE_TYPE_SPECULAR
 	};
 
-	OW_RENDER_DLL_API GBuffer();
-	OW_RENDER_DLL_API ~GBuffer();
+	 GBuffer();
+	 ~GBuffer();
 
-	OW_RENDER_DLL_API bool Init(unsigned int WindowWidth, unsigned int WindowHeight);
+	 bool Init(unsigned int WindowWidth, unsigned int WindowHeight);
 
-	OW_RENDER_DLL_API void StartFrame();
-	OW_RENDER_DLL_API void BindForGeomPass();
-	OW_RENDER_DLL_API void BindForStencilPass();
-	OW_RENDER_DLL_API void BindForLightPass();
-	OW_RENDER_DLL_API void BindForFinalPass(GLint _color = 0x8CE5);
+	 void StartFrame();
+	 void BindForGeomPass();
+	 void BindForStencilPass();
+	 void BindForLightPass();
+	 void BindForFinalPass(GLint _color = 0x8CE5);
 
 private:
 	GLuint gBuffer;

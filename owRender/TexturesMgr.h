@@ -12,10 +12,10 @@ class Texture;
 class TexturesMgr : public Module, public RefManager1DimAssync<Texture>
 {
 public:
-	DEF_MODULE_API(TexturesMgr, OW_RENDER_DLL_API);
+	DEF_MODULE_API(TexturesMgr, );
 
-	OW_RENDER_DLL_API Texture* Add(cstring _textureFileName);
-	OW_RENDER_DLL_API Texture* Add(File& _textureFile);
+	 Texture* Add(cstring _textureFileName);
+	 Texture* Add(File& _textureFile);
 
 	inline Texture* Black() { return black; }
 	inline Texture* White() { return white; }

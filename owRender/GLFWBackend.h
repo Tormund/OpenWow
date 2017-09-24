@@ -5,21 +5,21 @@ class Module;
 class GLFWBackend : public Module
 {
 public:
-	DEF_MODULE_API(GLFWBackend, OW_RENDER_DLL_API);
+	DEF_MODULE_API(GLFWBackend, );
 
 	//
 
-	OW_RENDER_DLL_API bool SwapWindowBuffers();
+	 bool SwapWindowBuffers();
 
 	//
 
-	OW_RENDER_DLL_API void SetWindowSize(int32_t _width, int32_t _height);
-	OW_RENDER_DLL_API void SetWindowTitle(cstring _title);
+	 void SetWindowSize(int32_t _width, int32_t _height);
+	 void SetWindowTitle(cstring _title);
 
-	OW_RENDER_DLL_API void ShowCursor();
-	OW_RENDER_DLL_API void HideCursor();
+	 void ShowCursor();
+	 void HideCursor();
 
-	OW_RENDER_DLL_API void SetMousePosition(cvec2 _mousePosition);
+	 void SetMousePosition(cvec2 _mousePosition);
 
 	inline const double GetTime() const { return glfwTime; }
 

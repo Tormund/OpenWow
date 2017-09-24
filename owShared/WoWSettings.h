@@ -2,10 +2,10 @@
 
 class WoWSettings
 {
-	CLASS_INSTANCE_API(WoWSettings, OW_SHARED_DLL_API);
+	CLASS_INSTANCE_API(WoWSettings, );
 
 public:
-	OW_SHARED_DLL_API WoWSettings();
+	 WoWSettings();
 
 public:
 	inline void CalculateSquareDistances()

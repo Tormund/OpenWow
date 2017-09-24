@@ -141,6 +141,9 @@
     <ClCompile Include="RefManager1DimAssync.cpp">
       <Filter>RefManager\1 Dim Assync</Filter>
     </ClCompile>
+    <ClCompile Include="WowChunkUtils.cpp">
+      <Filter>Utils &amp; Helpers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Function.h">
@@ -252,6 +255,9 @@
     </ClInclude>
     <ClInclude Include="RefManager1DimAssync.h">
       <Filter>RefManager\1 Dim Assync</Filter>
+    </ClInclude>
+    <ClInclude Include="WowChunkUtils.h">
+      <Filter>Utils &amp; Helpers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

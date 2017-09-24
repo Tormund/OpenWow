@@ -2,9 +2,9 @@
 
 #include "shaders.h"
 
-OW_RENDER_DLL_API bool supportShaders = false;
+ bool supportShaders = false;
 
-OW_RENDER_DLL_API ShaderPair *terrainShaders[4] = {0,0,0,0}, *wmoShader = 0, *waterShaders[1] = {0};
+ ShaderPair *terrainShaders[4] = {0,0,0,0}, *wmoShader = 0, *waterShaders[1] = {0};
 
 void initShaders()
 {

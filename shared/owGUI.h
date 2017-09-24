@@ -1,7 +1,5 @@
 #pragma once
 
-#define OW_GUI_DLL_API __declspec(dllimport)
-
 // UI
 #include "../owGUI/UIMgr.h"
 #include "../owGUI/UIFile.h"

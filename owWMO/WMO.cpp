@@ -10,41 +10,50 @@
 
 // Additional
 #include "Wmo_Group.h"
-
 #include "liquid.h"
 
 WMO::WMO(cstring name) : RefItemNamed(name)
 {
-	skybox = nullptr;
+	m_TexturesNames = nullptr;
+	m_GroupsNames = nullptr;
+
+	m_Skybox_Filename = nullptr;
+	m_Skybox = nullptr;
+
+	m_MDXFilenames = nullptr;
 }
 
 WMO::~WMO()
 {
 	Debug::Info("WMO[%s]: Unloading...", GetName().c_str());
 
-	delete[] texbuf;
-	delete[] groupnames;
+	//
 
-	for (auto it = mat.begin(); it != mat.end(); ++it)
-	{
-		delete *it;
-	}
+	delete[] m_TexturesNames;
+	ERASE_VECTOR(m_Materials);
+
+	delete[] m_GroupsNames;
+	ERASE_VECTOR(m_Groups);
+
+	delete[] m_Skybox_Filename;
+	_ModelsMgr->Delete(m_Skybox);
+
+	ERASE_VECTOR(m_PortalVertices);
+	ERASE_VECTOR(m_PortalInformation);
+	ERASE_VECTOR(m_PortalReferences);
+
+	ERASE_VECTOR(m_Lights);
 
 #ifdef MDX_INCL
-	for (vector<string>::iterator it = m_MDXNames.begin(); it != m_MDXNames.end(); ++it)
+	ERASE_VECTOR(doodadsets);
+	for (auto it = m_MDXNames.begin(); it != m_MDXNames.end(); ++it)
 	{
 		_ModelsMgr->Delete(*it);
 	}
+	ERASE_VECTOR(m_MDXInstances);
 #endif
 
-	//if(mat) bouzi
-	//	delete[] mat;
-
-	if (skybox)
-	{
-		//delete skybox;
-		//_ModelsMgr->del(sbid);
-	}
+	ERASE_VECTOR(m_Fogs);
 }
 
 bool WMO::Init()
@@ -65,9 +74,8 @@ bool WMO::Init()
 	{
 		memset(fourcc, 0, 4);
 		f.ReadBytes(fourcc, 4);
-        flipcc(fourcc);
+		flipcc(fourcc);
 		fourcc[4] = 0;
-
 		size = 0;
 		f.ReadBytes(&size, 4);
 		if (size == 0) continue;
@@ -81,61 +89,54 @@ bool WMO::Init()
 		}
 		else if (strcmp(fourcc, "MOHD") == 0)               // Header
 		{
-			f.ReadBytes(&header, header.__size);
+			f.ReadBytes(&header, WMOHeaderDef::__size);
 		}
 		else if (strcmp(fourcc, "MOTX") == 0)               // List of textures (BLP Files) used in this map object.
 		{
-			texbuf = new char[size + 1];
-			f.ReadBytes(texbuf, size);
-			texbuf[size] = 0x00;
+			m_TexturesNames = new char[size + 1];
+			f.ReadBytes(m_TexturesNames, size);
+			m_TexturesNames[size] = 0x00;
 		}
 		else if (strcmp(fourcc, "MOMT") == 0)               // Materials used in this map object, 64 bytes per texture (BLP file), nMaterials entries.
 		{
 			for (uint32_t i = 0; i < header.nTextures; i++)
 			{
-				WMOMaterial* _mat = new WMOMaterial(f);
-				_mat->initTexture(texbuf);
-				mat.push_back(_mat);
+				WMOMaterial* _mat = new WMOMaterial(this, f);
+				m_Materials.push_back(_mat);
 			}
 		}
-		else if (strcmp(fourcc, "MOGN") == 0)              // List of group names for the groups in this map object.
+		else if (strcmp(fourcc, "MOGN") == 0)              // List of group names for the m_Groups in this map object.
 		{
-			groupnames = new char[size + 1];
-			f.ReadBytes(groupnames, size);
-			groupnames[size] = 0x00;
+			m_GroupsNames = new char[size + 1];
+			f.ReadBytes(m_GroupsNames, size);
+			m_GroupsNames[size] = 0x00;
 		}
 		else if (strcmp(fourcc, "MOGI") == 0)
 		{
 			for (uint32_t i = 0; i < header.nGroups; i++)
 			{
-				auto group = new WMOGroup;
-				group->init(this, f, i, groupnames);
-				groups.push_back(group);
+				WMOGroup* group = new WMOGroup(this, i, f, m_GroupsNames);
+				m_Groups.push_back(group);
 			}
 		}
-		else if (strcmp(fourcc, "MOSB") == 0)
+		else if (strcmp(fourcc, "MOSB") == 0) // Skybox. 
 		{
-			/*
-			Skybox. Always 00 00 00 00. Skyboxes are now defined in DBCs (Light.dbc etc.). Contained a M2 filename that was used as skybox.
-			*/
 			if (size > 4)
 			{
-				string path = string((char*)f.GetDataFromCurrent());
-				if (path.length())
-				{
-					Debug::Warn("SKYBOX:");
+				m_Skybox_Filename = new char[size + 1];
+				f.ReadBytes(m_Skybox_Filename, size);
+				m_Skybox_Filename[size] = 0x00;
 
 #ifdef MDX_INCL
-					skybox = _ModelsMgr->Add(path);
+				Debug::Warn("WMO[%s]: Skybox [%s]", GetName().c_str(), m_Skybox_Filename);
+				m_Skybox = _ModelsMgr->Add(m_Skybox_Filename);
 
-					if (!skybox->ok)
-					{
-						_ModelsMgr->Delete(path);
-						skybox = nullptr;
-					}
-
-#endif
+				if (!m_Skybox->ok)
+				{
+					_ModelsMgr->Delete(m_Skybox_Filename);
+					m_Skybox = nullptr;
 				}
+#endif
 			}
 		}
 		else if (strcmp(fourcc, "MOPV") == 0)
@@ -147,22 +148,23 @@ bool WMO::Init()
 			So.... What happens when you're flying around on a gryphon, and you fly into that arch-shaped portal into Ironforge? How is that portal calculated? It's all cool as long as you're inside "legal" areas, I suppose.
 			It's fun, you can actually map out the topology of the WMO using this and the MOPR chunk. This could be used to speed up the rendering once/if I figure out how.
 			*/
-			WMO_PortalVertices p;
+
 			for (uint32_t i = 0; i < header.nPortals; i++)
 			{
+				WMO_PortalVertices* p = new WMO_PortalVertices();
 				float ff[3];
 
 				f.ReadBytes(ff, 12);
-				p.a = vec3(ff[0], ff[2], -ff[1]);
+				p->a = vec3(ff[0], ff[2], -ff[1]);
 
 				f.ReadBytes(ff, 12);
-				p.b = vec3(ff[0], ff[2], -ff[1]);
+				p->b = vec3(ff[0], ff[2], -ff[1]);
 
 				f.ReadBytes(ff, 12);
-				p.c = vec3(ff[0], ff[2], -ff[1]);
+				p->c = vec3(ff[0], ff[2], -ff[1]);
 
 				f.ReadBytes(ff, 12);
-				p.d = vec3(ff[0], ff[2], -ff[1]);
+				p->d = vec3(ff[0], ff[2], -ff[1]);
 
 				m_PortalVertices.push_back(p);
 			}
@@ -180,11 +182,11 @@ bool WMO::Init()
 		}
 		else if (strcmp(fourcc, "MOPR") == 0)
 		{
-			uint32_t nn = size / WMO_PortalReferences::__size;
-			WMO_PortalReferences* pr = (WMO_PortalReferences*)f.GetDataFromCurrent();
-			for (uint32_t i = 0; i < nn; i++)
+			for (uint32_t i = 0; i < size / WMO_PortalReferences::__size; i++)
 			{
-				m_PortalReferences.push_back(*pr++);
+				WMO_PortalReferences* _portalReference = new WMO_PortalReferences;
+				f.ReadBytes(_portalReference, WMO_PortalReferences::__size);
+				m_PortalReferences.push_back(_portalReference);
 			}
 		}
 		else if (strcmp(fourcc, "MOVV") == 0)
@@ -206,8 +208,8 @@ bool WMO::Init()
 		{
 			for (uint32_t i = 0; i < header.nLights; i++)
 			{
-				WMOLight l(f);
-				lights.push_back(l);
+				WMOLight* _wmoLight = new WMOLight(f);
+				m_Lights.push_back(_wmoLight);
 			}
 		}
 		else if (strcmp(fourcc, "MODS") == 0)
@@ -215,73 +217,40 @@ bool WMO::Init()
 			for (uint32_t i = 0; i < header.nDoodadSets; i++)
 			{
 #ifdef MDX_INCL
-				WMO_DoodadSet dds;
-				f.ReadBytes(&dds, WMO_DoodadSet::__size);
+				WMO_DoodadSet* dds = new WMO_DoodadSet();
+				f.ReadBytes(dds, WMO_DoodadSet::__size);
 				doodadsets.push_back(dds);
-#else
-				f.SeekRelative(WMO_DoodadSet::__size);
 #endif
 			}
 		}
-		else if (strcmp(fourcc, "MODN") == 0)
+		else if (strcmp(fourcc, "MODN") == 0) // List of filenames for M2 (mdx) models that appear in this WMO.
 		{
-			/*
-			List of filenames for M2 (mdx) models that appear in this WMO.
-			A block of zero-padded, zero-terminated strings. There are nModels file names in this list. They have to be .MDX!
-			*/
-
 			if (size)
 			{
 #ifdef MDX_INCL
 				m_MDXFilenames = (char*)f.GetDataFromCurrent();
 
-				char *p = m_MDXFilenames, *end = p + size;
-				int t = 0;
-				while (p < end)
-				{
-					string path(p);
-					p += strlen(p) + 1;
-					while ((p < end) && (*p == 0)) p++;
+				WOWCHUNK_READ_STRINGS2_BEGIN;
 
-					_ModelsMgr->Add(path);
-					m_MDXNames.push_back(path);
+				_ModelsMgr->Add(_string);
+				m_MDXNames.push_back(_string);
 
-				}
+				WOWCHUNK_READ_STRINGS2_END;
 #endif
-				f.SeekRelative(size);
 			}
-
 		}
-		else if (strcmp(fourcc, "MODD") == 0)
+		else if (strcmp(fourcc, "MODD") == 0) // Information for doodad instances. 40 bytes per doodad instance, nDoodads entries.
 		{
-			/*
-			Information for doodad instances. 40 bytes per doodad instance, nDoodads entries.
-			While WMOs and models (M2s) in a map m_TileExists are rotated along the axes, doodads within a WMO are oriented using quaternions! Hooray for consistency!
-			I had to do some tinkering and mirroring to orient the doodads correctly using the quaternion, see model.cpp in the WoWmapview source code for the exact transform matrix. It's probably because I'm using another coordinate system, as a lot of other coordinates in WMOs and models also have to be read as (X,Z,-Y) to work in my system. But then again, the ADT files have the "correct" order of coordinates. Weird.
-			Offset 	Type 		Description
-			0x00 	uint32_t 		Offset to the start of the model's filename in the MODN chunk.
-			0x04 	3 * float 	Position (X,Z,-Y)
-			0x10 	float 		W component of the orientation quaternion
-			0x14 	3 * float 	X, Y, Z components of the orientaton quaternion
-			0x20 	float 		Scale factor
-			0x24 	4 * uint8_t 	(B,G,R,A) Lightning-color.
-			Are you sure the order of the quaternion components is W,X,Y,Z? It seems it is X,Y,Z,W -andhansen
-			struct SMODoodadDef // 03-29-2005 By ObscuR
-			*/
-			header.nDoodadNames = size / 0x40;
+			header.nDoodadNames = size / 40;
 			for (uint32_t i = 0; i < header.nDoodadNames; i++)
 			{
-				int ofs;
-				f.ReadBytes(&ofs, 4);
 #ifdef MDX_INCL
-				if (!m_MDXFilenames)
-				{
-					continue;
-				}
+				int32_t ofs;
+				f.ReadBytes(&ofs, 4);
 
-				Model *m = (Model*)_ModelsMgr->objects[m_MDXFilenames + ofs];
-				DoodadInstance mi(m, f);
-				m_MDXInstances.push_back(mi);
+				Model* m = (Model*)_ModelsMgr->objects[m_MDXFilenames + ofs];
+				DoodadInstance* _doodadInstance = new DoodadInstance(m, f);
+				m_MDXInstances.push_back(_doodadInstance);
 #endif
 			}
 
@@ -289,11 +258,10 @@ bool WMO::Init()
 		else if (strcmp(fourcc, "MFOG") == 0)
 		{
 			// Fog information
-			int fogsCount = size / WMOFogDef::__size;
-			for (uint32_t i = 0; i < fogsCount; i++)
+			for (uint32_t i = 0; i < (size / WMOFogDef::__size); i++)
 			{
-				WMOFog fog(f);
-				fogs.push_back(fog);
+				WMOFog* fog = new WMOFog(f);
+				m_Fogs.push_back(fog);
 			}
 		}
 		else if (strcmp(fourcc, "MCVP") == 0)
@@ -309,8 +277,8 @@ bool WMO::Init()
 		f.Seek(nextpos);
 	}
 
-	// Init groups
-	for (auto it = groups.begin(); it != groups.end(); ++it)
+	// Init m_Groups
+	for (auto it = m_Groups.begin(); it != m_Groups.end(); ++it)
 	{
 		(*it)->initDisplayList();
 	}
@@ -320,70 +288,131 @@ bool WMO::Init()
 
 void WMO::draw(int doodadset, cvec3 ofs, const float roll)
 {
-	for (auto it = groups.begin(); it != groups.end(); ++it)
+	for (auto it = m_Groups.begin(); it != m_Groups.end(); ++it)
 	{
 		(*it)->draw(ofs, roll);
 	}
 
 	if (_WowSettings->drawdoodads)
 	{
-		for (auto it = groups.begin(); it != groups.end(); ++it)
+		for (auto it = m_Groups.begin(); it != m_Groups.end(); ++it)
 		{
 			(*it)->drawDoodads(doodadset, ofs, roll);
 		}
 	}
 
-	for (auto it = groups.begin(); it != groups.end(); ++it)
+	for (auto it = m_Groups.begin(); it != m_Groups.end(); ++it)
 	{
 		(*it)->drawLiquid();
 	}
 
-	/*
-	// draw light placeholders
+#ifdef _DEBUG
+	DEBUG_DrawLightPlaceHolders();
+	DEBUG_DrawFogPositions();
+	DEBUG_DrawBoundingBoxes();
+	//DEBUG_DrawPortalsRelations();
+	//DEBUG_DrawPortals();
+#endif
+}
+
+void WMO::drawSkybox()
+{
+	//m_Skybox = nullptr; // HACK
+
+	if (m_Skybox != nullptr)
+	{
+		// TODO: only draw sky if we are "inside" the WMO... ?
+
+		// We need to clear the depth buffer, because the m_Skybox model can (will?)
+		// require it *. This is inefficient - is there a better way to do this?
+		// * planets in front of "space" in Caverns of Time
+		//glClear(GL_DEPTH_BUFFER_BIT);
+
+		// update: m_Skybox models seem to have an explicit renderop ordering!
+		// that saves us the depth buffer clear and the depth testing, too
+
+		glDisable(GL_CULL_FACE);
+		glDisable(GL_DEPTH_TEST);
+
+		glPushMatrix();
+		{
+			glTranslatef(_Camera->Position.x, _Camera->Position.y, _Camera->Position.z);
+			const float sc = 2.0f;
+			glScalef(sc, sc, sc);
+			m_Skybox->draw();
+		}
+		glPopMatrix();
+
+		// _World->hadSky = true; FIXME WORLD
+
+		glEnable(GL_DEPTH_TEST);
+	}
+}
+
+#ifdef _DEBUG
+
+void WMO::DEBUG_DrawLightPlaceHolders()
+{
 	glDisable(GL_LIGHTING);
-	glDisable(GL_CULL_FACE);
 	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_CULL_FACE);
+	glColor4f(1, 1, 1, 1);
+
 	glBegin(GL_TRIANGLES);
-	for (int i=0; i<nLights; i++) {
-		glColor4fv(lights[i].fcolor);
-		glVertex3fv(lights[i].pos);
-		glVertex3fv(lights[i].pos + vec3(-0.5f,1,0));
-		glVertex3fv(lights[i].pos + vec3(0.5f,1,0));
+	for (int i = 0; i<m_Lights.size(); i++)
+	{
+		glColor4fv(glm::value_ptr(m_Lights[i]->fcolor));
+
+		glVertex3fv(glm::value_ptr(m_Lights[i]->lightDef.pos));
+		glVertex3fv(glm::value_ptr(m_Lights[i]->lightDef.pos + vec3(-0.5f, 1, 0)));
+		glVertex3fv(glm::value_ptr(m_Lights[i]->lightDef.pos + vec3(0.5f, 1, 0)));
 	}
 	glEnd();
-	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_CULL_FACE);
-	glEnable(GL_LIGHTING);
-	glColor4f(1,1,1,1);
-	*/
 
-	/*
-	// draw fog positions..?
+	glColor4f(1, 1, 1, 1);
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_LIGHTING);
+}
+
+void WMO::DEBUG_DrawFogPositions()
+{
 	glDisable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
-	for (size_t i=0; i<fogs.size(); i++) {
-		WMOFog &fog = fogs[i];
-		glColor4f(1,1,1,1);
+
+	glColor4f(1, 1, 1, 1);
+
+	for (size_t i = 0; i<m_Fogs.size(); i++)
+	{
+		WMOFog* fog = m_Fogs[i];
+		
 		glBegin(GL_LINE_LOOP);
-		glVertex3fv(fog.pos);
-		glVertex3fv(fog.pos + vec3(fog.rad1, 5, -fog.rad2));
-		glVertex3fv(fog.pos + vec3(fog.rad1, 5, fog.rad2));
-		glVertex3fv(fog.pos + vec3(-fog.rad1, 5, fog.rad2));
-		glVertex3fv(fog.pos + vec3(-fog.rad1, 5, -fog.rad2));
+		glVertex3fv(glm::value_ptr(fog->fogDef.position));
+		glVertex3fv(glm::value_ptr(fog->fogDef.position + vec3(fog->fogDef.smallerRadius, 5, -fog->fogDef.largerRadius)));
+		glVertex3fv(glm::value_ptr(fog->fogDef.position + vec3(fog->fogDef.smallerRadius, 5, fog->fogDef.largerRadius)));
+		glVertex3fv(glm::value_ptr(fog->fogDef.position + vec3(-fog->fogDef.smallerRadius, 5, fog->fogDef.largerRadius)));
+		glVertex3fv(glm::value_ptr(fog->fogDef.position + vec3(-fog->fogDef.smallerRadius, 5, -fog->fogDef.largerRadius)));
 		glEnd();
 	}
+
+	glColor4f(1, 1, 1, 1);
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_LIGHTING);
-	*/
+}
 
-
-	// draw group boundingboxes
-	/*glDisable(GL_LIGHTING);
+void WMO::DEBUG_DrawBoundingBoxes()
+{
+	glDisable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
-	for (int i=0; i<header.nGroups; i++) {
-		WMOGroup* g = groups[i];
-		float fc[2] = {1,0};
-		glColor4f(fc[i%2],fc[(i/2)%2],fc[(i/3)%2],1);
+
+
+	for (int i = 0; i<header.nGroups; i++)
+	{
+		WMOGroup* g = m_Groups[i];
+		float fc[2] = {1, 0};
+
+		glColor4f(fc[i % 2], fc[(i / 2) % 2], fc[(i / 3) % 2], 0.7f);
+
 		glBegin(GL_LINE_LOOP);
 
 		glVertex3f(g->b1.x, g->b1.y, g->b1.z);
@@ -399,80 +428,62 @@ void WMO::draw(int doodadset, cvec3 ofs, const float roll)
 		glEnd();
 	}
 
-	// draw portal relations
+	glColor4f(1, 1, 1, 1);
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_LIGHTING);
+}
+
+void WMO::DEBUG_DrawPortalsRelations()
+{
+	glDisable(GL_LIGHTING);
+	glDisable(GL_TEXTURE_2D);
+
 	glBegin(GL_LINES);
-	for (size_t i=0; i<m_PortalReferences.size(); i++) {
-		WMO_PortalReferences &pr = m_PortalReferences[i];
-		WMO_PortalVertices &pv = m_PortalVertices[pr.portal];
-		if (pr.dir>0) glColor4f(1,0,0,1);
-		else glColor4f(0,0,1,1);
-		vec3 pc = (pv.a+pv.b+pv.c+pv.d)*0.25f;
-		vec3 gc = (groups[pr.group]->b1 + groups[pr.group]->b2)*0.5f;
-		glVertex3fv(pc);
-		glVertex3fv(gc);
+	for (size_t i = 0; i<m_PortalReferences.size(); i++)
+	{
+		WMO_PortalReferences* pr = m_PortalReferences[i];
+		WMO_PortalVertices* pv = m_PortalVertices[pr->portalIndex];
+
+		if (pr->side > 0) 
+			glColor4f(1, 0, 0, 1);
+		else 
+			glColor4f(0, 0, 1, 1);
+
+
+		vec3 pc = (pv->a + pv->b + pv->c + pv->d) * 0.25f;
+		vec3 gc = (m_Groups[pr->groupIndex]->b1 + m_Groups[pr->groupIndex]->b2)*0.5f;
+
+		glVertex3fv(glm::value_ptr(pc));
+		glVertex3fv(glm::value_ptr(gc));
 	}
 	glEnd();
-	glColor4f(1,1,1,1);
 
-
-	// draw portals
-	for (int i=0; i<header.nPortals; i++) {
-		glBegin(GL_LINE_STRIP);
-		glVertex3fv(m_PortalVertices[i].d);
-		glVertex3fv(m_PortalVertices[i].c);
-		glVertex3fv(m_PortalVertices[i].b);
-		glVertex3fv(m_PortalVertices[i].a);
-		glEnd();
-	}
-
+	glColor4f(1, 1, 1, 1);
 	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_LIGHTING);*/
+	glEnable(GL_LIGHTING);
 
 }
 
-void WMO::drawSkybox()
+void WMO::DEBUG_DrawPortals()
 {
-	skybox = nullptr; // HACK
+	glDisable(GL_LIGHTING);
+	glDisable(GL_TEXTURE_2D);
 
-	if (skybox != nullptr)
-	{
-		// TODO: only draw sky if we are "inside" the WMO... ?
+	glColor4f(0, 1, 0, 0.7f);
 
-		// We need to clear the depth buffer, because the skybox model can (will?)
-		// require it *. This is inefficient - is there a better way to do this?
-		// * planets in front of "space" in Caverns of Time
-		//glClear(GL_DEPTH_BUFFER_BIT);
-
-		// update: skybox models seem to have an explicit renderop ordering!
-		// that saves us the depth buffer clear and the depth testing, too
-
-		glDisable(GL_CULL_FACE);
-		glDisable(GL_DEPTH_TEST);
-
-		glPushMatrix();
-		{
-			glTranslatef(_Camera->Position.x, _Camera->Position.y, _Camera->Position.z);
-			const float sc = 2.0f;
-			glScalef(sc, sc, sc);
-			skybox->draw();
-		}
-		glPopMatrix();
-
-		// _World->hadSky = true; FIXME WORLD
-
-		glEnable(GL_DEPTH_TEST);
-	}
-}
-
-void WMO::drawPortals()
-{
 	glBegin(GL_LINE_STRIP);
 	for (uint32_t i = 0; i < header.nPortals; i++)
 	{
-		glVertex3fv(glm::value_ptr(m_PortalVertices[i].d));
-		glVertex3fv(glm::value_ptr(m_PortalVertices[i].c));
-		glVertex3fv(glm::value_ptr(m_PortalVertices[i].b));
-		glVertex3fv(glm::value_ptr(m_PortalVertices[i].a));
+		glVertex3fv(glm::value_ptr(m_PortalVertices[i]->d));
+		glVertex3fv(glm::value_ptr(m_PortalVertices[i]->c));
+		glVertex3fv(glm::value_ptr(m_PortalVertices[i]->b));
+		glVertex3fv(glm::value_ptr(m_PortalVertices[i]->a));
 	}
 	glEnd();
+
+	glColor4f(1, 1, 1, 1);
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_LIGHTING);
 }
+
+#endif

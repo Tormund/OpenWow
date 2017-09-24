@@ -24,17 +24,17 @@ class ConsoleOpenGL : public Console, public InputListener, public DebugOutput
 {
 	typedef vector<ConsoleMessage*> ConsoleMessages;
 public:
-	OW_GAME_DLL_API bool Init();
-	OW_GAME_DLL_API void Destroy();
+	 bool Init();
+	 void Destroy();
 
-	OW_GAME_DLL_API void RenderUI();
+	 void RenderUI();
 
-	OW_GAME_DLL_API V_MOUSE_WHEEL;
-	OW_GAME_DLL_API V_KEYBD_PRESSED;
-	OW_GAME_DLL_API V_CHAR_INPUT;
+	 V_MOUSE_WHEEL;
+	 V_KEYBD_PRESSED;
+	 V_CHAR_INPUT;
 
 protected:
-	OW_GAME_DLL_API void Print(string _messageFmt, DebugOutput::DebugMessageType _type);
+	 void Print(string _messageFmt, DebugOutput::DebugMessageType _type);
 
 private:
 	vec2 windowSize;

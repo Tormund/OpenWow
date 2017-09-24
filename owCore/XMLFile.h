@@ -37,12 +37,12 @@ private:
 class XMLFile
 {
 public:
-	OW_CORE_DLL_API bool Open(cstring _filename);
-	OW_CORE_DLL_API void Destroy();
+	 bool Open(cstring _filename);
+	 void Destroy();
 
-	OW_CORE_DLL_API void Print(XMLNode* _startNode, int _level = 0) const;
+	 void Print(XMLNode* _startNode, int _level = 0) const;
 
-	OW_CORE_DLL_API XMLNode* GetRootNode() const { return rootNode; };
+	 XMLNode* GetRootNode() const { return rootNode; };
 
 private:
 	bool ProcessLine(string& _line);

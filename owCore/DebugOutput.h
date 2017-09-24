@@ -19,8 +19,8 @@ public:
 
 	//
 
-	OW_CORE_DLL_API void PushMessage(cstring _message, DebugOutput::DebugMessageType _type);
-	OW_CORE_DLL_API void PushMessage(DebugOutput::DebugMessageType _type, const char* _message, va_list& _vaList);
+	 void PushMessage(cstring _message, DebugOutput::DebugMessageType _type);
+	 void PushMessage(DebugOutput::DebugMessageType _type, const char* _message, va_list& _vaList);
 
 protected:
 	virtual void Print(string _messageFmt, DebugOutput::DebugMessageType _type) = 0;

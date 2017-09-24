@@ -29,9 +29,9 @@ public:
 
 	//
 
-	OW_RENDER_DLL_API void GenerateTexture();
-	OW_RENDER_DLL_API void Bind(uint8_t _textureUnit = 0) const;
-	OW_RENDER_DLL_API void Unbind() const;
+	 void GenerateTexture();
+	 void Bind(uint8_t _textureUnit = 0) const;
+	 void Unbind() const;
 
 private:
 	GLuint oglObj;

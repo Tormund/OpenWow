@@ -9,5 +9,3 @@
 
 #include <owRender.h>
 #pragma comment(lib, "owRender.lib")
-
-#define OW_GUI_DLL_API __declspec(dllexport)

@@ -1,9 +1,9 @@
 #pragma once
 
-OW_RENDER_DLL_API extern bool supportShaders;
+ extern bool supportShaders;
 
-OW_RENDER_DLL_API extern void initShaders();
-OW_RENDER_DLL_API extern void reloadShaders();
+ extern void initShaders();
+ extern void reloadShaders();
 
 class ShaderARB
 {
@@ -12,11 +12,11 @@ class ShaderARB
 public:
 	bool ok;
 
-	OW_RENDER_DLL_API ShaderARB(GLenum target, const char *program);
+	 ShaderARB(GLenum target, const char *program);
 	~ShaderARB();
 
-	OW_RENDER_DLL_API void bind();
-	OW_RENDER_DLL_API void unbind();
+	 void bind();
+	 void unbind();
 };
 
 
@@ -27,12 +27,12 @@ class ShaderPair
 	ShaderARB *fragment;
 public:
 
-	OW_RENDER_DLL_API ShaderPair() :vertex(0), fragment(0) {}
-	OW_RENDER_DLL_API ShaderPair(ShaderARB *vs, ShaderARB *ps) :vertex(vs), fragment(ps) {}
-	OW_RENDER_DLL_API ShaderPair(const char *vprog, const char *fprog);
+	 ShaderPair() :vertex(0), fragment(0) {}
+	 ShaderPair(ShaderARB *vs, ShaderARB *ps) :vertex(vs), fragment(ps) {}
+	 ShaderPair(const char *vprog, const char *fprog);
 
-	OW_RENDER_DLL_API void bind();
-	OW_RENDER_DLL_API void unbind();
+	 void bind();
+	 void unbind();
 };
 
-OW_RENDER_DLL_API extern ShaderPair *terrainShaders[4], *wmoShader, *waterShaders[1];
+ extern ShaderPair *terrainShaders[4], *wmoShader, *waterShaders[1];

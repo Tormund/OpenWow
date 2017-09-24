@@ -24,5 +24,7 @@ using namespace std;
 #include "Module.h"
 #include "Random.h"
 #include "Utils.h"
+#include "MathUtils.h"
+#include "WowChunkUtils.h"
 #include "Debug.h"
 #include "Manager.h"

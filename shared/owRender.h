@@ -1,7 +1,5 @@
 #pragma once
 
-#define OW_RENDER_DLL_API __declspec(dllimport)
-
 // Common includes
 #include "../owRender/Common.h"
 

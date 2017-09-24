@@ -5,13 +5,13 @@
 
 class DSGeomPassTech : public Technique {
 public:
-	OW_RENDER_DLL_API DSGeomPassTech();
-	OW_RENDER_DLL_API virtual bool Init();
+	 DSGeomPassTech();
+	 virtual bool Init();
 
-	OW_RENDER_DLL_API void SetWVP(cmat4 WVP);
-	OW_RENDER_DLL_API void SetWorldMatrix(cmat4 WVP);
-	OW_RENDER_DLL_API void SetColorTextureUnit(int TextureUnit);
-	OW_RENDER_DLL_API void SetSpecularTextureUnit(int TextureUnit);
+	 void SetWVP(cmat4 WVP);
+	 void SetWorldMatrix(cmat4 WVP);
+	 void SetColorTextureUnit(int TextureUnit);
+	 void SetSpecularTextureUnit(int TextureUnit);
 };
 
 

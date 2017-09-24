@@ -23,11 +23,11 @@ struct SectionStruct
 class INIFile
 {
 public:
-	OW_CORE_DLL_API bool Open(cstring filename);
-	OW_CORE_DLL_API void Clear();
+	 bool Open(cstring filename);
+	 void Clear();
 
-	OW_CORE_DLL_API vector<SectionStruct> GetSections(string _sectionName);
-	OW_CORE_DLL_API SectionStruct* GetFirstSection(string _sectionName);
+	 vector<SectionStruct> GetSections(string _sectionName);
+	 SectionStruct* GetFirstSection(string _sectionName);
 
 	template<typename T>
 	bool Assign(T& addr, string _keyName);
@@ -35,7 +35,7 @@ public:
 	template<typename T>
 	bool Assign(T& addr, string _section, string _keyName);
 
-	OW_CORE_DLL_API vector<SectionStruct> Data() const { return data; }
+	 vector<SectionStruct> Data() const { return data; }
 
 private:
 	string iniFilename;

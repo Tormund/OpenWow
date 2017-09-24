@@ -40,7 +40,7 @@ public:
 
 	//void init(File& f);
 	void initFromTerrain(File& f, int flags);
-	void initFromWMO(File& f, WMOMaterial &mat, bool indoor);
+	void initFromWMO(File& f, WMOMaterial* mat, bool indoor);
 
 	void draw();
 

@@ -1,6 +1,7 @@
 #include "stdafx.h"
-#include "Utils.h"
 
+// General
+#include "Utils.h"
 
 // PARSING
 
