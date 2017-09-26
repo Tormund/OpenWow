@@ -85,8 +85,8 @@ bool TexturesMgr::LoadSoilTexture(File& _file, Texture* _texture)
 	*/
 
 	// set texture filtering parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	// Unbind
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -281,13 +281,13 @@ Texture* TexturesMgr::CreateAction(cstring name)
 	glGenTextures(1, &textureOpenglId);
 
 	Texture* texture = new Texture(textureOpenglId, vec2(16, 16));
-	
+
 	return texture;
 }
 
 void TexturesMgr::LoadAction(string _name, Texture* _texture)
 {
-	wglMakeCurrent(_Render->dc, _Render->glrc2);
+	//wglMakeCurrent(_Render->dc, _Render->glrc2);
 
 	File f = _name;
 
@@ -314,7 +314,7 @@ void TexturesMgr::LoadAction(string _name, Texture* _texture)
 		return;
 	}
 
-	Debug::Info("TexturesMgr[%s]: Texture loaded. Size [%0.0fx%0.0f].", f.Path_Name().c_str(), _texture->GetSize().x, _texture->GetSize().y);
+	//Debug::Info("TexturesMgr[%s]: Texture loaded. Size [%0.0fx%0.0f].", f.Path_Name().c_str(), _texture->GetSize().x, _texture->GetSize().y);
 }
 
 bool TexturesMgr::DeleteAction(cstring name)

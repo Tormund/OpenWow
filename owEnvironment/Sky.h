@@ -35,7 +35,7 @@ public:
 	float weight;
 	bool global;
 
-	bool operator<(const Sky& s) const
+	inline bool operator<(const Sky& s) const
 	{
 		if (global)
 			return false;
@@ -46,27 +46,7 @@ public:
 	}
 };
 
-enum SkyColorNames
-{
-	LIGHT_GLOBAL_DIFFUSE,
-	LIGHT_GLOBAL_AMBIENT,
-	SKY_COLOR_0,
-	SKY_COLOR_1,
-	SKY_COLOR_2,
-	SKY_COLOR_3,
-	SKY_COLOR_4,
-	FOG_COLOR,
-	SKY_UNKNOWN_1,
-	SUN_COLOR,
-	SUN_HALO_COLOR,
-	SKY_UNKNOWN_2,
-	CLOUD_COLOR,
-	SKY_UNKNOWN_3,
-	SKY_UNKNOWN_4,
-	WATER_COLOR_DARK,
-	WATER_COLOR_LIGHT,
-	SHADOW_COLOR
-};
+
 
 
 

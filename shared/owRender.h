@@ -9,22 +9,18 @@
 #include "../owRender/GLFWBackend.h"
 #include "../owRender/Pipeline.h"
 #include "../owRender/Render.h"
-//#include "../owRender/Shader.h"
 #include "../owRender/TexturesMgr.h"
 #include "../owRender/ShadowMapFBO.h"
 
 // Techiques
-#include "../owRender/shaders.h"
-#include "../owRender/Technique.h"
+#include "../owRender/TechniquesManager.h"
 
-#include "../owRender/ds_dir_light_pass_tech.h"
-#include "../owRender/ds_geom_pass_tech.h"
-#include "../owRender/ds_light_pass_tech.h"
-#include "../owRender/ds_point_light_pass_tech.h"
-#include "../owRender/null_technique.h"
-#include "../owRender/SimpleColorTechnique.h"
-#include "../owRender/SimpleRenderGBuffer.h"
-#include "../owRender/MapTilePass.h"
+#include "../owRender/Techniques/Technique.h"
+#include "../owRender/Techniques/ds_dir_light_pass_tech.h"
+#include "../owRender/Techniques/ds_light_pass_tech.h"
+#include "../owRender/Techniques/ds_point_light_pass_tech.h"
+#include "../owRender/Techniques/null_technique.h"
+#include "../owRender/Techniques/SimpleColorTechnique.h"
 
 //
 #include "../owRender/frustum.h"

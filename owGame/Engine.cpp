@@ -10,6 +10,7 @@
 #include <ctime>
 #include "ConsoleOpenGL.h"
 #include "GameState_Empty.h"
+#include "UIMgr.h"
 
 void shutdown(int _errCode)
 {
@@ -19,11 +20,14 @@ void shutdown(int _errCode)
 
 bool Engine::Init(vector<string>& _argumentQueue)
 {
+	// Load static classes
 	File::InitCriticalSect();
+	Random::SetSeed(static_cast<unsigned long>(time(0)));
+
 
 	// Add debug outputs
 	Debug::AddDebugOutput(new DebugOutput_ConsoleWindows);
-	Debug::AddDebugOutput(new DebugOutput_Log);
+	//Debug::AddDebugOutput(new DebugOutput_Log);
 
 	// Load graphics
 	_ModulesMgr->LoadModule(_GLFW, true);
@@ -38,10 +42,6 @@ bool Engine::Init(vector<string>& _argumentQueue)
 		Debug::Print("Engine[]: Argument: [%s]", (*it).c_str());
 	}
 
-	// Load static classes
-	Debug::Init();
-	Random::SetSeed(static_cast<unsigned long>(time(0)));
-
 	// Load modules
 	_ModulesMgr->LoadModule(_Render, true);
 	//_ModulesMgr->LoadModule(_FileSystem, true);
@@ -51,11 +51,11 @@ bool Engine::Init(vector<string>& _argumentQueue)
 	_ModulesMgr->LoadModule(_UIMgr, true);
 
 	// Add OpenGL console
-	consoleOpenGL = new ConsoleOpenGL;
-	Debug::AddDebugOutput(consoleOpenGL);
+	//consoleOpenGL = new ConsoleOpenGL;
+	//Debug::AddDebugOutput(consoleOpenGL);
 
 	// Add listener
-	_Input->AddInputListener(consoleOpenGL);
+	//_Input->AddInputListener(consoleOpenGL);
 	_Input->AddInputListener(_UIMgr);
 
 	needExit = false;
@@ -113,14 +113,8 @@ bool Engine::SetGameState(GameState* _newGameState)
 
 bool Engine::Tick()
 {
-	if (currentGameState == nullptr)
-	{
-		Debug::Warn("Egnine[]: Current game state is null. Set empty GameState.");
-		SetGameState(new GameState_Empty);
-	}
-
 	last_t = t;
-	t = GetTicks();
+	t = static_cast<uint32_t>(glfwGetTime() * 1000.0);
 	uint32_t dt = t - last_t;
 	_time += dt;
 
@@ -158,7 +152,7 @@ bool Engine::Tick()
 		currentGameState->RenderUI(dTime, dDtTime);
 	}
 	_UIMgr->RenderUI();
-	consoleOpenGL->RenderUI();
+	//consoleOpenGL->RenderUI();
 
 	//
 
@@ -174,7 +168,7 @@ bool Engine::Tick()
 	}
 
 	// Caclulate FPS
-	double currentTime = _GLFW->GetTimeSeconds();
+	double currentTime = glfwGetTime();
 	double delta = currentTime - framesTimer;
 	framesCounter++;
 	if (delta > 1.0)
@@ -187,11 +181,4 @@ bool Engine::Tick()
 	}
 
 	return true;
-}
-
-//---------------------------------------------------------
-
-unsigned long long Engine::GetTicks() const
-{
-	return static_cast<unsigned long long>(_GLFW->GetTimeSeconds() * 1000.0);
 }

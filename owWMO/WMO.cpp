@@ -17,7 +17,7 @@ WMO::WMO(cstring name) : RefItemNamed(name), m_Loaded(false)
 	m_TexturesNames = nullptr;
 	m_GroupsNames = nullptr;
 
-#ifdef MDX_INCL
+#ifdef DOODADS_INCL
 	m_Skybox_Filename = nullptr;
 	m_Skybox = nullptr;
 
@@ -38,7 +38,7 @@ WMO::~WMO()
 	delete[] m_GroupsNames;
 	ERASE_VECTOR(m_Groups);
 
-#ifdef MDX_INCL
+#ifdef DOODADS_INCL
 	delete[] m_Skybox_Filename;
 	_ModelsMgr->Delete(m_Skybox);
 #endif
@@ -49,7 +49,7 @@ WMO::~WMO()
 
 	ERASE_VECTOR(m_Lights);
 
-#ifdef MDX_INCL
+#ifdef DOODADS_INCL
 	ERASE_VECTOR(doodadsets);
 	for (auto it = m_MDXNames.begin(); it != m_MDXNames.end(); ++it)
 	{
@@ -64,14 +64,13 @@ WMO::~WMO()
 bool WMO::Init()
 {
 	File f = GetName();
-
 	if (!f.Open())
 	{
 		Debug::Info("WMO[%s]: Error loading WMO.", GetName().c_str());
 		return false;
 	}
 
-	Debug::Info("WMO[%s]: Loading...", GetName().c_str());
+	//Debug::Info("WMO[%s]: Loading...", GetName().c_str());
 
 	char fourcc[5];
 	uint32_t size;
@@ -126,7 +125,7 @@ bool WMO::Init()
 		}
 		else if (strcmp(fourcc, "MOSB") == 0) // Skybox. 
 		{
-#ifdef MDX_INCL
+#ifdef DOODADS_INCL
 			if (size > 4)
 			{
 				m_Skybox_Filename = new char[size + 1];
@@ -222,7 +221,7 @@ bool WMO::Init()
 		{
 			for (uint32_t i = 0; i < header.nDoodadSets; i++)
 			{
-#ifdef MDX_INCL
+#ifdef DOODADS_INCL
 				WMO_DoodadSet* dds = new WMO_DoodadSet();
 				f.ReadBytes(dds, WMO_DoodadSet::__size);
 				doodadsets.push_back(dds);
@@ -233,7 +232,7 @@ bool WMO::Init()
 		{
 			if (size)
 			{
-#ifdef MDX_INCL
+#ifdef DOODADS_INCL
 				m_MDXFilenames = (char*)f.GetDataFromCurrent();
 
 				WOWCHUNK_READ_STRINGS2_BEGIN;
@@ -250,12 +249,13 @@ bool WMO::Init()
 			header.nDoodadNames = size / 40;
 			for (uint32_t i = 0; i < header.nDoodadNames; i++)
 			{
-#ifdef MDX_INCL
-				int32_t ofs;
-				f.ReadBytes(&ofs, 4);
+#ifdef DOODADS_INCL
+				DoodadInstance* _doodadInstance = new DoodadInstance(f);
 
-				Model* m = (Model*)_ModelsMgr->objects[m_MDXFilenames + ofs];
-				DoodadInstance* _doodadInstance = new DoodadInstance(m, f);
+				MDX* m = (MDX*)_ModelsMgr->objects[m_MDXFilenames + _doodadInstance->placementInfo->flags.nameIndex];
+				assert1(m != nullptr);
+				_doodadInstance->SetModel(m);
+
 				m_MDXInstances.push_back(_doodadInstance);
 #endif
 			}
@@ -301,15 +301,20 @@ bool WMO::draw(int doodadset, cvec3 ofs, const float roll)
 		return false;
 	}
 
+	// WMO groups
 	for (auto it = m_Groups.begin(); it != m_Groups.end(); ++it)
 	{
-		if (!(*it)->draw(ofs, roll))
+		if (!(*it)->draw2(ofs, roll))
 		{
 			//return false;
 		}
 	}
+	_Perfomance->Stop(PERF_WMOs);
 
-	if (_Settings->drawdoodads)
+
+	// WMO doodads
+	_Perfomance->Start(PERF_WMOs_DOODADS);
+	if (_Settings->draw_map_wmo_doodads)
 	{
 		for (auto it = m_Groups.begin(); it != m_Groups.end(); ++it)
 		{
@@ -319,14 +324,17 @@ bool WMO::draw(int doodadset, cvec3 ofs, const float roll)
 			}
 		}
 	}
+	_Perfomance->Stop(PERF_WMOs_DOODADS);
 
-	for (auto it = m_Groups.begin(); it != m_Groups.end(); ++it)
+
+
+	/*for (auto it = m_Groups.begin(); it != m_Groups.end(); ++it)
 	{
 		if (!(*it)->drawLiquid())
 		{
 			//return false;
 		}
-	}
+	}*/
 
 #ifdef _DEBUG
 	//DEBUG_DrawLightPlaceHolders();
@@ -335,6 +343,8 @@ bool WMO::draw(int doodadset, cvec3 ofs, const float roll)
 	//DEBUG_DrawPortalsRelations();
 	//DEBUG_DrawPortals();
 #endif
+
+	_Perfomance->Start(PERF_WMOs);
 
 	return true;
 }
@@ -347,7 +357,7 @@ bool WMO::drawSkybox()
 		return false;
 	}
 
-#ifdef MDX_INCL
+#ifdef DOODADS_INCL
 	if (m_Skybox == nullptr)
 	{
 		return false;
@@ -356,18 +366,18 @@ bool WMO::drawSkybox()
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_DEPTH_TEST);
 
-	glPushMatrix();
-	{
-		glTranslatef(_Camera->Position.x, _Camera->Position.y, _Camera->Position.z);
-		const float sc = 2.0f;
-		glScalef(sc, sc, sc);
-		m_Skybox->draw();
-	}
-	glPopMatrix();
+	_Pipeline->Clear();
+	_Pipeline->Translate(_Camera->Position);
+	_Pipeline->Scale(2.0f);
+
+	_TechniquesMgr->m_MDX_GeometryPass->Bind();
+	_TechniquesMgr->m_MDX_GeometryPass->SetPVW();
+
+	m_Skybox->draw();
+
+	_TechniquesMgr->m_MDX_GeometryPass->Unbind();
 
 	_EnvironmentManager->m_HasSky = true;
-
-	glEnable(GL_DEPTH_TEST);
 
 #endif
 

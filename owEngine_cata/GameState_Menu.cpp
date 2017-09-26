@@ -3,7 +3,6 @@
 // General
 #include "GameState_Menu.h"
 
-// FIXME DELETE ME
 GLint currentColor;
 
 bool GameState_Menu::Init()
@@ -70,7 +69,10 @@ bool GameState_Menu::Init()
 	
 
 	backgroundModel = 0;
-	randBackground();
+	//randBackground();
+
+
+	currentColor = GL_COLOR_ATTACHMENT6;
 
 	return true;
 }
@@ -87,7 +89,17 @@ void GameState_Menu::Destroy()
 void GameState_Menu::InputPhase(double t, double dt)
 {
 	float delta = PI / 60.0f;
-	float speed = 4.5f * (cameraSprint ? 5.0f : 1.0f);
+	float speed = 4.5f;
+
+	if (cameraSlow)
+	{
+		speed *= 0.2f;
+	}
+
+	if (cameraSprint)
+	{
+		speed *= 3.0f;
+	}
 
 	if (_Input->IsKeyPressed(GLFW_KEY_W))
 	{
@@ -129,8 +141,7 @@ void GameState_Menu::Render(double t, double dt)
 
 	if (cmd == CMD_IN_WORLD2 && !minimapActive)
 	{
-		_Camera->Update();
-
+		
 		_World->drawShader(currentColor);
 	}
 
@@ -139,9 +150,10 @@ void GameState_Menu::Render(double t, double dt)
 		vec4 la(0.1f, 0.1f, 0.1f, 1);
 		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, glm::value_ptr(la));
 
-		glEnable(GL_COLOR_MATERIAL);
-		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-		glColor4f(1, 1, 1, 1);
+		//***glEnable(GL_COLOR_MATERIAL);
+		//***glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+
+		/****glColor4f(1, 1, 1, 1);
 		for (int i = 0; i < 8; i++)
 		{
 			GLuint light = GL_LIGHT0 + i;
@@ -149,16 +161,20 @@ void GameState_Menu::Render(double t, double dt)
 			glLightf(light, GL_LINEAR_ATTENUATION, 0.7f);
 			glLightf(light, GL_QUADRATIC_ATTENUATION, 0.03f);
 			glDisable(light);
-		}
-		glEnableClientState(GL_VERTEX_ARRAY);
+		}****/
+
+		/****glEnableClientState(GL_VERTEX_ARRAY);
 		glEnableClientState(GL_NORMAL_ARRAY);
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);***/
+
 		glEnable(GL_TEXTURE_2D);
+
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LEQUAL);
-		glEnable(GL_LIGHTING);
 
-		backgroundModel->m_ModelCamera->setup(_TimeManager->globalTime);
+		//****glEnable(GL_LIGHTING);
+
+		backgroundModel->m_Cameras[0].setup(_TimeManager->globalTime);
 		backgroundModel->draw();
 	}
 }
@@ -175,12 +191,12 @@ void GameState_Menu::RenderUI(double t, double dt)
 		int basex = 200;
 		int basey = 0;
 
-		if (_MapsManager->GetMap()->GetMinimap() != 0)
+		if (_Map->GetMinimap() != 0)
 		{
 			const int len = 768;
 			glColor4f(1, 1, 1, 1);
 			glEnable(GL_TEXTURE_2D);
-			glBindTexture(GL_TEXTURE_2D, _MapsManager->GetMap()->GetMinimap());
+			glBindTexture(GL_TEXTURE_2D, _Map->GetMinimap());
 			glBegin(GL_QUADS);
 			{
 				glTexCoord2f(0, 0);
@@ -214,7 +230,7 @@ void GameState_Menu::RenderUI(double t, double dt)
 	}
 	else if (cmd == CMD_SELECT2)
 	{
-		if (_MapsManager->GetMap()->GetTilesCount() == 0)
+		if (_Map->GetTilesCount() == 0)
 		{
 			_Render->RenderText(vec2(400, 360), "Click to enter");
 		}
@@ -235,7 +251,7 @@ void GameState_Menu::RenderUI(double t, double dt)
 		string regionName = "Unknown";
 		try
 		{
-			auto rec = gMapDB.getByID(_MapsManager->GetMap()->getAreaID());
+			auto rec = gMapDB.getByID(_Map->getAreaID());
 			areaName = rec->Get_Name_cstr();
 			//regionName = AreaDB::getAreaName(rec.getUInt(AreaDB::Region));
 		}
@@ -244,23 +260,33 @@ void GameState_Menu::RenderUI(double t, double dt)
 			areaName = "Not found!";
 		}
 
-		_Render->RenderText(vec2(5, 20), "Area: [" + areaName + "] [" + std::to_string(_MapsManager->GetMap()->getAreaID()) + "]");
+		_Render->RenderText(vec2(5, 20), "Area: [" + areaName + "] [" + std::to_string(_Map->getAreaID()) + "]");
 		_Render->RenderText(vec2(5, 40), "Region: " + regionName + "]");
-		_Render->RenderText(vec2(5, 60), "CURRX: " + to_string(_MapsManager->GetMap()->GetCurrentX()) + ", CURRZ " + to_string(_MapsManager->GetMap()->GetCurrentZ()));
+		_Render->RenderText(vec2(5, 60), "CURRX: " + to_string(_Map->GetCurrentX()) + ", CURRZ " + to_string(_Map->GetCurrentZ()));
 
-		int time = ((int)_EnvironmentManager->m_GameTime) % 2880;
-		int hh, mm;
+		_Render->RenderText(vec2(5, 100), "MAP_CHUNK: " + _Perfomance->Get(PERF_MAP_CHUNK));
+		_Render->RenderText(vec2(5, 120), "MAP_LOWRES_TILES: " + _Perfomance->Get(PERF_MAP_LOWRES_TILES));
+		_Render->RenderText(vec2(5, 140), "MAP_GLOBAL_WMO: " + _Perfomance->Get(PERF_GLOBAL_WMO));
+		_Render->RenderText(vec2(5, 160), "MAP_MDXs: " + _Perfomance->Get(PERF_MAP_MDXs));
+		_Render->RenderText(vec2(5, 180), "MAP_LIQUID: " + _Perfomance->Get(PERF_MAP_LIQUID));
+		_Render->RenderText(vec2(5, 200), "MAP_MH20: " + _Perfomance->Get(PERF_MAP_MH20));
 
-		hh = time / 120;
-		mm = (time % 120) / 2;
+		_Render->RenderText(vec2(5, 240), "WMOs: " + _Perfomance->Get(PERF_WMOs));
+		_Render->RenderText(vec2(5, 260), "WMOs_DOODADS: " + _Perfomance->Get(PERF_WMOs_DOODADS));
+		_Render->RenderText(vec2(5, 280), "WMOs_LIQUIDS: " + _Perfomance->Get(PERF_WMOs_LIQUIDS));
+		
+
+		_Render->RenderText(vec2(5, 340), "SUMMA: " + _Perfomance->Sum());
+		_Render->RenderText(vec2(5, 360), "FRUST: " + _Perfomance->Get(PERF_FRUSTRUM));
+		_Render->RenderText(vec2(5, 380), "TEST: " + _Perfomance->Get(PERF_TEST));
+
+		_Render->RenderText(vec2(5, _Settings->windowSizeY - 66), "REAL CamPos: [" + to_string(_Camera->Position.x) + "], [" + to_string(_Camera->Position.y) + "], [" + to_string(_Camera->Position.z) + "]");
+		_Render->RenderText(vec2(5, _Settings->windowSizeY - 44), "CamPos: [" + to_string(-(_Camera->Position.x - C_ZeroPoint)) + "], [" + to_string(-(_Camera->Position.z - C_ZeroPoint)) + "], [" + to_string(_Camera->Position.y) + "]");
+		_Render->RenderText(vec2(5, _Settings->windowSizeY - 22), "CamRot: [" + to_string(_Camera->Direction.x) + "], [" + to_string(_Camera->Direction.y) + "], [" + to_string(_Camera->Direction.z) + "]");
 
 		// Time
-		_Render->RenderText(vec2(_Settings->windowSizeX - 150, 0), "TIME" + to_string(hh) + " " + to_string(mm));
-		_Render->RenderText(vec2(5, _Settings->windowSizeY - 22), "Cam:" + to_string(-(_Camera->Position.x - C_ZeroPoint)) + "," + to_string(-(_Camera->Position.z - C_ZeroPoint)) + "," + to_string(_Camera->Position.y));
-
-		//_Render->RenderText(vec2(5, 60), "CX: " + to_string(-_Camera->GetPosition().x / C_TileSize) + "], " + to_string(-_Camera->GetPosition().z / C_TileSize) + "]");
-
-
+		_Render->RenderText(vec2(_Settings->windowSizeX - 150, 0), "TIME [" + to_string(_EnvironmentManager->m_GameTime.GetHour()) + "." + to_string(_EnvironmentManager->m_GameTime.GetMinute()) + "]");
+	
 	}
 }
 
@@ -268,9 +294,12 @@ void GameState_Menu::RenderUI(double t, double dt)
 
 bool GameState_Menu::LoadWorld(cvec3 _pos)
 {
-	_MapsManager->GetMap()->enterTile(_pos.x / C_TileSize, _pos.z / C_TileSize);
+	_Map->enterTile(_pos.x / C_TileSize, _pos.z / C_TileSize);
 	_World->initDisplay();
+
+
 	_Camera->Position = _pos;
+	_Camera->Update();
 
 	if (backgroundModel != nullptr)
 	{
@@ -308,14 +337,14 @@ MOUSE_PRESSED(GameState_Menu)
 
 		vec3 pointInWorld;
 
-		if (_MapsManager->GetMap()->MapHasTerrain())
+		if (_Map->MapHasTerrain())
 		{
 			pointInWorld = vec3(selectedPointX / 12.0f, 0.1f, selectedPointZ / 12.0f) * C_TileSize;
 		}
-		else if (_MapsManager->GetMap()->MapHasGlobalWMO())
+		else if (_Map->MapHasGlobalWMO())
 		{
 #ifdef WMO_INCL
-			pointInWorld = _MapsManager->GetMap()->GetMapWMOs()->GetGlobalWMOPlacementInfo()->position;
+			pointInWorld = _Map->GetGlobalWMOPlacementInfo()->position;
 #endif
 		}
 
@@ -382,32 +411,55 @@ KEYBD_PRESSED(GameState_Menu)
 		return true;
 	}
 
+	if (_key == GLFW_KEY_Z)
+	{
+		cameraSlow = true;
+		return true;
+	}
+
 	if (_key == GLFW_KEY_L)
 	{
 		_Settings->lighting = !_Settings->lighting;
 		return true;
 	}
 
-	if (_key == GLFW_KEY_F5)
+	if (_key == GLFW_KEY_KP_1)
 	{
-		_Settings->drawmodels = !_Settings->drawmodels;
+		_Settings->draw_map_chunk = !_Settings->draw_map_chunk;
 		return true;
 	}
-	if (_key == GLFW_KEY_F6)
+	if (_key == GLFW_KEY_KP_2)
 	{
-		_Settings->drawdoodads = !_Settings->drawdoodads;
+		_Settings->draw_map_wmo = !_Settings->draw_map_wmo;
 		return true;
 	}
-	if (_key == GLFW_KEY_F7)
+	if (_key == GLFW_KEY_KP_3)
 	{
-		_Settings->drawterrain = !_Settings->drawterrain;
+		_Settings->draw_map_wmo_doodads = !_Settings->draw_map_wmo_doodads;
 		return true;
 	}
-	if (_key == GLFW_KEY_F8)
+
+	if (_key == GLFW_KEY_KP_4)
 	{
-		_Settings->drawwmo = !_Settings->drawwmo;
+		_Settings->draw_map_mdx = !_Settings->draw_map_mdx;
 		return true;
 	}
+
+
+
+	if (_key == GLFW_KEY_KP_7)
+	{
+		_Settings->disable_pipeline = !_Settings->disable_pipeline;
+		return true;
+	}
+
+	if (_key == GLFW_KEY_KP_8)
+	{
+		_Settings->useOldMDXShader = !_Settings->useOldMDXShader;
+		return true;
+	}
+
+
 
 	if (_key == GLFW_KEY_C)
 	{
@@ -476,6 +528,12 @@ KEYBD_PRESSED(GameState_Menu)
 		return true;
 	}
 
+	if (_key == GLFW_KEY_7)
+	{
+		currentColor = GL_COLOR_ATTACHMENT6;
+		return true;
+	}
+
 	return false;
 }
 
@@ -484,6 +542,12 @@ KEYBD_RELEASE(GameState_Menu)
 	if (_key == GLFW_KEY_X)
 	{
 		cameraSprint = false;
+		return true;
+	}
+
+	if (_key == GLFW_KEY_Z)
+	{
+		cameraSlow = false;
 		return true;
 	}
 
@@ -505,7 +569,7 @@ void GameState_Menu::randBackground()
 	char path[256];
 	//sprintf_s(path, "Interface\\Glues\\Models\\UI_%s\\UI_%s.m2", randui, randui);
 
-	backgroundModel = new Model("Interface\\Glues\\Models\\UI_Scourge\\UI_Scourge.m2");
+	backgroundModel = new MDX("Interface\\Glues\\Models\\UI_Scourge\\UI_Scourge.m2");
 	backgroundModel->Init();
-	backgroundModel->ind = true;
+	backgroundModel->m_IsBillboard = true;
 }

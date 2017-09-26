@@ -1,14 +1,11 @@
 #include "stdafx.h"
 
 // Include
-#include "Model.h"
-#include "Model_Bone.h"
+#include "MDX.h"
+#include "MDX_Part_Bone.h"
 
 // General
 #include "RibbonEmitter.h"
-
-// Additional
-#include "ModelsUtils.h"
 
 void RibbonEmitter::init(File& f, M2Ribbon& mta, uint32_t * globals)
 {
@@ -17,7 +14,7 @@ void RibbonEmitter::init(File& f, M2Ribbon& mta, uint32_t * globals)
 	above.init(mta.heightAboveTrack, f, globals);
 	below.init(mta.heightBelowTrack, f, globals);
 
-	parent = model->bones + mta.boneIndex;
+	parent = model->m_Part_Bones + mta.boneIndex;
 	int *texlist = (int*)(f.GetData() + mta.textureIndices.offset);
 	// just use the first texture for now; most models I've checked only had one
 	texture = model->textures[texlist[0]];

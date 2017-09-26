@@ -75,6 +75,7 @@ void DayNightPhase::init(File& f)
 	f.ReadBytes(&fogColor.z, 4);
 
 	time = (int)h * 60 * 2 + (int)m * 2;
+	//m_Time.Set((int)h, (int)m);
 
 	// HACK: make day & night intensity exclusive; set day intensity to 1.0
 	if (dayIntensity > 0)
@@ -131,14 +132,26 @@ void DayNightPhase::setupLighting()
 		direction[1] = dayDir.z;
 		direction[2] = -dayDir.y;
 
-		glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
+		/*glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
 		glLightfv(GL_LIGHT0, GL_DIFFUSE, day);
 		glLightfv(GL_LIGHT0, GL_POSITION, direction);
-		glEnable(GL_LIGHT0);
+		glEnable(GL_LIGHT0);*/
+
+		m_dirLightDay.ambient.r = ambient[0];
+		m_dirLightDay.ambient.g = ambient[1];
+		m_dirLightDay.ambient.b = ambient[2];
+
+		m_dirLightDay.diffuse.r = day[0];
+		m_dirLightDay.diffuse.g = day[1];
+		m_dirLightDay.diffuse.b = day[2];
+
+		m_dirLightDay.Direction.x = direction[0];
+		m_dirLightDay.Direction.y = direction[1];
+		m_dirLightDay.Direction.z = direction[2];
 	}
 	else
 	{
-		glDisable(GL_LIGHT0);
+		//glDisable(GL_LIGHT0);
 	}
 
 	// Setup night lighting
@@ -147,18 +160,31 @@ void DayNightPhase::setupLighting()
 		day[0] = nightColor.x * nightIntensity;
 		day[1] = nightColor.y * nightIntensity;
 		day[2] = nightColor.z * nightIntensity;
+
 		direction[0] = nightDir.x;
 		direction[1] = nightDir.z;
 		direction[2] = -nightDir.y;
 
-		glLightfv(GL_LIGHT1, GL_AMBIENT, ambient);
-		glLightfv(GL_LIGHT1, GL_DIFFUSE, day);
-		glLightfv(GL_LIGHT1, GL_POSITION, direction);
-		glEnable(GL_LIGHT1);
+		//glLightfv(GL_LIGHT1, GL_AMBIENT, ambient);
+		//glLightfv(GL_LIGHT1, GL_DIFFUSE, day);
+		//glLightfv(GL_LIGHT1, GL_POSITION, direction);
+		//glEnable(GL_LIGHT1);
+
+		m_dirLightNight.ambient.r = ambient[0];
+		m_dirLightNight.ambient.g = ambient[1];
+		m_dirLightNight.ambient.b = ambient[2];
+
+		m_dirLightNight.diffuse.r = day[0];
+		m_dirLightNight.diffuse.g = day[1];
+		m_dirLightNight.diffuse.b = day[2];
+
+		m_dirLightNight.Direction.x = direction[0];
+		m_dirLightNight.Direction.y = direction[1];
+		m_dirLightNight.Direction.z = direction[2];
 	}
 	else
 	{
-		glDisable(GL_LIGHT1);
+		//glDisable(GL_LIGHT1);
 	}
 
 	// Setup ambient lighting
@@ -167,7 +193,7 @@ void DayNightPhase::setupLighting()
 		ambient[1] = ambientColor.y * ambientIntensity;
 		ambient[2] = ambientColor.z * ambientIntensity;
 
-		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
-		glDisable(GL_LIGHT2);
+		//glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
+		//glDisable(GL_LIGHT2);
 	}
 }

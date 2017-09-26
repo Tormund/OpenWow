@@ -22,6 +22,14 @@
     <ClCompile Include="Animated.cpp" />
     <ClCompile Include="BaseFile.cpp" />
     <ClCompile Include="BoundingBox.cpp" />
+    <ClCompile Include="CASCFile.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="CASCFolder.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="ContainerAssync.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="InfoPortions.cpp" />
@@ -54,6 +62,7 @@
     <ClCompile Include="UtilsConvert.cpp" />
     <ClCompile Include="WowChunkUtils.cpp" />
     <ClCompile Include="WowConsts.cpp" />
+    <ClCompile Include="WowTime.cpp" />
     <ClCompile Include="XMLFile.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -62,6 +71,14 @@
     <ClInclude Include="AnimationTypes.h" />
     <ClInclude Include="BaseFile.h" />
     <ClInclude Include="BoundingBox.h" />
+    <ClInclude Include="CASCFile.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="CASCFolder.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="ContainerAssync.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="GameModule.h" />
@@ -103,6 +120,7 @@
     <ClInclude Include="Utils.h" />
     <ClInclude Include="WowChunkUtils.h" />
     <ClInclude Include="WowConsts.h" />
+    <ClInclude Include="WowTime.h" />
     <ClInclude Include="WowTypes.h" />
     <ClInclude Include="XMLFile.h" />
   </ItemGroup>

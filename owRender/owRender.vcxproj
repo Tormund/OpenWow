@@ -170,30 +170,36 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ddslib.cpp" />
-    <ClCompile Include="ds_dir_light_pass_tech.cpp" />
-    <ClCompile Include="ds_geom_pass_tech.cpp" />
-    <ClCompile Include="ds_light_pass_tech.cpp" />
-    <ClCompile Include="ds_point_light_pass_tech.cpp" />
+    <ClCompile Include="Perfomance.cpp" />
+    <ClCompile Include="TechniquesManager.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FontsMgr.cpp" />
-    <ClCompile Include="frustum.cpp" />
+    <ClCompile Include="Frustum.cpp" />
     <ClCompile Include="Gbuffer.cpp" />
     <ClCompile Include="GLFWBackend.cpp" />
     <ClCompile Include="Image.cpp" />
-    <ClCompile Include="MapTilePass.cpp" />
-    <ClCompile Include="null_technique.cpp" />
     <ClCompile Include="Pipeline.cpp" />
     <ClCompile Include="Render.cpp" />
     <ClCompile Include="Shader.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="shaders.cpp" />
     <ClCompile Include="ShadowMapFBO.cpp" />
-    <ClCompile Include="SimpleColorTechnique.cpp" />
-    <ClCompile Include="SimpleRenderGBuffer.cpp" />
-    <ClCompile Include="Technique.cpp" />
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="Techniques\Billboard_GeometryPass.cpp" />
+    <ClCompile Include="Techniques\ds_dir_light_pass_tech.cpp" />
+    <ClCompile Include="Techniques\ds_light_pass_tech.cpp" />
+    <ClCompile Include="Techniques\ds_point_light_pass_tech.cpp" />
+    <ClCompile Include="Techniques\MapChunk_GeometryPass.cpp" />
+    <ClCompile Include="Techniques\MapTileLowRes_GeometryPass.cpp" />
+    <ClCompile Include="Techniques\MDX_GeometryPass.cpp" />
+    <ClCompile Include="Techniques\null_technique.cpp" />
+    <ClCompile Include="Techniques\SimpleColorTechnique.cpp" />
+    <ClCompile Include="Techniques\SimpleRenderGBuffer.cpp" />
+    <ClCompile Include="Techniques\Sky_GeometryPass.cpp" />
+    <ClCompile Include="Techniques\Technique.cpp" />
+    <ClCompile Include="Techniques\WMO_GeomertyPass.cpp" />
+    <ClCompile Include="Techniques\WMO_MH2O_GeometryPass.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TexturesMgr.cpp" />
   </ItemGroup>
@@ -202,33 +208,43 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="common.h" />
     <ClInclude Include="ddslib.h" />
-    <ClInclude Include="ds_dir_light_pass_tech.h" />
-    <ClInclude Include="ds_geom_pass_tech.h" />
-    <ClInclude Include="ds_light_pass_tech.h" />
-    <ClInclude Include="ds_point_light_pass_tech.h" />
+    <ClInclude Include="Perfomance.h" />
+    <ClInclude Include="TechniquesManager.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="FontsMgr.h" />
-    <ClInclude Include="frustum.h" />
+    <ClInclude Include="Frustum.h" />
     <ClInclude Include="Gbuffer.h" />
     <ClInclude Include="GLFWBackend.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="lights_common.h" />
-    <ClInclude Include="MapTilePass.h" />
-    <ClInclude Include="null_technique.h" />
     <ClInclude Include="Pipeline.h" />
     <ClInclude Include="Render.h" />
     <ClInclude Include="Shader.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="shaders.h" />
     <ClInclude Include="ShadowMapFBO.h" />
-    <ClInclude Include="SimpleColorTechnique.h" />
-    <ClInclude Include="SimpleRenderGBuffer.h" />
-    <ClInclude Include="Technique.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Techniques\Billboard_GeometryPass.h" />
+    <ClInclude Include="Techniques\ds_dir_light_pass_tech.h" />
+    <ClInclude Include="Techniques\ds_light_pass_tech.h" />
+    <ClInclude Include="Techniques\ds_point_light_pass_tech.h" />
+    <ClInclude Include="Techniques\MapChunk_GeometryPass.h" />
+    <ClInclude Include="Techniques\MapTileLowRes_GeometryPass.h" />
+    <ClInclude Include="Techniques\MDX_GeometryPass.h" />
+    <ClInclude Include="Techniques\null_technique.h" />
+    <ClInclude Include="Techniques\SimpleColorTechnique.h" />
+    <ClInclude Include="Techniques\SimpleRenderGBuffer.h" />
+    <ClInclude Include="Techniques\Sky_GeometryPass.h" />
+    <ClInclude Include="Techniques\Technique.h" />
+    <ClInclude Include="Techniques\WMO_GeomertyPass.h" />
+    <ClInclude Include="Techniques\WMO_MH2O_GeometryPass.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TexturesMgr.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Pipeline.inl" />
+    <None Include="Techniques\Technique.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

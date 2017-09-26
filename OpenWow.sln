@@ -10,7 +10,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "owCore", "owCore\owCore.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "owGame", "owGame\owGame.vcxproj", "{25E4827B-D0DD-4758-B70F-DEA7217E7E70}"
 	ProjectSection(ProjectDependencies) = postProject
-		{4BDE3C61-6FD1-49B2-AD4B-FEDFA2400700} = {4BDE3C61-6FD1-49B2-AD4B-FEDFA2400700}
 		{0CC7FA61-23DE-4D9F-A6F4-FDA327AB5984} = {0CC7FA61-23DE-4D9F-A6F4-FDA327AB5984}
 		{A4E6F769-0036-4128-A409-495D9207F587} = {A4E6F769-0036-4128-A409-495D9207F587}
 		{E722B6DA-F485-4EAA-8E72-205CE3D4CEB5} = {E722B6DA-F485-4EAA-8E72-205CE3D4CEB5}
@@ -32,7 +31,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "owEngine_cata", "owEngine_c
 		{E91AA808-E8ED-4F59-A7FB-D475E8B26BE9} = {E91AA808-E8ED-4F59-A7FB-D475E8B26BE9}
 		{E735D40E-FF80-465B-B105-CA4402974DBD} = {E735D40E-FF80-465B-B105-CA4402974DBD}
 		{2382CC5F-EFFC-4A3C-8376-A76A843C79BC} = {2382CC5F-EFFC-4A3C-8376-A76A843C79BC}
-		{4BDE3C61-6FD1-49B2-AD4B-FEDFA2400700} = {4BDE3C61-6FD1-49B2-AD4B-FEDFA2400700}
 		{0CC7FA61-23DE-4D9F-A6F4-FDA327AB5984} = {0CC7FA61-23DE-4D9F-A6F4-FDA327AB5984}
 		{A4E6F769-0036-4128-A409-495D9207F587} = {A4E6F769-0036-4128-A409-495D9207F587}
 		{16F78E77-E985-44DB-9EFA-A2345A6BBC6A} = {16F78E77-E985-44DB-9EFA-A2345A6BBC6A}
@@ -50,18 +48,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "owTest", "owTest\owTest.vcx
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shaders", "Shaders", "{57229CFC-3ED4-4E66-A65A-87F7802A3477}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "owGUI", "owGUI\owGUI.vcxproj", "{4BDE3C61-6FD1-49B2-AD4B-FEDFA2400700}"
-	ProjectSection(ProjectDependencies) = postProject
-		{A4E6F769-0036-4128-A409-495D9207F587} = {A4E6F769-0036-4128-A409-495D9207F587}
-		{E722B6DA-F485-4EAA-8E72-205CE3D4CEB5} = {E722B6DA-F485-4EAA-8E72-205CE3D4CEB5}
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shared", "shared", "{C8B50526-DF4C-4967-B575-671360520ACF}"
 	ProjectSection(SolutionItems) = preProject
 		shared\owCore.h = shared\owCore.h
 		shared\owDBC.h = shared\owDBC.h
 		shared\owGame.h = shared\owGame.h
-		shared\owGUI.h = shared\owGUI.h
 		shared\owMap.h = shared\owMap.h
 		shared\owMDX.h = shared\owMDX.h
 		shared\owRender.h = shared\owRender.h
@@ -80,18 +71,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "owMDX", "owMDX\owMDX.vcxpro
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3rd party", "3rd party", "{7117DD40-5090-4982-B565-034F60A0D3B1}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "Externals\zlib\zlib.vcxproj", "{DE5C4BA2-A55A-4700-B1D1-E0BE0F446553}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libmpq", "Externals\libmpq\libmpq.vcxproj", "{0CC7FA61-23DE-4D9F-A6F4-FDA327AB5984}"
-	ProjectSection(ProjectDependencies) = postProject
-		{DE5C4BA2-A55A-4700-B1D1-E0BE0F446553} = {DE5C4BA2-A55A-4700-B1D1-E0BE0F446553}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "soil", "Externals\soil\soil.vcxproj", "{D9837E8D-ACEE-4D36-A7AF-A4B7566E5A8D}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "owMDXViewer", "owMDXViewer\owMDXViewer.vcxproj", "{25DF2DC6-9E74-4F59-8961-9949335A58BC}"
 	ProjectSection(ProjectDependencies) = postProject
-		{4BDE3C61-6FD1-49B2-AD4B-FEDFA2400700} = {4BDE3C61-6FD1-49B2-AD4B-FEDFA2400700}
 		{A4E6F769-0036-4128-A409-495D9207F587} = {A4E6F769-0036-4128-A409-495D9207F587}
 		{3E02CB79-5276-4FF6-AA91-9BDF2AD8A25A} = {3E02CB79-5276-4FF6-AA91-9BDF2AD8A25A}
 		{25E4827B-D0DD-4758-B70F-DEA7217E7E70} = {25E4827B-D0DD-4758-B70F-DEA7217E7E70}
@@ -113,13 +98,30 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "owEnvironment", "owEnvironm
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_shaders", "_shaders", "{52796937-C440-4FF4-B522-EB37C29A5B17}"
 	ProjectSection(SolutionItems) = preProject
-		_gamedata\shaders\geometry_pass.glsl = _gamedata\shaders\geometry_pass.glsl
-		_gamedata\shaders\light_pass.glsl = _gamedata\shaders\light_pass.glsl
-		_gamedata\shaders\mapTilePass.glsl = _gamedata\shaders\mapTilePass.glsl
 		_gamedata\shaders\null_technique.glsl = _gamedata\shaders\null_technique.glsl
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Geometry", "Geometry", "{ED2529B1-212A-404C-8FE9-80110E8F7595}"
+	ProjectSection(SolutionItems) = preProject
+		_gamedata\shaders\Billboard.glsl = _gamedata\shaders\Billboard.glsl
+		_gamedata\shaders\commonGeometry.glsl = _gamedata\shaders\commonGeometry.glsl
+		_gamedata\shaders\MapChunk_GeometryPass.glsl = _gamedata\shaders\MapChunk_GeometryPass.glsl
+		_gamedata\shaders\MapTileLowRes_GeometryPass.glsl = _gamedata\shaders\MapTileLowRes_GeometryPass.glsl
+		_gamedata\shaders\MDX_GeometryPass.glsl = _gamedata\shaders\MDX_GeometryPass.glsl
+		_gamedata\shaders\Sky_GeometryPass.glsl = _gamedata\shaders\Sky_GeometryPass.glsl
+		_gamedata\shaders\WMO_GeomertyPass.glsl = _gamedata\shaders\WMO_GeomertyPass.glsl
+		_gamedata\shaders\WMO_MH2O_GeometryPass.glsl = _gamedata\shaders\WMO_MH2O_GeometryPass.glsl
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Postprocess", "Postprocess", "{A9A76ED3-A67F-4DB6-B4AE-A7785349F4B5}"
+	ProjectSection(SolutionItems) = preProject
+		_gamedata\shaders\commonPostprocess.glsl = _gamedata\shaders\commonPostprocess.glsl
+		_gamedata\shaders\light_pass.glsl = _gamedata\shaders\light_pass.glsl
 		_gamedata\shaders\SimpleColor.glsl = _gamedata\shaders\SimpleColor.glsl
 		_gamedata\shaders\simpleRender.glsl = _gamedata\shaders\simpleRender.glsl
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CascLib_dll", "Externals\CascLib\CascLib_vs17_dll.vcxproj", "{CB385198-50B1-4CF4-883B-11F042DED6AA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -177,14 +179,6 @@ Global
 		{3BCC105A-6AEE-4C9E-A8C7-3FB9336EA2A2}.Release|x64.Build.0 = Release|x64
 		{3BCC105A-6AEE-4C9E-A8C7-3FB9336EA2A2}.Release|x86.ActiveCfg = Release|Win32
 		{3BCC105A-6AEE-4C9E-A8C7-3FB9336EA2A2}.Release|x86.Build.0 = Release|Win32
-		{4BDE3C61-6FD1-49B2-AD4B-FEDFA2400700}.Debug|x64.ActiveCfg = Debug|x64
-		{4BDE3C61-6FD1-49B2-AD4B-FEDFA2400700}.Debug|x64.Build.0 = Debug|x64
-		{4BDE3C61-6FD1-49B2-AD4B-FEDFA2400700}.Debug|x86.ActiveCfg = Debug|Win32
-		{4BDE3C61-6FD1-49B2-AD4B-FEDFA2400700}.Debug|x86.Build.0 = Debug|Win32
-		{4BDE3C61-6FD1-49B2-AD4B-FEDFA2400700}.Release|x64.ActiveCfg = Release|x64
-		{4BDE3C61-6FD1-49B2-AD4B-FEDFA2400700}.Release|x64.Build.0 = Release|x64
-		{4BDE3C61-6FD1-49B2-AD4B-FEDFA2400700}.Release|x86.ActiveCfg = Release|Win32
-		{4BDE3C61-6FD1-49B2-AD4B-FEDFA2400700}.Release|x86.Build.0 = Release|Win32
 		{3E02CB79-5276-4FF6-AA91-9BDF2AD8A25A}.Debug|x64.ActiveCfg = Debug|x64
 		{3E02CB79-5276-4FF6-AA91-9BDF2AD8A25A}.Debug|x64.Build.0 = Debug|x64
 		{3E02CB79-5276-4FF6-AA91-9BDF2AD8A25A}.Debug|x86.ActiveCfg = Debug|Win32
@@ -193,14 +187,6 @@ Global
 		{3E02CB79-5276-4FF6-AA91-9BDF2AD8A25A}.Release|x64.Build.0 = Release|x64
 		{3E02CB79-5276-4FF6-AA91-9BDF2AD8A25A}.Release|x86.ActiveCfg = Release|Win32
 		{3E02CB79-5276-4FF6-AA91-9BDF2AD8A25A}.Release|x86.Build.0 = Release|Win32
-		{DE5C4BA2-A55A-4700-B1D1-E0BE0F446553}.Debug|x64.ActiveCfg = Debug|x64
-		{DE5C4BA2-A55A-4700-B1D1-E0BE0F446553}.Debug|x64.Build.0 = Debug|x64
-		{DE5C4BA2-A55A-4700-B1D1-E0BE0F446553}.Debug|x86.ActiveCfg = Debug|Win32
-		{DE5C4BA2-A55A-4700-B1D1-E0BE0F446553}.Debug|x86.Build.0 = Debug|Win32
-		{DE5C4BA2-A55A-4700-B1D1-E0BE0F446553}.Release|x64.ActiveCfg = Release|x64
-		{DE5C4BA2-A55A-4700-B1D1-E0BE0F446553}.Release|x64.Build.0 = Release|x64
-		{DE5C4BA2-A55A-4700-B1D1-E0BE0F446553}.Release|x86.ActiveCfg = Release|Win32
-		{DE5C4BA2-A55A-4700-B1D1-E0BE0F446553}.Release|x86.Build.0 = Release|Win32
 		{0CC7FA61-23DE-4D9F-A6F4-FDA327AB5984}.Debug|x64.ActiveCfg = Debug|x64
 		{0CC7FA61-23DE-4D9F-A6F4-FDA327AB5984}.Debug|x64.Build.0 = Debug|x64
 		{0CC7FA61-23DE-4D9F-A6F4-FDA327AB5984}.Debug|x86.ActiveCfg = Debug|Win32
@@ -249,14 +235,24 @@ Global
 		{E91AA808-E8ED-4F59-A7FB-D475E8B26BE9}.Release|x64.Build.0 = Release|x64
 		{E91AA808-E8ED-4F59-A7FB-D475E8B26BE9}.Release|x86.ActiveCfg = Release|Win32
 		{E91AA808-E8ED-4F59-A7FB-D475E8B26BE9}.Release|x86.Build.0 = Release|Win32
+		{CB385198-50B1-4CF4-883B-11F042DED6AA}.Debug|x64.ActiveCfg = Debug|x64
+		{CB385198-50B1-4CF4-883B-11F042DED6AA}.Debug|x64.Build.0 = Debug|x64
+		{CB385198-50B1-4CF4-883B-11F042DED6AA}.Debug|x86.ActiveCfg = Debug|Win32
+		{CB385198-50B1-4CF4-883B-11F042DED6AA}.Debug|x86.Build.0 = Debug|Win32
+		{CB385198-50B1-4CF4-883B-11F042DED6AA}.Release|x64.ActiveCfg = Release|x64
+		{CB385198-50B1-4CF4-883B-11F042DED6AA}.Release|x64.Build.0 = Release|x64
+		{CB385198-50B1-4CF4-883B-11F042DED6AA}.Release|x86.ActiveCfg = Release|Win32
+		{CB385198-50B1-4CF4-883B-11F042DED6AA}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{DE5C4BA2-A55A-4700-B1D1-E0BE0F446553} = {7117DD40-5090-4982-B565-034F60A0D3B1}
 		{0CC7FA61-23DE-4D9F-A6F4-FDA327AB5984} = {7117DD40-5090-4982-B565-034F60A0D3B1}
 		{D9837E8D-ACEE-4D36-A7AF-A4B7566E5A8D} = {7117DD40-5090-4982-B565-034F60A0D3B1}
+		{ED2529B1-212A-404C-8FE9-80110E8F7595} = {52796937-C440-4FF4-B522-EB37C29A5B17}
+		{A9A76ED3-A67F-4DB6-B4AE-A7785349F4B5} = {52796937-C440-4FF4-B522-EB37C29A5B17}
+		{CB385198-50B1-4CF4-883B-11F042DED6AA} = {7117DD40-5090-4982-B565-034F60A0D3B1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {30BF641C-2C5D-4C14-B950-C07F6CD68736}

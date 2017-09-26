@@ -1,13 +1,10 @@
 #include "stdafx.h"
 
 // Inlcudes
-#include "Model.h"
+#include "MDX.h"
 
 // General
 #include "ParticleSystem.h"
-
-// Additional
-#include "ModelsUtils.h"
 
 ParticleSystem::ParticleSystem() : emitter(0), mid(0), rem(0)
 {
@@ -69,7 +66,7 @@ void ParticleSystem::init(File& f, M2Particle& mta, uint32_t* globals)
 	type = mta.particleColorIndex;
 	//order = mta.s2;
 	order = mta.particleColorIndex > 0 ? -1 : 0;
-	parent = model->bones + mta.bone;
+	parent = model->m_Part_Bones + mta.bone;
 
 	switch (mta.emitterType)
 	{
@@ -95,7 +92,7 @@ void ParticleSystem::init(File& f, M2Particle& mta, uint32_t* globals)
 	// 57 = Faith halo, ring?
 	// 9 = water elemental
 
-	billboard = !(mta.flags & M2PARTICLE_FLAGS_DONOTBILLBOARD);
+	billboard = !(mta.flags.M2PARTICLE_FLAGS_DONOTBILLBOARD);
 
 
 	manim = mtime = 0;

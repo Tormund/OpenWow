@@ -3,10 +3,15 @@
 // General
 #include "Model_Instance.h"
 
-ModelInstance::ModelInstance(Model* _modelObject, File& f) : modelObject(_modelObject)
+ModelInstance::ModelInstance(File& f)
 {
 	placementInfo = new ModelPlacementInfo;
 	f.ReadBytes(placementInfo, ModelPlacementInfo::__size);
+
+	// Convert rotation
+	placementInfo->rotation = glm::radians(placementInfo->rotation);
+	placementInfo->rotation.x = -placementInfo->rotation.x;
+	placementInfo->rotation.y = placementInfo->rotation.y - PI / 2.0;
 
 	sc = placementInfo->scale / 1024.0f;
 }
@@ -18,30 +23,31 @@ ModelInstance::~ModelInstance()
 
 void ModelInstance::draw()
 {
-	float dist = glm::length(placementInfo->position - _Camera->Position) - modelObject->rad;
-	if (dist > _Settings->modeldrawdistance)
+	float dist = glm::length(placementInfo->position - _Camera->Position);
+	if (dist > _Settings->modeldrawdistance + modelObject->rad * sc)
+	{
+		//return;
+	}
+
+	if (!_Render->frustum.intersectsSphere(placementInfo->position, modelObject->rad * sc))
 	{
 		return;
 	}
 
-	if (!_Render->frustum.intersectsSphere(placementInfo->position, modelObject->rad*sc))
+	if (!_Settings->disable_pipeline)
 	{
-		return;
+		_Pipeline->Clear();
+
+		_Pipeline->Translate(placementInfo->position.x, placementInfo->position.y, placementInfo->position.z);
+		
+		_Pipeline->RotateX(placementInfo->rotation.z);
+		_Pipeline->RotateY(placementInfo->rotation.y);
+		_Pipeline->RotateZ(placementInfo->rotation.x);
+	
+		_Pipeline->Scale(sc);
 	}
 
-	//
+	modelObject->draw();
 
-	glPushMatrix();
-	{
-		glTranslatef(placementInfo->position.x, placementInfo->position.y, placementInfo->position.z);
-
-		glRotatef(placementInfo->rotation.y - 90.0f, 0, 1, 0);
-		glRotatef(-placementInfo->rotation.x, 0, 0, 1);
-		glRotatef(placementInfo->rotation.z, 1, 0, 0);
-
-		glScalef(sc, sc, sc);
-
-		modelObject->draw();
-	}
-	glPopMatrix();
+	_Perfomance->Inc(PERF_MAP_MDXs);
 }

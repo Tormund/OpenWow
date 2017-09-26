@@ -11,19 +11,13 @@
     <ClCompile Include="Map.cpp">
       <Filter>Map</Filter>
     </ClCompile>
-    <ClCompile Include="Map_GlobalWMOs.cpp">
+    <ClCompile Include="Map_Chunk.cpp">
       <Filter>Map</Filter>
     </ClCompile>
-    <ClCompile Include="MapChunk.cpp">
+    <ClCompile Include="Map_Tile.cpp">
       <Filter>Map</Filter>
     </ClCompile>
-    <ClCompile Include="MapTile.cpp">
-      <Filter>Map</Filter>
-    </ClCompile>
-    <ClCompile Include="MapWaterChunk.cpp">
-      <Filter>Map</Filter>
-    </ClCompile>
-    <ClCompile Include="MapsManager.cpp">
+    <ClCompile Include="Map_Chunk_MH2O.cpp">
       <Filter>Map</Filter>
     </ClCompile>
   </ItemGroup>
@@ -39,19 +33,13 @@
     <ClInclude Include="Map.h">
       <Filter>Map</Filter>
     </ClInclude>
-    <ClInclude Include="Map_GlobalWMOs.h">
+    <ClInclude Include="Map_Chunk.h">
       <Filter>Map</Filter>
     </ClInclude>
-    <ClInclude Include="MapChunk.h">
+    <ClInclude Include="Map_Tile.h">
       <Filter>Map</Filter>
     </ClInclude>
-    <ClInclude Include="MapTile.h">
-      <Filter>Map</Filter>
-    </ClInclude>
-    <ClInclude Include="MapWaterChunk.h">
-      <Filter>Map</Filter>
-    </ClInclude>
-    <ClInclude Include="MapsManager.h">
+    <ClInclude Include="Map_Chunk_Types.h">
       <Filter>Map</Filter>
     </ClInclude>
   </ItemGroup>
@@ -62,5 +50,10 @@
     <Filter Include="Map">
       <UniqueIdentifier>{2ec49cb3-5ded-4c68-a7be-1a56f13f0ab3}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Map.inl">
+      <Filter>Map</Filter>
+    </None>
   </ItemGroup>
 </Project>

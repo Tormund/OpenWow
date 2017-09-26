@@ -121,9 +121,9 @@ public:
 
 
 	//-- Skybox --//
-#ifdef MDX_INCL
+#ifdef DOODADS_INCL
 	char* m_Skybox_Filename;                                 // MOSB chunk
-	Model* m_Skybox;
+	MDX* m_Skybox;
 #endif
 
 	//-- Portals --//
@@ -139,7 +139,7 @@ public:
 
 
 	//-- Doodads --//
-#ifdef MDX_INCL
+#ifdef DOODADS_INCL
 	vector<WMO_DoodadSet*> doodadsets;                      // MODS chunk
 	char* m_MDXFilenames;                                   // MODN chunk
 	vector<string> m_MDXNames;                             

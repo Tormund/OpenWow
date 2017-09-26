@@ -1,14 +1,14 @@
 #pragma once
 
-class Model;
+class MDX;
 
-/*class ModelRenderPass
+class ModelRenderPass
 {
 public:
-	bool init(Model * m);
+	bool init(MDX * m);
 	void deinit();
 
-	bool operator< (const ModelRenderPass& _other) const
+	inline bool operator< (const ModelRenderPass& _other) const
 	{
 		if (order < _other.order)
 		{
@@ -24,7 +24,7 @@ public:
 		}
 	}
 
-private:
+public:
 	uint32_t indexStart, indexCount, vertexStart, vertexEnd;
 	//Texture* texture, texture2;
 	int tex;
@@ -42,4 +42,4 @@ private:
 
 	// colours
 	vec4 ocol, ecol;
-};*/
+};

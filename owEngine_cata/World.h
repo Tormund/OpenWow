@@ -18,6 +18,8 @@ public:
 
 	void DSGeometryPassBegin();
 	void DSGeometryPassEnd();
+
+	void DSDirectionalLightPass(DirectionalLight& _light);
 	void DSSimpleRenderPass();
 
 public:
@@ -26,10 +28,6 @@ public:
 
 public:
 	GBuffer* m_gbuffer;
-
-	DSGeomPassTech* m_DSGeomPassTech;
-	SimpleRenderGBuffer* m_SimpleRender;
-	MapTilePass* pass;
 };
 
 #define _World World::instance()

@@ -28,13 +28,18 @@ struct ModelPlacementInfo
 class ModelInstance
 {
 public:
-	ModelInstance(Model* _modelObject, File& f);
+	ModelInstance(File& f);
 	~ModelInstance();
+
+	void SetModel(MDX* m)
+	{
+		modelObject = m;
+	}
 
 	void draw();
 
 public: 
-	Model* modelObject;
+	MDX* modelObject;
 	ModelPlacementInfo* placementInfo;
 
 	float sc;

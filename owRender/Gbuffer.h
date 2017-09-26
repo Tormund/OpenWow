@@ -23,10 +23,13 @@ class GBuffer
 public:
 	enum GBUFFER_TEXTURE_TYPE
 	{
-		GBUFFER_TEXTURE_TYPE_POSITION,
-		GBUFFER_TEXTURE_TYPE_DIFFUSE,
-		GBUFFER_TEXTURE_TYPE_NORMAL,
-		GBUFFER_TEXTURE_TYPE_SPECULAR
+		GBUFFER_TEXTURE_TYPE_POSITION = 0,
+		GBUFFER_TEXTURE_TYPE_NORMAL = 1,
+
+		GBUFFER_TEXTURE_TYPE_AMBIENT = 2,
+		GBUFFER_TEXTURE_TYPE_DIFFUSE = 3,
+		GBUFFER_TEXTURE_TYPE_SPECULAR = 4,
+		GBUFFER_TEXTURE_TYPE_SPECULAR_SHININESS = 5
 	};
 
 	GBuffer();
@@ -36,17 +39,17 @@ public:
 
 	void StartFrame();
 	void BindForGeomPass();
+
+	void Clear();
+
 	void BindForStencilPass();
 	void BindForLightPass();
-	void BindForFinalPass(GLint _color = 0x8CE5);
+	void BindForFinalPass(GLint _color = GL_COLOR_ATTACHMENT6);
 
 private:
 	GLuint gBuffer;
-	GLuint textures[4]; // Position, diffuse, normal, specular
-	/*GLuint texturePosition;
-	GLuint textureDiffuse;
-	GLuint textureNormal;
-	GLuint textureSpecular;*/
+
+	GLuint textures[6];
 	GLuint depthTexture; // Depth
 
 	GLuint finalTexture;

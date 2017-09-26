@@ -12,17 +12,6 @@
 #include "Wmo_Light.h"
 #include "Wmo_Material.h"
 
-
-void setGLColor(uint32_t col)
-{
-	GLubyte r, g, b, a;
-	a = (col & 0xFF000000) >> 24;
-	r = (col & 0x00FF0000) >> 16;
-	g = (col & 0x0000FF00) >> 8;
-	b = (col & 0x000000FF);
-	glColor4ub(r, g, b, 1);
-}
-
 WMOGroup::WMOGroup(const WMO* _parentWMO, const uint32_t _groupIndex, File& f, char* names) : m_ParentWMO(_parentWMO), m_GroupIndex(_groupIndex)
 {
 	nTriangles = 0;
@@ -48,7 +37,7 @@ WMOGroup::WMOGroup(const WMO* _parentWMO, const uint32_t _groupIndex, File& f, c
 	nDoodads = 0;
 	m_DoodadsIndexes = nullptr;
 
-	hascv = false;
+	m_HasVertexColors = false;
 	m_VertexColors = nullptr;
 
 	lq = nullptr;
@@ -75,16 +64,13 @@ WMOGroup::~WMOGroup()
 	//for (size_t i=0; i<lists.size(); i++) {
 	//	glDeleteLists(lists[i].first);
 	//}
-	if (nBatches && lists.size()) glDeleteLists(lists[0].first, nBatches);
+	//************if (nBatches && lists.size()) glDeleteLists(lists[0].first, nBatches);
 
 	if (lq) delete lq;
 }
 
 void WMOGroup::initDisplayList()
 {
-
-
-
 	// open group file
 	char temp[256];
 	strcpy_s(temp, m_ParentWMO->GetName().c_str());
@@ -100,22 +86,21 @@ void WMOGroup::initDisplayList()
 	}
 	f.Seek(0x14); // a header at 0x14
 
-				   // read MOGP chunk header
+	// read MOGP chunk header
 	f.ReadBytes(&wmoGroupHeader, WMOGroupHeader::__size);
-	WMOFog* wf = m_ParentWMO->m_Fogs[wmoGroupHeader.m_Fogs[0]];
 
+
+	WMOFog* wf = m_ParentWMO->m_Fogs[wmoGroupHeader.m_Fogs[0]];
 	if (wf->fogDef.largerRadius <= 0)
 		fog = -1; // default outdoor fog..?
 	else
 		fog = wmoGroupHeader.m_Fogs[0];
 
+
 	bounds.SetBounds(wmoGroupHeader.boundingBox.min, wmoGroupHeader.boundingBox.max);
 
 
 	f.Seek(0x58); // first chunk at 0x58
-
-
-
 
 	char fourcc[5];
 	uint32_t size = 0;
@@ -130,41 +115,39 @@ void WMOGroup::initDisplayList()
 		if (size == 0)	continue;
 		size_t nextpos = f.GetPos() + size;
 
-		if (strcmp(fourcc, "MOPY") == 0)                 // Material info for triangles
+		if (strcmp(fourcc, "MOPY") == 0) // Material info for triangles
 		{
 			nTriangles = size / WMOGroup_MaterialInfo::__size;
 			materials = (WMOGroup_MaterialInfo*)f.GetDataFromCurrent();
 		}
-		else if (strcmp(fourcc, "MOVI") == 0)            // Vertex indices for triangles
+		else if (strcmp(fourcc, "MOVI") == 0) // Vertex indices for triangles
 		{
 			indices = (uint16_t*)f.GetDataFromCurrent();
 		}
-		else if (strcmp(fourcc, "MOVT") == 0)            // Vertices chunk.
+		else if (strcmp(fourcc, "MOVT") == 0) // Vertices chunk.
 		{
 			nVertices = size / sizeof(vec3);
 			vertices = (vec3*)f.GetDataFromCurrent();
-
-			bounds.Init(vertices, nVertices);
 		}
-		else if (strcmp(fourcc, "MONR") == 0)          // Normals
+		else if (strcmp(fourcc, "MONR") == 0) // Normals
 		{
 			normals = (vec3*)f.GetDataFromCurrent();
 		}
-		else if (strcmp(fourcc, "MOTV") == 0)          // Texture coordinates
+		else if (strcmp(fourcc, "MOTV") == 0) // Texture coordinates
 		{
 			texcoords = (vec2*)f.GetDataFromCurrent();
 		}
-		else if (strcmp(fourcc, "MOBA") == 0)          // Render m_WMOBatchIndexes.
+		else if (strcmp(fourcc, "MOBA") == 0) // Render m_WMOBatchIndexes.
 		{
 			nBatches = size / WMOBatch::__size;
 			m_WMOBatchIndexes = (WMOBatch*)f.GetDataFromCurrent();
 		}
-		else if (strcmp(fourcc, "MOLR") == 0)          // Light references
+		else if (strcmp(fourcc, "MOLR") == 0) // Light references
 		{
 			nLights = size / sizeof(uint16_t);
 			m_WMOLightsIndexes = (uint16_t*)f.GetDataFromCurrent();
 		}
-		else if (strcmp(fourcc, "MODR") == 0)          // Doodad references
+		else if (strcmp(fourcc, "MODR") == 0) // Doodad references
 		{
 			nDoodads = size / sizeof(uint16_t);
 			m_DoodadsIndexes = (uint16_t*)f.GetDataFromCurrent();
@@ -177,7 +160,7 @@ void WMOGroup::initDisplayList()
 		}
 		else if (strcmp(fourcc, "MOCV") == 0) // Vertex colors
 		{
-			hascv = true;
+			m_HasVertexColors = true;
 			m_VertexColors = (uint32_t*)f.GetDataFromCurrent();
 		}
 		else if (strcmp(fourcc, "MLIQ") == 0) // Liquid
@@ -185,8 +168,10 @@ void WMOGroup::initDisplayList()
 			WMOLiquidHeader hlq;
 			f.ReadBytes(&hlq, WMOLiquidHeader::__size);
 
-			lq = new Liquid(hlq.A, hlq.B, From_XYZ_To_XZminusY_RET(hlq.pos));
-			lq->initFromWMO(f, m_ParentWMO->m_Materials[hlq.type], groupInfo.flags.FLAG_IS_INDOOR);
+			Debug::Green("WMO[%s]: Contain liquid!!!!", m_ParentWMO->GetName().c_str());
+
+			//lq = new Liquid(hlq.A, hlq.B, From_XYZ_To_XZminusY_RET(hlq.pos));
+			//lq->initFromWMO(f, m_ParentWMO->m_Materials[hlq.type], groupInfo.flags.FLAG_IS_INDOOR);
 		}
 		else if (strcmp(fourcc, "MORI") == 0)
 		{
@@ -208,19 +193,87 @@ void WMOGroup::initDisplayList()
 		f.Seek(nextpos);
 	}
 
-	initLighting();
+	vec4* vertexColors;
 
-	GLuint listbase = glGenLists(nBatches);
+	if (m_HasVertexColors)
+	{
+		vertexColors = new vec4[nVertices];
+	}
+
+	float v35 = 0;
+	float v36 = 0;
+	float v37 = 0;
+
+	if (m_ParentWMO->header.flags.FLAG_skip_base_color)
+	{
+		v35 = 0;
+		v36 = 0;
+		v37 = 0;
+	}
+	else
+	{
+		v35 = m_ParentWMO->header.ambColor.r;
+		v37 = m_ParentWMO->header.ambColor.g;
+		v36 = m_ParentWMO->header.ambColor.b;
+	}
+
+	// Converts
+	for (uint32_t i = 0; i < nVertices; i++)
+	{
+		vertices[i] = From_XYZ_To_XZminusY_RET(vertices[i]);
+		normals[i] = From_XYZ_To_XZminusY_RET(normals[i]);
+
+		if (m_HasVertexColors)
+		{
+			vertexColors[i] = fromBGRA(m_VertexColors[i]);
+
+			if (m_ParentWMO->header.flags.FLAG_lighten_interiors)
+			{
+				vertexColors[i].a = groupInfo.flags.FLAG_IS_OUTDOOR ? 1.0f : 0.0f;
+			}
+			else
+			{
+				vertexColors[i].x -= v36;
+				vertexColors[i].y -= v37;
+				vertexColors[i].z -= v35;
+
+				float v38 = vertexColors[i].w;
+
+				float v11 = vertexColors[i].x - v38 * vertexColors[i].x;
+				vertexColors[i].x = v11 / 2;
+
+				float v13 = vertexColors[i].y - v38 * vertexColors[i].y;
+				vertexColors[i].y = v13 / 2;
+
+				float v14 = vertexColors[i].z - v38 * vertexColors[i].z;
+				vertexColors[i].z = v14 / 2;
+
+
+				vertexColors[i].x = Clamp(vertexColors[i].x, 0.0f, 1.0f);
+				vertexColors[i].y = Clamp(vertexColors[i].y, 0.0f, 1.0f);
+				vertexColors[i].z = Clamp(vertexColors[i].z, 0.0f, 1.0f);
+
+				vertexColors[i].a = groupInfo.flags.FLAG_IS_OUTDOOR ? 1.0f : 0.0f;
+			}
+		}
+		//else
+		//{
+		//	vertexColors[i] = vec4(0.0f, 0.3f, 0.6f, 0.9f);
+		//}
+	}
+
+	bounds.Init(vertices, nVertices, false);
+
+	initLighting();
 
 	for (uint32_t b = 0; b < nBatches; b++)
 	{
-		GLuint list = listbase + b;
 
 		WMOBatch* batch = &m_WMOBatchIndexes[b];
 		WMOMaterial* mat = m_ParentWMO->m_Materials[batch->material_id];
 
-		bool overbright = (mat->IsUnshaded() && !hascv);
-		bool spec_shader = (mat->GetShader() && !hascv && !overbright);
+		/*bool overbright = (mat->IsUnshaded() && !m_HasVertexColors);
+		bool spec_shader = (mat->GetShader() && !m_HasVertexColors && !overbright);
 
 		pair<GLuint, int> currentList;
 		currentList.first = list;
@@ -242,10 +295,7 @@ void WMOGroup::initDisplayList()
 					glAlphaFunc(GL_GREATER, 0.0f);
 			}
 
-			if (mat->IsTwoSided())
-				glDisable(GL_CULL_FACE);
-			else
-				glEnable(GL_CULL_FACE);
+			
 
 			if (spec_shader)
 			{
@@ -269,7 +319,7 @@ void WMOGroup::initDisplayList()
 			{
 				int a = indices[i];
 
-				if (groupInfo.flags.FLAG_IS_INDOOR && hascv)
+				if (groupInfo.flags.FLAG_IS_INDOOR && m_HasVertexColors)
 				{
 					setGLColor(m_VertexColors[a]);
 				}
@@ -292,22 +342,46 @@ void WMOGroup::initDisplayList()
 			}
 		}
 		glEndList();
+		*/
 
+		GLsizeiptr bufferSize = 8 * sizeof(float);
+		if (m_HasVertexColors)
+		{
+			bufferSize += 4 * sizeof(float);
+		}
 
+		glGenBuffers(1, &globalBuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, globalBuffer);
 
-		lists.push_back(currentList);
+		glBufferData(GL_ARRAY_BUFFER, nVertices * bufferSize, NULL, GL_STATIC_DRAW);
+
+		glBufferSubData(GL_ARRAY_BUFFER, nVertices * 0 * sizeof(float), nVertices * 3 * sizeof(float), vertices);
+		glBufferSubData(GL_ARRAY_BUFFER, nVertices * 3 * sizeof(float), nVertices * 2 * sizeof(float), texcoords);
+		glBufferSubData(GL_ARRAY_BUFFER, nVertices * 5 * sizeof(float), nVertices * 3 * sizeof(float), normals);
+
+		if (m_HasVertexColors)
+		{
+			glBufferSubData(GL_ARRAY_BUFFER, nVertices * 8 * sizeof(float), nVertices * 4 * sizeof(float), vertexColors);
+		}
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	}
+
+	if (m_HasVertexColors)
+	{
+		delete[] vertexColors;
 	}
 }
 
 void WMOGroup::initLighting()
 {
-	if (groupInfo.flags.FLAG_IS_INDOOR && hascv)
+	if (groupInfo.flags.FLAG_IS_INDOOR && m_HasVertexColors)
 	{
 		vec3 dirmin(1, 1, 1);
 		float lenmin;
 		int lmin;
 
-#ifdef MDX_INCL
+#ifdef DOODADS_INCL
 		for (uint32_t i = 0; i < nDoodads; i++)
 		{
 			lenmin = 999999.0f * 999999.0f;
@@ -316,7 +390,7 @@ void WMOGroup::initLighting()
 			for (uint32_t j = 0; j < m_ParentWMO->header.nLights; j++)
 			{
 				WMOLight* l = m_ParentWMO->m_Lights[j];
-				vec3 dir = l->lightDef.pos - mi->pos;
+				vec3 dir = l->lightDef.pos - mi->placementInfo->position;
 				float ll = glm::length2(dir);
 				if (ll < lenmin)
 				{
@@ -340,7 +414,7 @@ void WMOGroup::initLighting()
 
 //
 
-bool WMOGroup::draw(cvec3 ofs, float roll)
+/*bool WMOGroup::draw(cvec3 ofs, float roll)
 {
 	visible = false;
 
@@ -360,7 +434,7 @@ bool WMOGroup::draw(cvec3 ofs, float roll)
 
 	visible = true;
 
-	if (hascv)
+	if (m_HasVertexColors)
 	{
 		glDisable(GL_LIGHTING);
 		_EnvironmentManager->SetAmbientLights(false);
@@ -406,13 +480,129 @@ bool WMOGroup::draw(cvec3 ofs, float roll)
 	glColor4f(1, 1, 1, 1);
 	glEnable(GL_CULL_FACE);
 
-	if (hascv)
+	if (m_HasVertexColors)
 	{
 		if (_Settings->lighting)
 		{
 			glEnable(GL_LIGHTING);
 		}
 	}
+
+	return true;
+}*/
+
+bool WMOGroup::draw2(cvec3 ofs, float roll)
+{
+	visible = false;
+
+	vec3 pos = bounds.GetCenter() + ofs;
+	rotate(ofs.x, ofs.z, &pos.x, &pos.z, roll);
+
+	//float dist = glm::length(pos - _Camera->Position);
+	//if (dist > _Settings->culldistance + bounds.GetRadius())
+	//{
+	//	return false;
+	//}
+
+	//if (!_Render->frustum.intersectsSphere(pos, bounds.GetRadius()))
+	//{
+	//	return false;
+	//}
+
+	visible = true;
+
+	/*if (m_HasVertexColors)
+	{
+		glDisable(GL_LIGHTING);
+		_EnvironmentManager->SetAmbientLights(false);
+	}
+	else
+	{
+		if (_Settings->lighting)
+		{
+			if (_EnvironmentManager->skies->hasSkies())
+			{
+				_EnvironmentManager->SetAmbientLights(true);
+			}
+			else
+			{
+				// Default m_Lights
+				glEnable(GL_LIGHT0);
+				glLightfv(GL_LIGHT0, GL_AMBIENT, glm::value_ptr(vec4(0.4f, 0.4f, 0.4f, 1)));
+				glLightfv(GL_LIGHT0, GL_DIFFUSE, glm::value_ptr(vec4(0.8f, 0.8f, 0.8f, 1)));
+				glLightfv(GL_LIGHT0, GL_POSITION, glm::value_ptr(vec4(1, 1, 1, 0)));
+
+				glDisable(GL_LIGHT1);
+			}
+		}
+		else
+		{
+			glDisable(GL_LIGHTING);
+		}
+	}
+	setupFog();*/
+
+	_TechniquesMgr->m_WMO_GeometryPass->Bind();
+	_TechniquesMgr->m_WMO_GeometryPass->SetPVW();
+
+	for (uint32_t i = 0; i < nBatches; i++)
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, globalBuffer);
+
+		// Vertex
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+		// Texture
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (const GLvoid*)(nVertices * 3 * sizeof(float)));
+
+		// Normal
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (const GLvoid*)(nVertices * 5 * sizeof(float)));
+
+		// Color
+		if (m_HasVertexColors)
+		{
+			glEnableVertexAttribArray(3);
+			glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 0, (const GLvoid*)(nVertices * 8 * sizeof(float)));
+		}
+
+		WMOBatch* batch = &m_WMOBatchIndexes[i];
+		WMOMaterial* material = m_ParentWMO->m_Materials[batch->material_id];
+
+		// Materials settings
+		material->setup();
+		material->texture->Bind(5);
+
+		//_TechniquesMgr->m_WMO_GeometryPass->SetDiffuseColor(fromARGB(material->GetDiffuseColor()));
+		_TechniquesMgr->m_WMO_GeometryPass->SetHasMOCV(false);
+
+		glDrawElements(GL_TRIANGLES, batch->indexCount,	GL_UNSIGNED_SHORT, indices + batch->indexStart);
+
+		if (m_HasVertexColors)
+		{
+			glDisableVertexAttribArray(3);
+		}
+
+		glDisableVertexAttribArray(2);
+		glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(0);
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	}
+
+	_TechniquesMgr->m_WMO_GeometryPass->Unbind();
+
+	/*
+	if (m_HasVertexColors)
+	{
+		if (_Settings->lighting)
+		{
+			glEnable(GL_LIGHTING);
+		}
+	}*/
 
 	return true;
 }
@@ -429,33 +619,32 @@ bool WMOGroup::drawDoodads(int doodadset, cvec3 ofs, float roll)
 		return false;
 	}
 
-	_EnvironmentManager->SetAmbientLights(m_EnableOutdoorLights);
-	setupFog();
+	//**********_EnvironmentManager->SetAmbientLights(m_EnableOutdoorLights);
+	//**********setupFog();
 
 	// draw doodads
-	glColor4f(1, 1, 1, 1);
+	//**********glColor4f(1, 1, 1, 1);
 	for (uint32_t i = 0; i < nDoodads; i++)
 	{
 		short doodadIndex = m_DoodadsIndexes[i];
 
-#ifdef MDX_INCL
+#ifdef DOODADS_INCL
 		if (m_ParentWMO->doodadsets[doodadset]->InSet(doodadIndex) || m_ParentWMO->doodadsets[0]->InSet(doodadIndex))
 		{
 			DoodadInstance* doodadInstance = m_ParentWMO->m_MDXInstances[doodadIndex];
 
 			if (!m_EnableOutdoorLights)
 			{
-				WMOLight::setupOnce(GL_LIGHT2, doodadInstance->ldir, doodadInstance->lcol);
+			//***	WMOLight::setupOnce(GL_LIGHT2, doodadInstance->ldir, doodadInstance->lcol);
 			}
 
 			m_ParentWMO->m_MDXInstances[doodadIndex]->Draw(ofs, roll);
-		}
+}
 #endif
 	}
 
-	glDisable(GL_LIGHT2);
-
-	glColor4f(1, 1, 1, 1);
+	//**********glDisable(GL_LIGHT2);
+	//**********glColor4f(1, 1, 1, 1);
 
 	return true;
 }
@@ -512,4 +701,74 @@ void WMOGroup::setupFog()
 }
 
 
+/*
+void FixColorVertexAlpha(CMapObjGroup *mapObjGroup)
+{
+	int begin_second_fixup = 0;
+	if (mapObjGroup->unkBatchCount)
+	{
+		begin_second_fixup = *((unsigned __int16 *)&mapObjGroup->moba[(unsigned __int16)mapObjGroup->unkBatchCount] - 2) + 1;
+	}
 
+	if (mapObjGroup->m_mapObj->mohd->flags & flag_has_some_outdoor_group)
+	{
+		for (int i(begin_second_fixup); i < mapObjGroup->mocv_count; ++i)
+		{
+			mapObjGroup->mocv[i].w = mapObjGroup->m_groupFlags & SMOGroup::EXTERIOR ? 0xFF : 0x00;
+		}
+	}
+	else
+	{
+		if (mapObjGroup->m_mapObj->mohd->flags & flag_skip_base_color)
+		{
+			v35 = 0;
+			v36 = 0;
+			v37 = 0;
+		}
+		else
+		{
+			v35 = (mapObjGroup->m_mapObj->mohd.color >> 0) & 0xff;
+			v37 = (mapObjGroup->m_mapObj->mohd.color >> 8) & 0xff;
+			v36 = (mapObjGroup->m_mapObj->mohd.color >> 16) & 0xff;
+		}
+
+		for (int mocv_index(0); mocv_index < begin_second_fixup; ++mocv_index)
+		{
+			vertexColors[i].x -= v36;
+			vertexColors[i].y -= v37;
+			vertexColors[i].z -= v35;
+
+			v38 = vertexColors[i].w / 255.0f;
+
+			v11 = vertexColors[i].x - v38 * vertexColors[i].x;
+			assert(v11 > -0.5f);
+			assert(v11 < 255.5f);
+
+			vertexColors[i].x = v11 / 2;
+			v13 = vertexColors[i].y - v38 * vertexColors[i].y;
+			assert(v13 > -0.5f);
+			assert(v13 < 255.5f);
+
+			vertexColors[i].y = v13 / 2;
+			v14 = vertexColors[i].z - v38 * vertexColors[i].z;
+			assert(v14 > -0.5f);
+			assert(v14 < 255.5f);
+
+			mapObjGroup->mocv[mocv_index++].z = v14 / 2;
+		}
+
+		for (int i(begin_second_fixup); i < mapObjGroup->mocv_count; ++i)
+		{
+			v19 = (mapObjGroup->mocv[i].x * mapObjGroup->mocv[i].w) / 64 + mapObjGroup->mocv[i].x - v36;
+			mapObjGroup->mocv[i].x = std::min(255, std::max(v19 / 2, 0));
+
+			v30 = (mapObjGroup->mocv[i].y * mapObjGroup->mocv[i].w) / 64 + mapObjGroup->mocv[i].y - v37;
+			mapObjGroup->mocv[i].y = std::min(255, std::max(v30 / 2, 0));
+
+			v33 = (mapObjGroup->mocv[i].w * mapObjGroup->mocv[i].z) / 64 + mapObjGroup->mocv[i].z - v35;
+			mapObjGroup->mocv[i].z = std::min(255, std::max(v33 / 2, 0));
+
+			mapObjGroup->mocv[i].w = mapObjGroup->m_groupFlags & SMOGroup::EXTERIOR ? 0xFF : 0x00;
+		}
+	}
+}*/

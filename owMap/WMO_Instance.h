@@ -23,6 +23,11 @@ public:
 	WMOInstance(WMO* _wmoObject, WMOPlacementInfo* _placementInfo);
 	~WMOInstance();
 
+	void SetWMO(WMO* m)
+	{
+		wmoObject = m;
+	}
+
 	void draw();
 
 	static void reset();

@@ -10,9 +10,6 @@
 #include <owRender.h>
 #pragma comment(lib, "owRender.lib")
 
-#include <owGUI.h>
-#pragma comment(lib, "owGUI.lib")
-
 #include <owGame.h>
 #pragma comment(lib, "owGame.lib")
 

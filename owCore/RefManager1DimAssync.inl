@@ -11,13 +11,13 @@ inline OBJECT_TYPE* RefManager1DimAssync<OBJECT_TYPE>::Add(cstring name)
 	if ((item = GetItemByName(name)) != nullptr)
 	{
 		item->AddRef();
-		//Debug::Warn("Item [%s] already exists", name.c_str());
 		return item;
 	}
 
 	// else create empty element
 	item = CreateAction(name);
 
+#ifndef DISABLE_ASSYNC
 	// Add to load list
 	m_ObjectsToLoad.add(name, item);
 
@@ -26,6 +26,9 @@ inline OBJECT_TYPE* RefManager1DimAssync<OBJECT_TYPE>::Add(cstring name)
 	{
 		SetEvent(m_Event_Add);
 	}
+#else
+	LoadAction(name, item);
+#endif
 
 	// Add item
 	do_add(name, item);

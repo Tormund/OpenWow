@@ -43,7 +43,7 @@ bool GLFWBackend::Init()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	//glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-	glfwWindowHint(GLFW_SAMPLES, 8);
+	//glfwWindowHint(GLFW_SAMPLES, 8);
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 
 	//
@@ -79,7 +79,6 @@ bool GLFWBackend::Init()
 
 	// Time
 	glfwSetTime(0.0);
-	glfwTime = 0.0;
 
 	// Resize callback
 	glfwSetFramebufferSizeCallback(window, GLFWFramebufferCallback);
@@ -118,7 +117,6 @@ bool GLFWBackend::SwapWindowBuffers()
 {
 	glfwSwapBuffers(window);
 	glfwPollEvents();
-	glfwTime = glfwGetTime(); // Milliseconds
 
 	return !glfwWindowShouldClose(window);
 }

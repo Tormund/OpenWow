@@ -13,12 +13,12 @@ void APIENTRY glDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severi
 	if (id == 131169 || id == 131185 || id == 131218 || id == 131204) return;
 
 	Debug::Error("---------------");
-	Debug::Error("Debug message (%d): %s", id, message);
+	Debug::Error("OpenGL Debug message (%d): [%s]", id, message);
 
 	switch (source)
 	{
-		case GL_DEBUG_SOURCE_API:             Debug::Error("Source: API"); break;
-		case GL_DEBUG_SOURCE_WINDOW_SYSTEM:   Debug::Error("Source: Window System"); break;
+		case GL_DEBUG_SOURCE_API:             Debug::Error("Source: OpenGL API"); break;
+		case GL_DEBUG_SOURCE_WINDOW_SYSTEM:   Debug::Error("Source: Window System API"); break;
 		case GL_DEBUG_SOURCE_SHADER_COMPILER: Debug::Error("Source: Shader Compiler"); break;
 		case GL_DEBUG_SOURCE_THIRD_PARTY:     Debug::Error("Source: Third Party"); break;
 		case GL_DEBUG_SOURCE_APPLICATION:     Debug::Error("Source: Application"); break;
@@ -45,12 +45,29 @@ void APIENTRY glDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severi
 		case GL_DEBUG_SEVERITY_LOW:          Debug::Error("Severity: low"); break;
 		case GL_DEBUG_SEVERITY_NOTIFICATION: Debug::Error("Severity: notification"); break;
 	}
+
+
+	//system("pause");
+	//Debug::Exit(-1);
 }
 
 
 bool RenderGL::Init()
 {
-	dc = wglGetCurrentDC();
+	// Debug output
+	/*GLint flags;
+	glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
+	if (flags & GL_CONTEXT_FLAG_DEBUG_BIT)
+	{*/
+	glEnable(GL_DEBUG_OUTPUT);
+	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+	glDebugMessageCallback(glDebugOutput, nullptr);
+	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+	//fail1();
+	//}
+
+
+	/*dc = wglGetCurrentDC();
 	glrc1 = wglCreateContext(dc);
 	glrc2 = wglCreateContext(dc);
 	glrc3 = wglCreateContext(dc);
@@ -71,47 +88,19 @@ bool RenderGL::Init()
 		Debug::Error("Mega error !!!!3333");
 	}
 
-	wglMakeCurrent(dc, glrc1);
-
-	// Debug output
-	GLint flags;
-	glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
-	if (flags & GL_CONTEXT_FLAG_DEBUG_BIT)
-	{
-		glEnable(GL_DEBUG_OUTPUT);
-		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-		glDebugMessageCallback(glDebugOutput, nullptr);
-		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
-	}
+	wglMakeCurrent(dc, glrc1);*/
 
 	// GL settings
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-	// Cull face
-	glCullFace(GL_BACK);
 
-	// Shoothing
-	glEnable(GL_SMOOTH);
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+	glHint(GL_FOG_HINT, GL_FASTEST);
+	glHint(GL_GENERATE_MIPMAP_HINT, GL_FASTEST);
+	
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 
-	// Depth settings
-	glEnable(GL_DEPTH_TEST);
-
-	// Blending settings
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	// Alpha test
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_GREATER, 0.001f);
-
-	// Smoothing line
-	glLineWidth(1.5f);
-	glEnable(GL_LINE_SMOOTH);
-
-	// Shoothing point
-	glPointSize(1.5f);
-	glEnable(GL_POINT_SMOOTH);
+	glHint(GL_POINT_SMOOTH_HINT, GL_FASTEST);
+	glHint(GL_LINE_SMOOTH_HINT, GL_FASTEST);
 
 	// Arrays // BOUZI ENABLE IN NOOB MODE
 	//glEnableClientState(GL_VERTEX_ARRAY);
@@ -154,48 +143,66 @@ void RenderGL::Destroy()
 
 void RenderGL::Set3D()
 {
-	wglMakeCurrent(dc, glrc1);
-
-	//frustum.retrieve();
+	//wglMakeCurrent(dc, glrc1);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glEnable(GL_DEPTH_TEST);
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-
-	gluPerspective(45.0, _Settings->aspectRatio, 1.0, 20480.0); //set the perspective (angle of sight, width, height, ,depth)
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
-	glDisable(GL_DEPTH_TEST);
-	glDisable(GL_BLEND);
+	// Cull face
 	glDisable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+
+	// Shoothing
+	//glDisable(GL_SMOOTH);
+
+	// Depth settings
+	glDisable(GL_DEPTH_TEST);
+
+	// Blending settings
+	glDisable(GL_BLEND);
+
+	// Alpha test
 	glDisable(GL_ALPHA_TEST);
+
+	// Smoothing line
+	glDisable(GL_LINE_SMOOTH);
+
+	// Shoothing point
+	glDisable(GL_POINT_SMOOTH);
 }
 
 void RenderGL::Set2D()
 {
-	wglMakeCurrent(dc, glrc1);
+	//wglMakeCurrent(dc, glrc1);
 
-	// Disable depth test
-	glDisable(GL_DEPTH_TEST);
+	//-----------
 
-	// Enable blending
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	// Disable cull face
+	// Cull face
 	glDisable(GL_CULL_FACE);
 
-	// Disable lighting
-	glDisable(GL_LIGHTING);
+	// Shoothing
+	//glEnable(GL_SMOOTH);
+	//glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+
+	// Depth settings
+	glDisable(GL_DEPTH_TEST);
+
+	// Blending settings
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// Alpha test
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.001f);
+
+	// Smoothing line
+	glLineWidth(1.0f);
+	glEnable(GL_LINE_SMOOTH);
+
+	// Shoothing point
+	glPointSize(1.0f);
+	glEnable(GL_POINT_SMOOTH);
+
+	//-----------
 
 	// Projection is orthographic
 	glMatrixMode(GL_PROJECTION);
@@ -208,11 +215,8 @@ void RenderGL::Set2D()
 
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
-
-
-	/*glActiveTexture(GL_TEXTURE5);
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glDisable(GL_TEXTURE_2D);*/
+	glActiveTexture(GL_TEXTURE0);
+	glEnable(GL_TEXTURE_2D);
 }
 
 // UI

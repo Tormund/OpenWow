@@ -10,8 +10,8 @@ typedef list<Particle> ParticleList;
 #define MAX_PARTICLES 10000
 
 // Classes
-class Bone;
-class Model;
+class MDX_Part_Bone;
+class MDX;
 class ParticleSystem;
 
 class ParticleEmitter
@@ -59,7 +59,7 @@ public:
 	void draw();
 
 public:
-	Model* model;
+	MDX* model;
 	float tofs;
 
 private:
@@ -89,7 +89,7 @@ private:
 	int32_t flags;
 	int16_t pType;
 
-	Bone* parent;
+	MDX_Part_Bone* parent;
 
 };
 

@@ -28,12 +28,13 @@ void WMOsManager::Destroy()
 
 WMO* WMOsManager::CreateAction(cstring name)
 {
-	return new WMO(name);
+	WMO* _wmo = new WMO(name);
+	return _wmo;
 }
 
 void WMOsManager::LoadAction(string name, WMO* _wmo)
 {
-	wglMakeCurrent(_Render->dc, _Render->glrc4);
+	//wglMakeCurrent(_Render->dc, _Render->glrc4);
 
 	if (!_wmo->Init())
 	{

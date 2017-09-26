@@ -11,21 +11,30 @@ Settings::Settings()
 	modeldrawdistance = 384.0f * 12.0f;
 	doodaddrawdistance = 64.0f * 12.0f;
 
-	fogdistance = 512.0f;
+	fogdistance = 51200.0f;
 	culldistance = fogdistance;
 
 	// Draw enable flag
+	draw_map_chunk = true;
+	draw_map_wmo = true;
+	draw_map_wmo_doodads = false;
+	draw_map_mdx = true;
+
+	disable_pipeline = false;
+
+	useOldMDXShader = false;
+
 	lighting = true;
-	drawmodels = true;
-	drawdoodads = true;
-	drawterrain = true;
-	drawwmo = true;
+	
 	drawhighres = true;
 	drawfog = false;
 	drawColors = true;
 
 	useshaders = true;
 
+
+	enableMCCV = true;
+	enableMCLV = true;
 
 	SetWindowSize(1024, 768);
 }

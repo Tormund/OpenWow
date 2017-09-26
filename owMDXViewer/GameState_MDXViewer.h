@@ -30,7 +30,7 @@ private:
 
 	UIWindow* window;
 
-	Model* currentModel;
+	MDX* currentModel;
 	float mt;
 
 	void randBackground();

@@ -7,7 +7,11 @@ const float skymul = 36.0f;
 
 Sky::Sky(gLightDBRecord* data)
 {
-	position = vec3(data->Get_PositionX(), data->Get_PositionY(), data->Get_PositionZ()) / skymul;
+	//position = vec3(data->Get_PositionX(), data->Get_PositionY(), data->Get_PositionZ()) / skymul;
+
+	position.x = data->Get_PositionX() / skymul;
+	position.y = data->Get_PositionY() / skymul;
+	position.z = data->Get_PositionZ() / skymul;
 
 	radiusInner = data->Get_RadiusInner() / skymul;
 	radiusOuter = data->Get_RadiusOuter() / skymul;

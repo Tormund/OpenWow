@@ -28,7 +28,6 @@ public:
 	}
 	inline GameState* GetCurrentGameState() const { return currentGameState; }
 
-	 unsigned long long GetTicks() const;
 	inline uint32_t GetFPS() const { return framesPerSecond; }
 
 private:

@@ -200,7 +200,7 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize, GLuint id) // override
 	Font* font = new Font(textureOpenglIndex, listOpenglIndex, charWidth, charHeight);
 	Fonts.insert(make_pair(_nameAndSize, font));
 
-	Debug::Info("FontsMgr: Font [%s] loaded. Size [%d].", f.Path_Name().c_str(), fontSize);
+	Debug::Info("FontsMgr[%s]: Font loaded. Size [%d].", f.Path_Name().c_str(), fontSize);
 
 	return font;
 }

@@ -6,7 +6,7 @@
 
 bool EnvironmentManager::Init()
 {
-	Time_SetGameTime(12, 45);
+	m_GameTime.Set(12, 45);
 
 	skies = 0;
 	dayNightCycle = new DayNightCycle();
@@ -26,13 +26,6 @@ void EnvironmentManager::Destroy()
 	{
 		delete dayNightCycle;
 	}
-}
-
-
-
-void EnvironmentManager::Time_SetGameTime(uint32_t _hour, uint32_t _minute)
-{
-	m_GameTime = _hour * C_Game_SecondsInHour + _minute * C_Game_SecondsInMinute;
 }
 
 void EnvironmentManager::InitSkies(uint32_t mapid)
@@ -140,8 +133,8 @@ void EnvironmentManager::BeforeDraw()
 {
 	m_HasSky = false;
 
-	dayNightPhase = dayNightCycle->getPhase(Time_GetTime());
-	skies->initSky(_Camera->Position, Time_GetTime());
+	dayNightPhase = dayNightCycle->getPhase(m_GameTime.GetTime());
+	skies->initSky(_Camera->Position, m_GameTime.GetTime());
 }
 
 

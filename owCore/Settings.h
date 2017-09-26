@@ -58,11 +58,15 @@ public:
 	float fogdistance;
 
 	// Drawing
+	bool draw_map_chunk;
+	bool draw_map_wmo;
+	bool draw_map_wmo_doodads;
+	bool draw_map_mdx;
+
+	bool useOldMDXShader;
+	
 	bool lighting;
-	bool drawmodels;
-	bool drawdoodads;
-	bool drawterrain;
-	bool drawwmo;
+
 	bool loading;
 	bool drawhighres;
 	bool drawfog;
@@ -71,6 +75,15 @@ public:
 	// Quality
 	bool uselowlod;
 	bool useshaders;
+
+
+	bool enableMCCV;
+	bool enableMCLV;
+
+
+
+	// Perfomance
+	bool disable_pipeline;
 };
 
 #define _Settings Settings::instance()

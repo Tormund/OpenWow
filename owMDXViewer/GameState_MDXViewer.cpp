@@ -30,8 +30,8 @@ bool GameState_MDXViewer::Init()
 		return false;
 	}
 
-	currentModel = new Model(_Engine->GetArgument(0));
-	currentModel->ind = true;
+	currentModel = new MDX(_Engine->GetArgument(0));
+	currentModel->m_IsBillboard = true;
 
 	_Camera->Position = vec3(30, 30, 30);
 	_Camera->Yaw = -135;
@@ -196,7 +196,7 @@ KEYBD_PRESSED(GameState_MDXViewer)
 	}
 	if (_key == GLFW_KEY_F6)
 	{
-		_Settings->drawdoodads = !_Settings->drawdoodads;
+		_Settings->draw_map_wmo_doodads = !_Settings->draw_map_wmo_doodads;
 		return true;
 	}
 	if (_key == GLFW_KEY_F7)
@@ -295,6 +295,6 @@ void GameState_MDXViewer::randBackground()
 	char path[256];
 	sprintf_s(path, "Interface\\Glues\\Models\\UI_%s\\UI_%s.m2", randui, randui);
 
-	currentModel = new Model(path);
-	currentModel->ind = true;
+	currentModel = new MDX(path);
+	currentModel->m_IsBillboard = true;
 }

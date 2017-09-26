@@ -26,6 +26,7 @@ using namespace std;
 // Wow types
 #include "WowTypes.h"
 #include "WowConsts.h"
+#include "WowTime.h"
 
 // Additional types
 #include "Function.h"

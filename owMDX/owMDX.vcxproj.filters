@@ -2,34 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="Model.cpp">
-      <Filter>MDX</Filter>
-    </ClCompile>
-    <ClCompile Include="Model_Bone.cpp">
-      <Filter>MDX</Filter>
-    </ClCompile>
-    <ClCompile Include="Model_Camera.cpp">
-      <Filter>MDX</Filter>
-    </ClCompile>
-    <ClCompile Include="Model_Color.cpp">
-      <Filter>MDX</Filter>
-    </ClCompile>
-    <ClCompile Include="Model_Light.cpp">
-      <Filter>MDX</Filter>
-    </ClCompile>
     <ClCompile Include="Model_RenderPass.cpp">
-      <Filter>MDX</Filter>
-    </ClCompile>
-    <ClCompile Include="Model_TextureAnim.cpp">
-      <Filter>MDX</Filter>
-    </ClCompile>
-    <ClCompile Include="Model_Transparency.cpp">
-      <Filter>MDX</Filter>
-    </ClCompile>
-    <ClCompile Include="ModelsManager.cpp">
-      <Filter>MDX</Filter>
-    </ClCompile>
-    <ClCompile Include="ModelsUtils.cpp">
       <Filter>MDX</Filter>
     </ClCompile>
     <ClCompile Include="Particle.cpp">
@@ -44,41 +17,48 @@
     <ClCompile Include="RibbonEmitter.cpp">
       <Filter>Particle</Filter>
     </ClCompile>
-    <ClCompile Include="ModelHeaders.cpp">
+    <ClCompile Include="Model_Skin.cpp">
       <Filter>MDX</Filter>
+    </ClCompile>
+    <ClCompile Include="Model_Static.cpp">
+      <Filter>MDX</Filter>
+    </ClCompile>
+    <ClCompile Include="MDX.cpp">
+      <Filter>MDX</Filter>
+    </ClCompile>
+    <ClCompile Include="MDX_Animated.cpp">
+      <Filter>MDX</Filter>
+    </ClCompile>
+    <ClCompile Include="MDX_Headers.cpp">
+      <Filter>MDX</Filter>
+    </ClCompile>
+    <ClCompile Include="MDX_Part_Camera.cpp">
+      <Filter>MDX\Parts</Filter>
+    </ClCompile>
+    <ClCompile Include="MDX_Part_Color.cpp">
+      <Filter>MDX\Parts</Filter>
+    </ClCompile>
+    <ClCompile Include="MDX_Part_Light.cpp">
+      <Filter>MDX\Parts</Filter>
+    </ClCompile>
+    <ClCompile Include="MDX_Part_TextureAnim.cpp">
+      <Filter>MDX\Parts</Filter>
+    </ClCompile>
+    <ClCompile Include="MDX_Part_Transparency.cpp">
+      <Filter>MDX\Parts</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelsManager.cpp" />
+    <ClCompile Include="MDX_Part_Bone_new.cpp">
+      <Filter>MDX\Parts</Filter>
+    </ClCompile>
+    <ClCompile Include="MDX_Part_Bone.cpp">
+      <Filter>MDX\Parts</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="..\shared\owMDX.h" />
-    <ClInclude Include="Model.h">
-      <Filter>MDX</Filter>
-    </ClInclude>
-    <ClInclude Include="Model_Bone.h">
-      <Filter>MDX</Filter>
-    </ClInclude>
-    <ClInclude Include="Model_Camera.h">
-      <Filter>MDX</Filter>
-    </ClInclude>
-    <ClInclude Include="Model_Color.h">
-      <Filter>MDX</Filter>
-    </ClInclude>
-    <ClInclude Include="Model_Light.h">
-      <Filter>MDX</Filter>
-    </ClInclude>
     <ClInclude Include="Model_RenderPass.h">
-      <Filter>MDX</Filter>
-    </ClInclude>
-    <ClInclude Include="Model_TextureAnim.h">
-      <Filter>MDX</Filter>
-    </ClInclude>
-    <ClInclude Include="Model_Transparency.h">
-      <Filter>MDX</Filter>
-    </ClInclude>
-    <ClInclude Include="ModelsManager.h">
-      <Filter>MDX</Filter>
-    </ClInclude>
-    <ClInclude Include="ModelsUtils.h">
       <Filter>MDX</Filter>
     </ClInclude>
     <ClInclude Include="Particle.h">
@@ -90,8 +70,37 @@
     <ClInclude Include="RibbonEmitter.h">
       <Filter>Particle</Filter>
     </ClInclude>
-    <ClInclude Include="ModelHeaders.h">
+    <ClInclude Include="Model_Skin.h">
       <Filter>MDX</Filter>
+    </ClInclude>
+    <ClInclude Include="MDX.h">
+      <Filter>MDX</Filter>
+    </ClInclude>
+    <ClInclude Include="MDX_Headers.h">
+      <Filter>MDX</Filter>
+    </ClInclude>
+    <ClInclude Include="common.h" />
+    <ClInclude Include="MDX_Part_Camera.h">
+      <Filter>MDX\Parts</Filter>
+    </ClInclude>
+    <ClInclude Include="MDX_Part_Color.h">
+      <Filter>MDX\Parts</Filter>
+    </ClInclude>
+    <ClInclude Include="MDX_Part_Light.h">
+      <Filter>MDX\Parts</Filter>
+    </ClInclude>
+    <ClInclude Include="MDX_Part_TextureAnim.h">
+      <Filter>MDX\Parts</Filter>
+    </ClInclude>
+    <ClInclude Include="MDX_Part_Transparency.h">
+      <Filter>MDX\Parts</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelsManager.h" />
+    <ClInclude Include="MDX_Part_Bone_new.h">
+      <Filter>MDX\Parts</Filter>
+    </ClInclude>
+    <ClInclude Include="MDX_Part_Bone.h">
+      <Filter>MDX\Parts</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -100,6 +109,9 @@
     </Filter>
     <Filter Include="Particle">
       <UniqueIdentifier>{6286908f-a052-483e-a3df-cd6defc192de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MDX\Parts">
+      <UniqueIdentifier>{602bfe77-bf38-48b0-82cc-7eca668f2dcb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

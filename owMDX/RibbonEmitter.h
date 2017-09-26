@@ -1,7 +1,7 @@
 #pragma once
 
-class Bone;
-class Model;
+class MDX_Part_Bone;
+class MDX;
 
 struct RibbonSegment
 {
@@ -17,7 +17,7 @@ public:
 	void draw();
 
 public:
-	Model* model;
+	MDX* model;
 
 private:
 	Animated<vec3> color;
@@ -25,7 +25,7 @@ private:
 	Animated<float> above;
 	Animated<float> below;
 
-	Bone* parent;
+	MDX_Part_Bone* parent;
 	float f1, f2;
 
 	vec3 pos;

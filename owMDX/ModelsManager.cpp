@@ -4,7 +4,7 @@
 #include "ModelsManager.h"
 
 // Additional
-#include "Model.h"
+#include "MDX.h"
 
 bool ModelsManager::Init()
 {
@@ -21,19 +21,20 @@ void ModelsManager::Destroy()
 
 	DeleteAll();
 
-	Debug::Info("MDXsManager: All MDXs destroyed.");
+	Debug::Info("MDXsManager[]: All MDXs destroyed.");
 }
 
 //
 
-Model* ModelsManager::CreateAction(cstring name)
+MDX* ModelsManager::CreateAction(cstring name)
 {
-	return new Model(name);
+	MDX* model = new MDX(name);
+	return model;
 }
 
-void ModelsManager::LoadAction(string name, Model* _model)
+void ModelsManager::LoadAction(string name, MDX* _model)
 {
-	wglMakeCurrent(_Render->dc, _Render->glrc3);
+	//wglMakeCurrent(_Render->dc, _Render->glrc3);
 
 	_model->Init();
 }

@@ -2,6 +2,8 @@
 
 #include <cstdint>
 
+#include "../shared/pack_begin.h"
+
 struct C3iVector
 {
 	int x;
@@ -47,6 +49,14 @@ struct C4Quaternion
 	float y;
 	float z;
 	float w; // Unlike Quaternions elsewhere, the scalar part ('w') is the last element in the struct instead of the first
+};
+
+struct C4ImQuaternion
+{
+	float w;
+	float x;
+	float y;
+	float z;
 };
 
 struct CRange
@@ -113,3 +123,5 @@ struct C3Ray
 	C3Vector origin;
 	C3Vector dir;
 };
+
+#include "../shared/pack_end.h"

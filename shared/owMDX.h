@@ -1,5 +1,7 @@
 #pragma once
 
-#include "../owMDX/Model.h"
-#include "../owMDX/ModelsUtils.h"
+// Common
+#include "../owMDX/common.h"
+
+#include "../owMDX/MDX.h"
 #include "../owMDX/ModelsManager.h"

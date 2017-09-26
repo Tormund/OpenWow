@@ -1,13 +1,10 @@
 #include "stdafx.h"
 
 // Include
-#include "Model.h"
+#include "MDX.h"
 
 // General
 #include "ParticleSystem.h"
-
-// Additional
-#include "ModelsUtils.h"
 
 //Generates the rotation matrix based on spread
 Matrix SpreadMat;

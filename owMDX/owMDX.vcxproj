@@ -164,17 +164,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Model.cpp" />
-    <ClCompile Include="ModelHeaders.cpp" />
+    <ClCompile Include="MDX.cpp" />
+    <ClCompile Include="MDX_Headers.cpp" />
     <ClCompile Include="ModelsManager.cpp" />
-    <ClCompile Include="ModelsUtils.cpp" />
-    <ClCompile Include="Model_Bone.cpp" />
-    <ClCompile Include="Model_Camera.cpp" />
-    <ClCompile Include="Model_Color.cpp" />
-    <ClCompile Include="Model_Light.cpp" />
+    <ClCompile Include="MDX_Animated.cpp" />
+    <ClCompile Include="MDX_Part_Bone_new.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="MDX_Part_Camera.cpp" />
+    <ClCompile Include="MDX_Part_Color.cpp" />
+    <ClCompile Include="MDX_Part_Light.cpp" />
+    <ClCompile Include="MDX_Part_Bone.cpp" />
     <ClCompile Include="Model_RenderPass.cpp" />
-    <ClCompile Include="Model_TextureAnim.cpp" />
-    <ClCompile Include="Model_Transparency.cpp" />
+    <ClCompile Include="Model_Skin.cpp" />
+    <ClCompile Include="Model_Static.cpp" />
+    <ClCompile Include="MDX_Part_TextureAnim.cpp" />
+    <ClCompile Include="MDX_Part_Transparency.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="ParticleEmitters.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
@@ -183,17 +189,22 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\shared\owMDX.h" />
-    <ClInclude Include="Model.h" />
-    <ClInclude Include="ModelHeaders.h" />
+    <ClInclude Include="common.h" />
+    <ClInclude Include="MDX.h" />
+    <ClInclude Include="MDX_Headers.h" />
     <ClInclude Include="ModelsManager.h" />
-    <ClInclude Include="ModelsUtils.h" />
-    <ClInclude Include="Model_Bone.h" />
-    <ClInclude Include="Model_Camera.h" />
-    <ClInclude Include="Model_Color.h" />
-    <ClInclude Include="Model_Light.h" />
+    <ClInclude Include="MDX_Part_Bone_new.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="MDX_Part_Camera.h" />
+    <ClInclude Include="MDX_Part_Color.h" />
+    <ClInclude Include="MDX_Part_Light.h" />
+    <ClInclude Include="MDX_Part_Bone.h" />
     <ClInclude Include="Model_RenderPass.h" />
-    <ClInclude Include="Model_TextureAnim.h" />
-    <ClInclude Include="Model_Transparency.h" />
+    <ClInclude Include="Model_Skin.h" />
+    <ClInclude Include="MDX_Part_TextureAnim.h" />
+    <ClInclude Include="MDX_Part_Transparency.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="RibbonEmitter.h" />

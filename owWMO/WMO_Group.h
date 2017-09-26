@@ -155,7 +155,8 @@ public:
 	void initDisplayList();
 	void initLighting();
 
-	bool draw(cvec3 ofs, float roll);
+	//bool draw(cvec3 ofs, float roll);
+	bool draw2(cvec3 ofs, float roll);
 	bool drawDoodads(int doodadset, cvec3 ofs, float roll);
 	bool drawLiquid();
 
@@ -167,8 +168,6 @@ public:
 	const uint32_t m_GroupIndex;
 	string m_GropName;
 
-	BoundingBox bounds;
-
 	WMOGroupInfoDef groupInfo;
 	WMOGroupHeader wmoGroupHeader;
 
@@ -177,8 +176,9 @@ public:
 	int fog;
 	bool visible;
 	bool m_EnableOutdoorLights;
-	vector< pair<GLuint, int> > lists;
-
+	//vector< pair<GLuint, int> > lists;
+	GLuint globalBuffer;
+	BoundingBox bounds;
 
 public:
 	//-- Triangles --//
@@ -213,9 +213,8 @@ public:
 	// MOBN chunk
 	// MOBR chunk
 
-
 	//-- Vertex colors --//
-	bool hascv;
+	bool m_HasVertexColors;
 	uint32_t* m_VertexColors;         // MOCV chunk
 
 	//-- Liquid --//

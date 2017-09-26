@@ -24,6 +24,15 @@
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="GameState_Empty.cpp" />
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="UIButton.cpp" />
+    <ClCompile Include="UIButton3t.cpp" />
+    <ClCompile Include="UICheckBox.cpp" />
+    <ClCompile Include="UIElement.cpp" />
+    <ClCompile Include="UIFile.cpp" />
+    <ClCompile Include="UIInput.cpp" />
+    <ClCompile Include="UIMgr.cpp" />
+    <ClCompile Include="UIScrollBar.cpp" />
+    <ClCompile Include="UIWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\shared\owGame.h" />
@@ -32,6 +41,15 @@
     <ClInclude Include="GameState.h" />
     <ClInclude Include="GameState_Empty.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="UIButton.h" />
+    <ClInclude Include="UIButton3t.h" />
+    <ClInclude Include="UICheckBox.h" />
+    <ClInclude Include="UIElement.h" />
+    <ClInclude Include="UIFile.h" />
+    <ClInclude Include="UIInput.h" />
+    <ClInclude Include="UIMgr.h" />
+    <ClInclude Include="UIScrollBar.h" />
+    <ClInclude Include="UIWindow.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{25E4827B-D0DD-4758-B70F-DEA7217E7E70}</ProjectGuid>
@@ -109,7 +127,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;OW_GAME_DLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Externals\glfw-3.2.1.bin.WIN32\include;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Externals\glew-2.1.0\include;..\Externals\glfw-3.2.1.bin.WIN32\include;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <SDLCheck>false</SDLCheck>
     </ClCompile>
     <Link>
@@ -126,7 +144,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;OW_GAME_DLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>..\Externals\glfw-3.2.1.bin.WIN64\include;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Externals\glew-2.1.0\include;..\Externals\glfw-3.2.1.bin.WIN64\include;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -143,7 +161,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;OW_GAME_DLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Externals\glfw-3.2.1.bin.WIN32\include;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Externals\glew-2.1.0\include;..\Externals\glfw-3.2.1.bin.WIN32\include;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <SDLCheck>false</SDLCheck>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -166,7 +184,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;OW_GAME_DLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>..\Externals\glfw-3.2.1.bin.WIN64\include;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Externals\glew-2.1.0\include;..\Externals\glfw-3.2.1.bin.WIN64\include;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>

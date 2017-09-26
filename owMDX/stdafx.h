@@ -5,3 +5,5 @@
 
 #include <owCore.h>
 #include <owRender.h>
+
+#include "common.h"

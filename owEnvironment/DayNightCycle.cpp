@@ -3,7 +3,6 @@
 // General
 #include "DayNightCycle.h"
 
-
 DayNightCycle::DayNightCycle()
 {
 	File f("World\\dnc.db");

@@ -34,6 +34,15 @@ inline glm::vec3 operator*(cvec3 v, const glm::mat4x4& mat)
 	return o;
 }
 
+inline glm::vec3 operator*(const glm::mat4x4& mat, cvec3 v)
+{
+	vec3 o;
+	o.x = mat[0][0] * v.x + mat[0][1] * v.y + mat[0][2] * v.z + mat[0][3];
+	o.y = mat[1][0] * v.x + mat[1][1] * v.y + mat[1][2] * v.z + mat[1][3];
+	o.z = mat[2][0] * v.x + mat[2][1] * v.y + mat[2][2] * v.z + mat[2][3];
+	return o;
+}
+
 typedef glm::vec2 C2Vector;
 typedef glm::vec3 C3Vector;
 

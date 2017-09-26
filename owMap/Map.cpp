@@ -3,11 +3,9 @@
 // General
 #include "Map.h"
 
-// Additional
-#include "MapChunk.h"
-
 Map::Map()
 {
+	// Load default variables
 	mapHasTerrain = false;
 	tilesCount = 0;
 	memset(m_TileExists, 0, sizeof(m_TileExists));
@@ -19,33 +17,113 @@ Map::Map()
 	memset(current, 0, sizeof(current));
 	outOfBounds = false;
 
+	CreateMapArrays();
+
 	ADDCONSOLECOMMAND_CLASS("map_clear", Map, ClearCache);
 }
 
 Map::~Map()
 {
-	for (int i = 0; i < 64; i++)
+	if (mapstrip)
 	{
-		for (int j = 0; j < 64; j++)
+		delete[] mapstrip;
+	}
+
+	if (mapstrip2)
+	{
+		delete[] mapstrip2;
+	}
+}
+
+//
+
+void Map::CreateMapArrays()
+{
+	// default strip indices
+	short *defstrip = new short[stripsize];
+	for (int i = 0; i < stripsize; i++)
+		defstrip[i] = i; // note: this is ugly and should be handled in stripify
+
+	mapstrip = new short[stripsize];
+	stripify<short>(defstrip, mapstrip);
+	delete[] defstrip;
+
+	//
+
+	defstrip = new short[stripsize2];
+	for (int i = 0; i < stripsize2; i++)
+		defstrip[i] = i; // note: this is ugly and should be handled in stripify
+	mapstrip2 = new short[stripsize2];
+	stripify2<short>(defstrip, mapstrip2);
+	delete[] defstrip;
+
+	//
+
+	vec2* vt;
+	float tx, ty;
+
+	// init texture coordinates for detail map:
+	vt = dataDetail;
+	const float detail_half = 0.5f * detail_size / 8.0f;
+	for (int j = 0; j < 17; j++)
+	{
+		for (int i = 0; i < ((j % 2) ? 8 : 9); i++)
 		{
-			if (lowrestiles[i][j] != 0)
+			tx = detail_size / 8.0f * i;
+			ty = detail_size / 8.0f * j * 0.5f;
+			if (j % 2)
 			{
-				glDeleteLists(lowrestiles[i][j], 1);
+				// offset by half
+				tx += detail_half;
 			}
+			*vt++ = vec2(tx, ty);
 		}
 	}
 
-	for (int i = 0; i < C_TilesCacheSize; i++)
+	//
+
+	// init texture coordinates for alpha map:
+	vt = dataAlpha;
+	const float alpha_half = 0.5f * 1.0f / 8.0f;
+	for (int j = 0; j < 17; j++)
 	{
-		if (maptilecache[i] != nullptr)
+		for (int i = 0; i < ((j % 2) ? 8 : 9); i++)
 		{
-			delete maptilecache[i];
+			tx = 1.0f / 8.0f * i;
+			ty = 1.0f / 8.0f * j * 0.5f;
+			if (j % 2)
+			{
+				// offset by half
+				tx += alpha_half;
+			}
+			//*vt++ = vec2(tx*0.95f, ty*0.95f);
+			const int divs = 32;
+			const float inv = 1.0f / divs;
+			const float mul = (divs - 1.0f);
+			*vt++ = vec2(tx*(mul*inv), ty*(mul*inv));
 		}
 	}
+}
 
-	if (minimap)
+void Map::InitGlobalsWMOs()
+{
+	// Load global WMO
+	Debug::Info("Map_GlobalWMOs[]: Global WMO exists [%s].", globalWMOExists ? "true" : "false");
+	if (globalWMOExists)
 	{
-		glDeleteTextures(1, &minimap);
+		WMO* wmo = _WMOsMgr->Add(globalWMOName);
+		globalWMO = new WMOInstance(wmo, globalWMOplacementInfo);
+	}
+
+	// Load low-resolution WMOs
+	Debug::Info("Map_GlobalWMOs[]: Low WMOs count [%d].", lowResolutionWMOsCount);
+	for (uint32_t i = 0; i < lowResolutionWMOsCount; i++)
+	{
+		const string name = lowResolutionWMOsNames[lowResolutionWMOsplacementInfo[i]->nameIndex];
+
+		WMO* wmo = _WMOsMgr->Add(name);
+		WMOInstance* inst = new WMOInstance(wmo, lowResolutionWMOsplacementInfo[i]);
+		lowResolutionWMOs.push_back(inst);
 	}
 }
 
@@ -147,8 +225,7 @@ void Map::PreloadMap(gMapDBRecord* _map)
 				char* buf = new char[size];
 				f.ReadBytes(buf, size);
 
-				string name = string(buf);
-				m_Map_GlobalWMOs.SetGlobalWMOName(name);
+				globalWMOName = string(buf);
 
 				delete[] buf;
 			}
@@ -160,9 +237,10 @@ void Map::PreloadMap(gMapDBRecord* _map)
 
 			if (globalWMOCount > 0)
 			{
-				WMOPlacementInfo* placement = new WMOPlacementInfo;
-				f.ReadBytes(placement, WMOPlacementInfo::__size);
-				m_Map_GlobalWMOs.SetGlobalWMOPlacementInfo(placement);
+				globalWMOplacementInfo = new WMOPlacementInfo;
+				f.ReadBytes(globalWMOplacementInfo, WMOPlacementInfo::__size);
+
+				globalWMOExists = true;
 			}
 		}
 		else
@@ -221,7 +299,7 @@ void Map::LoadLowTerrain()
 			WOWCHUNK_READ_STRINGS_BEGIN
 
 #ifdef WMO_INCL
-				m_Map_GlobalWMOs.AddLowResWMOName(_string);
+			lowResolutionWMOsNames.push_back(_string);
 #endif
 			WOWCHUNK_READ_STRINGS_END;
 		}
@@ -237,7 +315,7 @@ void Map::LoadLowTerrain()
 			{
 				WMOPlacementInfo* placement = new WMOPlacementInfo;
 				f.ReadBytes(placement, WMOPlacementInfo::__size);
-				m_Map_GlobalWMOs.AddLowResWMOPlacementInfo(placement);
+				lowResolutionWMOsplacementInfo.push_back(placement);
 			}
 #endif
 		}
@@ -376,36 +454,37 @@ void Map::LoadLowTerrain()
 					}
 				}
 
-				GLuint dl;
-				dl = glGenLists(1);
-				glNewList(dl, GL_COMPILE);
 
-				// draw tiles 17*17 + 16*16
-				glBegin(GL_TRIANGLES);
+				vector<vec3> vecrtices;
+
 				for (int y = 0; y < 16; y++)
 				{
 					for (int x = 0; x < 16; x++)
 					{
-						glVertex3fv(glm::value_ptr(lowres[y][x]));
-						glVertex3fv(glm::value_ptr(lowsub[y][x]));
-						glVertex3fv(glm::value_ptr(lowres[y][x + 1]));
+						vecrtices.push_back(lowres[y][x]);
+						vecrtices.push_back(lowsub[y][x]);
+						vecrtices.push_back(lowres[y][x + 1]);
 
-						glVertex3fv(glm::value_ptr(lowres[y][x + 1]));
-						glVertex3fv(glm::value_ptr(lowsub[y][x]));
-						glVertex3fv(glm::value_ptr(lowres[y + 1][x + 1]));
+						vecrtices.push_back(lowres[y][x + 1]);
+						vecrtices.push_back(lowsub[y][x]);
+						vecrtices.push_back(lowres[y + 1][x + 1]);
 
-						glVertex3fv(glm::value_ptr(lowres[y + 1][x + 1]));
-						glVertex3fv(glm::value_ptr(lowsub[y][x]));
-						glVertex3fv(glm::value_ptr(lowres[y + 1][x]));
+						vecrtices.push_back(lowres[y + 1][x + 1]);
+						vecrtices.push_back(lowsub[y][x]);
+						vecrtices.push_back(lowres[y + 1][x]);
 
-						glVertex3fv(glm::value_ptr(lowres[y + 1][x]));
-						glVertex3fv(glm::value_ptr(lowsub[y][x]));
-						glVertex3fv(glm::value_ptr(lowres[y][x]));
+						vecrtices.push_back(lowres[y + 1][x]);
+						vecrtices.push_back(lowsub[y][x]);
+						vecrtices.push_back(lowres[y][x]);
 					}
 				}
-				glEnd();
-				glEndList();
-				lowrestiles[j][i] = dl;
+
+				glGenBuffers(1, &lowrestiles[j][i]);
+				glBindBuffer(GL_ARRAY_BUFFER, lowrestiles[j][i]);
+
+				glBufferData(GL_ARRAY_BUFFER, 16*16*12 * 12, &vecrtices[0], GL_STATIC_DRAW);
+
+				glBindBuffer(GL_ARRAY_BUFFER, 0);
 			}
 		}
 	}
@@ -421,8 +500,35 @@ void Map::LoadLowTerrain()
 
 	// Init global WMOs
 #ifdef WMO_INCL
-	m_Map_GlobalWMOs.InitGlobalsWMOs();
+	InitGlobalsWMOs();
 #endif
+}
+
+void Map::UnloadMap()
+{
+	for (int i = 0; i < 64; i++)
+	{
+		for (int j = 0; j < 64; j++)
+		{
+			if (lowrestiles[i][j] != 0)
+			{
+				glDeleteBuffers(1, &lowrestiles[i][j]);
+			}
+		}
+	}
+
+	for (int i = 0; i < C_TilesCacheSize; i++)
+	{
+		if (maptilecache[i] != nullptr)
+		{
+			delete maptilecache[i];
+		}
+	}
+
+	if (minimap)
+	{
+		glDeleteTextures(1, &minimap);
+	}
 }
 
 //
@@ -431,7 +537,7 @@ void Map::Tick()
 {
 	bool loading = false;
 	int enteredTileX, enteredTileZ;
-	int midTile = static_cast<int>(C_RenderedTiles / 2);
+	int midTile = static_cast<uint32_t>(C_RenderedTiles / 2);
 	if (current[midTile][midTile] != nullptr || outOfBounds)
 	{
 		if (outOfBounds ||
@@ -483,16 +589,26 @@ void Map::RenderSky()
 void Map::RenderLowResTiles()
 {
 
-	/*for (int i = 0; i < C_TilesInMap; i++)
+	for (int i = 0; i < C_TilesInMap; i++)
 		for (int j = 0; j < C_TilesInMap; j++)
 			if (lowrestiles[i][j])
 			{
-				glCallList(lowrestiles[i][j]);
-			}*/
+				glBindBuffer(GL_ARRAY_BUFFER, lowrestiles[i][j]);
+
+				// Vertex
+				glEnableVertexAttribArray(0);
+				glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+				glDrawArrays(GL_TRIANGLES, 0, 16 * 16 * 12);
+
+				glDisableVertexAttribArray(0);
+
+				glBindBuffer(GL_ARRAY_BUFFER, 0);
+			}
 
 
 
-	const int lrr = 5;
+	/*const int lrr = 5;
 	for (int i = currentTileX - lrr; i <= currentTileX + lrr; i++)
 	{
 		for (int j = currentTileZ - lrr; j <= currentTileZ + lrr; j++)
@@ -514,19 +630,29 @@ void Map::RenderLowResTiles()
 			// still less annoying than hoels in the horizon when only 2-off verylowres tiles are drawn
 			if (lowrestiles[i][j])
 			{
-				glCallList(lowrestiles[i][j]);
+				glBindBuffer(GL_ARRAY_BUFFER, lowrestiles[i][j]);
+
+				// Vertex
+				glEnableVertexAttribArray(0);
+				glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+				//glDrawElements(GL_TRIANGLE_STRIP, striplen, GL_UNSIGNED_SHORT, strip);
+				glDrawBuffer(GL_TRIANGLES);
+				_Perfomance->Inc(PERF_MAP_LOWRES_TILES);
+
+				glBindBuffer(GL_ARRAY_BUFFER, 0);
 			}
 		}
-	}
+	}*/
 }
 
-void Map::RenderTiles(MapTilePass* pass)
+void Map::RenderTiles()
 {
 	for (int i = 0; i < C_TilesCacheSize; i++)
 	{
 		if (maptilecache[i] != nullptr)
 		{
-			maptilecache[i]->draw(pass);
+			maptilecache[i]->draw();
 		}
 	}
 

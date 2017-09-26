@@ -10,6 +10,8 @@ WMOMaterial::WMOMaterial(const WMO* _parentWMO, File& _file) : m_ParentWMO(_pare
 {
 	_file.ReadBytes(&matDef, WMOMaterialDef::__size);
 
+	//Debug::Info("Blend mode = [%d]", matDef.blendMode);
+
 	texture = _TexturesMgr->Add(_parentWMO->m_TexturesNames + matDef.diffuseNameIndex);
 }
 
@@ -21,10 +23,15 @@ WMOMaterial::~WMOMaterial()
 void WMOMaterial::setup()
 {
 	//SetBlendMode();
+
 	if (IsTwoSided())
+	{
 		glDisable(GL_CULL_FACE);
+	}
 	else
+	{
 		glEnable(GL_CULL_FACE);
+	}
 
 	texture->Bind();
 }

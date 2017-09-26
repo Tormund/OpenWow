@@ -194,11 +194,6 @@ public:
 			assert1(gs);
 		}
 
-		if (b.timestamps.size != b.values.size)
-		{
-			Debug::Error("123");
-		}
-
 		assert1(b.timestamps.size == b.values.size);
 		sizes = b.timestamps.size;
 		if (b.timestamps.size == 0)	return;
@@ -251,11 +246,6 @@ public:
 		if (global_sequence != -1)
 		{
 			assert1(gs);
-		}
-
-		if (b.timestamps.size != b.values.size)
-		{
-			Debug::Error("123");
 		}
 
 		assert1(b.timestamps.size == b.values.size);

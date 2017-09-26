@@ -9,8 +9,12 @@
 // Additional
 #include <iostream>
 
+CRITICAL_SECTION Debug::debugCS;
+
 bool Debug::Init()
 {
+	InitializeCriticalSection(&debugCS);
+
 	return true;
 }
 
@@ -145,6 +149,8 @@ void Debug::Exit(int _exitCode)
 
 void Debug::PushMessageToAllDebugOutputs(const char* _message, int _type, va_list& _vaList)
 {
+	EnterCriticalSection(&debugCS); // THREAD
+
 	auto _debugOutputs = &(instance()->debugOutputs);
 
 	if (_debugOutputs->empty())
@@ -156,6 +162,8 @@ void Debug::PushMessageToAllDebugOutputs(const char* _message, int _type, va_lis
 	{
 		(*it)->PushMessage(static_cast<DebugOutput::DebugMessageType>(_type), _message, _vaList);
 	}
+
+	LeaveCriticalSection(&debugCS); // THREAD
 }
 
 void Debug::ShowErrorMessageBox(const char* _message, const char* _title)

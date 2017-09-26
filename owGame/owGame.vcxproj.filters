@@ -4,6 +4,12 @@
     <Filter Include="General">
       <UniqueIdentifier>{24c337e0-a2b6-44f6-8f76-c24a9b084161}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GUI">
+      <UniqueIdentifier>{fb6b7202-03c0-4e45-8231-887b57cbc267}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GUI\Elements">
+      <UniqueIdentifier>{e219c3ba-a36c-49ac-a078-f0c01fc1d5d2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -19,6 +25,33 @@
       <Filter>General</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="UIButton.cpp">
+      <Filter>GUI\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="UIButton3t.cpp">
+      <Filter>GUI\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="UICheckBox.cpp">
+      <Filter>GUI\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement.cpp">
+      <Filter>GUI\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="UIInput.cpp">
+      <Filter>GUI\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="UIScrollBar.cpp">
+      <Filter>GUI\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="UIWindow.cpp">
+      <Filter>GUI\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="UIFile.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="UIMgr.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -35,5 +68,32 @@
     </ClInclude>
     <ClInclude Include="..\shared\owGame.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="UIButton.h">
+      <Filter>GUI\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="UIButton3t.h">
+      <Filter>GUI\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="UICheckBox.h">
+      <Filter>GUI\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement.h">
+      <Filter>GUI\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="UIInput.h">
+      <Filter>GUI\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="UIScrollBar.h">
+      <Filter>GUI\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="UIWindow.h">
+      <Filter>GUI\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="UIFile.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIMgr.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

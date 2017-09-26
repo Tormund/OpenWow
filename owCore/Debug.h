@@ -6,7 +6,6 @@ class Debug
 {
 	CLASS_INSTANCE(Debug);
 
-public:
 	static  bool Init();
 	static  void Destroy();
 
@@ -34,6 +33,7 @@ private:
 
 private:
 	vector<DebugOutput*> debugOutputs;
+	static CRITICAL_SECTION debugCS;
 };
 
 #include "DebugMacros.h"

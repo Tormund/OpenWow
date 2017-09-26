@@ -3,35 +3,40 @@
 // General
 #include "Frustum.h"
 
-void Plane::normalize()
-{
-	float len;
-	len = sqrtf(a*a + b*b + c*c);
-	a /= len;
-	b /= len;
-	c /= len;
-	d /= len;
-}
+// Additional
+#include "Perfomance.h"
+#include "Pipeline.h"
+
 
 enum Directions
 {
-	FRIGHT, FLEFT, FBOTTOM, FTOP, FBACK, FFRONT
+	FRIGHT, 
+	FLEFT, 
+	FBOTTOM, 
+	FTOP, 
+	FBACK, 
+	FFRONT
 };
 
 void Frustum::retrieve()
 {
+	_Perfomance->Start(PERF_FRUSTRUM);
+
 	float mat[16];
+	memcpy(&mat, glm::value_ptr(*_Pipeline->GetPV()), 16 * sizeof(float));
 
-	glGetFloatv(GL_MODELVIEW_MATRIX, mat);
+	/*glGetFloatv(GL_MODELVIEW_MATRIX, mat);
+
+
 	glMatrixMode(GL_PROJECTION);
-
 	glPushMatrix();
-
-	glMultMatrixf(mat);
-	glGetFloatv(GL_PROJECTION_MATRIX, mat);
-
+	{
+		glMultMatrixf(mat);
+		glGetFloatv(GL_PROJECTION_MATRIX, mat);
+	}
 	glPopMatrix();
-	glMatrixMode(GL_MODELVIEW);
+
+	glMatrixMode(GL_MODELVIEW);*/
 
 	planes[FRIGHT].a = mat[3] - mat[0];
 	planes[FRIGHT].b = mat[7] - mat[4];
@@ -69,23 +74,30 @@ void Frustum::retrieve()
 	planes[FFRONT].d = mat[15] + mat[14];
 	planes[FFRONT].normalize();
 
+	_Perfomance->Stop(PERF_FRUSTRUM);
 }
 
 bool Frustum::contains(cvec3 v) const
 {
-	for (int i = 0; i < 6; i++)
+	_Perfomance->Start(PERF_FRUSTRUM);
+
+	for (uint8_t i = 0; i < 6; i++)
 	{
 		if ((planes[i].a*v.x + planes[i].b*v.y + planes[i].c*v.z + planes[i].d) <= 0)
 		{
+			_Perfomance->Stop(PERF_FRUSTRUM);
 			return false;
 		}
 	}
+	_Perfomance->Stop(PERF_FRUSTRUM);
 	return true;
 }
 
 bool Frustum::intersects(cvec3 v1, cvec3 v2) const
 {
-	return true; // BOUZI
+	//return true; // BOUZI
+
+	_Perfomance->Start(PERF_FRUSTRUM);
 
 	vec3 points[8];
 	points[0] = vec3(v1.x, v1.y, v1.z);
@@ -97,11 +109,11 @@ bool Frustum::intersects(cvec3 v1, cvec3 v2) const
 	points[6] = vec3(v2.x, v2.y, v1.z);
 	points[7] = vec3(v2.x, v2.y, v2.z);
 
-	for (int i = 0; i < 6; i++)
+	for (uint8_t i = 0; i < 6; i++)
 	{
-		int numIn = 0;
+		uint8_t numIn = 0;
 
-		for (int k = 0; k < 8; k++)
+		for (uint8_t k = 0; k < 8; k++)
 		{
 			if ((planes[i].a*points[k].x + planes[i].b*points[k].y + planes[i].c*points[k].z + planes[i].d) > 0)
 			{
@@ -109,24 +121,40 @@ bool Frustum::intersects(cvec3 v1, cvec3 v2) const
 			}
 		}
 
-		if (numIn == 0) return false;
+		if (numIn == 0)
+		{
+			_Perfomance->Stop(PERF_FRUSTRUM);
+			return false;
+		}
 	}
 
+	_Perfomance->Stop(PERF_FRUSTRUM);
 	return true;
 }
 
 bool Frustum::intersectsSphere(cvec3 v, const float rad) const
 {
-	return true; // BOUZI
+	//return true; // BOUZI
 
-	for (int i = 0; i < 6; ++i)
+	_Perfomance->Start(PERF_FRUSTRUM);
+
+	for (uint8_t i = 0; i < 6; ++i)
 	{
 		float distance = (planes[i].a * v.x + planes[i].b * v.y + planes[i].c * v.z + planes[i].d);
 		if (distance < -rad)
+		{
+			_Perfomance->Stop(PERF_FRUSTRUM);
 			return false;
+		}
+
 		if (fabs(distance) < rad)
+		{
+			_Perfomance->Stop(PERF_FRUSTRUM);
 			return true;
+		}
 	}
+
+	_Perfomance->Stop(PERF_FRUSTRUM);
 	return true;
 }
 

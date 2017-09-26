@@ -7,6 +7,15 @@ WMOInstance::WMOInstance(WMO* _wmoObject, File& f) : wmoObject(_wmoObject)
 {
 	placementInfo = new WMOPlacementInfo;
 	f.ReadBytes(placementInfo, WMOPlacementInfo::__size);
+
+	// Convert rotation
+	placementInfo->rotation = glm::radians(placementInfo->rotation);
+	placementInfo->rotation.x = -placementInfo->rotation.x;
+	placementInfo->rotation.y = placementInfo->rotation.y - PI / 2.0;
+
+
+	// Debug
+	//Debug::Info("OFFSET [%f, %f, %f] ROT = [%f]", placementInfo->position.x, placementInfo->position.y, placementInfo->position.z, placementInfo->rotation.x);
 }
 
 WMOInstance::WMOInstance(WMO* _wmoObject, WMOPlacementInfo* _placementInfo) : wmoObject(_wmoObject)
@@ -28,18 +37,21 @@ void WMOInstance::draw()
 	alreadyDraw.insert(placementInfo->uniqueId);
 
 	//
+	
+	_Pipeline->Clear();
 
-	glPushMatrix();
+	if (!_Settings->disable_pipeline)
 	{
-		glTranslatef(placementInfo->position.x, placementInfo->position.y, placementInfo->position.z);
+		_Pipeline->Translate(placementInfo->position);
 
-		glRotatef(placementInfo->rotation.y - 90.0f, 0, 1, 0);
-		glRotatef(-placementInfo->rotation.x, 0, 0, 1);
-		glRotatef(placementInfo->rotation.z, 1, 0, 0);
-
-		wmoObject->draw(placementInfo->doodadSetIndex, placementInfo->position, placementInfo->rotation.y - 90.0f);
+		_Pipeline->RotateX(placementInfo->rotation.z);
+		_Pipeline->RotateY(placementInfo->rotation.y);
+		_Pipeline->RotateZ(placementInfo->rotation.x);
+		
 	}
-	glPopMatrix();
+
+	wmoObject->draw(placementInfo->doodadSetIndex, placementInfo->position, placementInfo->rotation.x);
+	_Perfomance->Inc(PERF_WMOs);
 }
 
 void WMOInstance::reset()

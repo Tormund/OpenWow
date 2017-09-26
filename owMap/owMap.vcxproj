@@ -165,11 +165,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Map.cpp" />
-    <ClCompile Include="MapChunk.cpp" />
-    <ClCompile Include="MapsManager.cpp" />
-    <ClCompile Include="MapTile.cpp" />
-    <ClCompile Include="MapWaterChunk.cpp" />
-    <ClCompile Include="Map_GlobalWMOs.cpp" />
+    <ClCompile Include="Map_Chunk.cpp" />
+    <ClCompile Include="Map_Tile.cpp" />
+    <ClCompile Include="Map_Chunk_MH2O.cpp" />
     <ClCompile Include="Model_Instance.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="WMO_Instance.cpp" />
@@ -177,14 +175,15 @@
   <ItemGroup>
     <ClInclude Include="..\shared\owMap.h" />
     <ClInclude Include="Map.h" />
-    <ClInclude Include="MapChunk.h" />
-    <ClInclude Include="MapsManager.h" />
-    <ClInclude Include="MapTile.h" />
-    <ClInclude Include="MapWaterChunk.h" />
-    <ClInclude Include="Map_GlobalWMOs.h" />
+    <ClInclude Include="Map_Chunk.h" />
+    <ClInclude Include="Map_Chunk_Types.h" />
+    <ClInclude Include="Map_Tile.h" />
     <ClInclude Include="Model_Instance.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="WMO_Instance.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Map.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

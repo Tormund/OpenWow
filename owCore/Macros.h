@@ -2,8 +2,10 @@
 
 // Settings
 
-//#define WMO_INCL
-//#define MDX_INCL
+#define WMO_INCL
+#define DOODADS_INCL
+
+#define MDX_INCL
 //#define MDX_PARTICLES_ENABLE
 
 //

@@ -6,6 +6,7 @@
 // General
 #include "RefManager1DimAssync.h"
 
+#ifndef DISABLE_ASSYNC
 DWORD WINAPI ThreadProc(LPVOID lpParam)
 {
 	RefManager1DimAssync<RefItem>* manager = (RefManager1DimAssync<RefItem>*) lpParam;
@@ -29,3 +30,4 @@ DWORD WINAPI ThreadProc(LPVOID lpParam)
 
 	ExitThread(0);
 }
+#endif

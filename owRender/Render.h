@@ -8,7 +8,7 @@ class GLFWBackend;
 class RenderGL : public Module {
 	friend GLFWBackend;
 public:
-	DEF_MODULE_API(RenderGL, );
+	DEF_MODULE(RenderGL);
 
 	 void Set3D();
 	 void Set2D();
@@ -26,12 +26,12 @@ public:
 	GLuint GetVertexBuffer() { return VertexBufferObject; }
 	GLuint GetArrayBuffer() { return VertexArrayObject; }
 
-public:
+/*public:
 	HDC dc;
 	HGLRC glrc1;
 	HGLRC glrc2;
 	HGLRC glrc3;
-	HGLRC glrc4;
+	HGLRC glrc4;*/
 
 private:
 	void OnWindowResized(uint32_t _width, uint32_t _height);

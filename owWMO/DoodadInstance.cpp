@@ -3,56 +3,73 @@
 // General
 #include "DoodadInstance.h"
 
-DoodadInstance::DoodadInstance(Model * m, File& f)
+DoodadInstance::DoodadInstance(File& f)
 {
-	// MODD
-	model = m;
+	placementInfo = new DoodadPlacementInfo;
+	f.ReadBytes(placementInfo, DoodadPlacementInfo::__size);
 
-	float ff[3], temp;
-	f.ReadBytes(ff, 12); // Position (X,Z,-Y)
+	placementInfo->position = From_XYZ_To_XZminusY_RET(placementInfo->position);
 
-	pos = vec3(ff[0], ff[1], ff[2]);
-	temp = pos.z;
-	pos.z = -pos.y;
-	pos.y = temp;
+	//Debug::Error("QUAT = [%f %f %f %f]", placementInfo->orientation.x, placementInfo->orientation.y, placementInfo->orientation.z, placementInfo->orientation.w);
 
-	f.ReadBytes(&w, 4); // W component of the orientation quaternion
-	f.ReadBytes(ff, 12); // X, Y, Z components of the orientaton quaternion
+	//placementInfo->orientation.x = glm::radians(placementInfo->orientation.x);
+	//placementInfo->orientation.y = glm::radians(placementInfo->orientation.y);
+	//placementInfo->orientation.z = glm::radians(placementInfo->orientation.z);
 
-	dir = vec3(ff[0], ff[1], ff[2]);
-	f.ReadBytes(&sc, 4); // Scale factor
-	uint32_t d1;
-	f.ReadBytes(&d1, 4); // (B,G,R,A) Lightning-color. 
-	lcol = fromARGB(d1);
+	
+
+	//uint32_t d1;
+	//f.ReadBytes(&d1, 4); // (B,G,R,A) Lightning-color. 
+	//lcol = fromARGB(d1);
+}
+
+DoodadInstance::~DoodadInstance()
+{
+	delete placementInfo;
 }
 
 void DoodadInstance::Draw(cvec3 ofs, float roll)
 {
-	vec3 tpos(ofs + pos);
-	rotate(ofs.x, ofs.z, &tpos.x, &tpos.z, roll * PI / 180.0f);
+	vec3 tpos(ofs + placementInfo->position);
+	rotate(ofs.x, ofs.z, &tpos.x, &tpos.z, roll);
 
-	if (glm::length2(tpos - _Camera->Position) > (_Settings->doodaddrawdistance2 * model->rad * sc))
+	/*if (glm::length2(tpos - _Camera->Position) > (_Settings->doodaddrawdistance2 + modelObject->rad * placementInfo->scale))
 	{
 		return;
-	}
+	}*/
 
-	if (!_Render->frustum.intersectsSphere(tpos, model->rad*sc))
+	/*if (!_Render->frustum.intersectsSphere(tpos, modelObject->rad * placementInfo->scale))
 	{
 		return;
-	}
+	}*/
 
-	glPushMatrix();
+	/*glPushMatrix();
 	{
-		glTranslatef(pos.x, pos.y, pos.z);
+		glTranslatef(placementInfo->position.x, placementInfo->position.y, placementInfo->position.z);
 
-		vec3 vdir(-dir.z, dir.x, dir.y);
-		glQuaternionRotate(vdir, w);
+		vec3 vdir(-placementInfo->orientation.z, placementInfo->orientation.x, placementInfo->orientation.y);
+		glQuaternionRotate2(vdir, placementInfo->orientation.w);
+		
+		_Pipeline->SetRotationQuaternion(placementInfo->orientation);
 
-		glScalef(sc, -sc, -sc);
+		glScalef(placementInfo->scale, -placementInfo->scale, -placementInfo->scale);*/
+		
+		_Pipeline->Clear();
 
-		model->draw();
-	}
-	glPopMatrix();
+		_Pipeline->Translate(ofs);
+		_Pipeline->RotateY(roll - PI / 2.0f);
+
+		_Pipeline->Translate(placementInfo->position);
+
+		vec3 vdir(-placementInfo->orientation.z, placementInfo->orientation.x, placementInfo->orientation.y);
+		mat4 m = glQuaternionRotate2(vdir, placementInfo->orientation.w);
+		_Pipeline->Mult(m);
+
+		_Pipeline->Scale(placementInfo->scale, -placementInfo->scale, -placementInfo->scale);
+
+	
+		modelObject->draw();
+		_Perfomance->Inc(PERF_WMOs_DOODADS);
 }
 
 

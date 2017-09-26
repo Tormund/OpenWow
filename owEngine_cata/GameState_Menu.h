@@ -31,7 +31,7 @@ public:
 	{
 		Debug::Green("Load level %s [%d]", _e->Get_Directory_cstr(), _e->Get_ID());
 
-		_MapsManager->GetMap()->PreloadMap(_e);
+		_Map->PreloadMap(_e);
 		cmd = CMD_SELECT2;
 		window->Detach();
 	}
@@ -52,6 +52,7 @@ private:
 	// Camera moving
 	bool enableFreeCamera;
 	bool cameraSprint;
+	bool cameraSlow;
 	vec2 lastMousePos;
 
 	UIWindow* window;
@@ -60,7 +61,7 @@ private:
 
 	bool minimapActive;
 
-	Model *backgroundModel;
+	MDX *backgroundModel;
 	float mt;
 
 	void randBackground();

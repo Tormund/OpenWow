@@ -1,7 +1,6 @@
 #pragma once
 
-// GLFW
-#define GLFW_DLL
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 #include <owCore.h>
@@ -9,6 +8,3 @@
 
 #include <owRender.h>
 #pragma comment(lib, "owRender.lib")
-
-#include <owGUI.h>
-#pragma comment(lib, "owGUI.lib")

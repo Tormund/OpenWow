@@ -64,6 +64,9 @@
     <Filter Include="World">
       <UniqueIdentifier>{69181e93-284e-45a2-b3a5-9601cc083f43}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Files\CASCFile">
+      <UniqueIdentifier>{488ed99e-97e9-4c74-ac04-8bcc02832f34}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModulesMgr.cpp">
@@ -169,6 +172,15 @@
     </ClCompile>
     <ClCompile Include="Consts.cpp">
       <Filter>Types</Filter>
+    </ClCompile>
+    <ClCompile Include="WowTime.cpp">
+      <Filter>Types</Filter>
+    </ClCompile>
+    <ClCompile Include="CASCFile.cpp">
+      <Filter>Files\CASCFile</Filter>
+    </ClCompile>
+    <ClCompile Include="CASCFolder.cpp">
+      <Filter>Files\CASCFile</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -307,6 +319,15 @@
     </ClInclude>
     <ClInclude Include="AnimationTypes.h">
       <Filter>Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="WowTime.h">
+      <Filter>Types</Filter>
+    </ClInclude>
+    <ClInclude Include="CASCFile.h">
+      <Filter>Files\CASCFile</Filter>
+    </ClInclude>
+    <ClInclude Include="CASCFolder.h">
+      <Filter>Files\CASCFile</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

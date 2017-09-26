@@ -1,14 +1,14 @@
 #pragma once
 
-#include "Model.h"
+#include "MDX.h"
 
-class ModelsManager : public Module, public RefManager1DimAssync<Model>
+class ModelsManager : public Module, public RefManager1DimAssync<MDX>
 {
 public:
 	DEF_MODULE(ModelsManager);
 
-	Model* CreateAction(cstring name) override;
-	void LoadAction(string name, Model* _model) override;
+	MDX* CreateAction(cstring name) override;
+	void LoadAction(string name, MDX* _model) override;
 	bool DeleteAction(cstring name) override;
 
 	void resetAnim();
