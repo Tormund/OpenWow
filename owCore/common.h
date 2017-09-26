@@ -1,6 +1,5 @@
 #pragma once
 
-// Standart includes
 #include <algorithm>
 #include <fstream>
 #include <cmath>
@@ -11,20 +10,27 @@ using namespace std;
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
-// Engine includes
+// Macros
+#include "Macros.h"
+
+// Common types
 #include "Types.h"
 #include "Consts.h"
 
-// Engine Types
-#include "Color.h"
-#include "Rect.h"
-
-// Engine Common classes
-#include "Function.h"
+// General
 #include "Module.h"
+#include "DebugOutput.h"
+#include "Debug.h"
 #include "Random.h"
+
+// Wow types
+#include "WowTypes.h"
+#include "WowConsts.h"
+
+// Additional types
+#include "Function.h"
+
+// Utils
 #include "Utils.h"
 #include "MathUtils.h"
 #include "WowChunkUtils.h"
-#include "Debug.h"
-#include "Manager.h"

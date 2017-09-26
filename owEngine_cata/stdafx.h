@@ -1,14 +1,6 @@
 #pragma once
 
-#define WMO_INCL
-#define MDX_INCL
-
-#define NOMINMAX
-#include <winerror.h>
-
-// INCLUDES
 #include <GL/glew.h>
-
 #define GLFW_DLL
 #include <GLFW/glfw3.h>
 
@@ -27,11 +19,14 @@
 #include <owDBC.h>
 #pragma comment(lib, "owDBC.lib")
 
-#include <owShared.h>
-#pragma comment(lib, "owShared.lib")
+#include <owEnvironment.h>
+#pragma comment(lib, "owEnvironment.lib")
 
 #include <owMDX.h>
 #pragma comment(lib, "owMDX.lib")
 
 #include <owWMO.h>
 #pragma comment(lib, "owWMO.lib")
+
+#include <owMap.h>
+#pragma comment(lib, "owMap.lib")

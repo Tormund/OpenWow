@@ -1,5 +1,4 @@
-#ifndef DS_POINT_LIGHT_PASS_TECH_H
-#define	DS_POINT_LIGHT_PASS_TECH_H
+#pragma once
 
 #include "ds_light_pass_tech.h"
 #include "lights_common.h"
@@ -11,6 +10,3 @@ public:
 
 	 void SetPointLight(const PointLight& Lights);
 };
-
-
-#endif

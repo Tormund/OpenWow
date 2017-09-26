@@ -11,14 +11,14 @@ void ModelCamera::init(File& f, M2Camera& mcd, uint32_t* global)
 	nearclip = mcd.near_clip;
 	farclip = mcd.far_clip;
 
-	pos = fixCoordSystem(mcd.position_base);
-	target = fixCoordSystem(mcd.target_position_base);
+	pos = From_XYZ_To_XZminusY_RET(mcd.position_base);
+	target = From_XYZ_To_XZminusY_RET(mcd.target_position_base);
 
 	tPos.init(mcd.positions, f, global);
-	tPos.fix(fixCoordSystem);
+	tPos.fix(From_XYZ_To_XZminusY_RET);
 
 	tTarget.init(mcd.target_position, f, global);
-	tTarget.fix(fixCoordSystem);
+	tTarget.fix(From_XYZ_To_XZminusY_RET);
 
 	tRoll.init(mcd.roll, f, global);
 	tFov.init(mcd.FoV, f, global);
@@ -30,7 +30,7 @@ void ModelCamera::setup(int time)
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(fov, _Render->GetAspectRatio(), nearclip, farclip);
+	gluPerspective(fov, _Settings->aspectRatio, nearclip, farclip);
 
 	vec3 p = pos + tPos.getValue(0, time);
 	vec3 t = target + tTarget.getValue(0, time);

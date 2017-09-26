@@ -1,13 +1,26 @@
 #pragma once
 
+// Fix coords WoW
+
+inline vec3 From_XYZ_To_XZminusY_RET(cvec3 v)
+{
+	return vec3(v.x, v.z, -v.y);
+}
+
+inline void From_XYZ_To_XZminusY(vec3& v)
+{
+	float temp = -v.y;
+	v.y = v.z;
+	v.z = temp;
+}
+
+
+
 inline void flipcc(char* fcc)
 {
 	std::swap(fcc[0], fcc[3]);
 	std::swap(fcc[1], fcc[2]);
 }
-
-
-
 
 #define WOWCHUNK_READ_STRINGS_BEGIN \
 char* __tbuf = new char[size + 1]; \
@@ -18,8 +31,6 @@ while (__tp < __tbuf + size) \
 { \
 	string _string(__tp); \
 	__tp += _string.length() + 1; \
-
-
 
 #define WOWCHUNK_READ_STRINGS_END \
 } \
@@ -35,7 +46,6 @@ while (p < end) \
 	string _string(p); \
 	p += strlen(p) + 1; \
 	while ((p < end) && (*p == 0)) p++;
-
 
 #define WOWCHUNK_READ_STRINGS2_END \
 } \

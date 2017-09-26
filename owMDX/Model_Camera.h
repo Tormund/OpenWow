@@ -18,8 +18,8 @@
 class ModelCamera
 {
 public:
-	OW_MDX_DLL_API void init(File& f, M2Camera& mcd, uint32_t* global);
-	OW_MDX_DLL_API void setup(int time = 0);
+	void init(File& f, M2Camera& mcd, uint32_t* global);
+	void setup(int time = 0);
 
 private:
 	float farclip;

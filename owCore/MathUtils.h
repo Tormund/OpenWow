@@ -18,18 +18,6 @@ inline T Clamp(const T& _value, const T _min, const T _max)
 	return Max(_min, Min(_value, _max));
 }
 
-inline vec3 fixCoordSystem(cvec3 v)
-{
-	return vec3(v.x, v.z, -v.y);
-}
-
-inline void From_XYZ_To_XZminusY(vec3& v)
-{
-	float temp = -v.y;
-	v.y = v.z;
-	v.z = temp;
-}
-
 inline vec3 fixCoordSystem2(cvec3 v)
 {
 	return vec3(v.x, v.z, v.y);

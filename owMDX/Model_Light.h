@@ -11,8 +11,8 @@ enum ModelLightTypes
 class ModelLight
 {
 public:
-	OW_MDX_DLL_API void init(File& f, M2Light& mld, uint32_t * global);
-	OW_MDX_DLL_API void setup(int time, GLuint l);
+	void init(File& f, M2Light& mld, uint32_t * global);
+	void setup(int time, GLuint l);
 
 public:
 	int type, parent;

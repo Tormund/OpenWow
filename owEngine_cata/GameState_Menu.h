@@ -4,13 +4,13 @@
 
 class gMapDBRecord;
 
-enum Commands
+enum Commands2
 {
-	CMD_NONE,
-	CMD_SELECT,
-	CMD_LOAD_WORLD,
-	CMD_DO_LOAD_WORLD,
-	CMD_IN_WORLD
+	CMD_NONE2,
+	CMD_SELECT2,
+	CMD_LOAD_WORLD2,
+	CMD_DO_LOAD_WORLD2,
+	CMD_IN_WORLD2
 };
 
 class GameState_Menu : public GameState
@@ -31,8 +31,8 @@ public:
 	{
 		Debug::Green("Load level %s [%d]", _e->Get_Directory_cstr(), _e->Get_ID());
 
-		_World->GetMap()->PreloadMap(_e);
-		cmd = CMD_SELECT;
+		_MapsManager->GetMap()->PreloadMap(_e);
+		cmd = CMD_SELECT2;
 		window->Detach();
 	}
 
@@ -56,7 +56,7 @@ private:
 
 	UIWindow* window;
 
-	Commands cmd;
+	Commands2 cmd;
 
 	bool minimapActive;
 

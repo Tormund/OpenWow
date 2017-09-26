@@ -7,22 +7,20 @@
 #include "Model_RenderPass.h"
 #include "ModelsUtils.h"
 
-int globalTime = 0;
-
-Model::Model(cstring name) : RefItemNamed(name)
+Model::Model(cstring name) : RefItemNamed(name), m_Loaded(false)
 {
-	ok = false;
+
 }
 
 Model::~Model()
 {
-	if (ok)
+	if (m_Loaded)
 	{
 		//Debug::Info("Unloading model %s", name.c_str());
 
 		if (header.textures.size)
 		{
-			for (size_t i = 0; i < header.textures.size; i++)
+			for (uint32_t i = 0; i < header.textures.size; i++)
 			{
 				if (textures[i] != nullptr)
 				{
@@ -60,9 +58,10 @@ Model::~Model()
 			if (transparency) delete[] transparency;
 			if (lights) delete[] lights;
 
+#ifdef MDX_PARTICLES_ENABLE
 			if (particleSystems) delete[] particleSystems;
 			if (ribbons) delete[] ribbons;
-
+#endif
 		}
 		else
 		{
@@ -70,6 +69,8 @@ Model::~Model()
 		}
 	}
 }
+
+//
 
 void Model::Init(bool forceAnim)
 {
@@ -120,8 +121,11 @@ void Model::Init(bool forceAnim)
 	colors = nullptr;
 	lights = nullptr;
 	transparency = nullptr;
+
+#ifdef MDX_PARTICLES_ENABLE
 	particleSystems = nullptr;
 	ribbons = nullptr;
+#endif
 
 	if (header.global_loops.size)
 	{
@@ -138,7 +142,7 @@ void Model::Init(bool forceAnim)
 		initStatic(f);
 	}
 
-	ok = true;
+	m_Loaded = true;
 }
 
 bool Model::isAnimated(File& f)
@@ -151,9 +155,9 @@ bool Model::isAnimated(File& f)
 	ind = false;
 
 	M2Vertex *verts = (M2Vertex*)(f.GetData() + header.vertices.offset);
-	for (size_t i = 0; i < header.vertices.size && !animGeometry; i++)
+	for (uint32_t i = 0; i < header.vertices.size && !animGeometry; i++)
 	{
-		for (size_t b = 0; b < 4; b++)
+		for (uint32_t b = 0; b < 4; b++)
 		{
 			if (verts[i].bone_weights[b] > 0)
 			{
@@ -176,7 +180,7 @@ bool Model::isAnimated(File& f)
 		animBones = true;
 	else
 	{
-		for (size_t i = 0; i < header.bones.size; i++)
+		for (uint32_t i = 0; i < header.bones.size; i++)
 		{
 			M2CompBone &bb = bo[i];
 			if (bb.translation.interpolation_type || bb.rotation.interpolation_type || bb.scale.interpolation_type)
@@ -200,7 +204,7 @@ bool Model::isAnimated(File& f)
 	if (header.colors.size)
 	{
 		M2Color* cols = (M2Color*)(f.GetData() + header.colors.offset);
-		for (size_t i = 0; i < header.colors.size; i++)
+		for (uint32_t i = 0; i < header.colors.size; i++)
 		{
 			if (cols[i].color.interpolation_type != 0 || cols[i].alpha.interpolation_type != 0)
 			{
@@ -214,7 +218,7 @@ bool Model::isAnimated(File& f)
 	if (header.texture_weights.size && !animMisc)
 	{
 		M2TextureWeight* trs = (M2TextureWeight*)(f.GetData() + header.texture_weights.offset);
-		for (size_t i = 0; i < header.texture_weights.size; i++)
+		for (uint32_t i = 0; i < header.texture_weights.size; i++)
 		{
 			if (trs[i].weight.interpolation_type != 0)
 			{
@@ -240,10 +244,10 @@ void Model::initCommon(File& f)
 	//vec3 vmin = vec3( 9999999.0f, 9999999.0f, 9999999.0f);
 	//vec3 vmax = vec3(-9999999.0f,-9999999.0f,-9999999.0f);
 	// vertices, normals
-	for (size_t i = 0; i < header.vertices.size; i++)
+	for (uint32_t i = 0; i < header.vertices.size; i++)
 	{
-		origVertices[i].pos = fixCoordSystem(origVertices[i].pos);
-		origVertices[i].normal = fixCoordSystem(origVertices[i].normal);
+		origVertices[i].pos = From_XYZ_To_XZminusY_RET(origVertices[i].pos);
+		origVertices[i].normal = From_XYZ_To_XZminusY_RET(origVertices[i].normal);
 
 		if (!animGeometry)
 		{
@@ -275,7 +279,7 @@ void Model::initCommon(File& f)
 		texdef = (M2Texture*)(f.GetData() + header.textures.offset);
 		textures = new Texture*[header.textures.size];
 		char texname[256];
-		for (size_t i = 0; i < header.textures.size; i++)
+		for (uint32_t i = 0; i < header.textures.size; i++)
 		{
 			// Error check
 			if (i > TEXTURE_MAX - 1)
@@ -313,7 +317,7 @@ void Model::initCommon(File& f)
 	{
 		colors = new ModelColor[header.colors.size];
 		M2Color *colorDefs = (M2Color*)(f.GetData() + header.colors.offset);
-		for (size_t i = 0; i < header.colors.size; i++)
+		for (uint32_t i = 0; i < header.colors.size; i++)
 			colors[i].init(f, colorDefs[i], globalSequences);
 	}
 
@@ -324,7 +328,7 @@ void Model::initCommon(File& f)
 		transLookup = (int16_t*)(f.GetData() + header.transparency_lookup_table.offset);
 		transparency = new ModelTransparency[header.texture_weights.size];
 		M2TextureWeight *trDefs = (M2TextureWeight*)(f.GetData() + header.texture_weights.offset);
-		for (size_t i = 0; i < header.texture_weights.size; i++)
+		for (uint32_t i = 0; i < header.texture_weights.size; i++)
 		{
 			transparency[i].init(f, trDefs[i], globalSequences);
 		}
@@ -350,7 +354,7 @@ void Model::initCommon(File& f)
 		uint16_t *triangles = (uint16_t*)(g.GetData() + view->indices.offset);
 		nIndices = view->indices.size;
 		indices = new uint16_t[nIndices];
-		for (size_t i = 0; i < nIndices; i++)
+		for (uint32_t i = 0; i < nIndices; i++)
 		{
 			indices[i] = indexLookup[triangles[i]];
 		}
@@ -364,77 +368,77 @@ void Model::initCommon(File& f)
 		int16_t *texunitlookup = (int16_t*)(f.GetData() + header.tex_unit_lookup_table.offset);
 
 		showGeosets = new bool[view->submeshes.size];
-		for (size_t i = 0; i < view->submeshes.size; i++)
+		for (uint32_t i = 0; i < view->submeshes.size; i++)
 		{
 			showGeosets[i] = true;
 		}
 
-		for (size_t j = 0; j < view->m_WMOBatchIndexes.size; j++)
+		for (uint32_t j = 0; j < view->m_WMOBatchIndexes.size; j++)
 		{
-			ModelRenderPass pass;
+			ModelRenderPass* pass = new ModelRenderPass();
 
-			pass.usetex2 = false;
-			pass.useEnvMap = false;
-			pass.cull = false;
-			pass.trans = false;
-			pass.unlit = false;
-			pass.noZWrite = false;
-			pass.billboard = false;
+			pass->usetex2 = false;
+			pass->useEnvMap = false;
+			pass->cull = false;
+			pass->trans = false;
+			pass->unlit = false;
+			pass->noZWrite = false;
+			pass->billboard = false;
 
-			size_t geoset = tex[j].skinSectionIndex;
+			uint16_t geoset = tex[j].skinSectionIndex;
 
-			pass.geoset = (int)geoset;
+			pass->geoset = (int)geoset;
 
-			pass.indexStart = ops[geoset].indexStart;
-			pass.indexCount = ops[geoset].indexCount;
-			pass.vertexStart = ops[geoset].vertexStart;
-			pass.vertexEnd = pass.vertexStart + ops[geoset].vertexCount;
+			pass->indexStart = ops[geoset].indexStart;
+			pass->indexCount = ops[geoset].indexCount;
+			pass->vertexStart = ops[geoset].vertexStart;
+			pass->vertexEnd = pass->vertexStart + ops[geoset].vertexCount;
 
-			pass.order = tex[j].shader_id;
+			pass->order = tex[j].shader_id;
 
 			//Texture* texid = textures[texlookup[tex[j].textureid]];
-			//pass.texture = texid;
-			pass.tex = texlookup[tex[j].textureComboIndex];
+			//pass->texture = texid;
+			pass->tex = texlookup[tex[j].textureComboIndex];
 
 			// TODO: figure out these flags properly -_-
 			M2Material &rf = renderFlags[tex[j].materialIndex];
 
 
-			pass.blendmode = rf.blending_mode;
-			pass.color = tex[j].colorIndex;
-			pass.opacity = transLookup[tex[j].textureWeightComboIndex];
+			pass->blendmode = rf.blending_mode;
+			pass->color = tex[j].colorIndex;
+			pass->opacity = transLookup[tex[j].textureWeightComboIndex];
 
-			pass.unlit = (rf.flags & M2MATERIAL_FLAGS_UNLIT) != 0;
-			pass.cull = (rf.flags & M2MATERIAL_FLAGS_TWOSIDED) == 0 && rf.blending_mode == 0;
+			pass->unlit = (rf.flags & M2MATERIAL_FLAGS_UNLIT) != 0;
+			pass->cull = (rf.flags & M2MATERIAL_FLAGS_TWOSIDED) == 0 && rf.blending_mode == 0;
 
-			pass.billboard = (rf.flags & M2MATERIAL_FLAGS_DEPTHTESTBILLBOARD) != 0;
+			pass->billboard = (rf.flags & M2MATERIAL_FLAGS_DEPTHTESTBILLBOARD) != 0;
 
-			pass.useEnvMap = (texunitlookup[tex[j].materialLayer] == -1) && pass.billboard && rf.blending_mode > 2;
-			pass.noZWrite = (rf.flags & M2MATERIAL_FLAGS_DEPTHWRITE) != 0;
+			pass->useEnvMap = (texunitlookup[tex[j].materialLayer] == -1) && pass->billboard && rf.blending_mode > 2;
+			pass->noZWrite = (rf.flags & M2MATERIAL_FLAGS_DEPTHWRITE) != 0;
 
 			// ToDo: Work out the correct way to get the true/false of transparency
-			pass.trans = (pass.blendmode > 0) && (pass.opacity > 0);	// Transparency - not the correct way to get transparency
+			pass->trans = (pass->blendmode > 0) && (pass->opacity > 0);	// Transparency - not the correct way to get transparency
 
-			pass.p = ops[geoset].centerPosition.x;
+			pass->p = ops[geoset].centerPosition.x;
 
 			// Texture flags
-			pass.swrap = (texdef[pass.tex].flags & M2TEXTURE_FLAGS_WRAPX) != 0; // Texture wrap X
-			pass.twrap = (texdef[pass.tex].flags & M2TEXTURE_FLAGS_WRAPY) != 0; // Texture wrap Y
+			pass->swrap = (texdef[pass->tex].flags & M2TEXTURE_FLAGS_WRAPX) != 0; // Texture wrap X
+			pass->twrap = (texdef[pass->tex].flags & M2TEXTURE_FLAGS_WRAPY) != 0; // Texture wrap Y
 
 			if (animTextures)
 			{
 				if (tex[j].flags & TEXTUREUNIT_STATIC)
 				{
-					pass.texanim = -1; // no texture animation
+					pass->texanim = -1; // no texture animation
 				}
 				else
 				{
-					pass.texanim = texanimlookup[tex[j].textureTransformComboIndex];
+					pass->texanim = texanimlookup[tex[j].textureTransformComboIndex];
 				}
 			}
 			else
 			{
-				pass.texanim = -1; // no texture animation
+				pass->texanim = -1; // no texture animation
 			}
 
 			passes.push_back(pass);
@@ -474,7 +478,7 @@ void Model::initAnimated(File& f)
 
 	glGenBuffersARB(1, &vbuf);
 	glGenBuffersARB(1, &tbuf);
-	const size_t size = header.vertices.size * sizeof(float);
+	const uint32_t size = header.vertices.size * sizeof(float);
 	vbufsize = 3 * size;
 
 	initCommon(f);
@@ -486,7 +490,7 @@ void Model::initAnimated(File& f)
 
 		animfiles = new File[header.sequences.size];
 		char tempname[256];
-		for (size_t i = 0; i < header.sequences.size; i++)
+		for (uint32_t i = 0; i < header.sequences.size; i++)
 		{
 			sprintf_s(tempname, "%s%04d-%02d.anim", m_ModelName.c_str(), anims[i].id, anims[i].variationIndex);
 			if (MPQFile::GetFileSize(tempname) > 0)
@@ -506,7 +510,7 @@ void Model::initAnimated(File& f)
 		// init bones...
 		bones = new Bone[header.bones.size];
 		M2CompBone *mb = (M2CompBone*)(f.GetData() + header.bones.offset);
-		for (size_t i = 0; i < header.bones.size; i++)
+		for (uint32_t i = 0; i < header.bones.size; i++)
 		{
 			bones[i].init(f, mb[i], globalSequences, animfiles);
 		}
@@ -523,7 +527,7 @@ void Model::initAnimated(File& f)
 		delete[] normals;
 	}
 	vec2 *texcoords = new vec2[header.vertices.size];
-	for (size_t i = 0; i < header.vertices.size; i++)
+	for (uint32_t i = 0; i < header.vertices.size; i++)
 		texcoords[i] = origVertices[i].tex_coords[0];
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB, tbuf);
 	glBufferDataARB(GL_ARRAY_BUFFER_ARB, 2 * size, texcoords, GL_STATIC_DRAW_ARB);
@@ -533,18 +537,20 @@ void Model::initAnimated(File& f)
 	{
 		texAnims = new ModelTextureAnim[header.texture_transforms.size];
 		M2TextureTransform *ta = (M2TextureTransform*)(f.GetData() + header.texture_transforms.offset);
-		for (size_t i = 0; i < header.texture_transforms.size; i++)
+		for (uint32_t i = 0; i < header.texture_transforms.size; i++)
 		{
 			texAnims[i].init(f, ta[i], globalSequences);
 		}
 	}
+
+#ifdef MDX_PARTICLES_ENABLE
 
 	// particle systems
 	if (header.particle_emitters.size)
 	{
 		M2Particle* pdefs = (M2Particle*)(f.GetData() + header.particle_emitters.offset);
 		particleSystems = new ParticleSystem[header.particle_emitters.size];
-		for (size_t i = 0; i < header.particle_emitters.size; i++)
+		for (uint32_t i = 0; i < header.particle_emitters.size; i++)
 		{
 			particleSystems[i].model = this;
 			particleSystems[i].init(f, pdefs[i], globalSequences);
@@ -556,12 +562,14 @@ void Model::initAnimated(File& f)
 	{
 		M2Ribbon* rdefs = (M2Ribbon*)(f.GetData() + header.ribbon_emitters.offset);
 		ribbons = new RibbonEmitter[header.ribbon_emitters.size];
-		for (size_t i = 0; i < header.ribbon_emitters.size; i++)
+		for (uint32_t i = 0; i < header.ribbon_emitters.size; i++)
 		{
 			ribbons[i].model = this;
 			ribbons[i].init(f, rdefs[i], globalSequences);
 		}
 	}
+
+#endif
 
 	// just use the first camera, meh
 	if (header.cameras.size > 0)
@@ -576,21 +584,23 @@ void Model::initAnimated(File& f)
 	{
 		lights = new ModelLight[header.lights.size];
 		M2Light* lDefs = (M2Light*)(f.GetData() + header.lights.offset);
-		for (size_t i = 0; i < header.lights.size; i++)
+		for (uint32_t i = 0; i < header.lights.size; i++)
 			lights[i].init(f, lDefs[i], globalSequences);
 	}
 
 	animcalc = false;
 }
 
+//
+
 void Model::calcBones(int anim, int time)
 {
-	for (size_t i = 0; i < header.bones.size; i++)
+	for (uint32_t i = 0; i < header.bones.size; i++)
 	{
 		bones[i].calc = false;
 	}
 
-	for (size_t i = 0; i < header.bones.size; i++)
+	for (uint32_t i = 0; i < header.bones.size; i++)
 	{
 		bones[i].calcMatrix(bones, anim, time);
 	}
@@ -599,7 +609,7 @@ void Model::calcBones(int anim, int time)
 void Model::animate(int anim)
 {
 	M2Sequence &a = anims[anim];
-	int t = globalTime; //(int)(_World->animtime /* / a.playSpeed*/);
+	int t = _TimeManager->globalTime;
 	int tmax = a.duration;
 	t %= tmax;
 	animtime = t;
@@ -619,11 +629,11 @@ void Model::animate(int anim)
 
 		// transform vertices
 		M2Vertex *ov = origVertices;
-		for (size_t i = 0, k = 0; i < header.vertices.size; ++i, ++ov)
+		for (uint32_t i = 0, k = 0; i < header.vertices.size; ++i, ++ov)
 		{
 			vec3 v(0, 0, 0), n(0, 0, 0);
 
-			for (size_t b = 0; b < 4; b++)
+			for (uint32_t b = 0; b < 4; b++)
 			{
 				if (ov->bone_weights[b] > 0)
 				{
@@ -646,7 +656,7 @@ void Model::animate(int anim)
 
 	}
 
-	for (size_t i = 0; i < header.lights.size; i++)
+	for (uint32_t i = 0; i < header.lights.size; i++)
 	{
 		if (lights[i].parent >= 0)
 		{
@@ -655,21 +665,24 @@ void Model::animate(int anim)
 		}
 	}
 
-	for (size_t i = 0; i < header.particle_emitters.size; i++)
+#ifdef MDX_PARTICLES_ENABLE
+	for (uint32_t i = 0; i < header.particle_emitters.size; i++)
 	{
 		// random time distribution for teh win ..?
 		int pt = (t + (int)(tmax*particleSystems[i].tofs)) % tmax;
 		particleSystems[i].setup(anim, pt);
 	}
 
-	for (size_t i = 0; i < header.ribbon_emitters.size; i++)
+	for (uint32_t i = 0; i < header.ribbon_emitters.size; i++)
 	{
 		ribbons[i].setup(anim, t);
 	}
 
+#endif
+
 	if (animTextures)
 	{
-		for (size_t i = 0; i < header.texture_transforms.size; i++)
+		for (uint32_t i = 0; i < header.texture_transforms.size; i++)
 		{
 			texAnims[i].calc(anim, t);
 		}
@@ -678,8 +691,6 @@ void Model::animate(int anim)
 
 void Model::drawModel()
 {
-	// assume these client states are enabled: GL_VERTEX_ARRAY, GL_NORMAL_ARRAY, GL_TEXTURE_COORD_ARRAY
-
 	if (animated)
 	{
 
@@ -710,28 +721,23 @@ void Model::drawModel()
 
 	for (size_t i = 0; i < passes.size(); i++)
 	{
-		ModelRenderPass& p = passes[i];
+		ModelRenderPass* p = passes[i];
 
-		if (p.init(this))
+		if (p->init(this))
 		{
 			// we don't want to render completely transparent parts
 
 			// render
 			if (animated)
 			{
-				//glDrawElements(GL_TRIANGLES, p.indexCount, GL_UNSIGNED_SHORT, indices + p.indexStart);
-				// a GDC OpenGL Performace Tuning paper recommended glDrawRangeElements over glDrawElements
-				// I can't notice a difference but I guess it can't hurt
-				if (true && true)
-				{
-					glDrawRangeElements(GL_TRIANGLES, p.vertexStart, p.vertexEnd, p.indexCount, GL_UNSIGNED_SHORT, indices + p.indexStart);
-					//} else if (!supportVBO) {
-					//	glDrawElements(GL_TRIANGLES, p.indexCount, GL_UNSIGNED_SHORT, indices + p.indexStart); 
-				}
+				/*if (true && true)
+				{*/
+					glDrawRangeElements(GL_TRIANGLES, p->vertexStart, p->vertexEnd, p->indexCount, GL_UNSIGNED_SHORT, indices + p->indexStart);
+				/*}
 				else
 				{
 					glBegin(GL_TRIANGLES);
-					for (size_t k = 0, b = p.indexStart; k < p.indexCount; k++, b++)
+					for (size_t k = 0, b = p->indexStart; k < p->indexCount; k++, b++)
 					{
 						uint16_t a = indices[b];
 						glNormal3fv(glm::value_ptr(normals[a]));
@@ -739,12 +745,12 @@ void Model::drawModel()
 						glVertex3fv(glm::value_ptr(vertices[a]));
 					}
 					glEnd();
-				}
+				}*/
 			}
 			else
 			{
 				glBegin(GL_TRIANGLES);
-				for (size_t k = 0, b = p.indexStart; k < p.indexCount; k++, b++)
+				for (uint32_t k = 0, b = p->indexStart; k < p->indexCount; k++, b++)
 				{
 					uint16_t a = indices[b];
 					glNormal3fv(glm::value_ptr(normals[a]));
@@ -754,7 +760,7 @@ void Model::drawModel()
 				glEnd();
 			}
 
-			p.deinit();
+			p->deinit();
 		}
 
 	}
@@ -771,7 +777,10 @@ void Model::drawModel()
 
 void Model::draw()
 {
-	if (!ok) return;
+	if (!m_Loaded)
+	{
+		return;
+	}
 
 	if (!animated)
 	{
@@ -779,8 +788,10 @@ void Model::draw()
 	}
 	else
 	{
-		if (ind) 
+		if (ind)
+		{
 			animate(0);
+		}
 		else
 		{
 			if (!animcalc)
@@ -798,18 +809,20 @@ void Model::draw()
 		glDisable(GL_FOG);
 
 		// draw particle systems
-		for (size_t i = 0; i < header.particle_emitters.size; i++)
+#ifdef MDX_PARTICLES_ENABLE
+		for (uint32_t i = 0; i < header.particle_emitters.size; i++)
 		{
 			particleSystems[i].draw();
 		}
 
 		// draw ribbons
-		for (size_t i = 0; i < header.ribbon_emitters.size; i++)
+		for (uint32_t i = 0; i < header.ribbon_emitters.size; i++)
 		{
 			ribbons[i].draw();
 		}
+#endif
 
-		if (_WowSettings->drawfog)
+		if (_Settings->drawfog)
 		{
 			glEnable(GL_FOG);
 		}
@@ -818,6 +831,11 @@ void Model::draw()
 
 void Model::lightsOn(GLuint lbase)
 {
+	/*if (!m_Loaded)
+	{
+		return;
+	}*/
+
 	// setup lights
 	for (uint32_t i = 0, l = lbase; i < header.lights.size; i++)
 	{
@@ -827,6 +845,11 @@ void Model::lightsOn(GLuint lbase)
 
 void Model::lightsOff(GLuint lbase)
 {
+	/*if (!m_Loaded)
+	{
+		return;
+	}*/
+
 	for (uint32_t i = 0, l = lbase; i < header.lights.size; i++)
 	{
 		glDisable(l++);
@@ -835,9 +858,15 @@ void Model::lightsOff(GLuint lbase)
 
 void Model::updateEmitters(float dt)
 {
-	if (!ok) return;
-	for (size_t i = 0; i < header.particle_emitters.size; i++)
+	if (!m_Loaded)
+	{
+		return;
+	}
+
+#ifdef MDX_PARTICLES_ENABLE
+	for (uint32_t i = 0; i < header.particle_emitters.size; i++)
 	{
 		particleSystems[i].update(dt);
 	}
+#endif
 }

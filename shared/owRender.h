@@ -23,6 +23,8 @@
 #include "../owRender/ds_point_light_pass_tech.h"
 #include "../owRender/null_technique.h"
 #include "../owRender/SimpleColorTechnique.h"
+#include "../owRender/SimpleRenderGBuffer.h"
+#include "../owRender/MapTilePass.h"
 
 //
 #include "../owRender/frustum.h"

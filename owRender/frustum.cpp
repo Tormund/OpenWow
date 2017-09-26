@@ -117,7 +117,7 @@ bool Frustum::intersects(cvec3 v1, cvec3 v2) const
 
 bool Frustum::intersectsSphere(cvec3 v, const float rad) const
 {
-	return true;
+	return true; // BOUZI
 
 	for (int i = 0; i < 6; ++i)
 	{

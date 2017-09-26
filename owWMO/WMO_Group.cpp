@@ -55,15 +55,14 @@ WMOGroup::WMOGroup(const WMO* _parentWMO, const uint32_t _groupIndex, File& f, c
 
 	f.ReadBytes(&groupInfo, WMOGroupInfoDef::__size);
 
-	indoor = (groupInfo.flags.FLAG_IS_INDOOR);
 
 	if (groupInfo.nameoffset > 0)
 	{
-		name = string(names + groupInfo.nameoffset);
+		m_GropName = string(names + groupInfo.nameoffset);
 	}
 	else
 	{
-		name = "(no name)";
+		m_GropName = "(no name)";
 	}
 
 }
@@ -104,14 +103,14 @@ void WMOGroup::initDisplayList()
 				   // read MOGP chunk header
 	f.ReadBytes(&wmoGroupHeader, WMOGroupHeader::__size);
 	WMOFog* wf = m_ParentWMO->m_Fogs[wmoGroupHeader.m_Fogs[0]];
-	
+
 	if (wf->fogDef.largerRadius <= 0)
 		fog = -1; // default outdoor fog..?
 	else
 		fog = wmoGroupHeader.m_Fogs[0];
 
-	b1 = vec3(wmoGroupHeader.boundingBox.min.x, wmoGroupHeader.boundingBox.min.z, -wmoGroupHeader.boundingBox.min.y);
-	b2 = vec3(wmoGroupHeader.boundingBox.max.x, wmoGroupHeader.boundingBox.max.z, -wmoGroupHeader.boundingBox.max.y);
+	bounds.SetBounds(wmoGroupHeader.boundingBox.min, wmoGroupHeader.boundingBox.max);
+
 
 	f.Seek(0x58); // first chunk at 0x58
 
@@ -142,26 +141,10 @@ void WMOGroup::initDisplayList()
 		}
 		else if (strcmp(fourcc, "MOVT") == 0)            // Vertices chunk.
 		{
-			nVertices = size / 12;
-
+			nVertices = size / sizeof(vec3);
 			vertices = (vec3*)f.GetDataFromCurrent();
 
-			vmin = vec3(9999999.0f, 9999999.0f, 9999999.0f);
-			vmax = vec3(-9999999.0f, -9999999.0f, -9999999.0f);
-
-			rad = 0;
-			for (uint32_t i = 0; i < nVertices; i++)
-			{
-				vec3 v(vertices[i].x, vertices[i].z, -vertices[i].y);
-				if (v.x < vmin.x) vmin.x = v.x;
-				if (v.y < vmin.y) vmin.y = v.y;
-				if (v.z < vmin.z) vmin.z = v.z;
-				if (v.x > vmax.x) vmax.x = v.x;
-				if (v.y > vmax.y) vmax.y = v.y;
-				if (v.z > vmax.z) vmax.z = v.z;
-			}
-			center = (vmax + vmin) * 0.5f;
-			rad = glm::length(vmax - center);
+			bounds.Init(vertices, nVertices);
 		}
 		else if (strcmp(fourcc, "MONR") == 0)          // Normals
 		{
@@ -185,7 +168,6 @@ void WMOGroup::initDisplayList()
 		{
 			nDoodads = size / sizeof(uint16_t);
 			m_DoodadsIndexes = (uint16_t*)f.GetDataFromCurrent();
-			//f.ReadBytes(m_DoodadsIndexes, size);
 		}
 		else if (strcmp(fourcc, "MOBN") == 0)
 		{
@@ -203,10 +185,10 @@ void WMOGroup::initDisplayList()
 			WMOLiquidHeader hlq;
 			f.ReadBytes(&hlq, WMOLiquidHeader::__size);
 
-			lq = new Liquid(hlq.A, hlq.B, vec3(hlq.pos.x, hlq.pos.z, -hlq.pos.y));
+			lq = new Liquid(hlq.A, hlq.B, From_XYZ_To_XZminusY_RET(hlq.pos));
 			lq->initFromWMO(f, m_ParentWMO->m_Materials[hlq.type], groupInfo.flags.FLAG_IS_INDOOR);
 		}
-		else if (strcmp(fourcc, "MORI") == 0) 
+		else if (strcmp(fourcc, "MORI") == 0)
 		{
 		}
 		else if (strcmp(fourcc, "MORB") == 0)
@@ -245,70 +227,70 @@ void WMOGroup::initDisplayList()
 		currentList.second = spec_shader ? 1 : 0;
 
 		glNewList(list, GL_COMPILE);
-
-		// setup texture
-		mat->setup();
-
-		if (mat->GetBlendMode())
 		{
-			glEnable(GL_ALPHA_TEST);
+			// setup texture
+			mat->setup();
 
-			if (mat->IsTesClampT())
-				glAlphaFunc(GL_GREATER, 0.3f);
-
-			if (mat->IsLightingDisabled())
-				glAlphaFunc(GL_GREATER, 0.0f);
-		}
-
-		if (mat->IsTwoSided())
-			glDisable(GL_CULL_FACE);
-		else
-			glEnable(GL_CULL_FACE);
-
-		if (spec_shader)
-		{
-			glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, glm::value_ptr(fromARGB(mat->GetDiffuseColor())));
-		}
-		else
-		{
-			vec4 nospec(0, 0, 0, 1);
-			glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, glm::value_ptr(nospec));
-		}
-
-		if (overbright)
-		{
-			GLfloat em[4] = {mat->EmissiveColor().r, mat->EmissiveColor().g, mat->EmissiveColor().b, mat->EmissiveColor().a};
-			glMaterialfv(GL_FRONT, GL_EMISSION, em);
-		}
-
-		// render
-		glBegin(GL_TRIANGLES);
-		for (int t = 0, i = batch->indexStart; t < batch->indexCount; t++, i++)
-		{
-			int a = indices[i];
-
-			if (indoor && hascv)
+			if (mat->GetBlendMode())
 			{
-				setGLColor(m_VertexColors[a]);
+				glEnable(GL_ALPHA_TEST);
+
+				if (mat->IsTesClampT())
+					glAlphaFunc(GL_GREATER, 0.3f);
+
+				if (mat->IsLightingDisabled())
+					glAlphaFunc(GL_GREATER, 0.0f);
 			}
 
-			glNormal3f(normals[a].x, normals[a].z, -normals[a].y);
-			glTexCoord2fv(glm::value_ptr(texcoords[a]));
-			glVertex3f(vertices[a].x, vertices[a].z, -vertices[a].y);
-		}
-		glEnd();
+			if (mat->IsTwoSided())
+				glDisable(GL_CULL_FACE);
+			else
+				glEnable(GL_CULL_FACE);
 
-		if (overbright)
-		{
-			GLfloat em[4] = {0,0,0,1};
-			glMaterialfv(GL_FRONT, GL_EMISSION, em);
-		}
+			if (spec_shader)
+			{
+				glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, glm::value_ptr(fromARGB(mat->GetDiffuseColor())));
+			}
+			else
+			{
+				vec4 nospec(0, 0, 0, 1);
+				glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, glm::value_ptr(nospec));
+			}
 
-		if (mat->GetBlendMode())
-		{
-			glDisable(GL_ALPHA_TEST);
-		}
+			if (overbright)
+			{
+				GLfloat em[4] = {mat->EmissiveColor().r, mat->EmissiveColor().g, mat->EmissiveColor().b, mat->EmissiveColor().a};
+				glMaterialfv(GL_FRONT, GL_EMISSION, em);
+			}
 
+			// render
+			glBegin(GL_TRIANGLES);
+			for (int t = 0, i = batch->indexStart; t < batch->indexCount; t++, i++)
+			{
+				int a = indices[i];
+
+				if (groupInfo.flags.FLAG_IS_INDOOR && hascv)
+				{
+					setGLColor(m_VertexColors[a]);
+				}
+
+				glNormal3fv(glm::value_ptr(From_XYZ_To_XZminusY_RET(normals[a])));
+				glTexCoord2fv(glm::value_ptr(texcoords[a]));
+				glVertex3fv(glm::value_ptr(From_XYZ_To_XZminusY_RET(vertices[a])));
+			}
+			glEnd();
+
+			if (overbright)
+			{
+				GLfloat em[4] = {0,0,0,1};
+				glMaterialfv(GL_FRONT, GL_EMISSION, em);
+			}
+
+			if (mat->GetBlendMode())
+			{
+				glDisable(GL_ALPHA_TEST);
+			}
+		}
 		glEndList();
 
 
@@ -319,7 +301,7 @@ void WMOGroup::initDisplayList()
 
 void WMOGroup::initLighting()
 {
-	if (indoor && hascv)
+	if (groupInfo.flags.FLAG_IS_INDOOR && hascv)
 	{
 		vec3 dirmin(1, 1, 1);
 		float lenmin;
@@ -328,7 +310,7 @@ void WMOGroup::initLighting()
 #ifdef MDX_INCL
 		for (uint32_t i = 0; i < nDoodads; i++)
 		{
-			lenmin = 999999.0f*999999.0f;
+			lenmin = 999999.0f * 999999.0f;
 			lmin = 0;
 			DoodadInstance* mi = m_ParentWMO->m_MDXInstances[m_DoodadsIndexes[i]];
 			for (uint32_t j = 0; j < m_ParentWMO->header.nLights; j++)
@@ -345,11 +327,11 @@ void WMOGroup::initLighting()
 			}
 			mi->light = lmin;
 			mi->ldir = dirmin;
-	}
+		}
 #endif
 
 		m_EnableOutdoorLights = false;
-}
+	}
 	else
 	{
 		m_EnableOutdoorLights = true;
@@ -358,39 +340,38 @@ void WMOGroup::initLighting()
 
 //
 
-void WMOGroup::draw(cvec3 ofs, float roll)
+bool WMOGroup::draw(cvec3 ofs, float roll)
 {
 	visible = false;
 
-	// view frustum culling
-	vec3 pos = center + ofs;
+	vec3 pos = bounds.GetCenter() + ofs;
 	rotate(ofs.x, ofs.z, &pos.x, &pos.z, roll * PI / 180.0f);
 
-	float dist = glm::length(pos - _Camera->Position) - rad;
-	if (dist > _WowSettings->culldistance)
+	float dist = glm::length(pos - _Camera->Position) - bounds.GetRadius();
+	if (dist > _Settings->culldistance)
 	{
-		return;
+		return false;
 	}
 
-	if (!_Render->frustum.intersectsSphere(pos, rad))
+	if (!_Render->frustum.intersectsSphere(pos, bounds.GetRadius()))
 	{
-		return;
+		return false;
 	}
 
 	visible = true;
 
-	/*if (hascv)
+	if (hascv)
 	{
 		glDisable(GL_LIGHTING);
-		_World->SetAmbientLights(false);
+		_EnvironmentManager->SetAmbientLights(false);
 	}
 	else
 	{
-		if (_WowSettings->lighting)
+		if (_Settings->lighting)
 		{
-			if (_World->skies->hasSkies())
+			if (_EnvironmentManager->skies->hasSkies())
 			{
-				_World->SetAmbientLights(true);
+				_EnvironmentManager->SetAmbientLights(true);
 			}
 			else
 			{
@@ -407,7 +388,7 @@ void WMOGroup::draw(cvec3 ofs, float roll)
 		{
 			glDisable(GL_LIGHTING);
 		}
-	}*/
+	}
 	setupFog();
 
 
@@ -416,7 +397,7 @@ void WMOGroup::draw(cvec3 ofs, float roll)
 	glColor4f(1, 1, 1, 1);
 	for (uint32_t i = 0; i < nBatches; i++)
 	{
-		bool useshader = (supportShaders && _WowSettings->useshaders && lists[i].second);
+		bool useshader = (supportShaders && _Settings->useshaders && lists[i].second);
 		if (useshader) wmoShader->bind();
 		glCallList(lists[i].first);
 		if (useshader) wmoShader->unbind();
@@ -427,29 +408,28 @@ void WMOGroup::draw(cvec3 ofs, float roll)
 
 	if (hascv)
 	{
-		if (_WowSettings->lighting)
+		if (_Settings->lighting)
 		{
 			glEnable(GL_LIGHTING);
-			//glCallList(dl_light);
 		}
 	}
 
-
+	return true;
 }
 
-void WMOGroup::drawDoodads(int doodadset, cvec3 ofs, float roll)
+bool WMOGroup::drawDoodads(int doodadset, cvec3 ofs, float roll)
 {
 	if (!visible)
 	{
-		return;
+		return false;
 	}
 
 	if (nDoodads == 0)
 	{
-		return;
+		return false;
 	}
 
-	//_World->SetAmbientLights(m_EnableOutdoorLights);
+	_EnvironmentManager->SetAmbientLights(m_EnableOutdoorLights);
 	setupFog();
 
 	// draw doodads
@@ -469,55 +449,61 @@ void WMOGroup::drawDoodads(int doodadset, cvec3 ofs, float roll)
 			}
 
 			m_ParentWMO->m_MDXInstances[doodadIndex]->Draw(ofs, roll);
-	}
+		}
 #endif
-}
+	}
 
 	glDisable(GL_LIGHT2);
 
 	glColor4f(1, 1, 1, 1);
 
+	return true;
 }
 
-void WMOGroup::drawLiquid()
+bool WMOGroup::drawLiquid()
 {
 	if (!visible)
 	{
-		return;
+		return false;
 	}
 
-	// draw liquid
-	// TODO: culling for liquid boundingbox or something
-	if (lq)
+	if (lq == nullptr)
 	{
-		setupFog();
-		/*if (m_EnableOutdoorLights)
-		{
-			_World->SetAmbientLights(true);
-		}
-		else
-		{
-			// TODO: setup some kind of indoor lighting... ?
-			_World->SetAmbientLights(false);
-			glEnable(GL_LIGHT2);
-			glLightfv(GL_LIGHT2, GL_AMBIENT, glm::value_ptr(vec4(0.1f, 0.1f, 0.1f, 1)));
-			glLightfv(GL_LIGHT2, GL_DIFFUSE, glm::value_ptr(vec4(0.8f, 0.8f, 0.8f, 1)));
-			glLightfv(GL_LIGHT2, GL_POSITION, glm::value_ptr(vec4(0, 1, 0, 0)));
-		}*/
-		glDisable(GL_BLEND);
-		glDisable(GL_ALPHA_TEST);
-		glDepthMask(GL_TRUE);
-		glColor4f(1, 1, 1, 1);
-		lq->draw();
-		glDisable(GL_LIGHT2);
+		return false;
 	}
+
+
+	setupFog();
+
+	if (m_EnableOutdoorLights)
+	{
+		_EnvironmentManager->SetAmbientLights(true);
+	}
+	else
+	{
+		// TODO: setup some kind of indoor lighting... ?
+		_EnvironmentManager->SetAmbientLights(false);
+		glEnable(GL_LIGHT2);
+		glLightfv(GL_LIGHT2, GL_AMBIENT, glm::value_ptr(vec4(0.1f, 0.1f, 0.1f, 1)));
+		glLightfv(GL_LIGHT2, GL_DIFFUSE, glm::value_ptr(vec4(0.8f, 0.8f, 0.8f, 1)));
+		glLightfv(GL_LIGHT2, GL_POSITION, glm::value_ptr(vec4(0, 1, 0, 0)));
+	}
+
+	glDisable(GL_BLEND);
+	glDisable(GL_ALPHA_TEST);
+	glDepthMask(GL_TRUE);
+	glColor4f(1, 1, 1, 1);
+	lq->draw();
+	glDisable(GL_LIGHT2);
+
+	return true;
 }
 
 void WMOGroup::setupFog()
 {
 	if (m_EnableOutdoorLights || fog == -1)
 	{
-		//_World->setupFog();
+		_EnvironmentManager->SetFog();
 	}
 	else
 	{

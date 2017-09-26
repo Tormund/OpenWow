@@ -32,7 +32,7 @@ struct WMOMaterialDef
 	uint32_t runTimeData[4];         // This data is explicitly nulled upon loading. Contains textures or similar stuff.
 
 	// Size
-	static const size_t __size = 64;
+	static const uint32_t __size = 64;
 };
 
 class WMOMaterial

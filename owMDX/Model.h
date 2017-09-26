@@ -73,16 +73,18 @@ enum BlendModes
 class Model : public RefItemNamed
 {
 public:
-	OW_MDX_DLL_API Model(cstring name);
+	Model(cstring name);
 	~Model();
 
-	OW_MDX_DLL_API void Init(bool forceAnim = false);
+	void Init(bool forceAnim = false);
+	inline bool IsLoaded() { return m_Loaded; }
 
-	OW_MDX_DLL_API void draw();
-	OW_MDX_DLL_API void updateEmitters(float dt);
+	void draw();
+	void updateEmitters(float dt);
 
 
 private:
+	bool m_Loaded;
 	string m_ModelName;
 	string m_ModelFileName;
 	string m_ModelInternalName;
@@ -90,7 +92,7 @@ private:
 private:
 	GLuint dlist;
 	GLuint vbuf, nbuf, tbuf;
-	size_t vbufsize;
+	uint32_t vbufsize;
 	bool animated;
 	bool animGeometry, animTextures, animBones;
 
@@ -105,23 +107,26 @@ private:
 	ModelColor* colors;
 	ModelTransparency* transparency;
 	ModelLight* lights;
+
+#ifdef MDX_PARTICLES_ENABLE
 	ParticleSystem* particleSystems;
 	RibbonEmitter* ribbons;
+#endif
 
-	OW_MDX_DLL_API void drawModel();
-	OW_MDX_DLL_API void initCommon(File& f);
-	OW_MDX_DLL_API bool isAnimated(File& f);
-	OW_MDX_DLL_API void initAnimated(File& f);
-	OW_MDX_DLL_API void initStatic(File& f);
+	void drawModel();
+	void initCommon(File& f);
+	bool isAnimated(File& f);
+	void initAnimated(File& f);
+	void initStatic(File& f);
 
 	M2Vertex * origVertices;
 	vec3* vertices;
 	vec3* normals;
 
 	uint16_t* indices;
-	size_t nIndices;
+	uint32_t nIndices;
 
-	vector<ModelRenderPass> passes;
+	vector<ModelRenderPass*> passes;
 
 
 
@@ -148,8 +153,6 @@ public:
 	Texture* replaceTextures[TEXTURE_MAX];
 	bool useReplaceTextures[TEXTURE_MAX];
 
-
-	bool ok;
 	bool ind;
 
 	float rad;

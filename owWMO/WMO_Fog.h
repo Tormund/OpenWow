@@ -31,7 +31,7 @@ struct WMOFogDef
 	} underwater_fog;
 
 	//
-	static const size_t __size = 48;
+	static const uint32_t __size = 48;
 };
 
 

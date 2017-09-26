@@ -8,11 +8,12 @@
 #include <glm/gtc/type_ptr.hpp>
 
 typedef glm::vec2 vec2;
-typedef glm::vec3 vec3;
-typedef glm::vec4 vec4;
-
 typedef const glm::vec2& cvec2;
+
+typedef glm::vec3 vec3;
 typedef const glm::vec3& cvec3;
+
+typedef glm::vec4 vec4;
 typedef const glm::vec4& cvec4;
 
 typedef glm::mat4x4 mat4;
@@ -36,6 +37,10 @@ inline glm::vec3 operator*(cvec3 v, const glm::mat4x4& mat)
 typedef glm::vec2 C2Vector;
 typedef glm::vec3 C3Vector;
 
+// Own types
+#include "BoundingBox.h"
+#include "Color.h"
+#include "Rect.h"
 
 // STL Types
 #include <map>

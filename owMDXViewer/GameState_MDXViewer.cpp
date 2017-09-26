@@ -16,12 +16,12 @@ bool GameState_MDXViewer::Init()
 	cameraSprint = false;
 
 	window = new UIWindow();
-	window->Init(VECTOR_ZERO, vec2(1024.0f, 768.0f), nullptr);
+	window->Init(VECTOR_ZERO, _Settings->GetWindowSize(), nullptr);
 	_UIMgr->Attach(window);
 
 	auto camera = new Camera;
 	_Pipeline->SetCamera(camera);
-	_Pipeline->SetProjection(45.0f, 1024.0f / 768.0f, 0.1f, 10000.0f);
+	_Pipeline->SetProjection(45.0f, _Settings->aspectRatio, 0.1f, 10000.0f);
 
 	currentModel = nullptr;
 	if (_Engine->GetArgument(0).empty())
@@ -118,9 +118,9 @@ void GameState_MDXViewer::Render(double t, double dt)
 
 void GameState_MDXViewer::RenderUI(double t, double dt)
 {
-	_Render->RenderText(vec2(5, _Render->GetWindowSize().y - 22), "Cam:" + to_string(_Camera->Position.x) + "," + to_string(_Camera->Position.y) + "," + to_string(_Camera->Position.z));
-	_Render->RenderText(vec2(5, _Render->GetWindowSize().y - 44), "CamDir:" + to_string(_Camera->Direction.x) + "," + to_string(_Camera->Direction.y) + "," + to_string(_Camera->Direction.z));
-	_Render->RenderText(vec2(5, _Render->GetWindowSize().y - 66), "CamDirYawPitch:" + to_string(_Camera->Yaw) + "," + to_string(_Camera->Pitch));
+	_Render->RenderText(vec2(5, _Settings->GetWindowSize().y - 22), "Cam:" + to_string(_Camera->Position.x) + "," + to_string(_Camera->Position.y) + "," + to_string(_Camera->Position.z));
+	_Render->RenderText(vec2(5, _Settings->GetWindowSize().y - 44), "CamDir:" + to_string(_Camera->Direction.x) + "," + to_string(_Camera->Direction.y) + "," + to_string(_Camera->Direction.z));
+	_Render->RenderText(vec2(5, _Settings->GetWindowSize().y - 66), "CamDirYawPitch:" + to_string(_Camera->Yaw) + "," + to_string(_Camera->Pitch));
 }
 
 //
@@ -131,7 +131,7 @@ MOUSE_MOVED_(GameState_MDXViewer)
 {
 	if (enableFreeCamera)
 	{
-		vec2 mouseDelta = (_mousePos - lastMousePos) / _Render->GetWindowSize();
+		vec2 mouseDelta = (_mousePos - lastMousePos) / _Settings->GetWindowSize();
 
 		_Camera->ProcessMouseMovement(mouseDelta.x, -mouseDelta.y);
 
@@ -185,46 +185,46 @@ KEYBD_PRESSED(GameState_MDXViewer)
 
 	if (_key == GLFW_KEY_L)
 	{
-		_WowSettings->lighting = !_WowSettings->lighting;
+		_Settings->lighting = !_Settings->lighting;
 		return true;
 	}
 
 	if (_key == GLFW_KEY_F5)
 	{
-		_WowSettings->drawmodels = !_WowSettings->drawmodels;
+		_Settings->drawmodels = !_Settings->drawmodels;
 		return true;
 	}
 	if (_key == GLFW_KEY_F6)
 	{
-		_WowSettings->drawdoodads = !_WowSettings->drawdoodads;
+		_Settings->drawdoodads = !_Settings->drawdoodads;
 		return true;
 	}
 	if (_key == GLFW_KEY_F7)
 	{
-		_WowSettings->drawterrain = !_WowSettings->drawterrain;
+		_Settings->drawterrain = !_Settings->drawterrain;
 		return true;
 	}
 	if (_key == GLFW_KEY_F8)
 	{
-		_WowSettings->drawwmo = !_WowSettings->drawwmo;
+		_Settings->drawwmo = !_Settings->drawwmo;
 		return true;
 	}
 
 	if (_key == GLFW_KEY_C)
 	{
-		_WowSettings->drawColors = !_WowSettings->drawColors;
+		_Settings->drawColors = !_Settings->drawColors;
 		return true;
 	}
 
 	if (_key == GLFW_KEY_H)
 	{
-		_WowSettings->drawhighres = !_WowSettings->drawhighres;
+		_Settings->drawhighres = !_Settings->drawhighres;
 		return true;
 	}
 
 	if (_key == GLFW_KEY_F)
 	{
-		_WowSettings->drawfog = !_WowSettings->drawfog;
+		_Settings->drawfog = !_Settings->drawfog;
 		return true;
 	}
 

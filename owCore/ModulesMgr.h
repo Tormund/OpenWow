@@ -4,7 +4,7 @@ class Module;
 
 class ModulesMgr
 {
-	CLASS_INSTANCE_API(ModulesMgr, );
+	CLASS_INSTANCE(ModulesMgr);
 
 public:
 	 bool LoadModule(Module* _module, bool isSystemModule = false);

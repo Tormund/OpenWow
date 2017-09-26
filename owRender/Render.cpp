@@ -73,17 +73,6 @@ bool RenderGL::Init()
 
 	wglMakeCurrent(dc, glrc1);
 
-	// Window size
-	windowSize = vec2(1024.0f, 768.0f);
-
-	// Aspect
-	aspectFactor = 1.0f;
-	aspectRatio = windowSize.x / windowSize.y;
-	if (aspectRatio >= 1.0f)
-	{
-		aspectFactor = aspectRatio;
-	}
-
 	// Debug output
 	GLint flags;
 	glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
@@ -96,7 +85,7 @@ bool RenderGL::Init()
 	}
 
 	// GL settings
-	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 	// Cull face
 	glCullFace(GL_BACK);
@@ -155,7 +144,7 @@ bool RenderGL::Init()
 	//glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
 
 	// Viewport
-	glViewport(0, 0, windowSize.x, windowSize.y);
+	glViewport(0, 0, _Settings->windowSizeX, _Settings->windowSizeY);
 
 	return true;
 }
@@ -176,7 +165,7 @@ void RenderGL::Set3D()
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	gluPerspective(45.0, aspectRatio, 1.0, 20480.0); //set the perspective (angle of sight, width, height, ,depth)
+	gluPerspective(45.0, _Settings->aspectRatio, 1.0, 20480.0); //set the perspective (angle of sight, width, height, ,depth)
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -211,7 +200,7 @@ void RenderGL::Set2D()
 	// Projection is orthographic
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	mat4 orho = glm::ortho(0.0f, windowSize.x, windowSize.y, 0.0f);
+	mat4 orho = glm::ortho(0.0f, _Settings->GetWindowSize().x, _Settings->GetWindowSize().y, 0.0f);
 	glMultMatrixf(glm::value_ptr(orho));
 
 	glMatrixMode(GL_MODELVIEW);
@@ -367,17 +356,12 @@ void RenderGL::RenderText(cvec2 _pos, cstring _string, TextAlignW _alignW, TextA
 void RenderGL::OnWindowResized(uint32_t _width, uint32_t _height)
 {
 	// Window size
-	windowSize.x = _width;
-	windowSize.y = _height;
+	_Settings->windowSizeX = _width;
+	_Settings->windowSizeY = _height;
 
 	// Aspect
-	aspectFactor = 1.0f;
-	aspectRatio = static_cast<float>(windowSize.x) / static_cast<float>(windowSize.y);
-	if (aspectRatio >= 1.0f)
-	{
-		aspectFactor = aspectRatio;
-	}
+	_Settings->CalculateAspectFactor();
 
 	// Set viewport
-	glViewport(0, 0, windowSize.x, windowSize.y);
+	glViewport(0, 0, _Settings->windowSizeX, _Settings->windowSizeY);
 }

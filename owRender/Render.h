@@ -27,9 +27,6 @@ public:
 	GLuint GetArrayBuffer() { return VertexArrayObject; }
 
 public:
-	inline vec2 GetWindowSize() const { return windowSize; }
-	inline float GetAspectRatio() const { return aspectRatio; }
-
 	HDC dc;
 	HGLRC glrc1;
 	HGLRC glrc2;
@@ -41,9 +38,6 @@ private:
 
 private:
 	GLuint VertexArrayObject, VertexBufferObject;
-
-	vec2 windowSize;
-	float aspectRatio, aspectFactor;
 
 public:
 	Frustum frustum;

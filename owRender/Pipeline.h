@@ -2,7 +2,7 @@
 
 class Pipeline
 {
-	CLASS_INSTANCE_API(Pipeline, );
+	CLASS_INSTANCE(Pipeline);
 
 public:
 	Pipeline() : camera(nullptr) {}

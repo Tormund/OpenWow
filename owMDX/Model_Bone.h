@@ -8,8 +8,8 @@
 class Bone
 {
 public:
-	OW_MDX_DLL_API void init(File& f, M2CompBone& b, uint32_t* global, File* animfiles);
-	OW_MDX_DLL_API void calcMatrix(Bone* allbones, int anim, int time);
+	void init(File& f, M2CompBone& b, uint32_t* global, File* animfiles);
+	void calcMatrix(Bone* allbones, int anim, int time);
 
 private:
 	Animated<vec3> trans;

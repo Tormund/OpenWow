@@ -37,7 +37,7 @@ struct WMOHeaderDef
 	uint16_t numLod;                                             // ≥ Legion (21108) includes base lod (→ numLod = 3 means '.wmo', 'lod0.wmo' and 'lod1.wmo')
 
 	//
-	static const size_t __size = 64;
+	static const uint32_t __size = 64;
 };
 
 struct WMO_PortalVertices
@@ -52,7 +52,7 @@ struct WMO_PortalInformation
 	C4Plane plane;
 
 	//
-	const static size_t __size = 20;
+	const static uint32_t __size = 20;
 };
 
 struct WMO_PortalReferences
@@ -63,7 +63,7 @@ struct WMO_PortalReferences
 	uint16_t filler;
 
 	//
-	const static size_t __size = 8;
+	const static uint32_t __size = 8;
 };
 
 struct WMO_DoodadSet
@@ -79,7 +79,7 @@ struct WMO_DoodadSet
 	}
 
 	//
-	const static size_t __size = 32;
+	const static uint32_t __size = 32;
 };
 
 
@@ -89,12 +89,15 @@ public:
 	WMO(cstring _fileName);
 	~WMO();
 
+public:
 	bool Init();
+	inline bool IsLoaded() { return m_Loaded; }
 
-	void draw(int doodadset, cvec3 ofs, const float roll);
-	void drawSkybox();
+	bool draw(int doodadset, cvec3 ofs, const float roll);
 
-#ifdef _DEBUG
+	bool drawSkybox();
+
+#ifdef _DEBUG1
 	void DEBUG_DrawLightPlaceHolders();
 	void DEBUG_DrawFogPositions();
 	void DEBUG_DrawBoundingBoxes();
@@ -103,8 +106,10 @@ public:
 #endif
 
 public:
+	bool m_Loaded;
 	WMOHeaderDef header;                                   // MOHD chunk
 
+public:
 	//-- Materials --//
 	char* m_TexturesNames;                                          // MOTX chunk
 	vector<WMOMaterial*> m_Materials;                              // MOMT chunk
@@ -116,9 +121,10 @@ public:
 
 
 	//-- Skybox --//
+#ifdef MDX_INCL
 	char* m_Skybox_Filename;                                 // MOSB chunk
 	Model* m_Skybox;
-
+#endif
 
 	//-- Portals --//
 	vector<WMO_PortalVertices*> m_PortalVertices;           // MOPV chunk

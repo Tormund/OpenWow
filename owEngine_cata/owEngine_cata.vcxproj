@@ -19,43 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AssimpModel.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="DayNightCycle.h" />
     <ClInclude Include="GameState_Menu.h" />
-    <ClInclude Include="Map_GlobalWMOs.h" />
-    <ClInclude Include="Map.h" />
-    <ClInclude Include="MapChunk.h" />
-    <ClInclude Include="MapTile.h" />
-    <ClInclude Include="MapWaterChunk.h" />
-    <ClInclude Include="Model_Instance.h" />
-    <ClInclude Include="sky.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="WMO_Instance.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AssimpModel.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="DayNightCycle.cpp" />
     <ClCompile Include="GameState_Menu.cpp" />
-    <ClCompile Include="Map.cpp" />
-    <ClCompile Include="Map_GlobalWMOs.cpp" />
-    <ClCompile Include="MapChunk.cpp" />
-    <ClCompile Include="MapTile.cpp" />
-    <ClCompile Include="MapWaterChunk.cpp" />
-    <ClCompile Include="Model_Instance.cpp" />
-    <ClCompile Include="sky.cpp" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="WMO_Instance.cpp" />
     <ClCompile Include="World.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>

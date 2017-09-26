@@ -5,7 +5,7 @@ class GameState;
 
 class Engine
 {
-	CLASS_INSTANCE_API(Engine, );
+	CLASS_INSTANCE(Engine);
 
 public:
 	 bool Init(vector<string>& _argumentQueue);
@@ -39,7 +39,6 @@ private:
 	uint32_t framesCounter, framesPerSecond;
 	double framesTimer;
 
-	float ftime;
 	uint32_t t;
 	uint32_t last_t;
 	uint32_t _time;

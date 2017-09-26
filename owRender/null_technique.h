@@ -1,5 +1,4 @@
-#ifndef NULL_TECHNIQUE_H
-#define	NULL_TECHNIQUE_H
+#pragma once
 
 #include "technique.h"
 
@@ -10,6 +9,3 @@ public:
 
 	 void SetWVP(cmat4 WVP);
 };
-
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef DS_GEOM_PASS_TECH_H
-#define	DS_GEOM_PASS_TECH_H
+#pragma once
 
 #include "technique.h"
 
@@ -13,6 +12,3 @@ public:
 	 void SetColorTextureUnit(int TextureUnit);
 	 void SetSpecularTextureUnit(int TextureUnit);
 };
-
-
-#endif

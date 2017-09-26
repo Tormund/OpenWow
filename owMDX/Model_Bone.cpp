@@ -9,14 +9,14 @@
 void Bone::init(File& f, M2CompBone &b, uint32_t *global, File *animfiles)
 {
 	parent = b.parent_bone;
-	pivot = fixCoordSystem(b.pivot);
+	pivot = From_XYZ_To_XZminusY_RET(b.pivot);
 	billboard = (b.flags & MODELBONE_BILLBOARD) != 0;
 
 	trans.init(b.translation, f, global, animfiles);
 	roll.init(b.rotation, f, global, animfiles);
 	scale.init(b.scale, f, global, animfiles);
 
-	trans.fix(fixCoordSystem);
+	trans.fix(From_XYZ_To_XZminusY_RET);
 	roll.fix(fixCoordSystemQuat);
 	scale.fix(fixCoordSystem2);
 }

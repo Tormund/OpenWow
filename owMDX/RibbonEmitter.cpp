@@ -22,7 +22,7 @@ void RibbonEmitter::init(File& f, M2Ribbon& mta, uint32_t * globals)
 	// just use the first texture for now; most models I've checked only had one
 	texture = model->textures[texlist[0]];
 
-	tpos = pos = fixCoordSystem(mta.position);
+	tpos = pos = From_XYZ_To_XZminusY_RET(mta.position);
 
 	// TODO: figure out actual correct way to calculate length
 	// in BFD, res is 60 and len is 0.6, the trails are very short (too long here)

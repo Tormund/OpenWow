@@ -4,7 +4,7 @@ class DebugOutput;
 
 class Debug
 {
-	CLASS_INSTANCE_API(Debug, );
+	CLASS_INSTANCE(Debug);
 
 public:
 	static  bool Init();

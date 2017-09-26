@@ -1,8 +1,5 @@
 #pragma once
 
-#include "Debug.h"
-#include "DebugMacros.h"
-
 /*
 	Pointer to function, that take arg
 */
@@ -111,7 +108,7 @@ class ArgFunctionBase
 public:
 	virtual ~ArgFunctionBase()
 	{
-		Debug::Error("Del base f");
+		//Debug::Error("Del base f");
 	}
 	virtual void operator()() = 0;
 };
@@ -127,7 +124,7 @@ public:
 	ArgFunction(procTypeArgs _procArgs, ARGTYPE& _arg) : procArgs(_procArgs), arg(_arg) {}
 	virtual ~ArgFunction() override
 	{
-		Debug::Error("Del arg f");
+		//Debug::Error("Del arg f");
 	}
 	
 protected:
@@ -167,7 +164,7 @@ public:
 	ClassArgFunction(T* _instance, classProcTypeArgs _classProcArgs, ARGTYPE& _arg) : instance(_instance), classProcArgs(_classProcArgs), ArgFunction<ARGTYPE>(_arg) {}
 	~ClassArgFunction() override
 	{
-		Debug::Error("Del cl f");
+		//Debug::Error("Del cl f");
 	}
 
 	virtual void operator()() override

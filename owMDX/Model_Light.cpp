@@ -8,7 +8,7 @@
 
 void ModelLight::init(File& f, M2Light& mld, uint32_t* global)
 {
-	tpos = pos = fixCoordSystem(mld.position);
+	tpos = pos = From_XYZ_To_XZminusY_RET(mld.position);
 	tdir = dir = vec3(0, 1, 0); // no idea
 	type = mld.type;
 	parent = mld.bone;

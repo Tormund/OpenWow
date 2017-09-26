@@ -19,9 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Animated.cpp" />
     <ClCompile Include="BaseFile.cpp" />
+    <ClCompile Include="BoundingBox.cpp" />
     <ClCompile Include="ContainerAssync.cpp" />
     <ClCompile Include="File.cpp" />
+    <ClCompile Include="InfoPortions.cpp" />
     <ClCompile Include="MathUtils.cpp" />
     <ClCompile Include="MPQFile.cpp" />
     <ClCompile Include="RefManager1Dim.cpp" />
@@ -44,22 +47,26 @@
     <ClCompile Include="RefManager1DimAssync.cpp" />
     <ClCompile Include="RefManager2Dim.cpp" />
     <ClCompile Include="RefSimpleManagers.cpp" />
+    <ClCompile Include="Settings.cpp" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="Timer.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="TimeManager.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="UtilsConvert.cpp" />
     <ClCompile Include="WowChunkUtils.cpp" />
+    <ClCompile Include="WowConsts.cpp" />
     <ClCompile Include="XMLFile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\shared\owCore.h" />
+    <ClInclude Include="Animated.h" />
+    <ClInclude Include="AnimationTypes.h" />
     <ClInclude Include="BaseFile.h" />
+    <ClInclude Include="BoundingBox.h" />
     <ClInclude Include="ContainerAssync.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="GameModule.h" />
+    <ClInclude Include="InfoPortions.h" />
+    <ClInclude Include="Macros.h" />
     <ClInclude Include="MathUtils.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="MPQFile.h" />
@@ -84,20 +91,19 @@
     <ClInclude Include="RefManager1DimAssync.h" />
     <ClInclude Include="RefSimpleManagers.h" />
     <ClInclude Include="RefItem.h" />
-    <ClInclude Include="Manager.h" />
     <ClInclude Include="Module.h" />
     <ClInclude Include="ModulesMgr.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="Rect.h" />
     <ClInclude Include="RefManager2Dim.h" />
+    <ClInclude Include="Settings.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Timer.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
+    <ClInclude Include="TimeManager.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="WowChunkUtils.h" />
+    <ClInclude Include="WowConsts.h" />
+    <ClInclude Include="WowTypes.h" />
     <ClInclude Include="XMLFile.h" />
   </ItemGroup>
   <ItemGroup>

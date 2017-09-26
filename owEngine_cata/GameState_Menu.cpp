@@ -22,12 +22,12 @@ bool GameState_Menu::Init()
 	minimapActive = false;
 
 	window = new UIWindow();
-	window->Init(VECTOR_ZERO, vec2(1024, 768), nullptr);
+	window->Init(VECTOR_ZERO, vec2(_Settings->windowSizeX, _Settings->windowSizeY), nullptr);
 	_UIMgr->Attach(window);
 
 	auto camera = new Camera;
 	_Pipeline->SetCamera(camera);
-	_Pipeline->SetProjection(45.0f, 1024.0f / 768.0f, 0.1f, 10000.0f);
+	_Pipeline->SetProjection(45.0f, _Settings->aspectRatio, 0.1f, 10000.0f);
 
 	const unsigned mapsXStart = 10;
 	const unsigned mapsYStart = 10;
@@ -63,7 +63,11 @@ bool GameState_Menu::Init()
 		mapsY += mapsYdelta;
 	}
 
-	cmd = CMD_NONE;
+	cmd = CMD_NONE2;
+
+	_TimeManager->globalTime = 0;
+	_TimeManager->animtime = 0;
+	
 
 	backgroundModel = 0;
 	randBackground();
@@ -83,7 +87,7 @@ void GameState_Menu::Destroy()
 void GameState_Menu::InputPhase(double t, double dt)
 {
 	float delta = PI / 60.0f;
-	float speed = 1.5f * (cameraSprint ? 5.0f : 1.0f);
+	float speed = 4.5f * (cameraSprint ? 5.0f : 1.0f);
 
 	if (_Input->IsKeyPressed(GLFW_KEY_W))
 	{
@@ -108,32 +112,26 @@ void GameState_Menu::InputPhase(double t, double dt)
 
 void GameState_Menu::UpdatePhase(double t, double dt)
 {
-	if (_World != nullptr)
-	{
-		_World->animtime += dt * 1000.0f;
-		globalTime = (int)_World->animtime;
+	_TimeManager->animtime += dt * 1000.0f;
+	_TimeManager->globalTime = (int)_TimeManager->animtime;
 
-		_World->tick(dt);
-
-	}
+	_World->tick(dt);
 
 	if (backgroundModel)
+	{
 		backgroundModel->updateEmitters(dt);
+	}
 }
 
 void GameState_Menu::Render(double t, double dt)
 {
 	glDisable(GL_FOG);
 
-	if (cmd == CMD_IN_WORLD && !minimapActive)
+	if (cmd == CMD_IN_WORLD2 && !minimapActive)
 	{
 		_Camera->Update();
 
-		//_World->m_gbuffer->StartFrame();
-
-		_World->draw();
-
-		//_World->m_gbuffer->BindForFinalPass(currentColor);
+		_World->drawShader(currentColor);
 	}
 
 	if (backgroundModel != nullptr)
@@ -160,7 +158,7 @@ void GameState_Menu::Render(double t, double dt)
 		glDepthFunc(GL_LEQUAL);
 		glEnable(GL_LIGHTING);
 
-		backgroundModel->m_ModelCamera->setup(globalTime);
+		backgroundModel->m_ModelCamera->setup(_TimeManager->globalTime);
 		backgroundModel->draw();
 	}
 }
@@ -172,17 +170,17 @@ void GameState_Menu::RenderUI(double t, double dt)
 	//	_Render->RenderText(vec2(_Render->GetWindowSize().x / 2, 200), _World->GetMap()->IsOutOfBounds() ? "Out of bounds" : "Loading...");
 	//}
 
-	if (minimapActive || cmd == CMD_SELECT)
+	if (minimapActive || cmd == CMD_SELECT2)
 	{
 		int basex = 200;
 		int basey = 0;
 
-		if (_World->GetMap()->GetMinimap() != 0)
+		if (_MapsManager->GetMap()->GetMinimap() != 0)
 		{
 			const int len = 768;
 			glColor4f(1, 1, 1, 1);
 			glEnable(GL_TEXTURE_2D);
-			glBindTexture(GL_TEXTURE_2D, _World->GetMap()->GetMinimap());
+			glBindTexture(GL_TEXTURE_2D, _MapsManager->GetMap()->GetMinimap());
 			glBegin(GL_QUADS);
 			{
 				glTexCoord2f(0, 0);
@@ -209,14 +207,14 @@ void GameState_Menu::RenderUI(double t, double dt)
 		}
 	}
 
-	if (cmd == CMD_LOAD_WORLD)
+	if (cmd == CMD_LOAD_WORLD2)
 	{
-		_Render->RenderText(vec2(_Render->GetWindowSize().x / 2, 20 / 2), "Loading...");
-		cmd = CMD_DO_LOAD_WORLD;
+		_Render->RenderText(vec2(_Settings->windowSizeX / 2, 20 / 2), "Loading...");
+		cmd = CMD_DO_LOAD_WORLD2;
 	}
-	else if (cmd == CMD_SELECT)
+	else if (cmd == CMD_SELECT2)
 	{
-		if (_World->GetMap()->GetTilesCount() == 0)
+		if (_MapsManager->GetMap()->GetTilesCount() == 0)
 		{
 			_Render->RenderText(vec2(400, 360), "Click to enter");
 		}
@@ -225,7 +223,7 @@ void GameState_Menu::RenderUI(double t, double dt)
 			_Render->RenderText(vec2(400, 0), "Select your starting point");
 		}
 	}
-	else if (cmd == CMD_IN_WORLD)
+	else if (cmd == CMD_IN_WORLD2)
 	{ // HUD
 // Skyname
 //char* sn = _World->skies->getSkyName();
@@ -237,7 +235,7 @@ void GameState_Menu::RenderUI(double t, double dt)
 		string regionName = "Unknown";
 		try
 		{
-			auto rec = gMapDB.getByID(_World->GetMap()->getAreaID());
+			auto rec = gMapDB.getByID(_MapsManager->GetMap()->getAreaID());
 			areaName = rec->Get_Name_cstr();
 			//regionName = AreaDB::getAreaName(rec.getUInt(AreaDB::Region));
 		}
@@ -246,19 +244,19 @@ void GameState_Menu::RenderUI(double t, double dt)
 			areaName = "Not found!";
 		}
 
-		_Render->RenderText(vec2(5, 20), "Area: [" + areaName + "] [" + std::to_string(_World->GetMap()->getAreaID()) + "]");
+		_Render->RenderText(vec2(5, 20), "Area: [" + areaName + "] [" + std::to_string(_MapsManager->GetMap()->getAreaID()) + "]");
 		_Render->RenderText(vec2(5, 40), "Region: " + regionName + "]");
-		_Render->RenderText(vec2(5, 60), "CURRX: " + to_string(_World->GetMap()->GetCurrentX()) + ", CURRZ " + to_string(_World->GetMap()->GetCurrentZ()));
+		_Render->RenderText(vec2(5, 60), "CURRX: " + to_string(_MapsManager->GetMap()->GetCurrentX()) + ", CURRZ " + to_string(_MapsManager->GetMap()->GetCurrentZ()));
 
-		int time = ((int)_World->time) % 2880;
+		int time = ((int)_EnvironmentManager->m_GameTime) % 2880;
 		int hh, mm;
 
 		hh = time / 120;
 		mm = (time % 120) / 2;
 
 		// Time
-		_Render->RenderText(vec2(_Render->GetWindowSize().x - 150, 0), "TIME" + to_string(hh) + " " + to_string(mm));
-		_Render->RenderText(vec2(5, _Render->GetWindowSize().y - 22), "Cam:" + to_string(-(_Camera->Position.x - C_ZeroPoint)) + "," + to_string(-(_Camera->Position.z - C_ZeroPoint)) + "," + to_string(_Camera->Position.y));
+		_Render->RenderText(vec2(_Settings->windowSizeX - 150, 0), "TIME" + to_string(hh) + " " + to_string(mm));
+		_Render->RenderText(vec2(5, _Settings->windowSizeY - 22), "Cam:" + to_string(-(_Camera->Position.x - C_ZeroPoint)) + "," + to_string(-(_Camera->Position.z - C_ZeroPoint)) + "," + to_string(_Camera->Position.y));
 
 		//_Render->RenderText(vec2(5, 60), "CX: " + to_string(-_Camera->GetPosition().x / C_TileSize) + "], " + to_string(-_Camera->GetPosition().z / C_TileSize) + "]");
 
@@ -270,7 +268,7 @@ void GameState_Menu::RenderUI(double t, double dt)
 
 bool GameState_Menu::LoadWorld(cvec3 _pos)
 {
-	_World->GetMap()->enterTile(_pos.x / C_TileSize, _pos.z / C_TileSize);
+	_MapsManager->GetMap()->enterTile(_pos.x / C_TileSize, _pos.z / C_TileSize);
 	_World->initDisplay();
 	_Camera->Position = _pos;
 
@@ -279,7 +277,7 @@ bool GameState_Menu::LoadWorld(cvec3 _pos)
 		delete backgroundModel;
 	}
 
-	cmd = CMD_IN_WORLD;
+	cmd = CMD_IN_WORLD2;
 
 	return true;
 }
@@ -290,9 +288,9 @@ bool GameState_Menu::LoadWorld(cvec3 _pos)
 
 MOUSE_MOVED_(GameState_Menu)
 {
-	if (cmd == CMD_IN_WORLD && enableFreeCamera)
+	if (cmd == CMD_IN_WORLD2 && enableFreeCamera)
 	{
-		vec2 mouseDelta = (_mousePos - lastMousePos) / _Render->GetWindowSize();
+		vec2 mouseDelta = (_mousePos - lastMousePos) / _Settings->GetWindowSize();
 
 		_Camera->ProcessMouseMovement(mouseDelta.x, -mouseDelta.y);
 
@@ -303,21 +301,21 @@ MOUSE_MOVED_(GameState_Menu)
 MOUSE_PRESSED(GameState_Menu)
 {
 	// Select point
-	if (cmd == CMD_SELECT && _mousePos.x >= 200 && _mousePos.x < 200 + 12 * 64 && _mousePos.y < 12 * 64)
+	if (cmd == CMD_SELECT2 && _mousePos.x >= 200 && _mousePos.x < 200 + 12 * 64 && _mousePos.y < 12 * 64)
 	{
 		int selectedPointX = _mousePos.x - 200;
 		int selectedPointZ = _mousePos.y;
 
 		vec3 pointInWorld;
 
-		if (_World->GetMap()->MapHasTerrain())
+		if (_MapsManager->GetMap()->MapHasTerrain())
 		{
 			pointInWorld = vec3(selectedPointX / 12.0f, 0.1f, selectedPointZ / 12.0f) * C_TileSize;
 		}
-		else if (_World->GetMap()->MapHasGlobalWMO())
+		else if (_MapsManager->GetMap()->MapHasGlobalWMO())
 		{
 #ifdef WMO_INCL
-			pointInWorld = _World->GetMap()->GetMapWMOs()->GetGlobalWMOPlacementInfo()->position;
+			pointInWorld = _MapsManager->GetMap()->GetMapWMOs()->GetGlobalWMOPlacementInfo()->position;
 #endif
 		}
 
@@ -329,7 +327,7 @@ MOUSE_PRESSED(GameState_Menu)
 		return true;
 	}
 
-	if (cmd == CMD_IN_WORLD && _button == GLFW_MOUSE_BUTTON_LEFT)
+	if (cmd == CMD_IN_WORLD2 && _button == GLFW_MOUSE_BUTTON_LEFT)
 	{
 		enableFreeCamera = true;
 		lastMousePos = _mousePos;
@@ -342,7 +340,7 @@ MOUSE_PRESSED(GameState_Menu)
 
 MOUSE_RELEASE(GameState_Menu)
 {
-	if (cmd == CMD_IN_WORLD && _button == GLFW_MOUSE_BUTTON_LEFT)
+	if (cmd == CMD_IN_WORLD2 && _button == GLFW_MOUSE_BUTTON_LEFT)
 	{
 		enableFreeCamera = false;
 		lastMousePos = VECTOR_ZERO;
@@ -362,14 +360,14 @@ KEYBD_PRESSED(GameState_Menu)
 {
 	if (_key == GLFW_KEY_ESCAPE)
 	{
-		if (cmd == CMD_SELECT)
+		if (cmd == CMD_SELECT2)
 		{
-			cmd = CMD_NONE;
+			cmd = CMD_NONE2;
 			_UIMgr->Attach(window);
 		}
-		else if (cmd == CMD_IN_WORLD)
+		else if (cmd == CMD_IN_WORLD2)
 		{
-			cmd = CMD_SELECT;
+			cmd = CMD_SELECT2;
 			_UIMgr->Attach(window);
 		}
 		else
@@ -386,46 +384,52 @@ KEYBD_PRESSED(GameState_Menu)
 
 	if (_key == GLFW_KEY_L)
 	{
-		_WowSettings->lighting = !_WowSettings->lighting;
+		_Settings->lighting = !_Settings->lighting;
 		return true;
 	}
 
 	if (_key == GLFW_KEY_F5)
 	{
-		_WowSettings->drawmodels = !_WowSettings->drawmodels;
+		_Settings->drawmodels = !_Settings->drawmodels;
 		return true;
 	}
 	if (_key == GLFW_KEY_F6)
 	{
-		_WowSettings->drawdoodads = !_WowSettings->drawdoodads;
+		_Settings->drawdoodads = !_Settings->drawdoodads;
 		return true;
 	}
 	if (_key == GLFW_KEY_F7)
 	{
-		_WowSettings->drawterrain = !_WowSettings->drawterrain;
+		_Settings->drawterrain = !_Settings->drawterrain;
 		return true;
 	}
 	if (_key == GLFW_KEY_F8)
 	{
-		_WowSettings->drawwmo = !_WowSettings->drawwmo;
+		_Settings->drawwmo = !_Settings->drawwmo;
 		return true;
 	}
 
 	if (_key == GLFW_KEY_C)
 	{
-		_WowSettings->drawColors = !_WowSettings->drawColors;
+		_Settings->enableMCCV = !_Settings->enableMCCV;
+		return true;
+	}
+
+	if (_key == GLFW_KEY_V)
+	{
+		_Settings->enableMCLV = !_Settings->enableMCLV;
 		return true;
 	}
 
 	if (_key == GLFW_KEY_H)
 	{
-		_WowSettings->drawhighres = !_WowSettings->drawhighres;
+		_Settings->drawhighres = !_Settings->drawhighres;
 		return true;
 	}
 
 	if (_key == GLFW_KEY_F)
 	{
-		_WowSettings->drawfog = !_WowSettings->drawfog;
+		_Settings->drawfog = !_Settings->drawfog;
 		return true;
 	}
 

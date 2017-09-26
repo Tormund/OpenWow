@@ -20,12 +20,16 @@ bool Input::Init()
 	// Inits keystates
 	keyState = new bool[KEYSCOUNT];
 	for (int i = 0; i < KEYSCOUNT; i++)
+	{
 		keyState[i] = false;
+	}
 
 	// Inits mousebuttons states
 	mouseButtonState = new bool[MOUSEBUTTONSCOUNT];
 	for (int i = 0; i < MOUSEBUTTONSCOUNT; i++)
+	{
 		mouseButtonState[i] = false;
+	}
 
 	return true;
 }
@@ -41,7 +45,9 @@ void Input::Destroy()
 void Input::AddInputListener(InputListener* _inputListener)
 {
 	if (_inputListener != nullptr)
+	{
 		inputListeners.push_back(_inputListener);
+	}
 }
 
 void Input::DeleteInputListener(InputListener* _inputListener)

@@ -121,5 +121,7 @@ void GBuffer::BindForFinalPass(GLint _color)
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);			// Set target buffer as Default
 
 	glReadBuffer(_color);
-	glBlitFramebuffer(0, 0, 1024, 768, 0, 0, 1024, 768, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+	glBlitFramebuffer(0, 0, _Settings->windowSizeX, _Settings->windowSizeY, 
+					  0, 0, _Settings->windowSizeX, _Settings->windowSizeY, 
+					  GL_COLOR_BUFFER_BIT, GL_LINEAR);
 }

@@ -52,6 +52,12 @@
     <ClCompile Include="ddslib.cpp">
       <Filter>Textures</Filter>
     </ClCompile>
+    <ClCompile Include="SimpleRenderGBuffer.cpp">
+      <Filter>Techniques</Filter>
+    </ClCompile>
+    <ClCompile Include="MapTilePass.cpp">
+      <Filter>Techniques</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Image.h">
@@ -109,6 +115,12 @@
     <ClInclude Include="shaders.h" />
     <ClInclude Include="ddslib.h">
       <Filter>Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleRenderGBuffer.h">
+      <Filter>Techniques</Filter>
+    </ClInclude>
+    <ClInclude Include="MapTilePass.h">
+      <Filter>Techniques</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

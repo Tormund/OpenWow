@@ -52,7 +52,7 @@ struct WMOGroupInfoDef
 	int32_t nameoffset;                                   // name in MOGN chunk (-1 for no name)
 
 	//
-	static const size_t __size = 32;
+	static const uint32_t __size = 32;
 };
 
 struct WMOGroupHeader
@@ -84,7 +84,7 @@ struct WMOGroupHeader
 	uint32_t unk; // Always 0?
 
 	//
-	const static size_t __size = 68;
+	const static uint32_t __size = 68;
 };
 
 struct WMOGroup_MaterialInfo
@@ -109,7 +109,7 @@ struct WMOGroup_MaterialInfo
 	uint8_t materialId;
 
 	//
-	const static size_t __size = 2;
+	const static uint32_t __size = 2;
 };
 
 struct WMOBatch
@@ -128,7 +128,7 @@ struct WMOBatch
 	uint8_t material_id; // index in MOMT
 
 	//
-	const static size_t __size = 24;
+	const static uint32_t __size = 24;
 };
 
 struct WMOLiquidHeader
@@ -141,7 +141,7 @@ struct WMOLiquidHeader
 	uint16_t type;
 
 	//
-	const static size_t __size = 30;
+	const static uint32_t __size = 30;
 };
 
 //---
@@ -155,9 +155,9 @@ public:
 	void initDisplayList();
 	void initLighting();
 
-	void draw(cvec3 ofs, float roll);
-	void drawDoodads(int doodadset, cvec3 ofs, float roll);
-	void drawLiquid();
+	bool draw(cvec3 ofs, float roll);
+	bool drawDoodads(int doodadset, cvec3 ofs, float roll);
+	bool drawLiquid();
 
 	void setupFog();
 
@@ -165,31 +165,22 @@ public:
 public:
 	const WMO* m_ParentWMO;
 	const uint32_t m_GroupIndex;
+	string m_GropName;
 
-public:
-	vec3 center;
-	float rad;
+	BoundingBox bounds;
 
-	int fog;
-
-	vector< pair<GLuint, int> > lists;
-
-public:
-	vec3 b1, b2;
-	vec3 vmin, vmax;
-	bool indoor;
-	bool visible;
-
-	bool m_EnableOutdoorLights;
-	string name;
-
-private:
 	WMOGroupInfoDef groupInfo;
-
-
-public:
 	WMOGroupHeader wmoGroupHeader;
 
+
+public:
+	int fog;
+	bool visible;
+	bool m_EnableOutdoorLights;
+	vector< pair<GLuint, int> > lists;
+
+
+public:
 	//-- Triangles --//
 	uint32_t nTriangles;
 	WMOGroup_MaterialInfo* materials; // MOPY chunk

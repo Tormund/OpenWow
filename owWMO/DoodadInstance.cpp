@@ -31,7 +31,7 @@ void DoodadInstance::Draw(cvec3 ofs, float roll)
 	vec3 tpos(ofs + pos);
 	rotate(ofs.x, ofs.z, &tpos.x, &tpos.z, roll * PI / 180.0f);
 
-	if (glm::length2(tpos - _Camera->Position) > (_WowSettings->doodaddrawdistance2 * model->rad * sc))
+	if (glm::length2(tpos - _Camera->Position) > (_Settings->doodaddrawdistance2 * model->rad * sc))
 	{
 		return;
 	}

@@ -12,15 +12,18 @@
 #include "Wmo_Group.h"
 #include "liquid.h"
 
-WMO::WMO(cstring name) : RefItemNamed(name)
+WMO::WMO(cstring name) : RefItemNamed(name), m_Loaded(false)
 {
 	m_TexturesNames = nullptr;
 	m_GroupsNames = nullptr;
 
+#ifdef MDX_INCL
 	m_Skybox_Filename = nullptr;
 	m_Skybox = nullptr;
 
+
 	m_MDXFilenames = nullptr;
+#endif
 }
 
 WMO::~WMO()
@@ -35,8 +38,10 @@ WMO::~WMO()
 	delete[] m_GroupsNames;
 	ERASE_VECTOR(m_Groups);
 
+#ifdef MDX_INCL
 	delete[] m_Skybox_Filename;
 	_ModelsMgr->Delete(m_Skybox);
+#endif
 
 	ERASE_VECTOR(m_PortalVertices);
 	ERASE_VECTOR(m_PortalInformation);
@@ -121,23 +126,24 @@ bool WMO::Init()
 		}
 		else if (strcmp(fourcc, "MOSB") == 0) // Skybox. 
 		{
+#ifdef MDX_INCL
 			if (size > 4)
 			{
 				m_Skybox_Filename = new char[size + 1];
 				f.ReadBytes(m_Skybox_Filename, size);
 				m_Skybox_Filename[size] = 0x00;
 
-#ifdef MDX_INCL
+
 				Debug::Warn("WMO[%s]: Skybox [%s]", GetName().c_str(), m_Skybox_Filename);
 				m_Skybox = _ModelsMgr->Add(m_Skybox_Filename);
 
-				if (!m_Skybox->ok)
+				if (!m_Skybox->IsLoaded())
 				{
 					_ModelsMgr->Delete(m_Skybox_Filename);
 					m_Skybox = nullptr;
 				}
-#endif
 			}
+#endif
 		}
 		else if (strcmp(fourcc, "MOPV") == 0)
 		{
@@ -152,19 +158,19 @@ bool WMO::Init()
 			for (uint32_t i = 0; i < header.nPortals; i++)
 			{
 				WMO_PortalVertices* p = new WMO_PortalVertices();
-				float ff[3];
+				vec3 temp;
 
-				f.ReadBytes(ff, 12);
-				p->a = vec3(ff[0], ff[2], -ff[1]);
+				f.ReadBytes(&temp, sizeof(vec3));
+				p->a = From_XYZ_To_XZminusY_RET(temp);
 
-				f.ReadBytes(ff, 12);
-				p->b = vec3(ff[0], ff[2], -ff[1]);
+				f.ReadBytes(&temp, sizeof(vec3));
+				p->b = From_XYZ_To_XZminusY_RET(temp);
 
-				f.ReadBytes(ff, 12);
-				p->c = vec3(ff[0], ff[2], -ff[1]);
+				f.ReadBytes(&temp, sizeof(vec3));;
+				p->c = From_XYZ_To_XZminusY_RET(temp);
 
-				f.ReadBytes(ff, 12);
-				p->d = vec3(ff[0], ff[2], -ff[1]);
+				f.ReadBytes(&temp, sizeof(vec3));
+				p->d = From_XYZ_To_XZminusY_RET(temp);
 
 				m_PortalVertices.push_back(p);
 			}
@@ -283,73 +289,93 @@ bool WMO::Init()
 		(*it)->initDisplayList();
 	}
 
+	m_Loaded = true;
+
 	return true;
 }
 
-void WMO::draw(int doodadset, cvec3 ofs, const float roll)
+bool WMO::draw(int doodadset, cvec3 ofs, const float roll)
 {
-	for (auto it = m_Groups.begin(); it != m_Groups.end(); ++it)
+	if (!m_Loaded)
 	{
-		(*it)->draw(ofs, roll);
+		return false;
 	}
 
-	if (_WowSettings->drawdoodads)
+	for (auto it = m_Groups.begin(); it != m_Groups.end(); ++it)
+	{
+		if (!(*it)->draw(ofs, roll))
+		{
+			//return false;
+		}
+	}
+
+	if (_Settings->drawdoodads)
 	{
 		for (auto it = m_Groups.begin(); it != m_Groups.end(); ++it)
 		{
-			(*it)->drawDoodads(doodadset, ofs, roll);
+			if (!(*it)->drawDoodads(doodadset, ofs, roll))
+			{
+				//return false;
+			}
 		}
 	}
 
 	for (auto it = m_Groups.begin(); it != m_Groups.end(); ++it)
 	{
-		(*it)->drawLiquid();
+		if (!(*it)->drawLiquid())
+		{
+			//return false;
+		}
 	}
 
 #ifdef _DEBUG
-	DEBUG_DrawLightPlaceHolders();
-	DEBUG_DrawFogPositions();
-	DEBUG_DrawBoundingBoxes();
+	//DEBUG_DrawLightPlaceHolders();
+	//DEBUG_DrawFogPositions();
+	//DEBUG_DrawBoundingBoxes();
 	//DEBUG_DrawPortalsRelations();
 	//DEBUG_DrawPortals();
 #endif
+
+	return true;
 }
 
-void WMO::drawSkybox()
+
+bool WMO::drawSkybox()
 {
-	//m_Skybox = nullptr; // HACK
-
-	if (m_Skybox != nullptr)
+	if (!m_Loaded)
 	{
-		// TODO: only draw sky if we are "inside" the WMO... ?
-
-		// We need to clear the depth buffer, because the m_Skybox model can (will?)
-		// require it *. This is inefficient - is there a better way to do this?
-		// * planets in front of "space" in Caverns of Time
-		//glClear(GL_DEPTH_BUFFER_BIT);
-
-		// update: m_Skybox models seem to have an explicit renderop ordering!
-		// that saves us the depth buffer clear and the depth testing, too
-
-		glDisable(GL_CULL_FACE);
-		glDisable(GL_DEPTH_TEST);
-
-		glPushMatrix();
-		{
-			glTranslatef(_Camera->Position.x, _Camera->Position.y, _Camera->Position.z);
-			const float sc = 2.0f;
-			glScalef(sc, sc, sc);
-			m_Skybox->draw();
-		}
-		glPopMatrix();
-
-		// _World->hadSky = true; FIXME WORLD
-
-		glEnable(GL_DEPTH_TEST);
+		return false;
 	}
+
+#ifdef MDX_INCL
+	if (m_Skybox == nullptr)
+	{
+		return false;
+	}
+
+	glDisable(GL_CULL_FACE);
+	glDisable(GL_DEPTH_TEST);
+
+	glPushMatrix();
+	{
+		glTranslatef(_Camera->Position.x, _Camera->Position.y, _Camera->Position.z);
+		const float sc = 2.0f;
+		glScalef(sc, sc, sc);
+		m_Skybox->draw();
+	}
+	glPopMatrix();
+
+	_EnvironmentManager->m_HasSky = true;
+
+	glEnable(GL_DEPTH_TEST);
+
+#endif
+
+	return true;
 }
 
-#ifdef _DEBUG
+
+#ifdef _DEBUG1
 
 void WMO::DEBUG_DrawLightPlaceHolders()
 {
@@ -359,7 +385,7 @@ void WMO::DEBUG_DrawLightPlaceHolders()
 	glColor4f(1, 1, 1, 1);
 
 	glBegin(GL_TRIANGLES);
-	for (int i = 0; i<m_Lights.size(); i++)
+	for (int i = 0; i < m_Lights.size(); i++)
 	{
 		glColor4fv(glm::value_ptr(m_Lights[i]->fcolor));
 
@@ -382,10 +408,10 @@ void WMO::DEBUG_DrawFogPositions()
 
 	glColor4f(1, 1, 1, 1);
 
-	for (size_t i = 0; i<m_Fogs.size(); i++)
+	for (size_t i = 0; i < m_Fogs.size(); i++)
 	{
 		WMOFog* fog = m_Fogs[i];
-		
+
 		glBegin(GL_LINE_LOOP);
 		glVertex3fv(glm::value_ptr(fog->fogDef.position));
 		glVertex3fv(glm::value_ptr(fog->fogDef.position + vec3(fog->fogDef.smallerRadius, 5, -fog->fogDef.largerRadius)));
@@ -406,7 +432,7 @@ void WMO::DEBUG_DrawBoundingBoxes()
 	glDisable(GL_TEXTURE_2D);
 
 
-	for (int i = 0; i<header.nGroups; i++)
+	for (int i = 0; i < header.nGroups; i++)
 	{
 		WMOGroup* g = m_Groups[i];
 		float fc[2] = {1, 0};
@@ -439,14 +465,14 @@ void WMO::DEBUG_DrawPortalsRelations()
 	glDisable(GL_TEXTURE_2D);
 
 	glBegin(GL_LINES);
-	for (size_t i = 0; i<m_PortalReferences.size(); i++)
+	for (size_t i = 0; i < m_PortalReferences.size(); i++)
 	{
 		WMO_PortalReferences* pr = m_PortalReferences[i];
 		WMO_PortalVertices* pv = m_PortalVertices[pr->portalIndex];
 
-		if (pr->side > 0) 
+		if (pr->side > 0)
 			glColor4f(1, 0, 0, 1);
-		else 
+		else
 			glColor4f(0, 0, 1, 1);
 
 

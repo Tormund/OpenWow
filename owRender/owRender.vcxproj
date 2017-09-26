@@ -180,6 +180,7 @@
     <ClCompile Include="Gbuffer.cpp" />
     <ClCompile Include="GLFWBackend.cpp" />
     <ClCompile Include="Image.cpp" />
+    <ClCompile Include="MapTilePass.cpp" />
     <ClCompile Include="null_technique.cpp" />
     <ClCompile Include="Pipeline.cpp" />
     <ClCompile Include="Render.cpp" />
@@ -190,6 +191,7 @@
     <ClCompile Include="shaders.cpp" />
     <ClCompile Include="ShadowMapFBO.cpp" />
     <ClCompile Include="SimpleColorTechnique.cpp" />
+    <ClCompile Include="SimpleRenderGBuffer.cpp" />
     <ClCompile Include="Technique.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -211,6 +213,7 @@
     <ClInclude Include="GLFWBackend.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="lights_common.h" />
+    <ClInclude Include="MapTilePass.h" />
     <ClInclude Include="null_technique.h" />
     <ClInclude Include="Pipeline.h" />
     <ClInclude Include="Render.h" />
@@ -221,6 +224,7 @@
     <ClInclude Include="shaders.h" />
     <ClInclude Include="ShadowMapFBO.h" />
     <ClInclude Include="SimpleColorTechnique.h" />
+    <ClInclude Include="SimpleRenderGBuffer.h" />
     <ClInclude Include="Technique.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Texture.h" />

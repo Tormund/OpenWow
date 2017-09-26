@@ -4,9 +4,6 @@
     <Filter Include="General">
       <UniqueIdentifier>{24c337e0-a2b6-44f6-8f76-c24a9b084161}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Settings &amp; Infos">
-      <UniqueIdentifier>{ad674e28-b917-4b59-8b73-061000b0b683}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -22,12 +19,6 @@
       <Filter>General</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="Settings.cpp">
-      <Filter>Settings &amp; Infos</Filter>
-    </ClCompile>
-    <ClCompile Include="InfoPortions.cpp">
-      <Filter>Settings &amp; Infos</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -44,11 +35,5 @@
     </ClInclude>
     <ClInclude Include="..\shared\owGame.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Settings.h">
-      <Filter>Settings &amp; Infos</Filter>
-    </ClInclude>
-    <ClInclude Include="InfoPortions.h">
-      <Filter>Settings &amp; Infos</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

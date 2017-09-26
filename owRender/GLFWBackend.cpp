@@ -8,9 +8,6 @@
 //#define GLFW_EXPOSE_NATIVE_WIN32
 //#include <GLFW/glfw3native.h>
 
-const uint32_t C_DefaultWindowWidth = 1024;
-const uint32_t C_DefaultWindowHeight = 768;
-
 // Error callback
 void GLFWErrorCallback(int error, const char* description) { Debug::Error("GLFW[]: Error [%d] (%s).", error, description); }
 
@@ -39,12 +36,14 @@ bool GLFWBackend::Init()
 	}
 	Debug::Info("GLFW[]: Version [%s].", glfwGetVersionString());
 
+	//
+
 	// Set window options
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	//glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-	//glfwWindowHint(GLFW_SAMPLES, 8);
+	glfwWindowHint(GLFW_SAMPLES, 8);
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 
 	//
@@ -66,11 +65,11 @@ bool GLFWBackend::Init()
 	//
 
 	// Create GLFW window
-	window = glfwCreateWindow(C_DefaultWindowWidth, C_DefaultWindowHeight, "Default window title.", nullptr, nullptr);
+	window = glfwCreateWindow(_Settings->windowSizeX, _Settings->windowSizeY, "Default window title.", nullptr, nullptr);
 
 	// Move window to center
-	uint32_t windowPositionX = (primaryMonitorMode->width / 2) - (C_DefaultWindowWidth / 2);
-	uint32_t windowPositionY = (primaryMonitorMode->height / 2) - (C_DefaultWindowHeight / 2);
+	uint32_t windowPositionX = (primaryMonitorMode->width / 2) - (_Settings->windowSizeX / 2);
+	uint32_t windowPositionY = (primaryMonitorMode->height / 2) - (_Settings->windowSizeY / 2);
 	glfwSetWindowPos(window, windowPositionX, windowPositionY);
 	Debug::Info("GLFW[]: Window position [%d, %d]", windowPositionX, windowPositionY);
 
@@ -119,7 +118,7 @@ bool GLFWBackend::SwapWindowBuffers()
 {
 	glfwSwapBuffers(window);
 	glfwPollEvents();
-	glfwTime = glfwGetTime();
+	glfwTime = glfwGetTime(); // Milliseconds
 
 	return !glfwWindowShouldClose(window);
 }
@@ -134,9 +133,6 @@ void GLFWBackend::SetWindowSize(int32_t _width, int32_t _height)
 
 void GLFWBackend::SetWindowTitle(cstring _title)
 {
-	if (_title.empty())
-		return;
-
 	glfwSetWindowTitle(window, _title.c_str());
 }
 

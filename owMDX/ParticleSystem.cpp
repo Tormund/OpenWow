@@ -51,7 +51,7 @@ void ParticleSystem::init(File& f, M2Particle& mta, uint32_t* globals)
 
 	vec3 colors2[3];
 	memcpy(colors2, f.GetData() + mta.colorTrack.values.offset, sizeof(vec3) * 3);
-	for (size_t i = 0; i < 3; i++)
+	for (uint32_t i = 0; i < 3; i++)
 	{
 		float opacity = *(short*)(f.GetData() + mta.alphaTrack.values.offset + i * 2);
 		colors[i] = vec4(colors2[i].x / 255.0f, colors2[i].y / 255.0f, colors2[i].z / 255.0f, opacity / 32767.0f);
@@ -61,7 +61,7 @@ void ParticleSystem::init(File& f, M2Particle& mta, uint32_t* globals)
 	mid = 0.5;
 	slowdown = mta.slowdown; // FIXME
 	rotation = mta.rotation; // FIXME
-	pos = fixCoordSystem(mta.Position);
+	pos = From_XYZ_To_XZminusY_RET(mta.Position);
 	texture = model->textures[mta.texture];
 	blend = mta.blendingType;
 	rows = mta.textureDimensions_rows;

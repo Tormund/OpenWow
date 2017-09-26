@@ -123,18 +123,20 @@ bool Engine::Tick()
 	t = GetTicks();
 	uint32_t dt = t - last_t;
 	_time += dt;
-	ftime = static_cast<float>(_time) / 1000.0f;
+
+	double dTime = static_cast<double>(_time) / 1000.0;
+	double dDtTime = static_cast<double>(dt) / 1000.0;
 
 	// Input
 	if (currentGameState != nullptr)
 	{
-		currentGameState->InputPhase(ftime, static_cast<double>(dt) / 1000.0);
+		currentGameState->InputPhase(dTime, dDtTime);
 	}
 
 	// Update
 	if (currentGameState != nullptr)
 	{
-		currentGameState->UpdatePhase(ftime, static_cast<double>(dt) / 1000.0);
+		currentGameState->UpdatePhase(dTime, dDtTime);
 	}
 	_UIMgr->Update();
 
@@ -144,7 +146,7 @@ bool Engine::Tick()
 	_Render->Set3D();
 	if (currentGameState != nullptr)
 	{
-		currentGameState->Render(ftime, static_cast<double>(dt) / 1000.0);
+		currentGameState->Render(dTime, dDtTime);
 	}
 
 	//
@@ -153,7 +155,7 @@ bool Engine::Tick()
 	_Render->Set2D();
 	if (currentGameState != nullptr)
 	{
-		currentGameState->RenderUI(ftime, static_cast<double>(dt) / 1000.0);
+		currentGameState->RenderUI(dTime, dDtTime);
 	}
 	_UIMgr->RenderUI();
 	consoleOpenGL->RenderUI();
@@ -172,7 +174,7 @@ bool Engine::Tick()
 	}
 
 	// Caclulate FPS
-	double currentTime = _GLFW->GetTime();
+	double currentTime = _GLFW->GetTimeSeconds();
 	double delta = currentTime - framesTimer;
 	framesCounter++;
 	if (delta > 1.0)
@@ -191,7 +193,5 @@ bool Engine::Tick()
 
 unsigned long long Engine::GetTicks() const
 {
-	return static_cast<unsigned long long>(_GLFW->GetTime() * 1000.0);
+	return static_cast<unsigned long long>(_GLFW->GetTimeSeconds() * 1000.0);
 }
-
-//---------------------------------------------------------

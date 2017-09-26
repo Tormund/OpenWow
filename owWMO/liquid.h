@@ -1,16 +1,75 @@
 #pragma once
 
-class Liquid;
 class WMOMaterial;
 
-const float LQ_DEFAULT_TILESIZE = ((533.33333f / 16.0f) / 8.0f);
+struct Liquid_Vertex
+{
+	union
+	{
+		struct SMOWaterVert
+		{
+			uint8_t flow1;
+			uint8_t flow2;
+			uint8_t flow1Pct;
+			uint8_t filler;
+			float height;
+		}  waterVert;
 
-// handle liquids like oceans, lakes, rivers, slime, magma
+		struct SMOMagmaVert
+		{
+			int16_t s;
+			int16_t t;
+			float height;
+		} magmaVert;
+	};
+};
+
+struct Liquid_Flag
+{
+	uint8_t liquid : 6;
+	uint8_t fishable : 1;
+	uint8_t shared : 1;
+
+	// 0x01
+	// 0x02
+	// 0x04
+	// 0x08
+	// 0x10
+	// 0x20
+
+	// 0x40
+	// 0x80
+};
+
+//
+
 class Liquid
 {
+public:
+	Liquid(uint32_t x, uint32_t y, vec3 base, float tilesize = LQ_DEFAULT_TILESIZE);
+	~Liquid();
 
-	int xtiles, ytiles;
-	GLuint dlist;
+	void initFromTerrain(File& f, int flags);
+	void initFromWMO(File& f, WMOMaterial* mat, bool indoor);
+
+	void draw();
+
+
+private:
+	void initGeometry(File& f);
+	void initTextures(const char *basename, int first, int last);
+
+private:
+	uint32_t m_TilesX, m_TilesY;
+	uint32_t m_TilesCount;
+	Liquid_Flag m_LastFlag;
+	GLuint m_OGLList;
+
+
+	vector<Texture*> textures;
+
+	
+	
 
 	vec3 pos;
 
@@ -18,31 +77,13 @@ class Liquid
 	float ydir;
 	float texRepeats;
 
-	void initGeometry(File& f);
-	void initTextures(const char *basename, int first, int last);
+
 
 	int type;
 
 	vec3 col;
-	int tmpflag;
+	
 	bool trans;
 
 	int shader;
-
-public:
-
-	vector<Texture*> textures;
-
-	Liquid(int x, int y, vec3 base, float tilesize = LQ_DEFAULT_TILESIZE) :
-		xtiles(x), ytiles(y), pos(base), tilesize(tilesize), shader(-1), ydir(1.0f)
-	{}
-	~Liquid();
-
-	//void init(File& f);
-	void initFromTerrain(File& f, int flags);
-	void initFromWMO(File& f, WMOMaterial* mat, bool indoor);
-
-	void draw();
-
-
 };

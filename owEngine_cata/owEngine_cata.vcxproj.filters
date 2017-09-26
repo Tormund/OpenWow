@@ -3,82 +3,12 @@
   <ItemGroup>
     <ClInclude Include="GameState_Menu.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="MapChunk.h">
-      <Filter>Map</Filter>
-    </ClInclude>
-    <ClInclude Include="MapTile.h">
-      <Filter>Map</Filter>
-    </ClInclude>
     <ClInclude Include="World.h" />
-    <ClInclude Include="MapWaterChunk.h">
-      <Filter>Map</Filter>
-    </ClInclude>
-    <ClInclude Include="DayNightCycle.h">
-      <Filter>Environment</Filter>
-    </ClInclude>
-    <ClInclude Include="sky.h">
-      <Filter>Environment</Filter>
-    </ClInclude>
-    <ClInclude Include="WMO_Instance.h">
-      <Filter>WMO</Filter>
-    </ClInclude>
-    <ClInclude Include="Map.h">
-      <Filter>Map</Filter>
-    </ClInclude>
-    <ClInclude Include="Map_GlobalWMOs.h">
-      <Filter>Map</Filter>
-    </ClInclude>
-    <ClInclude Include="AssimpModel.h" />
-    <ClInclude Include="Model_Instance.h">
-      <Filter>MDX</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameState_Menu.cpp" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="MapChunk.cpp">
-      <Filter>Map</Filter>
-    </ClCompile>
-    <ClCompile Include="MapTile.cpp">
-      <Filter>Map</Filter>
-    </ClCompile>
     <ClCompile Include="World.cpp" />
-    <ClCompile Include="MapWaterChunk.cpp">
-      <Filter>Map</Filter>
-    </ClCompile>
-    <ClCompile Include="DayNightCycle.cpp">
-      <Filter>Environment</Filter>
-    </ClCompile>
-    <ClCompile Include="sky.cpp">
-      <Filter>Environment</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="WMO_Instance.cpp">
-      <Filter>WMO</Filter>
-    </ClCompile>
-    <ClCompile Include="Map.cpp">
-      <Filter>Map</Filter>
-    </ClCompile>
-    <ClCompile Include="Map_GlobalWMOs.cpp">
-      <Filter>Map</Filter>
-    </ClCompile>
-    <ClCompile Include="AssimpModel.cpp" />
-    <ClCompile Include="Model_Instance.cpp">
-      <Filter>MDX</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Filter Include="Map">
-      <UniqueIdentifier>{efe41165-7df3-4f4e-9cde-1bb1b21053c6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="WMO">
-      <UniqueIdentifier>{462b8ff1-746c-4fde-8bb0-9438ba1406ab}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Environment">
-      <UniqueIdentifier>{b33963f5-50ac-4649-8480-7176f28c9ecb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="MDX">
-      <UniqueIdentifier>{b01ff1df-ce50-45da-b5f8-c3c7ce9a7c18}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
 </Project>

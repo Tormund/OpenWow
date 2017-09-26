@@ -55,11 +55,17 @@
     <Filter Include="RefManager\1 Dim Assync">
       <UniqueIdentifier>{5c44a7fc-a9a9-4eb0-91bf-99900a34046c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Settings &amp; Info">
+      <UniqueIdentifier>{9b973700-569a-4aed-adb3-f162d9996dd4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Animation">
+      <UniqueIdentifier>{7c7e29e8-2c64-42d0-8a50-68d565baf680}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World">
+      <UniqueIdentifier>{69181e93-284e-45a2-b3a5-9601cc083f43}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Timer.cpp">
-      <Filter>Types</Filter>
-    </ClCompile>
     <ClCompile Include="ModulesMgr.cpp">
       <Filter>Module</Filter>
     </ClCompile>
@@ -88,7 +94,6 @@
       <Filter>Files</Filter>
     </ClCompile>
     <ClCompile Include="FileSystem.cpp" />
-    <ClCompile Include="Consts.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="RefSimpleManagers.cpp">
       <Filter>RefManager\2 Dim\Simple</Filter>
@@ -144,12 +149,30 @@
     <ClCompile Include="WowChunkUtils.cpp">
       <Filter>Utils &amp; Helpers</Filter>
     </ClCompile>
+    <ClCompile Include="InfoPortions.cpp">
+      <Filter>Settings &amp; Info</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings.cpp">
+      <Filter>Settings &amp; Info</Filter>
+    </ClCompile>
+    <ClCompile Include="Animated.cpp">
+      <Filter>Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="BoundingBox.cpp">
+      <Filter>Types</Filter>
+    </ClCompile>
+    <ClCompile Include="WowConsts.cpp">
+      <Filter>Types</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeManager.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="Consts.cpp">
+      <Filter>Types</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Function.h">
-      <Filter>Types</Filter>
-    </ClInclude>
-    <ClInclude Include="Timer.h">
       <Filter>Types</Filter>
     </ClInclude>
     <ClInclude Include="Rect.h">
@@ -188,9 +211,6 @@
     <ClInclude Include="DebugOutput.h">
       <Filter>Debug\Debug Outputs</Filter>
     </ClInclude>
-    <ClInclude Include="Manager.h">
-      <Filter>Types</Filter>
-    </ClInclude>
     <ClInclude Include="ByteBuffer.h">
       <Filter>Files</Filter>
     </ClInclude>
@@ -199,7 +219,6 @@
       <Filter>Types</Filter>
     </ClInclude>
     <ClInclude Include="common.h" />
-    <ClInclude Include="Consts.h" />
     <ClInclude Include="..\shared\owCore.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="RefSimpleManagers.h">
@@ -258,6 +277,36 @@
     </ClInclude>
     <ClInclude Include="WowChunkUtils.h">
       <Filter>Utils &amp; Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="InfoPortions.h">
+      <Filter>Settings &amp; Info</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings.h">
+      <Filter>Settings &amp; Info</Filter>
+    </ClInclude>
+    <ClInclude Include="Animated.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="BoundingBox.h">
+      <Filter>Types</Filter>
+    </ClInclude>
+    <ClInclude Include="WowConsts.h">
+      <Filter>Types</Filter>
+    </ClInclude>
+    <ClInclude Include="WowTypes.h">
+      <Filter>Types</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeManager.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="Consts.h">
+      <Filter>Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Macros.h">
+      <Filter>Types</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationTypes.h">
+      <Filter>Animation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
