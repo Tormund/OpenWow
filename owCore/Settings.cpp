@@ -36,5 +36,5 @@ Settings::Settings()
 	enableMCCV = true;
 	enableMCLV = true;
 
-	SetWindowSize(1024, 768);
+	SetWindowSize(1240, 1024);
 }

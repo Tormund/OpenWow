@@ -20,8 +20,8 @@ bool GameState_MDXViewer::Init()
 	_UIMgr->Attach(window);
 
 	auto camera = new Camera;
-	_Pipeline->SetCamera(camera);
-	_Pipeline->SetProjection(45.0f, _Settings->aspectRatio, 0.1f, 10000.0f);
+	_PipelineGlobal->SetCamera(camera);
+	_PipelineGlobal->SetProjection(45.0f, _Settings->aspectRatio, 0.1f, 10000.0f);
 
 	currentModel = nullptr;
 	if (_Engine->GetArgument(0).empty())

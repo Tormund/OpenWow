@@ -2,154 +2,90 @@
 
 // Include 
 #include "Camera.h"
+#include "PipelineWorldTransformation.h"
 
 class Pipeline
 {
 	CLASS_INSTANCE(Pipeline);
 
-	Pipeline() : camera(nullptr) {}
-
-	inline void Clear();
-	inline void Clear2();
+	Pipeline() : camera(nullptr), cameraTest(nullptr), useMainCamera(true) {}
 
 	void SetProjection(float _fov, float _aspectRatio, float _near, float _far);
 	void SetProjection(cmat4 _projectionMatrix);
 
 	void SetCamera(Camera* _camera);
 	void SetCamera(const vec3& _position, const vec3& _rotation, const vec3& _up = vec3(0.0f, 1.0f, 0.0f));
+	
+	//
 
-#pragma region World transformation
-
-	inline void Mult(cmat4 mat);
-
-	inline void Translate(float x, float y, float z);
-	inline void Translate(const vec3& _translate);
-
-	inline void Quat(cQuaternion _quat);
-	inline void Quat(float w, float x, float y, float z);
-
-	inline void RotateX(float _yaw);
-	inline void RotateY(float _pitch);
-	inline void RotateZ(float _roll);
-
-	inline void Scale(float _scale);
-	inline void Scale(float _scaleX, float _scaleY, float _scaleZ);
-	inline void Scale(const vec3& _scale);
-
-
-	inline void Mult2(cmat4 mat);
-
-	inline void Translate2(float x, float y, float z);
-	inline void Translate2(const vec3& _translate);
-
-	inline void Quat2(cQuaternion _quat);
-	inline void Quat2(float w, float x, float y, float z);
-
-	inline void RotateX2(float _yaw);
-	inline void RotateY2(float _pitch);
-	inline void RotateZ2(float _roll);
-
-	inline void Scale2(float _scale);
-	inline void Scale2(float _scaleX, float _scaleY, float _scaleZ);
-	inline void Scale2(const vec3& _scale);
-
-#pragma endregion
-
-	inline const mat4* GetProjection() 
+	inline const mat4& GetProjection() 
 	{ 
-		return &projection; 
+		return projection; 
 	}
-	inline const mat4* GetView() 
+	inline const mat4& GetView()
+	{
+		return *camera->GetViewMatrix(); 
+	}
+	inline const mat4& GetWorld()
 	{ 
-		return camera->GetViewMatrix(); 
-	}
-	inline const mat4* GetWorld() 
-	{ 
-		return &worldTransformation; 
+		return worldTransformation.GetWorld();
 	}
 
-	inline const mat4* GetPVM()
+	inline const mat4 GetPVM()
 	{
-		if (camera != nullptr)
-		{
-			view = *camera->GetViewMatrix();
-		}
-
-		m_WVP = projection * view * worldTransformation;
-
-		return &m_WVP;
+		return GetProjection() * GetView() * GetWorld();
 	}
-
-	inline const mat4* GetVW()
+	inline const mat4 GetVW()
 	{
-		if (camera != nullptr)
-		{
-			view = *camera->GetViewMatrix();
-		}
-
-		m_VW = view * worldTransformation;
-
-		return &m_VW;
+		return GetView() * GetWorld();
 	}
-
-	inline const mat4* GetPV()
+	inline const mat4 GetPV()
 	{
-		if (camera != nullptr)
-		{
-			view = *camera->GetViewMatrix();
-		}
-
-		m_PV = projection * view;
-
-		return &m_PV;
+		return GetProjection()  * GetView();
 	}
-
 
 	//
 
-	inline const mat4* GetPVM2()
+	inline PipelineWorldTransformation* GetWorldTransformation()
 	{
-		if (camera != nullptr)
-		{
-			view = *camera->GetViewMatrix();
-		}
-
-		m_WVP = projection * view * worldTransformation2;
-
-		return &m_WVP;
+		return &worldTransformation;
 	}
-	inline const mat4* GetVW2()
+	inline PipelineWorldTransformation* GetWorldTransformationTest()
 	{
-		if (camera != nullptr)
-		{
-			view = *camera->GetViewMatrix();
-		}
-
-		m_VW = view * worldTransformation2;
-
-		return &m_VW;
+		return &worldTransformationTest;
 	}
 
 	//
 
 	inline Camera* GetCamera() { return camera; }
+	void RenderCamera(Camera* _camera = nullptr);
 
 private: // Matrices
 	mat4 projection;
 	mat4 view;
-	mat4 worldTransformation;
-	mat4 worldTransformation2;
+	PipelineWorldTransformation worldTransformation;
+	PipelineWorldTransformation worldTransformationTest;
 
 	Camera* camera;
+	Camera* cameraTest;
+	bool useMainCamera;
 
-private: // General
-	mat4 m_WVP;
-	mat4 m_VW;
-	mat4 m_PM;
-	mat4 m_PV;
+
+private:
+	float nh;
+	float nw;
+
+	float fh;
+	float fw;
+
+	float nearDist;
+	float farDist;
 };
 
-#include "Pipeline.inl"
+#define _PipelineGlobal Pipeline::instance()
 
-#define _Pipeline Pipeline::instance()
-#define _Camera _Pipeline->GetCamera()
+#define _Pipeline Pipeline::instance()->GetWorldTransformation()
+#define _PipelineTest Pipeline::instance()->GetWorldTransformationTest()
+
+#define _Camera  Pipeline::instance()->GetCamera()
+#define _Camera2 Pipeline::instance()->GetCamera2()

@@ -97,9 +97,9 @@ inline void Technique::setMat4(const char* name, const glm::mat4& mat) const
 
 inline void Technique::SetPVW()
 {
-	setMat4("gProjection", *_Pipeline->GetProjection());
-	setMat4("gView", *_Pipeline->GetView());
-	setMat4("gWorld", *_Pipeline->GetWorld());
+	setMat4("gProjection", _PipelineGlobal->GetProjection());
+	setMat4("gView", _PipelineGlobal->GetView());
+	setMat4("gWorld", _PipelineGlobal->GetWorld());
 }
 
 inline void Technique::SetWorldMatrix(cmat4 WorldInverse)

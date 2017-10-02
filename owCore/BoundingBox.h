@@ -9,8 +9,9 @@ public:
 	inline vec3 GetCenter() { return center; }
 	inline float GetRadius() { return radius; }
 
-private:
 	vec3 b1, b2;
+
+private:
 	vec3 center;
 	float radius;
 	vec3 vmin, vmax;

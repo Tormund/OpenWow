@@ -84,7 +84,7 @@ struct WMOGroupHeader
 	uint32_t unk; // Always 0?
 
 	//
-	const static uint32_t __size = 68;
+	static const uint32_t __size = 68;
 };
 
 struct WMOGroup_MaterialInfo
@@ -109,7 +109,7 @@ struct WMOGroup_MaterialInfo
 	uint8_t materialId;
 
 	//
-	const static uint32_t __size = 2;
+	static const uint32_t __size = 2;
 };
 
 struct WMOBatch
@@ -128,7 +128,7 @@ struct WMOBatch
 	uint8_t material_id; // index in MOMT
 
 	//
-	const static uint32_t __size = 24;
+	static const uint32_t __size = 24;
 };
 
 struct WMOLiquidHeader
@@ -141,7 +141,7 @@ struct WMOLiquidHeader
 	uint16_t type;
 
 	//
-	const static uint32_t __size = 30;
+	static const uint32_t __size = 30;
 };
 
 //---

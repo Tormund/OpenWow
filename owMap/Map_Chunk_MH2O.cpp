@@ -376,7 +376,7 @@ void MapChunk::drawWater()
 
 	glDrawArrays(GL_QUADS, 0, globalBufferSize);
 
-	_Perfomance->Inc(PERF_MAP_MH20);
+	PERF_INC(PERF_MAP_CHUNK_MH20);
 
 	glDisableVertexAttribArray(2);
 	glDisableVertexAttribArray(1);

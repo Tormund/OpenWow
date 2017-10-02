@@ -89,7 +89,7 @@ void MapSkies::InitBuffer()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void MapSkies::initSky(cvec3 _cameraPosition, int _time)
+void MapSkies::initSky(cvec3 _cameraPosition, uint32_t _time)
 {
 	if (skies.empty())
 	{
@@ -204,7 +204,7 @@ bool MapSkies::drawSky(cvec3 pos)
 
 	glDrawArrays(GL_QUADS, 0, m_GlobalBufferSize);
 
-	//_Perfomance->Inc(PERF_MAP_MH20);
+	//_Perfomance->Inc(PERF_MAP_CHUNK_MH20);
 
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(0);

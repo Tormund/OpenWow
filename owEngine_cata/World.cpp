@@ -3,20 +3,33 @@
 // General
 #include "world.h"
 
+
 World::World()
 {
 	// SHADERS
-	auto camera = new Camera;
-	_Pipeline->SetCamera(camera);
-	_Pipeline->SetProjection(45.0f, _Settings->aspectRatio, 1.0f, 10000.0f);
-
+	mainCamera = new Camera;
+	testCamera = new Camera;
+	_PipelineGlobal->SetCamera(mainCamera);
+	_PipelineGlobal->SetProjection(45.0f, _Settings->aspectRatio, 1.0f, 10000.0f);
 
 	_EnvironmentManager->Init();
 
 	//----------------------------------------------------------------//
 
+	glGenTextures(1, &finalTexture1);
+	glBindTexture(GL_TEXTURE_2D, finalTexture1);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, _Settings->windowSizeX, _Settings->windowSizeY, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+	glGenTextures(1, &finalTexture2);
+	glBindTexture(GL_TEXTURE_2D, finalTexture2);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, _Settings->windowSizeX, _Settings->windowSizeY, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
 	m_gbuffer = new GBuffer();
-	m_gbuffer->Init(_Settings->windowSizeX, _Settings->windowSizeY);
+	m_gbuffer->Init();
 
 	//----------------------------------------------------------------//
 
@@ -49,187 +62,81 @@ void World::initDisplay()
 	_EnvironmentManager->InitSkies(_Map->GetTemplate()->Get_ID());
 }
 
-void World::draw(GLint _color)
-{
-#ifdef WMO_INCL
-	WMOInstance::reset();
-#endif
-
-#ifdef WMO_INCL
-	_ModelsMgr->resetAnim();
-#endif
-
-	// camera is set up
-	_Render->frustum.retrieve();
-
-	//****glDisable(GL_LIGHTING);
-	glColor4f(1, 1, 1, 1);
-
-	//****_Map->RenderSky();
-
-	if (_Map->MapHasGlobalWMO() && !_EnvironmentManager->m_HasSky)
-	{
-#ifdef WMO_INCL
-#ifdef MDX_INCL
-		_Map->SetOutOfBounds(false);
-		_Map->GetGlobalWMOInstance()->GetWMO()->drawSkybox();
-#endif
-#endif
-	}
-
-	glEnable(GL_CULL_FACE);
-	glDisable(GL_BLEND);
-	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_DEPTH_TEST);
-	glDisable(GL_FOG);
-
-	_EnvironmentManager->BeforeDraw();
-
-	if (!_EnvironmentManager->m_HasSky)
-	{
-		_EnvironmentManager->m_HasSky = _EnvironmentManager->skies->drawSky(_Camera->Position);
-	}
-
-	GLbitfield clearmask = GL_DEPTH_BUFFER_BIT;
-	if (!_EnvironmentManager->m_HasSky)
-	{
-		clearmask |= GL_COLOR_BUFFER_BIT;
-	}
-	glClear(clearmask);
-
-	glDisable(GL_TEXTURE_2D);
-
-
-	_EnvironmentManager->outdoorLighting();
-	_EnvironmentManager->SetAmbientLights(true);
-
-	glFogi(GL_FOG_MODE, GL_LINEAR);
-	_EnvironmentManager->SetFog();
-
-
-	// Draw verylowres heightmap
-	if (_Settings->drawfog && _Settings->draw_map_chunk)
-	{
-		glEnable(GL_CULL_FACE);
-		glDisable(GL_DEPTH_TEST);
-		glColor3fv(glm::value_ptr(_EnvironmentManager->GetSkyColor(FOG_COLOR)));
-
-		_Map->RenderLowResTiles();
-	}
-
-	// Draw height map
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_NORMAL_ARRAY);
-	//_MapsMgr->ActivateTextureBuffers();
-
-	glClientActiveTextureARB(GL_TEXTURE0_ARB);
-
-	// Depth
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL); // less z-fighting artifacts this way, I think
-
-	// Lighting
-	//*****glEnable(GL_LIGHTING);
-
-	// Material
-	//*****glEnable(GL_COLOR_MATERIAL);
-	//*****glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-
-	glColor4f(1, 1, 1, 1);
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	// height map w/ a zillion texture passes
-	if (_Settings->draw_map_chunk)
-	{
-		_Settings->uselowlod = _Settings->drawfog;
-			
-		//****_Map->RenderTiles(m_MapChunk_GeometryPass);
-	}
-
-	glActiveTextureARB(GL_TEXTURE0_ARB);
-	glEnable(GL_TEXTURE_2D);
-
-	glActiveTextureARB(GL_TEXTURE1_ARB);
-	glDisable(GL_TEXTURE_2D);
-
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
-
-	/*
-	glEnable(GL_CULL_FACE);
-
-	glDisable(GL_ALPHA_TEST);
-
-	if (_Map->MapHasGlobalWMO())
-	{
-#ifdef WMO_INCL
-		_Map->SetOutOfBounds(false);
-		_Map->GetMapWMOs()->GetGlobalWMOInstance()->draw();
-#endif
-	}
-
-	if (_Settings->draw_map_wmo)
-	{
-		_Map->RenderObjects();
-	}
-
-	_EnvironmentManager->SetAmbientLights(true);
-	_EnvironmentManager->SetFog();
-
-	glColor4f(1, 1, 1, 1);
-
-	if (_Settings->draw_map_mdx)
-	{
-		_Map->RenderModels();
-	}
-
-	glDisable(GL_CULL_FACE);
-
-
-	// ------ Water -------//
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	if (_Settings->draw_map_chunk)
-	{
-		//_Map->RenderWater();
-	}
-
-	glColor4f(1, 1, 1, 1);
-	//*****glDisable(GL_COLOR_MATERIAL);
-
-
-	*/
-}
-
 void World::drawShader(GLint _color)
 {
 #ifdef WMO_INCL
 	WMOInstance::reset();
 #endif
 
-#ifdef WMO_INCL
+#ifdef MDX_INCL
 	_ModelsMgr->resetAnim();
 #endif
 
+	_PipelineGlobal->SetCamera(mainCamera);
 	_Perfomance->FrameBegin();
-	_Render->frustum.retrieve();
 	_EnvironmentManager->BeforeDraw();
+	_Render->frustum.retrieve();
 
-	//============================== SHADER BEGIN
-	m_gbuffer->StartFrame();
-	DSGeometryPassBegin();
+	// Main frame
+	m_gbuffer->StartFrame(finalTexture1);
+	m_gbuffer->ClearFinalBuffer();
+	
+	// Geometry pass
+	m_gbuffer->BindForGeomPass();
+	m_gbuffer->Clear();
+	RenderGeom();
+	_PipelineGlobal->RenderCamera(mainCamera);
 
+	// Postprocess pass
+	m_gbuffer->BindForLightPass();
+	RenderPostprocess();
+
+	// Final pass
+	m_gbuffer->BindForFinalPass(_color);
+
+
+#ifdef WMO_INCL
+	WMOInstance::reset();
+#endif
+
+	//
+	// SECONDS PASS
+	//
+	
+	// Conf test camera
+	testCamera->Position = mainCamera->Position + vec3(0, 1, 0) * 1000.0f;
+	testCamera->Yaw = mainCamera->Yaw;
+	testCamera->Pitch = -89.0f;
+	testCamera->Update();
+
+	// Test frame
+	_PipelineGlobal->SetCamera(testCamera);
+	m_gbuffer->StartFrame(finalTexture2);
+	m_gbuffer->ClearFinalBuffer();
+
+	// Geometry pass
+	m_gbuffer->BindForGeomPass();
+	m_gbuffer->Clear();
+	RenderGeom();
+	
+
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+}
+
+//***************************************
+
+void World::RenderGeom()
+{
+	DSGeometryPassBegin();//////
+	////////////////////////////
 	m_gbuffer->Clear();
 
-	glDisable(GL_CULL_FACE);
-	glDisable(GL_DEPTH_TEST);
 
 	//------------------------------------------------------------------------------
 	// Draw sky
 	//------------------------------------------------------------------------------
+	glDisable(GL_CULL_FACE);
+	glDisable(GL_DEPTH_TEST);
 	_EnvironmentManager->skies->drawSky(_Camera->Position);
 
 
@@ -238,7 +145,7 @@ void World::drawShader(GLint _color)
 	//------------------------------------------------------------------------------
 	//if (_Settings->draw_map_mdx)
 	//{
-		_Map->RenderSky();
+	_Map->RenderSky();
 	//}
 
 	//------------------------------------------------------------------------------
@@ -263,6 +170,9 @@ void World::drawShader(GLint _color)
 	//m_gbuffer->StartFrame();
 	DSGeometryPassBegin();*/
 
+	//
+
+	PERF_START(PERF_MAP);
 
 	//------------------------------------------------------------------------------
 	// Map low-resolution tiles
@@ -271,21 +181,21 @@ void World::drawShader(GLint _color)
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);
 
-	_Perfomance->Start(PERF_MAP_LOWRES_TILES);
+	PERF_START(PERF_MAP_LOWRESOLUTION);
 	if (/*_Settings->drawfog &&*/ _Settings->draw_map_chunk)
 	{
 		_TechniquesMgr->m_MapTileLowRes_GeometryPass->Bind();
 		_Pipeline->Clear();
 		_TechniquesMgr->m_MapTileLowRes_GeometryPass->SetPVW();
-		_TechniquesMgr->m_MapTileLowRes_GeometryPass->SetWorldMatrix(*_Pipeline->GetWorld());
 		_TechniquesMgr->m_MapTileLowRes_GeometryPass->SetShadowColor(_EnvironmentManager->GetSkyColor(FOG_COLOR));
 
 		_Map->RenderLowResTiles();
 
 		_TechniquesMgr->m_MapTileLowRes_GeometryPass->Unbind();
 	}
-	_Perfomance->Stop(PERF_MAP_LOWRES_TILES);
+	PERF_STOP(PERF_MAP_LOWRESOLUTION);
 
+	//
 
 	//------------------------------------------------------------------------------
 	// Map chunks
@@ -294,7 +204,7 @@ void World::drawShader(GLint _color)
 	glEnable(GL_CULL_FACE);
 	glDisable(GL_BLEND);
 
-	_Perfomance->Start(PERF_MAP_CHUNK);
+	PERF_START(PERF_MAP_CHUNK_GEOMETRY);
 	if (_Settings->draw_map_chunk)
 	{
 		_Settings->uselowlod = _Settings->drawfog;
@@ -302,19 +212,41 @@ void World::drawShader(GLint _color)
 		_TechniquesMgr->m_MapChunk_GeometryPass->Bind();
 		_Pipeline->Clear();
 		_TechniquesMgr->m_MapChunk_GeometryPass->SetPVW();
-		_TechniquesMgr->m_MapChunk_GeometryPass->SetWorldMatrix(*_Pipeline->GetWorld());
+		_TechniquesMgr->m_MapChunk_GeometryPass->SetWorldMatrix(_Pipeline->GetWorld());
 
 		_Map->RenderTiles();
-		
+
 		_TechniquesMgr->m_MapChunk_GeometryPass->Unbind();
 	}
-	_Perfomance->Stop(PERF_MAP_CHUNK);
+	PERF_STOP(PERF_MAP_CHUNK_GEOMETRY);
 
+	//
 
-	glDisable(GL_BLEND);
-	//glEnable(GL_BLEND);
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//------------------------------------------------------------------------------
+	// Map water
+	//------------------------------------------------------------------------------
+	glDisable(GL_CULL_FACE);
+	//glDisable(GL_BLEND);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	//if (_Settings->draw_map_chunk)
+	{
+		_TechniquesMgr->m_WMO_MH2O_GeometryPass->Bind();
+		_Pipeline->Clear();
+		_TechniquesMgr->m_WMO_MH2O_GeometryPass->SetPVW();
+		_TechniquesMgr->m_WMO_MH2O_GeometryPass->SetWorldMatrix(_Pipeline->GetWorld());
+
+		_Map->RenderWater();
+
+		_TechniquesMgr->m_WMO_MH2O_GeometryPass->Unbind();
+	}
+
+	//
+
+	PERF_STOP(PERF_MAP);
+
+	//
 
 	//------------------------------------------------------------------------------
 	// Global WMO
@@ -322,17 +254,18 @@ void World::drawShader(GLint _color)
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_BLEND);
 
-	_Perfomance->Start(PERF_GLOBAL_WMO);
+	PERF_START(PERF_MAP_MODELS_WMO_GLOBAL);
 	if (_Map->MapHasGlobalWMO())
 	{
 #ifdef WMO_INCL
 		_Map->SetOutOfBounds(false);
 		_Map->GetGlobalWMOInstance()->draw();
-		
+
 #endif
 	}
-	_Perfomance->Stop(PERF_GLOBAL_WMO);
+	PERF_STOP(PERF_MAP_MODELS_WMO_GLOBAL);
 
+	//
 
 	//------------------------------------------------------------------------------
 	// WMOs
@@ -340,12 +273,14 @@ void World::drawShader(GLint _color)
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_BLEND);
 
-	_Perfomance->Start(PERF_WMOs);
+	PERF_START(PERF_MAP_MODELS_WMOs);
 	if (_Settings->draw_map_wmo)
 	{
 		_Map->RenderObjects();
 	}
-	_Perfomance->Stop(PERF_WMOs);
+	PERF_STOP(PERF_MAP_MODELS_WMOs);
+
+	//
 
 	//------------------------------------------------------------------------------
 	// Map MDXs
@@ -355,62 +290,31 @@ void World::drawShader(GLint _color)
 	//glEnable(GL_BLEND);
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	_Perfomance->Start(PERF_MAP_MDXs);
+	PERF_START(PERF_MAP_MODELS_MDXs);
 	if (_Settings->draw_map_mdx)
 	{
 		_Map->RenderModels();
 	}
-	_Perfomance->Stop(PERF_MAP_MDXs);
+	PERF_STOP(PERF_MAP_MODELS_MDXs);
 
-	//------------------------------------------------------------------------------
-	// Map water
-	//------------------------------------------------------------------------------
-	glDisable(GL_CULL_FACE);
-	glDisable(GL_BLEND);
-	//glEnable(GL_BLEND);
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//
 
-	//if (_Settings->draw_map_chunk)
-	{
-		_TechniquesMgr->m_WMO_MH2O_GeometryPass->Bind();
-		_Pipeline->Clear();
-		_TechniquesMgr->m_WMO_MH2O_GeometryPass->SetPVW();
-		_TechniquesMgr->m_WMO_MH2O_GeometryPass->SetWorldMatrix(*_Pipeline->GetWorld());
+	////////////////////////////
+	DSGeometryPassEnd();////////
+}
 
-		_Map->RenderWater();
-
-		_TechniquesMgr->m_WMO_MH2O_GeometryPass->Unbind();
-	}
-
-	glDisable(GL_CULL_FACE);
-	glDisable(GL_BLEND);
-
-	DSGeometryPassEnd();
-
-
-	//---------------------------
-	//---------------------------
-	//---------------------------
-
-
+void World::RenderPostprocess()
+{
 	//DSSimpleRenderPass();
-
 
 	// LIGHTS, FOG ...
 	DirectionalLight dirLight;
-	dirLight.ambient = _EnvironmentManager->GetSkyColor(LIGHT_GLOBAL_AMBIENT);
-	dirLight.diffuse = vec3(0,0,0);
+	dirLight.ambient = _EnvironmentManager->skies->colorSet[LIGHT_GLOBAL_AMBIENT];
+	dirLight.diffuse = _EnvironmentManager->skies->colorSet[LIGHT_GLOBAL_DIFFUSE];
 	dirLight.Direction.x = 0;
 	dirLight.Direction.y = 0;
 	dirLight.Direction.z = 0;
 	DSDirectionalLightPass(dirLight);
-
-
-	//DSDirectionalLightPass(_EnvironmentManager->dayNightPhase.m_dirLightNight);
-	
-	
-
-	m_gbuffer->BindForFinalPass(_color);
 }
 
 void World::tick(float dt)
@@ -435,20 +339,20 @@ void World::tick(float dt)
 
 void World::DSGeometryPassBegin()
 {
-	m_gbuffer->BindForGeomPass();
+	//m_gbuffer->BindForGeomPass();
 
-	glDepthMask(GL_TRUE);
-	glEnable(GL_DEPTH_TEST);
+	//glDepthMask(GL_TRUE);
+	//glEnable(GL_DEPTH_TEST);
 }
 
 void World::DSGeometryPassEnd()
 {
-	glDepthMask(GL_FALSE);
+	//glDepthMask(GL_FALSE);
 }
 
 void World::DSDirectionalLightPass(DirectionalLight& _light)
 {
-	m_gbuffer->BindForLightPass();
+	
 
 	_TechniquesMgr->m_DSDirLightPassTech->Bind();
 	_TechniquesMgr->m_DSDirLightPassTech->SetEyeWorldPos(_Camera->Position);

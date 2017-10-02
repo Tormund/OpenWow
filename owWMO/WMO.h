@@ -40,10 +40,7 @@ struct WMOHeaderDef
 	static const uint32_t __size = 64;
 };
 
-struct WMO_PortalVertices
-{
-	vec3 a, b, c, d;
-};
+// Portals stuff
 
 struct WMO_PortalInformation
 {
@@ -52,7 +49,7 @@ struct WMO_PortalInformation
 	C4Plane plane;
 
 	//
-	const static uint32_t __size = 20;
+	static const uint32_t __size = 20;
 };
 
 struct WMO_PortalReferences
@@ -63,8 +60,20 @@ struct WMO_PortalReferences
 	uint16_t filler;
 
 	//
-	const static uint32_t __size = 8;
+	static const uint32_t __size = 8;
 };
+
+// Visible block stuff
+
+struct WMO_VisibleBlockList
+{
+	uint16_t firstVertex;
+	uint16_t count;
+
+	//
+	static const uint32_t __size = 4;
+};
+
 
 struct WMO_DoodadSet
 {
@@ -79,7 +88,7 @@ struct WMO_DoodadSet
 	}
 
 	//
-	const static uint32_t __size = 32;
+	static const uint32_t __size = 32;
 };
 
 
@@ -97,13 +106,13 @@ public:
 
 	bool drawSkybox();
 
-#ifdef _DEBUG1
+//#ifdef _DEBUG
 	void DEBUG_DrawLightPlaceHolders();
 	void DEBUG_DrawFogPositions();
 	void DEBUG_DrawBoundingBoxes();
 	void DEBUG_DrawPortalsRelations();
 	void DEBUG_DrawPortals();
-#endif
+//#endif
 
 public:
 	bool m_Loaded;
@@ -127,12 +136,13 @@ public:
 #endif
 
 	//-- Portals --//
-	vector<WMO_PortalVertices*> m_PortalVertices;           // MOPV chunk
+	vec3* m_PortalVertices;                                 // MOPV chunk
 	vector<WMO_PortalInformation*> m_PortalInformation;     // MOPT chunk
 	vector<WMO_PortalReferences*> m_PortalReferences;       // MOPR chunk
-	// MOVV chunk
-	// MOVB chunk
 
+	//-- Visible block
+	vec3* m_VisibleBlockVertices;                           // MOVV chunk
+	vector<WMO_VisibleBlockList*> m_VisibleBlockList;		// MOVB chunk
 
 	// -- Lights --//
 	vector<WMOLight*> m_Lights;                               // MOLT chunk

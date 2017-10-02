@@ -23,22 +23,21 @@ void Frustum::retrieve()
 	_Perfomance->Start(PERF_FRUSTRUM);
 
 	float mat[16];
-	memcpy(&mat, glm::value_ptr(*_Pipeline->GetPV()), 16 * sizeof(float));
+	memcpy(&mat, glm::value_ptr(_PipelineGlobal->GetPV()), 16 * sizeof(float));
 
-	/*glGetFloatv(GL_MODELVIEW_MATRIX, mat);
+	planes[FLEFT].a = mat[3] - mat[0];
+	planes[FLEFT].b = mat[7] - mat[4];
+	planes[FLEFT].c = mat[11] - mat[8];
+	planes[FLEFT].d = mat[15] - mat[12];
+	planes[FLEFT].normalize();
 
+	planes[FRIGHT].a = mat[3] + mat[0];
+	planes[FRIGHT].b = mat[7] + mat[4];
+	planes[FRIGHT].c = mat[11] + mat[8];
+	planes[FRIGHT].d = mat[15] + mat[12];
+	planes[FRIGHT].normalize();
 
-	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
-	{
-		glMultMatrixf(mat);
-		glGetFloatv(GL_PROJECTION_MATRIX, mat);
-	}
-	glPopMatrix();
-
-	glMatrixMode(GL_MODELVIEW);*/
-
-	planes[FRIGHT].a = mat[3] - mat[0];
+	/*planes[FRIGHT].a = mat[3] - mat[0];
 	planes[FRIGHT].b = mat[7] - mat[4];
 	planes[FRIGHT].c = mat[11] - mat[8];
 	planes[FRIGHT].d = mat[15] - mat[12];
@@ -48,7 +47,7 @@ void Frustum::retrieve()
 	planes[FLEFT].b = mat[7] + mat[4];
 	planes[FLEFT].c = mat[11] + mat[8];
 	planes[FLEFT].d = mat[15] + mat[12];
-	planes[FLEFT].normalize();
+	planes[FLEFT].normalize();*/
 
 	planes[FBOTTOM].a = mat[3] + mat[1];
 	planes[FBOTTOM].b = mat[7] + mat[5];
@@ -115,7 +114,7 @@ bool Frustum::intersects(cvec3 v1, cvec3 v2) const
 
 		for (uint8_t k = 0; k < 8; k++)
 		{
-			if ((planes[i].a*points[k].x + planes[i].b*points[k].y + planes[i].c*points[k].z + planes[i].d) > 0)
+			if ((planes[i].a * points[k].x + planes[i].b * points[k].y + planes[i].c * points[k].z + planes[i].d) > 0)
 			{
 				numIn++;
 			}
@@ -145,12 +144,6 @@ bool Frustum::intersectsSphere(cvec3 v, const float rad) const
 		{
 			_Perfomance->Stop(PERF_FRUSTRUM);
 			return false;
-		}
-
-		if (fabs(distance) < rad)
-		{
-			_Perfomance->Stop(PERF_FRUSTRUM);
-			return true;
 		}
 	}
 

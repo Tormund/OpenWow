@@ -45,7 +45,7 @@ public:
 	vec3 colorSet[18];
 
 	void CalculateSkiesWeights(cvec3 pos);
-	void initSky(cvec3 pos, int t);
+	void initSky(cvec3 pos, uint32_t t);
 
 	bool drawSky(cvec3 pos);
 	bool hasSkies() { return !skies.empty(); }

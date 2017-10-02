@@ -24,30 +24,25 @@ ModelInstance::~ModelInstance()
 void ModelInstance::draw()
 {
 	float dist = glm::length(placementInfo->position - _Camera->Position);
-	if (dist > _Settings->modeldrawdistance + modelObject->rad * sc)
+	if (dist > _Settings->modeldrawdistance + modelObject->m_Radius * sc)
 	{
 		//return;
 	}
 
-	if (!_Render->frustum.intersectsSphere(placementInfo->position, modelObject->rad * sc))
+	if (!_Render->frustum.intersectsSphere(placementInfo->position, modelObject->m_Radius * sc))
 	{
 		return;
 	}
 
-	if (!_Settings->disable_pipeline)
-	{
-		_Pipeline->Clear();
+	_Pipeline->Clear();
 
-		_Pipeline->Translate(placementInfo->position.x, placementInfo->position.y, placementInfo->position.z);
-		
-		_Pipeline->RotateX(placementInfo->rotation.z);
-		_Pipeline->RotateY(placementInfo->rotation.y);
-		_Pipeline->RotateZ(placementInfo->rotation.x);
-	
-		_Pipeline->Scale(sc);
-	}
+	_Pipeline->Translate(placementInfo->position.x, placementInfo->position.y, placementInfo->position.z);
+	_Pipeline->RotateX(placementInfo->rotation.z);
+	_Pipeline->RotateY(placementInfo->rotation.y);
+	_Pipeline->RotateZ(placementInfo->rotation.x);
+	_Pipeline->Scale(sc);
 
 	modelObject->draw();
 
-	_Perfomance->Inc(PERF_MAP_MDXs);
+	PERF_INC(PERF_MAP_MODELS_MDXs);
 }

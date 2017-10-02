@@ -80,7 +80,7 @@ void MDX_Part_Bone::calcMatrix(MDX_Part_Bone* allbones, int anim, int time)
 
 		if (billboard)
 		{
-			mat4 res = (*_Pipeline->GetVW());
+			mat4 res = (_PipelineGlobal->GetVW());
 
 			vec3 vRight = vec3(res[0][0], res[1][0], res[2][0]);
 			vec3 vUp = vec3(res[0][1], res[1][1], res[2][1]);

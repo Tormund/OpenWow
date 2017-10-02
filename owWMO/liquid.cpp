@@ -217,8 +217,6 @@ void Liquid::initGeometry(File& f)
 
 void Liquid::draw()
 {
-	return;
-
 	glDisable(GL_CULL_FACE);
 	glDepthFunc(GL_LESS);
 	size_t texidx = (size_t)(_TimeManager->animtime / 60.0f) % textures.size();

@@ -7,7 +7,7 @@ GBuffer::GBuffer()
 {
 	gBuffer = 0;
 	depthTexture = 0;
-	finalTexture = 0;
+	//finalTexture = 0;
 	ZERO_MEM(textures);
 }
 
@@ -28,35 +28,38 @@ GBuffer::~GBuffer()
 		glDeleteTextures(1, &depthTexture);
 	}
 
-	if (finalTexture != 0)
-	{
-		glDeleteTextures(1, &finalTexture);
-	}
+	//if (finalTexture != 0)
+	//{
+	//	glDeleteTextures(1, &finalTexture);
+	//}
 }
 
-bool GBuffer::Init(unsigned int WindowWidth, unsigned int WindowHeight)
+bool GBuffer::Init()
 {
+	//finalTexture = _finalTexture;
+	//assert1(glIsTexture(finalTexture));
+
 	// Create the FBO
 	glGenFramebuffers(1, &gBuffer);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, gBuffer);
 
-	// WorldSpacePos, TexCoord, Normal
+	// WorldSpacePos, Normal
 	for (uint32_t i = 0; i < 2; i++)
 	{
 		glGenTextures(1, &textures[i]);
 		glBindTexture(GL_TEXTURE_2D, textures[i]);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, WindowWidth, WindowHeight, 0, GL_RGB, GL_FLOAT, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, _Settings->windowSizeX, _Settings->windowSizeY, 0, GL_RGB, GL_FLOAT, NULL);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, textures[i], 0);
 	}
 
-	// Emission, Ambient, Diffuse, Specular, SpecularShininess
+	// Ambient, Diffuse, Specular, SpecularShininess
 	for (uint32_t i = 2; i < 6; i++)
 	{
 		glGenTextures(1, &textures[i]);
 		glBindTexture(GL_TEXTURE_2D, textures[i]);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, WindowWidth, WindowHeight, 0, GL_RGBA, GL_FLOAT, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, _Settings->windowSizeX, _Settings->windowSizeY, 0, GL_RGBA, GL_FLOAT, NULL);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, textures[i], 0);
@@ -65,14 +68,11 @@ bool GBuffer::Init(unsigned int WindowWidth, unsigned int WindowHeight)
 	// depth
 	glGenTextures(1, &depthTexture);
 	glBindTexture(GL_TEXTURE_2D, depthTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH32F_STENCIL8, WindowWidth, WindowHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH32F_STENCIL8, _Settings->windowSizeX, _Settings->windowSizeY, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0);
 
 	// final
-	glGenTextures(1, &finalTexture);
-	glBindTexture(GL_TEXTURE_2D, finalTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, WindowWidth, WindowHeight, 0, GL_RGB, GL_FLOAT, NULL);
-	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT6, GL_TEXTURE_2D, finalTexture, 0);
+	//glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT6, GL_TEXTURE_2D, finalTexture, 0);
 
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
@@ -88,28 +88,16 @@ bool GBuffer::Init(unsigned int WindowWidth, unsigned int WindowHeight)
 	return true;
 }
 
-void GBuffer::StartFrame()
+void GBuffer::StartFrame(GLuint _finalTexture)
 {
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, gBuffer);
 
-	// Clear
+	// final
+	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT6, GL_TEXTURE_2D, _finalTexture, 0);
 
+	// Clear final texure
 	glDrawBuffer(GL_COLOR_ATTACHMENT6);
-
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-}
-
-void GBuffer::BindForGeomPass()
-{
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, gBuffer);
-
-	// Enable write in textures
-	GLenum DrawBuffers[] = 
-	{
-		GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, 
-		GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT5
-	};
-	glDrawBuffers(ARRAY_SIZE_IN_ELEMENTS(DrawBuffers), DrawBuffers);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
 void GBuffer::Clear()
@@ -119,13 +107,33 @@ void GBuffer::Clear()
 	// Enable write in textures
 	GLenum DrawBuffers[] =
 	{
-		GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1,
-		GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT5
+		GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1,                                              // vec3
+		GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT5   // vec4
 	};
 	glDrawBuffers(ARRAY_SIZE_IN_ELEMENTS(DrawBuffers), DrawBuffers);
 
 	// ... and clear it
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+}
+
+void GBuffer::ClearFinalBuffer()
+{
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, gBuffer);
+
+
+}
+
+void GBuffer::BindForGeomPass()
+{
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, gBuffer);
+
+	// Enable write in textures
+	GLenum DrawBuffers[] =
+	{
+		GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1,                                              // vec3
+		GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT5   // vec4
+	};
+	glDrawBuffers(ARRAY_SIZE_IN_ELEMENTS(DrawBuffers), DrawBuffers);
 }
 
 void GBuffer::BindForStencilPass()
@@ -154,11 +162,14 @@ void GBuffer::BindForLightPass()
 
 void GBuffer::BindForFinalPass(GLint _color)
 {
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer);	// Get data from gBuffer
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);			// Set target buffer as Default
-
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer);
 	glReadBuffer(_color);
-	glBlitFramebuffer(0, 0, _Settings->windowSizeX, _Settings->windowSizeY, 
-					  0, 0, _Settings->windowSizeX, _Settings->windowSizeY, 
-					  GL_COLOR_BUFFER_BIT, GL_LINEAR);
+
+	glBlitNamedFramebuffer(
+		gBuffer, 0,
+		0, 0, _Settings->windowSizeX, _Settings->windowSizeY,
+		0, 0, _Settings->windowSizeX, _Settings->windowSizeY,
+		GL_COLOR_BUFFER_BIT, GL_LINEAR);
+
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 }

@@ -495,6 +495,14 @@ bool WMOGroup::draw2(cvec3 ofs, float roll)
 {
 	visible = false;
 
+	/*glm::mat4 transformation = *_Pipeline->GetWorld(); // your transformation matrix.
+	glm::vec3 scale;
+	glm::quat rotation;
+	glm::vec3 translation;
+	glm::vec3 skew;
+	glm::vec4 perspective;
+	glm::decompose(transformation, scale, rotation, translation, skew, perspective);*/
+
 	vec3 pos = bounds.GetCenter() + ofs;
 	rotate(ofs.x, ofs.z, &pos.x, &pos.z, roll);
 
@@ -504,10 +512,10 @@ bool WMOGroup::draw2(cvec3 ofs, float roll)
 	//	return false;
 	//}
 
-	//if (!_Render->frustum.intersectsSphere(pos, bounds.GetRadius()))
-	//{
-	//	return false;
-	//}
+	if (!_Render->frustum.intersectsSphere(pos, bounds.GetRadius()))
+	{
+		return false;
+	}
 
 	visible = true;
 
@@ -579,6 +587,7 @@ bool WMOGroup::draw2(cvec3 ofs, float roll)
 		_TechniquesMgr->m_WMO_GeometryPass->SetHasMOCV(false);
 
 		glDrawElements(GL_TRIANGLES, batch->indexCount,	GL_UNSIGNED_SHORT, indices + batch->indexStart);
+		PERF_INC(PERF_MAP_MODELS_WMOs_GEOMETRY);
 
 		if (m_HasVertexColors)
 		{
@@ -661,7 +670,6 @@ bool WMOGroup::drawLiquid()
 		return false;
 	}
 
-
 	setupFog();
 
 	if (m_EnableOutdoorLights)
@@ -682,7 +690,10 @@ bool WMOGroup::drawLiquid()
 	glDisable(GL_ALPHA_TEST);
 	glDepthMask(GL_TRUE);
 	glColor4f(1, 1, 1, 1);
+
 	lq->draw();
+	PERF_INC(PERF_MAP_MODELS_WMOs_LIQUIDS);
+
 	glDisable(GL_LIGHT2);
 
 	return true;

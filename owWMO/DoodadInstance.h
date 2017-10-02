@@ -20,7 +20,7 @@ struct DoodadPlacementInfo
 	/*024h*/  CImVector color;                 // (B,G,R,A) diffuse lighting color, used in place of global diffuse from DBCs
 
 	//
-	const static uint32_t __size = 40;
+	static const uint32_t __size = 40;
 };
 
 class DoodadInstance

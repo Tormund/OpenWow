@@ -4,7 +4,7 @@ struct Plane
 {
 	inline void normalize()
 	{
-		float len = sqrtf(a*a + b*b + c*c);
+		float len = sqrtf(a * a + b * b + c * c);
 		a /= len;
 		b /= len;
 		c /= len;

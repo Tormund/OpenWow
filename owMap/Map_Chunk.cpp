@@ -673,7 +673,7 @@ void MapChunk::draw2()
 	}
 
 	glDrawElements(GL_TRIANGLE_STRIP, striplen, GL_UNSIGNED_SHORT, strip);
-	_Perfomance->Inc(PERF_MAP_CHUNK);
+	PERF_INC(PERF_MAP_CHUNK_GEOMETRY);
 
 	glDisableVertexAttribArray(5);
 	glDisableVertexAttribArray(4);

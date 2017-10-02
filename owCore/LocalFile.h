@@ -12,6 +12,3 @@ protected:
 public:
 	 static const char* gamedata;
 };
-
-
-

@@ -1,5 +1,8 @@
 #pragma once
 
+// Debug
+#include "Techniques\Debug_GeometryPass.h"
+
 #include "Techniques\Billboard_GeometryPass.h"
 
 #include "Techniques/Sky_GeometryPass.h"
@@ -13,6 +16,9 @@
 #include "Techniques/ds_dir_light_pass_tech.h"
 #include "Techniques/SimpleRenderGBuffer.h"
 
+// UI
+#include "Techniques/UI_Font.h"
+
 class TechniquesMgr
 {
 	CLASS_INSTANCE(TechniquesMgr);
@@ -21,6 +27,8 @@ class TechniquesMgr
 	~TechniquesMgr();
 
 	void Init();
+
+	Debug_GeometryPass* m_Debug_GeometryPass;
 
 	Billboard_GeometryPass* m_Billboard;
 
@@ -36,6 +44,10 @@ class TechniquesMgr
 	DSDirLightPassTech* m_DSDirLightPassTech;
 
 	SimpleRenderGBuffer* m_SimpleRender;
+
+	// UI
+	UI_Font* m_UI_Font;
+
 };
 
 #define _TechniquesMgr TechniquesMgr::instance()

@@ -105,6 +105,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Geometry", "Geometry", "{ED
 	ProjectSection(SolutionItems) = preProject
 		_gamedata\shaders\Billboard.glsl = _gamedata\shaders\Billboard.glsl
 		_gamedata\shaders\commonGeometry.glsl = _gamedata\shaders\commonGeometry.glsl
+		_gamedata\shaders\Debug_GeometryPass.glsl = _gamedata\shaders\Debug_GeometryPass.glsl
 		_gamedata\shaders\MapChunk_GeometryPass.glsl = _gamedata\shaders\MapChunk_GeometryPass.glsl
 		_gamedata\shaders\MapTileLowRes_GeometryPass.glsl = _gamedata\shaders\MapTileLowRes_GeometryPass.glsl
 		_gamedata\shaders\MDX_GeometryPass.glsl = _gamedata\shaders\MDX_GeometryPass.glsl
@@ -122,6 +123,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Postprocess", "Postprocess"
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CascLib_dll", "Externals\CascLib\CascLib_vs17_dll.vcxproj", "{CB385198-50B1-4CF4-883B-11F042DED6AA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{D50FA0CC-13B6-4C1D-A694-62385FA030E4}"
+	ProjectSection(SolutionItems) = preProject
+		_gamedata\shaders\UI_Font.glsl = _gamedata\shaders\UI_Font.glsl
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -253,6 +259,7 @@ Global
 		{ED2529B1-212A-404C-8FE9-80110E8F7595} = {52796937-C440-4FF4-B522-EB37C29A5B17}
 		{A9A76ED3-A67F-4DB6-B4AE-A7785349F4B5} = {52796937-C440-4FF4-B522-EB37C29A5B17}
 		{CB385198-50B1-4CF4-883B-11F042DED6AA} = {7117DD40-5090-4982-B565-034F60A0D3B1}
+		{D50FA0CC-13B6-4C1D-A694-62385FA030E4} = {52796937-C440-4FF4-B522-EB37C29A5B17}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {30BF641C-2C5D-4C14-B950-C07F6CD68736}

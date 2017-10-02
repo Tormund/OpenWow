@@ -146,8 +146,6 @@ void Model_Skin::Draw()
 
 			m_ModelObject->drawShaderEnd();
 
-			_Perfomance->Inc(PERF_TEST);
-
 			p->deinit();
 		}
 	}

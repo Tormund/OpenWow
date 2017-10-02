@@ -63,7 +63,7 @@ void MDX_Part_Bone::calcMatrix(MDX_Part_Bone* allbones, uint32_t _animationIndex
 			//glGetFloatv(GL_MODELVIEW_MATRIX, modelview);
 
 			float modelview[16];
-			memcpy(&modelview, glm::value_ptr(*_Pipeline->GetWorld()), 16 * sizeof(float));
+			memcpy(&modelview, glm::value_ptr(_PipelineGlobal->GetWorld()), 16 * sizeof(float));
 
 			vec3 vRight = vec3(modelview[0], modelview[4], modelview[8]);
 			vec3 vUp = vec3(modelview[1], modelview[5], modelview[9]); // Spherical billboarding

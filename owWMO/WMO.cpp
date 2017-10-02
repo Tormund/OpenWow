@@ -43,9 +43,20 @@ WMO::~WMO()
 	_ModelsMgr->Delete(m_Skybox);
 #endif
 
-	ERASE_VECTOR(m_PortalVertices);
-	ERASE_VECTOR(m_PortalInformation);
-	ERASE_VECTOR(m_PortalReferences);
+	// Clear portals
+	if (header.nPortals)
+	{
+		delete[] m_PortalVertices;
+		ERASE_VECTOR(m_PortalInformation);
+		ERASE_VECTOR(m_PortalReferences);
+	}
+
+	// Clean visible block verts
+	if (m_VisibleBlockList.size())
+	{
+		delete[] m_VisibleBlockVertices;
+		ERASE_VECTOR(m_VisibleBlockList);
+	}
 
 	ERASE_VECTOR(m_Lights);
 
@@ -146,68 +157,60 @@ bool WMO::Init()
 		}
 		else if (strcmp(fourcc, "MOPV") == 0)
 		{
-			/*
-			Portal vertices, 4 * 3 * float per portal, nPortals entries.
-			Portals are (always?) rectangles that specify where doors or entrances are in a WMO. They could be used for visibility, but I currently have no idea what relations they have to each other or how they work.
-			Since when "playing" WoW, you're confined to the ground, checking for passing through these portals would be enough to toggle visibility for indoors or outdoors areas, however, when randomly flying around, this is not necessarily the case.
-			So.... What happens when you're flying around on a gryphon, and you fly into that arch-shaped portal into Ironforge? How is that portal calculated? It's all cool as long as you're inside "legal" areas, I suppose.
-			It's fun, you can actually map out the topology of the WMO using this and the MOPR chunk. This could be used to speed up the rendering once/if I figure out how.
-			*/
+			assert((size % sizeof(vec3)) == 0);
 
-			for (uint32_t i = 0; i < header.nPortals; i++)
+			m_PortalVertices = new vec3[size / sizeof(vec3)];
+			for (uint32_t i = 0; i < size / sizeof(vec3); i++)
 			{
-				WMO_PortalVertices* p = new WMO_PortalVertices();
-				vec3 temp;
-
-				f.ReadBytes(&temp, sizeof(vec3));
-				p->a = From_XYZ_To_XZminusY_RET(temp);
-
-				f.ReadBytes(&temp, sizeof(vec3));
-				p->b = From_XYZ_To_XZminusY_RET(temp);
-
-				f.ReadBytes(&temp, sizeof(vec3));;
-				p->c = From_XYZ_To_XZminusY_RET(temp);
-
-				f.ReadBytes(&temp, sizeof(vec3));
-				p->d = From_XYZ_To_XZminusY_RET(temp);
-
-				m_PortalVertices.push_back(p);
+				vec3 portalVertex;
+				f.ReadBytes(&portalVertex, sizeof(vec3));
+				m_PortalVertices[i] = From_XYZ_To_XZminusY_RET(portalVertex);
 			}
 		}
 		else if (strcmp(fourcc, "MOPT") == 0)
 		{
-			/*
-			Portal information. 20 bytes per portal, nPortals entries.
-			Offset	Type 		Description
-			0x00 	uint16_t 		Base vertex index?
-			0x02 	uint16_t 		Number of vertices (?), always 4 (?)
-			0x04 	3*float 	a normal vector maybe? haven't checked.
-			0x10 	float 		unknown  - if this is NAN, the three floats will be (0,0,1)
-			*/
+			assert1((size % WMO_PortalInformation::__size) == 0);
+			assert1((size / WMO_PortalInformation::__size) == header.nPortals);
+
+			for (uint32_t i = 0; i < size / WMO_PortalInformation::__size; i++)
+			{
+				WMO_PortalInformation* portalInformation = new WMO_PortalInformation;
+				f.ReadBytes(portalInformation, WMO_PortalInformation::__size);
+				m_PortalInformation.push_back(portalInformation);
+			}
 		}
 		else if (strcmp(fourcc, "MOPR") == 0)
 		{
 			for (uint32_t i = 0; i < size / WMO_PortalReferences::__size; i++)
 			{
-				WMO_PortalReferences* _portalReference = new WMO_PortalReferences;
-				f.ReadBytes(_portalReference, WMO_PortalReferences::__size);
-				m_PortalReferences.push_back(_portalReference);
+				WMO_PortalReferences* portalReference = new WMO_PortalReferences;
+				f.ReadBytes(portalReference, WMO_PortalReferences::__size);
+				m_PortalReferences.push_back(portalReference);
 			}
 		}
 		else if (strcmp(fourcc, "MOVV") == 0)
 		{
-			/*
-			Visible block vertices
-			Just a list of vertices that corresponds to the visible block list.
-			*/
+			assert((size % sizeof(vec3)) == 0);
+
+			m_VisibleBlockVertices = new vec3[size / sizeof(vec3)];
+			for (uint32_t i = 0; i < size / sizeof(vec3); i++)
+			{
+				vec3 visibleVertex;
+				f.ReadBytes(&visibleVertex, sizeof(vec3));
+				m_VisibleBlockVertices[i] = From_XYZ_To_XZminusY_RET(visibleVertex);
+			}
 		}
 		else if (strcmp(fourcc, "MOVB") == 0)
 		{
-			/*
-			Visible block list
-			unsigned short firstVertex;
-			unsigned short count;
-			*/
+			assert1((size % WMO_VisibleBlockList::__size) == 0);
+
+			for (uint32_t i = 0; i < size / WMO_VisibleBlockList::__size; i++)
+			{
+				WMO_VisibleBlockList* visibleBlockList = new WMO_VisibleBlockList;
+				f.ReadBytes(visibleBlockList, WMO_VisibleBlockList::__size);
+				m_VisibleBlockList.push_back(visibleBlockList);
+			}
+
 		}
 		else if (strcmp(fourcc, "MOLT") == 0)
 		{
@@ -302,49 +305,49 @@ bool WMO::draw(int doodadset, cvec3 ofs, const float roll)
 	}
 
 	// WMO groups
+	PERF_START(PERF_MAP_MODELS_WMOs_GEOMETRY);
 	for (auto it = m_Groups.begin(); it != m_Groups.end(); ++it)
 	{
-		if (!(*it)->draw2(ofs, roll))
-		{
-			//return false;
-		}
+		(*it)->draw2(ofs, roll);
 	}
-	_Perfomance->Stop(PERF_WMOs);
-
+	PERF_STOP(PERF_MAP_MODELS_WMOs_GEOMETRY);
 
 	// WMO doodads
-	_Perfomance->Start(PERF_WMOs_DOODADS);
+
+	PERF_START(PERF_MAP_MODELS_WMOs_DOODADS);
 	if (_Settings->draw_map_wmo_doodads)
 	{
 		for (auto it = m_Groups.begin(); it != m_Groups.end(); ++it)
 		{
-			if (!(*it)->drawDoodads(doodadset, ofs, roll))
-			{
-				//return false;
-			}
+			(*it)->drawDoodads(doodadset, ofs, roll);
 		}
 	}
-	_Perfomance->Stop(PERF_WMOs_DOODADS);
+	PERF_STOP(PERF_MAP_MODELS_WMOs_DOODADS);
 
+	// WMO liquids
 
-
-	/*for (auto it = m_Groups.begin(); it != m_Groups.end(); ++it)
+	PERF_START(PERF_MAP_MODELS_WMOs_LIQUIDS);
+	for (auto it = m_Groups.begin(); it != m_Groups.end(); ++it)
 	{
-		if (!(*it)->drawLiquid())
-		{
-			//return false;
-		}
-	}*/
+		(*it)->drawLiquid();
+	}
+	PERF_STOP(PERF_MAP_MODELS_WMOs_LIQUIDS);
 
-#ifdef _DEBUG
-	//DEBUG_DrawLightPlaceHolders();
-	//DEBUG_DrawFogPositions();
+
+
+	_TechniquesMgr->m_Debug_GeometryPass->Bind();
+
+	_TechniquesMgr->m_Debug_GeometryPass->SetPVW();
+
+	//#ifdef _DEBUG
+		//DEBUG_DrawLightPlaceHolders();
+		//DEBUG_DrawFogPositions();
 	//DEBUG_DrawBoundingBoxes();
 	//DEBUG_DrawPortalsRelations();
-	//DEBUG_DrawPortals();
-#endif
+	DEBUG_DrawPortals();
+	//#endif
 
-	_Perfomance->Start(PERF_WMOs);
+	_TechniquesMgr->m_Debug_GeometryPass->Unbind();
 
 	return true;
 }
@@ -363,9 +366,6 @@ bool WMO::drawSkybox()
 		return false;
 	}
 
-	glDisable(GL_CULL_FACE);
-	glDisable(GL_DEPTH_TEST);
-
 	_Pipeline->Clear();
 	_Pipeline->Translate(_Camera->Position);
 	_Pipeline->Scale(2.0f);
@@ -378,19 +378,16 @@ bool WMO::drawSkybox()
 	_TechniquesMgr->m_MDX_GeometryPass->Unbind();
 
 	_EnvironmentManager->m_HasSky = true;
-
 #endif
 
 	return true;
 }
 
 
-#ifdef _DEBUG1
+//#ifdef _DEBUG1
 
 void WMO::DEBUG_DrawLightPlaceHolders()
 {
-	glDisable(GL_LIGHTING);
-	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_CULL_FACE);
 	glColor4f(1, 1, 1, 1);
 
@@ -405,15 +402,11 @@ void WMO::DEBUG_DrawLightPlaceHolders()
 	}
 	glEnd();
 
-	glColor4f(1, 1, 1, 1);
 	glEnable(GL_CULL_FACE);
-	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_LIGHTING);
 }
 
 void WMO::DEBUG_DrawFogPositions()
 {
-	glDisable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
 
 	glColor4f(1, 1, 1, 1);
@@ -433,93 +426,152 @@ void WMO::DEBUG_DrawFogPositions()
 
 	glColor4f(1, 1, 1, 1);
 	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_LIGHTING);
 }
 
 void WMO::DEBUG_DrawBoundingBoxes()
 {
-	glDisable(GL_LIGHTING);
-	glDisable(GL_TEXTURE_2D);
-
-
 	for (int i = 0; i < header.nGroups; i++)
 	{
 		WMOGroup* g = m_Groups[i];
 		float fc[2] = {1, 0};
 
-		glColor4f(fc[i % 2], fc[(i / 2) % 2], fc[(i / 3) % 2], 0.7f);
+		_TechniquesMgr->m_Debug_GeometryPass->SetColor(vec3(fc[i % 2], fc[(i / 2) % 2], fc[(i / 3) % 2]));
 
-		glBegin(GL_LINE_LOOP);
+		vector<vec3> verts;
 
-		glVertex3f(g->b1.x, g->b1.y, g->b1.z);
-		glVertex3f(g->b1.x, g->b2.y, g->b1.z);
-		glVertex3f(g->b2.x, g->b2.y, g->b1.z);
-		glVertex3f(g->b2.x, g->b1.y, g->b1.z);
+		verts.push_back(vec3(g->bounds.b1.x, g->bounds.b1.y, g->bounds.b1.z));
+		verts.push_back(vec3(g->bounds.b1.x, g->bounds.b1.y, g->bounds.b2.z));
 
-		glVertex3f(g->b2.x, g->b1.y, g->b2.z);
-		glVertex3f(g->b2.x, g->b2.y, g->b2.z);
-		glVertex3f(g->b1.x, g->b2.y, g->b2.z);
-		glVertex3f(g->b1.x, g->b1.y, g->b2.z);
+		verts.push_back(vec3(g->bounds.b1.x, g->bounds.b1.y, g->bounds.b1.z));
+		verts.push_back(vec3(g->bounds.b1.x, g->bounds.b2.y, g->bounds.b1.z));
 
-		glEnd();
+		verts.push_back(vec3(g->bounds.b1.x, g->bounds.b1.y, g->bounds.b1.z));
+		verts.push_back(vec3(g->bounds.b2.x, g->bounds.b1.y, g->bounds.b1.z));
+
+
+		verts.push_back(vec3(g->bounds.b2.x, g->bounds.b2.y, g->bounds.b2.z));
+		verts.push_back(vec3(g->bounds.b2.x, g->bounds.b1.y, g->bounds.b2.z));
+
+		verts.push_back(vec3(g->bounds.b2.x, g->bounds.b2.y, g->bounds.b2.z));
+		verts.push_back(vec3(g->bounds.b2.x, g->bounds.b2.y, g->bounds.b1.z));
+
+		verts.push_back(vec3(g->bounds.b2.x, g->bounds.b2.y, g->bounds.b2.z));
+		verts.push_back(vec3(g->bounds.b1.x, g->bounds.b2.y, g->bounds.b2.z));
+
+
+		verts.push_back(vec3(g->bounds.b2.x, g->bounds.b2.y, g->bounds.b1.z));
+		verts.push_back(vec3(g->bounds.b2.x, g->bounds.b1.y, g->bounds.b1.z));
+
+
+		verts.push_back(vec3(g->bounds.b2.x, g->bounds.b1.y, g->bounds.b1.z));
+		verts.push_back(vec3(g->bounds.b2.x, g->bounds.b1.y, g->bounds.b2.z));
+
+		verts.push_back(vec3(g->bounds.b2.x, g->bounds.b1.y, g->bounds.b2.z));
+		verts.push_back(vec3(g->bounds.b1.x, g->bounds.b1.y, g->bounds.b2.z));
+
+		verts.push_back(vec3(g->bounds.b1.x, g->bounds.b1.y, g->bounds.b2.z));
+		verts.push_back(vec3(g->bounds.b1.x, g->bounds.b2.y, g->bounds.b2.z));
+
+		verts.push_back(vec3(g->bounds.b1.x, g->bounds.b2.y, g->bounds.b2.z));
+		verts.push_back(vec3(g->bounds.b1.x, g->bounds.b2.y, g->bounds.b1.z));
+
+		verts.push_back(vec3(g->bounds.b1.x, g->bounds.b2.y, g->bounds.b1.z));
+		verts.push_back(vec3(g->bounds.b2.x, g->bounds.b2.y, g->bounds.b1.z));
+
+		GLuint buffer;
+		glGenBuffers(1, &buffer);
+		glBindBuffer(GL_ARRAY_BUFFER, buffer);
+
+		glBufferData(GL_ARRAY_BUFFER, verts.size() * sizeof(vec3), verts.data(), GL_STATIC_DRAW);
+
+		// Vertex
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+		glDrawArrays(GL_LINES, 0, verts.size());
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glDeleteBuffers(1, &buffer);
 	}
-
-	glColor4f(1, 1, 1, 1);
-	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_LIGHTING);
 }
 
 void WMO::DEBUG_DrawPortalsRelations()
 {
-	glDisable(GL_LIGHTING);
-	glDisable(GL_TEXTURE_2D);
-
-	glBegin(GL_LINES);
-	for (size_t i = 0; i < m_PortalReferences.size(); i++)
+	for (size_t i = 0; i < header.nPortals; i++)
 	{
-		WMO_PortalReferences* pr = m_PortalReferences[i];
-		WMO_PortalVertices* pv = m_PortalVertices[pr->portalIndex];
+		WMO_PortalInformation* portalInformation = m_PortalInformation[i];
+		WMO_PortalReferences* portalReference = m_PortalReferences[i];
+		vec3 pv = m_PortalVertices[portalReference->portalIndex];
 
-		if (pr->side > 0)
-			glColor4f(1, 0, 0, 1);
+		if (portalReference->side > 0)
+		{
+			_TechniquesMgr->m_Debug_GeometryPass->SetColor(vec3(1.0f, 0.0f, 0.0f));
+		}
 		else
-			glColor4f(0, 0, 1, 1);
+		{
+			_TechniquesMgr->m_Debug_GeometryPass->SetColor(vec3(0.0f, 0.0f, 1.0f));
+		}
 
+		vec3 pc;
+		for (uint32_t j = portalInformation->startVertex; j < portalInformation->count; j++)
+		{
+			pc += m_PortalVertices[j];
+		}
+		pc *= 0.25f;
+		vec3 gc = (m_Groups[portalReference->groupIndex]->bounds.b1 + m_Groups[portalReference->groupIndex]->bounds.b2) * 0.5f;
 
-		vec3 pc = (pv->a + pv->b + pv->c + pv->d) * 0.25f;
-		vec3 gc = (m_Groups[pr->groupIndex]->b1 + m_Groups[pr->groupIndex]->b2)*0.5f;
+		//
 
-		glVertex3fv(glm::value_ptr(pc));
-		glVertex3fv(glm::value_ptr(gc));
+		vector<vec3> verts;
+		verts.push_back(pc);
+		verts.push_back(gc);
+
+		//
+
+		GLuint buffer;
+		glGenBuffers(1, &buffer);
+		glBindBuffer(GL_ARRAY_BUFFER, buffer);
+		glBufferData(GL_ARRAY_BUFFER, verts.size() * sizeof(vec3), verts.data(), GL_STATIC_DRAW);
+
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+		glDrawArrays(GL_LINES, 0, verts.size());
+
+		glDisableVertexAttribArray(0);
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glDeleteBuffers(1, &buffer);
 	}
-	glEnd();
-
-	glColor4f(1, 1, 1, 1);
-	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_LIGHTING);
-
 }
 
 void WMO::DEBUG_DrawPortals()
 {
-	glDisable(GL_LIGHTING);
-	glDisable(GL_TEXTURE_2D);
+	_TechniquesMgr->m_Debug_GeometryPass->SetColor(vec3(0.0f, 1.0f, 0.0f));
 
-	glColor4f(0, 1, 0, 0.7f);
-
-	glBegin(GL_LINE_STRIP);
 	for (uint32_t i = 0; i < header.nPortals; i++)
 	{
-		glVertex3fv(glm::value_ptr(m_PortalVertices[i]->d));
-		glVertex3fv(glm::value_ptr(m_PortalVertices[i]->c));
-		glVertex3fv(glm::value_ptr(m_PortalVertices[i]->b));
-		glVertex3fv(glm::value_ptr(m_PortalVertices[i]->a));
+		WMO_PortalInformation* portalInformation = m_PortalInformation[i];
+		
+		vector<vec3> verts;
+		for (uint32_t j = portalInformation->startVertex; j < portalInformation->count; j++)
+		{
+			verts.push_back(m_PortalVertices[j]);
+		}
+
+		GLuint buffer;
+		glGenBuffers(1, &buffer);
+		glBindBuffer(GL_ARRAY_BUFFER, buffer);
+		glBufferData(GL_ARRAY_BUFFER, verts.size() * sizeof(vec3), verts.data(), GL_STATIC_DRAW);
+
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+		glDrawArrays(GL_POLYGON, 0, verts.size());
+
+		glDisableVertexAttribArray(0);
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glDeleteBuffers(1, &buffer);
 	}
-	glEnd();
-
-	glColor4f(1, 1, 1, 1);
-	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_LIGHTING);
 }
-
-#endif

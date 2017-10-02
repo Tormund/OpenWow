@@ -171,6 +171,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ddslib.cpp" />
     <ClCompile Include="Perfomance.cpp" />
+    <ClCompile Include="PipelineWorldTransformation.cpp" />
     <ClCompile Include="TechniquesManager.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FontsMgr.cpp" />
@@ -187,6 +188,7 @@
     <ClCompile Include="ShadowMapFBO.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Techniques\Billboard_GeometryPass.cpp" />
+    <ClCompile Include="Techniques\Debug_GeometryPass.cpp" />
     <ClCompile Include="Techniques\ds_dir_light_pass_tech.cpp" />
     <ClCompile Include="Techniques\ds_light_pass_tech.cpp" />
     <ClCompile Include="Techniques\ds_point_light_pass_tech.cpp" />
@@ -198,6 +200,7 @@
     <ClCompile Include="Techniques\SimpleRenderGBuffer.cpp" />
     <ClCompile Include="Techniques\Sky_GeometryPass.cpp" />
     <ClCompile Include="Techniques\Technique.cpp" />
+    <ClCompile Include="Techniques\UI_Font.cpp" />
     <ClCompile Include="Techniques\WMO_GeomertyPass.cpp" />
     <ClCompile Include="Techniques\WMO_MH2O_GeometryPass.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -209,6 +212,7 @@
     <ClInclude Include="common.h" />
     <ClInclude Include="ddslib.h" />
     <ClInclude Include="Perfomance.h" />
+    <ClInclude Include="PipelineWorldTransformation.h" />
     <ClInclude Include="TechniquesManager.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="FontsMgr.h" />
@@ -226,6 +230,7 @@
     <ClInclude Include="ShadowMapFBO.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Techniques\Billboard_GeometryPass.h" />
+    <ClInclude Include="Techniques\Debug_GeometryPass.h" />
     <ClInclude Include="Techniques\ds_dir_light_pass_tech.h" />
     <ClInclude Include="Techniques\ds_light_pass_tech.h" />
     <ClInclude Include="Techniques\ds_point_light_pass_tech.h" />
@@ -237,13 +242,14 @@
     <ClInclude Include="Techniques\SimpleRenderGBuffer.h" />
     <ClInclude Include="Techniques\Sky_GeometryPass.h" />
     <ClInclude Include="Techniques\Technique.h" />
+    <ClInclude Include="Techniques\UI_Font.h" />
     <ClInclude Include="Techniques\WMO_GeomertyPass.h" />
     <ClInclude Include="Techniques\WMO_MH2O_GeometryPass.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TexturesMgr.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Pipeline.inl" />
+    <None Include="PipelineWorldTransformation.inl" />
     <None Include="Techniques\Technique.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -23,9 +23,6 @@ public:
 	 void RenderText(cvec2 _pos, cstring _string, TextAlignW _alignW, TextAlignH _alignH, const Color& _color = COLOR_WHITE) const;
 	 void RenderText(cvec2 _pos, cstring _string, TextAlignW _alignW, TextAlignH _alignH, Font* _font, const Color& _color = COLOR_WHITE) const;
 
-	GLuint GetVertexBuffer() { return VertexBufferObject; }
-	GLuint GetArrayBuffer() { return VertexArrayObject; }
-
 /*public:
 	HDC dc;
 	HGLRC glrc1;
@@ -36,12 +33,11 @@ public:
 private:
 	void OnWindowResized(uint32_t _width, uint32_t _height);
 
-private:
-	GLuint VertexArrayObject, VertexBufferObject;
-
 public:
 	Frustum frustum;
 
+private:
+	mat4 m_OrhoMatrix;
 };
 
 #define _Render RenderGL::instance()

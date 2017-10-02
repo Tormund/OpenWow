@@ -69,7 +69,7 @@ void DoodadInstance::Draw(cvec3 ofs, float roll)
 
 	
 		modelObject->draw();
-		_Perfomance->Inc(PERF_WMOs_DOODADS);
+		PERF_INC(PERF_MAP_MODELS_WMOs_DOODADS);
 }
 
 

@@ -40,18 +40,15 @@ void WMOInstance::draw()
 	
 	_Pipeline->Clear();
 
-	if (!_Settings->disable_pipeline)
-	{
-		_Pipeline->Translate(placementInfo->position);
+	_Pipeline->Translate(placementInfo->position);
 
-		_Pipeline->RotateX(placementInfo->rotation.z);
-		_Pipeline->RotateY(placementInfo->rotation.y);
-		_Pipeline->RotateZ(placementInfo->rotation.x);
+	/*_Pipeline->RotateX(placementInfo->rotation.z);
+	_Pipeline->RotateY(placementInfo->rotation.y);
+	_Pipeline->RotateZ(placementInfo->rotation.x);*/
 		
-	}
+	wmoObject->draw(placementInfo->doodadSetIndex, placementInfo->position, 0/*placementInfo->rotation.y*/);
 
-	wmoObject->draw(placementInfo->doodadSetIndex, placementInfo->position, placementInfo->rotation.x);
-	_Perfomance->Inc(PERF_WMOs);
+	PERF_INC(PERF_MAP_MODELS_WMOs);
 }
 
 void WMOInstance::reset()

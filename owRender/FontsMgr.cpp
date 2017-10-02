@@ -7,9 +7,16 @@
 #include <freetype/config/ftheader.h>
 #include FT_FREETYPE_H
 
+
+struct Font_Vertex
+{
+	vec2 vertex;
+	vec2 textureCoord;
+};
+
 bool FontsMgr::Init()
 {
-	mainFont = Add("Fonts\\ARIALN.TTF", 14);
+	mainFont = Add("Fonts\\Consolas.TTF", 12);
 
 	return true;
 }
@@ -60,14 +67,6 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize, GLuint id) // override
 	string fontFileName = _nameAndSize.substr(0, _delimIndex - 1);
 	uint32_t fontSize = Utils::ToUInt(_nameAndSize.substr(_delimIndex + 1));
 
-	GLuint listOpenglIndex = 0;
-	GLuint textureOpenglIndex = 0;
-	uint32_t* charWidth = new uint32_t[Font::NUM_CHARS];
-	uint32_t charHeight = 0;
-
-	FT_Library ftLibrary;
-	FT_Init_FreeType(&ftLibrary);
-
 	File f = fontFileName;
 	if (!f.Open())
 	{
@@ -75,16 +74,31 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize, GLuint id) // override
 		return nullptr;
 	}
 
+	GLuint textureOpenglIndex = 0;
+	uint32_t* charWidth = new uint32_t[Font::NUM_CHARS];
+	uint32_t charHeight = 0;
+
+	FT_Library ftLibrary;
+	FT_Init_FreeType(&ftLibrary);
+
 	FT_Face face;
 	if (FT_New_Memory_Face(ftLibrary, f.GetData(), f.GetSize(), 0, &face) != 0)
 	{
 		Debug::Error("FontsMgr[%s]: Error while loading font. Could not load font file.", f.Path_Name().c_str());
+
+		// Unload
+		FT_Done_Face(face);
+		FT_Done_FreeType(ftLibrary);
 		return nullptr;
 	}
 
 	if (!(face->face_flags & FT_FACE_FLAG_SCALABLE) || !(face->face_flags & FT_FACE_FLAG_HORIZONTAL))
 	{
 		Debug::Error("FontsMgr[%s]: Error while loading font. Error setting font size.", f.Path_Name().c_str());
+		
+		// Unload
+		FT_Done_Face(face);
+		FT_Done_FreeType(ftLibrary);
 		return nullptr;
 	}
 
@@ -127,18 +141,23 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize, GLuint id) // override
 	// Get the first power of two in which it will fit
 	imageHeight = 16;
 	while (imageHeight < neededHeight)
+	{
 		imageHeight <<= 1;
+	}
 
 	// Step 3: Generation of the actual texture //
 
-	unsigned char* image = new unsigned char[imageHeight * imageWidth];
-	memset(image, 0, imageHeight * imageWidth);
+	uint8_t* image = new uint8_t[imageHeight * imageWidth];
+	memset(image, 0x00, imageHeight * imageWidth);
 
 	// These are the cameraPosition at which to draw the next glyph
 	size_t x = 0;
 	size_t y = maxAscent;
 
-	listOpenglIndex = glGenLists(Font::NUM_CHARS);
+	//listOpenglIndex = glGenLists(Font::NUM_CHARS);
+
+	vector<Font_Vertex> fontVertices;
+	float xOffset = 0.0f;
 
 	for (uint32_t ch = 0; ch < Font::NUM_CHARS; ++ch)
 	{
@@ -158,20 +177,34 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize, GLuint id) // override
 		double texY1 = (double)(y - maxAscent) / imageHeight;
 		double texY2 = texY1 + (double)(charHeight) / imageHeight;
 
-		glNewList(listOpenglIndex + ch, GL_COMPILE);
+		/*glNewList(listOpenglIndex + ch, GL_COMPILE);
 		{
 			glBegin(GL_QUADS);
 			{
-				glTexCoord2d(texX1, texY1);  glVertex2i(0, 0);
-				glTexCoord2d(texX2, texY1);  glVertex2i(charWidth[ch], 0);
-				glTexCoord2d(texX2, texY2);  glVertex2i(charWidth[ch], charHeight);
-				glTexCoord2d(texX1, texY2);  glVertex2i(0, charHeight);
+				glTexCoord2d(texX1, texY1);
+				glVertex2i(0, 0);
+
+				glTexCoord2d(texX2, texY1);
+				glVertex2i(charWidth[ch], 0);
+
+				glTexCoord2d(texX2, texY2);
+				glVertex2i(charWidth[ch], charHeight);
+
+				glTexCoord2d(texX1, texY2);
+				glVertex2i(0, charHeight);
 			}
 			glEnd();
+
 			glTranslated(charWidth[ch], 0, 0);
 		}
-		glEndList();
+		glEndList();*/
 
+
+		fontVertices.push_back({vec2(0.0f,          0.0f),       vec2(texX1, texY1)});
+		fontVertices.push_back({vec2(charWidth[ch], 0.0f),       vec2(texX2, texY1)});
+		fontVertices.push_back({vec2(charWidth[ch], charHeight), vec2(texX2, texY2)});
+		fontVertices.push_back({vec2(0.0f,          charHeight), vec2(texX1, texY2)});
+	
 		for (uint32_t row = 0; row < face->glyph->bitmap.rows; ++row)
 		{
 			for (uint32_t pixel = 0; pixel < face->glyph->bitmap.width; ++pixel)
@@ -183,6 +216,14 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize, GLuint id) // override
 		x += charWidth[ch];
 	}
 
+	// Font vertex buffer
+	GLuint globalBuffer;
+	glGenBuffers(1, &globalBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, globalBuffer);
+	glBufferData(GL_ARRAY_BUFFER, Font::NUM_CHARS * 4 * sizeof(Font_Vertex), fontVertices.data(), GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	// Font texture
 	glGenTextures(1, &textureOpenglIndex);
 	glBindTexture(GL_TEXTURE_2D, textureOpenglIndex);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -197,7 +238,7 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize, GLuint id) // override
 
 	//
 
-	Font* font = new Font(textureOpenglIndex, listOpenglIndex, charWidth, charHeight);
+	Font* font = new Font(textureOpenglIndex, globalBuffer, charWidth, charHeight);
 	Fonts.insert(make_pair(_nameAndSize, font));
 
 	Debug::Info("FontsMgr[%s]: Font loaded. Size [%d].", f.Path_Name().c_str(), fontSize);
@@ -208,12 +249,5 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize, GLuint id) // override
 bool FontsMgr::DeleteAction(cstring name, GLuint id) // override
 {
 	return true;
-}
-
-//
-
-void FontsMgr::Render(cstring _string) const
-{
-	mainFont->Render(_string);
 }
 

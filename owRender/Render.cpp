@@ -8,6 +8,9 @@
 // General
 #include "Render.h"
 
+// Additional
+#include "TechniquesManager.h"
+
 void APIENTRY glDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
 	if (id == 131169 || id == 131185 || id == 131218 || id == 131204) return;
@@ -135,6 +138,8 @@ bool RenderGL::Init()
 	// Viewport
 	glViewport(0, 0, _Settings->windowSizeX, _Settings->windowSizeY);
 
+	m_OrhoMatrix = glm::ortho(0.0f, _Settings->windowSizeX, _Settings->windowSizeY, 0.0f);
+
 	return true;
 }
 
@@ -207,8 +212,8 @@ void RenderGL::Set2D()
 	// Projection is orthographic
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	mat4 orho = glm::ortho(0.0f, _Settings->GetWindowSize().x, _Settings->GetWindowSize().y, 0.0f);
-	glMultMatrixf(glm::value_ptr(orho));
+
+	glMultMatrixf(glm::value_ptr(m_OrhoMatrix));
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -278,9 +283,16 @@ void RenderGL::RenderRectangle(cvec2 _pos, cvec2 _size, bool _filled, const Colo
 
 			glBegin(_filled ? GL_POLYGON : GL_LINE_LOOP);
 			{
+				glTexCoord2f(0, 1);
 				glVertex2f(0.0f, 0.0f);
+
+				glTexCoord2f(1, 1);
 				glVertex2f(_size.x, 0.0f);
+
+				glTexCoord2f(1, 0);
 				glVertex2f(_size.x, _size.y);
+
+				glTexCoord2f(0, 0);
 				glVertex2f(0.0f, _size.y);
 			}
 			glEnd();
@@ -317,9 +329,11 @@ void RenderGL::RenderText(cvec2 _pos, cstring _string, TextAlignW _alignW, TextA
 		case TEXT_ALIGNW_LEFT:
 		offset.x = 0;
 		break;
+
 		case TEXT_ALIGNW_CENTER:
 		offset.x = -static_cast<float>(stringWidth / 2);
 		break;
+
 		case TEXT_ALIGNW_RIGHT:
 		offset.x = -static_cast<float>(stringWidth);
 		break;
@@ -330,29 +344,23 @@ void RenderGL::RenderText(cvec2 _pos, cstring _string, TextAlignW _alignW, TextA
 		case TEXT_ALIGNH_TOP:
 		offset.y = -static_cast<float>(fontHeight);
 		break;
+
 		case TEXT_ALIGNH_CENTER:
 		offset.y = -static_cast<float>(fontHeight / 2);
 		break;
+
 		case TEXT_ALIGNH_BOTTOM:
 		offset.y = 0;
 		break;
 	}
 
-	glEnable(GL_TEXTURE_2D);
-	glPushMatrix();
-	{
-		glTranslatef(static_cast<float>(_pos.x) + offset.x, static_cast<float>(_pos.y) + offset.y, 0.0f);
+	_TechniquesMgr->m_UI_Font->Bind();
+	_TechniquesMgr->m_UI_Font->SetProjectionMatrix(m_OrhoMatrix);
+	_TechniquesMgr->m_UI_Font->SetFontColor(vec3(_color.red, _color.green, _color.blue));
 
-		glPushAttrib(GL_COLOR_BUFFER_BIT);
-		{
-			glColor4f(_color.red, _color.green, _color.blue, _color.alpha);
+	_font->Render(_string, _pos + offset);
 
-			_font->Render(_string);
-		}
-		glPopAttrib();
-	}
-	glPopMatrix();
-	glDisable(GL_TEXTURE_2D);
+	_TechniquesMgr->m_UI_Font->Unbind();
 }
 
 //
@@ -368,4 +376,7 @@ void RenderGL::OnWindowResized(uint32_t _width, uint32_t _height)
 
 	// Set viewport
 	glViewport(0, 0, _Settings->windowSizeX, _Settings->windowSizeY);
+
+	// Projection matix
+	m_OrhoMatrix = glm::ortho(0.0f, _Settings->windowSizeX, _Settings->windowSizeY, 0.0f);
 }

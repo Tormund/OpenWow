@@ -88,6 +88,15 @@
     <ClCompile Include="Techniques\Billboard_GeometryPass.cpp">
       <Filter>Techniques\Geometry</Filter>
     </ClCompile>
+    <ClCompile Include="Techniques\UI_Font.cpp">
+      <Filter>Techniques\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Techniques\Debug_GeometryPass.cpp">
+      <Filter>Techniques\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="PipelineWorldTransformation.cpp">
+      <Filter>Pipeline</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Image.h">
@@ -182,6 +191,15 @@
     <ClInclude Include="Techniques\Billboard_GeometryPass.h">
       <Filter>Techniques\Geometry</Filter>
     </ClInclude>
+    <ClInclude Include="Techniques\UI_Font.h">
+      <Filter>Techniques\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Techniques\Debug_GeometryPass.h">
+      <Filter>Techniques\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="PipelineWorldTransformation.h">
+      <Filter>Pipeline</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Types">
@@ -217,13 +235,16 @@
     <Filter Include="Perfomance &amp; Statistics">
       <UniqueIdentifier>{2a08d97b-3b8b-4165-a0ac-b16dacad43da}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Techniques\UI">
+      <UniqueIdentifier>{6b0560c6-62a4-4fef-bc46-e4040e3313b1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Pipeline.inl">
-      <Filter>Pipeline</Filter>
-    </None>
     <None Include="Techniques\Technique.inl">
       <Filter>Techniques\Common</Filter>
+    </None>
+    <None Include="PipelineWorldTransformation.inl">
+      <Filter>Pipeline</Filter>
     </None>
   </ItemGroup>
 </Project>

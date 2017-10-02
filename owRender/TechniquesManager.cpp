@@ -27,6 +27,14 @@ TechniquesMgr::~TechniquesMgr()
 
 void TechniquesMgr::Init()
 {
+	// Debug
+
+	m_Debug_GeometryPass = new Debug_GeometryPass();
+	m_Debug_GeometryPass->Init();
+
+
+	//
+
 	m_Billboard = new Billboard_GeometryPass();
 	m_Billboard->Init();
 	m_Billboard->Bind();
@@ -38,8 +46,6 @@ void TechniquesMgr::Init()
 
 	m_Sky_GeometryPass = new Sky_GeometryPass();
 	m_Sky_GeometryPass->Init();
-	m_Sky_GeometryPass->Bind();
-	m_Sky_GeometryPass->Unbind();
 
 	//----------------------------------------------------------------//
 
@@ -61,8 +67,6 @@ void TechniquesMgr::Init()
 
 	m_MapTileLowRes_GeometryPass = new MapTileLowRes_GeometryPass();
 	m_MapTileLowRes_GeometryPass->Init();
-	m_MapTileLowRes_GeometryPass->Bind();
-	m_MapTileLowRes_GeometryPass->Unbind();
 
 	//----------------------------------------------------------------//
 
@@ -122,4 +126,10 @@ void TechniquesMgr::Init()
 
 	m_SimpleRender->SetScreenSize(_Settings->windowSizeX, _Settings->windowSizeY);
 	m_SimpleRender->Unbind();*/
+
+	m_UI_Font = new UI_Font();
+	m_UI_Font->Init();
+	m_UI_Font->Bind();
+	m_UI_Font->SetFontTexture(COLOR_TEXTURE_UNIT_INDEX);
+	m_UI_Font->Unbind();
 }

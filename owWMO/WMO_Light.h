@@ -21,7 +21,7 @@ struct WMOLightDef
 	float unk[4];
 
 	//
-	const static uint32_t __size = 48;
+	static const uint32_t __size = 48;
 };
 
 class WMOLight

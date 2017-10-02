@@ -3,30 +3,11 @@
 class Font : public RefItem
 {
 public:
-	 Font(GLuint textureOpenglId, GLuint listOpenglId, uint32_t* charWidthArray, uint32_t charHeight) :
-		RefItem(),
-		m_TextureOpenglId(textureOpenglId),
-		m_ListOpenglId(listOpenglId),
-		m_CharWidthArray(charWidthArray),
-		m_CharHeight(charHeight)
-	{}
+	Font(GLuint textureOpenglId, GLuint _fontBufferObj, uint32_t* charWidthArray, uint32_t charHeight);
 
-	~Font()
-	{
-		if (glIsList(m_ListOpenglId))
-		{
-			glDeleteLists(m_ListOpenglId, NUM_CHARS);
-		}
+	 ~Font();
 
-		if (glIsTexture(m_TextureOpenglId))
-		{
-			glDeleteTextures(1, &m_TextureOpenglId);
-		}
-
-		delete[] m_CharWidthArray;
-	}
-
-	 void Render(cstring _string) const;
+	 void Render(cstring _string, vec2 _offset) const;
 
 	 uint32_t GetStringWidth(cstring _string) const;
 	 uint32_t GetHeight() const;
@@ -37,7 +18,7 @@ public:
 
 private:
 	GLuint m_TextureOpenglId;
-	GLuint m_ListOpenglId;
+	GLuint m_FontBuffer;
 	uint32_t* m_CharWidthArray;
 	uint32_t m_CharHeight;
 };

@@ -13,8 +13,9 @@ public:
 	void initDisplay();
 
 	void tick(float dt);
-	void draw(GLint _color);
 	void drawShader(GLint _color);
+	void RenderGeom();
+	void RenderPostprocess();
 
 	void DSGeometryPassBegin();
 	void DSGeometryPassEnd();
@@ -28,6 +29,11 @@ public:
 
 public:
 	GBuffer* m_gbuffer;
+	GLuint finalTexture1;
+	GLuint finalTexture2;
+
+	Camera* mainCamera;
+	Camera* testCamera;
 };
 
 #define _World World::instance()

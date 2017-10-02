@@ -48,8 +48,8 @@ class Settings
 
 public:
 	// Render settings
-	uint32_t windowSizeX;
-	uint32_t windowSizeY;
+	float windowSizeX;
+	float windowSizeY;
 	float aspectRatio, aspectFactor;
 
 	// Distances

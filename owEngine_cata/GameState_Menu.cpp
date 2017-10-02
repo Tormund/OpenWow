@@ -24,9 +24,17 @@ bool GameState_Menu::Init()
 	window->Init(VECTOR_ZERO, vec2(_Settings->windowSizeX, _Settings->windowSizeY), nullptr);
 	_UIMgr->Attach(window);
 
-	auto camera = new Camera;
-	_Pipeline->SetCamera(camera);
-	_Pipeline->SetProjection(45.0f, _Settings->aspectRatio, 0.1f, 10000.0f);
+    _TimeManager->globalTime = 0;
+	_TimeManager->animtime = 0;
+
+	cmd = CMD_NONE2;
+	backgroundModel = 0;
+	//randBackground();
+	currentColor = GL_COLOR_ATTACHMENT6;
+
+	/*_Map->PreloadMap(gMapDB.getByID(1));
+	LoadWorld(vec3(17644, 68, 17823));
+	return true;*/
 
 	const unsigned mapsXStart = 10;
 	const unsigned mapsYStart = 10;
@@ -62,17 +70,6 @@ bool GameState_Menu::Init()
 		mapsY += mapsYdelta;
 	}
 
-	cmd = CMD_NONE2;
-
-	_TimeManager->globalTime = 0;
-	_TimeManager->animtime = 0;
-	
-
-	backgroundModel = 0;
-	//randBackground();
-
-
-	currentColor = GL_COLOR_ATTACHMENT6;
 
 	return true;
 }
@@ -103,22 +100,22 @@ void GameState_Menu::InputPhase(double t, double dt)
 
 	if (_Input->IsKeyPressed(GLFW_KEY_W))
 	{
-		_Camera->ProcessKeyboard(FORWARD, speed);
+		_World->mainCamera->ProcessKeyboard(FORWARD, speed);
 	}
 
 	if (_Input->IsKeyPressed(GLFW_KEY_S))
 	{
-		_Camera->ProcessKeyboard(BACKWARD, speed);
+		_World->mainCamera->ProcessKeyboard(BACKWARD, speed);
 	}
 
 	if (_Input->IsKeyPressed(GLFW_KEY_A))
 	{
-		_Camera->ProcessKeyboard(LEFT, speed);
+		_World->mainCamera->ProcessKeyboard(LEFT, speed);
 	}
 
 	if (_Input->IsKeyPressed(GLFW_KEY_D))
 	{
-		_Camera->ProcessKeyboard(RIGHT, speed);
+		_World->mainCamera->ProcessKeyboard(RIGHT, speed);
 	}
 }
 
@@ -214,11 +211,11 @@ void GameState_Menu::RenderUI(double t, double dt)
 			// Player position
 			glBegin(GL_LINES);
 			float fx, fz;
-			fx = basex + _Camera->Position.x / C_TileSize * 12.0f;
-			fz = basey + _Camera->Position.z / C_TileSize * 12.0f;
+			fx = basex + _World->mainCamera->Position.x / C_TileSize * 12.0f;
+			fz = basey + _World->mainCamera->Position.z / C_TileSize * 12.0f;
 			glVertex2f(fx, fz);
 			glColor4f(1, 1, 1, 0);
-			glVertex2f(fx + 10.0f * cosf(glm::radians(_Camera->Yaw)), fz + 10.0f * sinf(glm::radians(_Camera->Yaw)));
+			glVertex2f(fx + 10.0f * cosf(glm::radians(_World->mainCamera->Yaw)), fz + 10.0f * sinf(glm::radians(_World->mainCamera->Yaw)));
 			glEnd();
 		}
 	}
@@ -259,34 +256,33 @@ void GameState_Menu::RenderUI(double t, double dt)
 		{
 			areaName = "Not found!";
 		}
-
+		_Render->RenderText(vec2(5, 0), "Привет!!!");
 		_Render->RenderText(vec2(5, 20), "Area: [" + areaName + "] [" + std::to_string(_Map->getAreaID()) + "]");
 		_Render->RenderText(vec2(5, 40), "Region: " + regionName + "]");
 		_Render->RenderText(vec2(5, 60), "CURRX: " + to_string(_Map->GetCurrentX()) + ", CURRZ " + to_string(_Map->GetCurrentZ()));
 
-		_Render->RenderText(vec2(5, 100), "MAP_CHUNK: " + _Perfomance->Get(PERF_MAP_CHUNK));
-		_Render->RenderText(vec2(5, 120), "MAP_LOWRES_TILES: " + _Perfomance->Get(PERF_MAP_LOWRES_TILES));
-		_Render->RenderText(vec2(5, 140), "MAP_GLOBAL_WMO: " + _Perfomance->Get(PERF_GLOBAL_WMO));
-		_Render->RenderText(vec2(5, 160), "MAP_MDXs: " + _Perfomance->Get(PERF_MAP_MDXs));
-		_Render->RenderText(vec2(5, 180), "MAP_LIQUID: " + _Perfomance->Get(PERF_MAP_LIQUID));
-		_Render->RenderText(vec2(5, 200), "MAP_MH20: " + _Perfomance->Get(PERF_MAP_MH20));
 
-		_Render->RenderText(vec2(5, 240), "WMOs: " + _Perfomance->Get(PERF_WMOs));
-		_Render->RenderText(vec2(5, 260), "WMOs_DOODADS: " + _Perfomance->Get(PERF_WMOs_DOODADS));
-		_Render->RenderText(vec2(5, 280), "WMOs_LIQUIDS: " + _Perfomance->Get(PERF_WMOs_LIQUIDS));
-		
+		///
 
-		_Render->RenderText(vec2(5, 340), "SUMMA: " + _Perfomance->Sum());
-		_Render->RenderText(vec2(5, 360), "FRUST: " + _Perfomance->Get(PERF_FRUSTRUM));
-		_Render->RenderText(vec2(5, 380), "TEST: " + _Perfomance->Get(PERF_TEST));
+		_Perfomance->Draw(vec2(5, 100));
 
-		_Render->RenderText(vec2(5, _Settings->windowSizeY - 66), "REAL CamPos: [" + to_string(_Camera->Position.x) + "], [" + to_string(_Camera->Position.y) + "], [" + to_string(_Camera->Position.z) + "]");
-		_Render->RenderText(vec2(5, _Settings->windowSizeY - 44), "CamPos: [" + to_string(-(_Camera->Position.x - C_ZeroPoint)) + "], [" + to_string(-(_Camera->Position.z - C_ZeroPoint)) + "], [" + to_string(_Camera->Position.y) + "]");
-		_Render->RenderText(vec2(5, _Settings->windowSizeY - 22), "CamRot: [" + to_string(_Camera->Direction.x) + "], [" + to_string(_Camera->Direction.y) + "], [" + to_string(_Camera->Direction.z) + "]");
+		_Render->RenderText(vec2(5, _Settings->windowSizeY - 66), "REAL CamPos: [" + to_string(_World->mainCamera->Position.x) + "], [" + to_string(_World->mainCamera->Position.y) + "], [" + to_string(_World->mainCamera->Position.z) + "]");
+		_Render->RenderText(vec2(5, _Settings->windowSizeY - 44), "CamPos: [" + to_string(-(_World->mainCamera->Position.x - C_ZeroPoint)) + "], [" + to_string(-(_World->mainCamera->Position.z - C_ZeroPoint)) + "], [" + to_string(_World->mainCamera->Position.y) + "]");
+		_Render->RenderText(vec2(5, _Settings->windowSizeY - 22), "CamRot: [" + to_string(_World->mainCamera->Direction.x) + "], [" + to_string(_World->mainCamera->Direction.y) + "], [" + to_string(_World->mainCamera->Direction.z) + "]");
 
 		// Time
 		_Render->RenderText(vec2(_Settings->windowSizeX - 150, 0), "TIME [" + to_string(_EnvironmentManager->m_GameTime.GetHour()) + "." + to_string(_EnvironmentManager->m_GameTime.GetMinute()) + "]");
 	
+
+
+
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, _World->m_gbuffer->textures[3]);
+
+		_Render->RenderRectangle(vec2(_Settings->windowSizeX * 2.0 / 3.0, 0), vec2(_Settings->windowSizeX / 3, _Settings->windowSizeY / 3), true, COLOR_WHITE);
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glDisable(GL_TEXTURE_2D);
 	}
 }
 
@@ -298,8 +294,8 @@ bool GameState_Menu::LoadWorld(cvec3 _pos)
 	_World->initDisplay();
 
 
-	_Camera->Position = _pos;
-	_Camera->Update();
+	_World->mainCamera->Position = _pos;
+	_World->mainCamera->Update();
 
 	if (backgroundModel != nullptr)
 	{
@@ -321,7 +317,7 @@ MOUSE_MOVED_(GameState_Menu)
 	{
 		vec2 mouseDelta = (_mousePos - lastMousePos) / _Settings->GetWindowSize();
 
-		_Camera->ProcessMouseMovement(mouseDelta.x, -mouseDelta.y);
+		_World->mainCamera->ProcessMouseMovement(mouseDelta.x, -mouseDelta.y);
 
 		_GLFW->SetMousePosition(lastMousePos);
 	}

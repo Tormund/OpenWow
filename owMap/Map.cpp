@@ -600,6 +600,7 @@ void Map::RenderLowResTiles()
 				glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 				glDrawArrays(GL_TRIANGLES, 0, 16 * 16 * 12);
+				PERF_INC(PERF_MAP_LOWRESOLUTION);
 
 				glDisableVertexAttribArray(0);
 
@@ -638,7 +639,7 @@ void Map::RenderLowResTiles()
 
 				//glDrawElements(GL_TRIANGLE_STRIP, striplen, GL_UNSIGNED_SHORT, strip);
 				glDrawBuffer(GL_TRIANGLES);
-				_Perfomance->Inc(PERF_MAP_LOWRES_TILES);
+				PERF_INC(PERF_MAP_LOWRES_TILES);
 
 				glBindBuffer(GL_ARRAY_BUFFER, 0);
 			}

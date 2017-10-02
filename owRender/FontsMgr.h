@@ -11,8 +11,6 @@ public:
 	 Font* Add(File& _fontFileName, uint32_t _fontSize);
 
 	//
-
-	 void Render(cstring _string) const;
 	
 	 Font* GetMainFont() const { return mainFont; }
 	 size_t GetFontsCount() const { return Fonts.size(); }
