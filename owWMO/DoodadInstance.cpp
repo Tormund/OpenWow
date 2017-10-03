@@ -16,7 +16,7 @@ DoodadInstance::DoodadInstance(File& f)
 	//placementInfo->orientation.y = glm::radians(placementInfo->orientation.y);
 	//placementInfo->orientation.z = glm::radians(placementInfo->orientation.z);
 
-	
+
 
 	//uint32_t d1;
 	//f.ReadBytes(&d1, 4); // (B,G,R,A) Lightning-color. 
@@ -28,48 +28,37 @@ DoodadInstance::~DoodadInstance()
 	delete placementInfo;
 }
 
-void DoodadInstance::Draw(cvec3 ofs, float roll)
+void DoodadInstance::Draw()
 {
-	vec3 tpos(ofs + placementInfo->position);
-	rotate(ofs.x, ofs.z, &tpos.x, &tpos.z, roll);
+	_Pipeline->Push(); // Save world matrix
 
-	/*if (glm::length2(tpos - _Camera->Position) > (_Settings->doodaddrawdistance2 + modelObject->rad * placementInfo->scale))
+	// Transforms
+	_Pipeline->Translate(placementInfo->position);
+	_Pipeline->Quat(placementInfo->orientation.w, -placementInfo->orientation.z, placementInfo->orientation.x, placementInfo->orientation.y);
+	_Pipeline->Scale(placementInfo->scale, -placementInfo->scale, -placementInfo->scale);
+
+	// Get actual position
+	vec3 pos = vec4(_Pipeline->GetWorld() * vec4(1.0f, 1.0f, 1.0f, 1.0f)).xyz;
+	float radius = modelObject->m_Radius * placementInfo->scale;
+
+	// Distance test
+	if (glm::length2(pos - _Camera->Position) > (_Settings->doodaddrawdistance2 + radius))
 	{
+		_Pipeline->Pop(); // restore matrix
 		return;
-	}*/
+	}
 
-	/*if (!_Render->frustum.intersectsSphere(tpos, modelObject->rad * placementInfo->scale))
+	// Frustrum test
+	if (!_Render->frustum.intersectsSphere(pos, radius))
 	{
+		_Pipeline->Pop(); // restore matrix
 		return;
-	}*/
+	}
 
-	/*glPushMatrix();
-	{
-		glTranslatef(placementInfo->position.x, placementInfo->position.y, placementInfo->position.z);
+	modelObject->draw();
+	PERF_INC(PERF_MAP_MODELS_WMOs_DOODADS);
 
-		vec3 vdir(-placementInfo->orientation.z, placementInfo->orientation.x, placementInfo->orientation.y);
-		glQuaternionRotate2(vdir, placementInfo->orientation.w);
-		
-		_Pipeline->SetRotationQuaternion(placementInfo->orientation);
-
-		glScalef(placementInfo->scale, -placementInfo->scale, -placementInfo->scale);*/
-		
-		_Pipeline->Clear();
-
-		_Pipeline->Translate(ofs);
-		_Pipeline->RotateY(roll - PI / 2.0f);
-
-		_Pipeline->Translate(placementInfo->position);
-
-		vec3 vdir(-placementInfo->orientation.z, placementInfo->orientation.x, placementInfo->orientation.y);
-		mat4 m = glQuaternionRotate2(vdir, placementInfo->orientation.w);
-		_Pipeline->Mult(m);
-
-		_Pipeline->Scale(placementInfo->scale, -placementInfo->scale, -placementInfo->scale);
-
-	
-		modelObject->draw();
-		PERF_INC(PERF_MAP_MODELS_WMOs_DOODADS);
+	_Pipeline->Pop();  // restore matrix
 }
 
 

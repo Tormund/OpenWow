@@ -34,7 +34,7 @@ public:
 		modelObject = m;
 	}
 
-	void Draw(cvec3 ofs, float roll);
+	void Draw();
 
 public:
 	MDX* modelObject;

@@ -102,7 +102,7 @@ public:
 	bool Init();
 	inline bool IsLoaded() { return m_Loaded; }
 
-	bool draw(int doodadset, cvec3 ofs, const float roll);
+	bool draw(uint32_t _doodadSet);
 
 	bool drawSkybox();
 

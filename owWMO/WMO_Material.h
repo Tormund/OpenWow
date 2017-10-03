@@ -14,8 +14,7 @@ struct WMOMaterialDef
 		uint32_t F_WINDOW : 1;                   // lighting related (flag checked in CMapObj::UpdateSceneMaterials)
 		uint32_t F_CLAMP_S : 1;                  // tex clamp S (force this material's textures to use clamp s addressing)
 		uint32_t F_CLAMP_T : 1;                  // tex clamp T (force this material's textures to use clamp t addressing)
-		uint32_t flag_0x100 : 1;
-		uint32_t : 23;
+		uint32_t : 24;
 	} flags;
 
 	uint32_t shader;                 // Index into CMapObj::s_wmoShaderMetaData. See below (shader types).

@@ -114,9 +114,8 @@ struct WMOGroup_MaterialInfo
 
 struct WMOBatch
 {
-	uint32_t color0;
-	uint32_t color1;
-	uint32_t color2;
+	int16_t bx, by, bz;                      // a bounding box for culling, see "unknown_box" below
+	int16_t tx, ty, tz;
 
 	uint32_t indexStart;
 	uint16_t indexCount;
@@ -149,15 +148,14 @@ struct WMOLiquidHeader
 class WMOGroup
 {
 public:
-	WMOGroup(const WMO* _parentWMO, const uint32_t m_GroupIndex, File& f, char* names);
+	WMOGroup(const WMO* _parentWMO, const uint32_t m_GroupIndex, File& f);
 	~WMOGroup();
 
 	void initDisplayList();
 	void initLighting();
 
-	//bool draw(cvec3 ofs, float roll);
-	bool draw2(cvec3 ofs, float roll);
-	bool drawDoodads(int doodadset, cvec3 ofs, float roll);
+	bool draw2();
+	bool drawDoodads(uint32_t _doodadSet);
 	bool drawLiquid();
 
 	void setupFog();
@@ -166,10 +164,10 @@ public:
 public:
 	const WMO* m_ParentWMO;
 	const uint32_t m_GroupIndex;
-	string m_GropName;
+	string m_GroupName;
 
 	WMOGroupInfoDef groupInfo;
-	WMOGroupHeader wmoGroupHeader;
+	WMOGroupHeader m_Header;
 
 
 public:

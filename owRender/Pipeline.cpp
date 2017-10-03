@@ -71,7 +71,7 @@ void Pipeline::RenderCamera(Camera* _camera)
 	_TechniquesMgr->m_Debug_GeometryPass->Bind();
 	_Pipeline->Clear();
 	_TechniquesMgr->m_Debug_GeometryPass->SetPVW();
-	_TechniquesMgr->m_Debug_GeometryPass->SetColor(vec3(1.0f, 1.0f, 1.0f));
+	_TechniquesMgr->m_Debug_GeometryPass->SetColor4(vec4(1.0f, 1.0f, 1.0f, 0.7f));
 
 	vector<vec3> verts;
 

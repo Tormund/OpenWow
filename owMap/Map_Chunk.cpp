@@ -201,6 +201,11 @@ void MapChunk::init(File& f, load_phases phase)
 			//lq = new Liquid(8, 8, vec3(xbase, waterlevel[1], zbase));
 			//lq->init(f);
 			//lq->initFromTerrain(f, header->flags);
+
+			if (header->sizeLiquid)
+			{
+				Debug::Green("MapChunk[%d, %d]: Contain liquid!!!!", m_ParentTile->m_IndexX, m_ParentTile->m_IndexZ);
+			}
 		}
 
 		// MCCV sub-chunk (vertex shading)

@@ -130,7 +130,7 @@ bool WMO::Init()
 		{
 			for (uint32_t i = 0; i < header.nGroups; i++)
 			{
-				WMOGroup* group = new WMOGroup(this, i, f, m_GroupsNames);
+				WMOGroup* group = new WMOGroup(this, i, f);
 				m_Groups.push_back(group);
 			}
 		}
@@ -266,7 +266,6 @@ bool WMO::Init()
 		}
 		else if (strcmp(fourcc, "MFOG") == 0)
 		{
-			// Fog information
 			for (uint32_t i = 0; i < (size / WMOFogDef::__size); i++)
 			{
 				WMOFog* fog = new WMOFog(f);
@@ -290,6 +289,7 @@ bool WMO::Init()
 	for (auto it = m_Groups.begin(); it != m_Groups.end(); ++it)
 	{
 		(*it)->initDisplayList();
+		Debug::Info("WMO[%s]: Group [%s] added.", GetName().c_str(), (*it)->m_GroupName.c_str());
 	}
 
 	m_Loaded = true;
@@ -297,18 +297,20 @@ bool WMO::Init()
 	return true;
 }
 
-bool WMO::draw(int doodadset, cvec3 ofs, const float roll)
+bool WMO::draw(uint32_t _doodadSet)
 {
 	if (!m_Loaded)
 	{
 		return false;
 	}
 
+	// TODO: Calculate bounding box for all group !!!
+
 	// WMO groups
 	PERF_START(PERF_MAP_MODELS_WMOs_GEOMETRY);
 	for (auto it = m_Groups.begin(); it != m_Groups.end(); ++it)
 	{
-		(*it)->draw2(ofs, roll);
+		(*it)->draw2();
 	}
 	PERF_STOP(PERF_MAP_MODELS_WMOs_GEOMETRY);
 
@@ -319,7 +321,7 @@ bool WMO::draw(int doodadset, cvec3 ofs, const float roll)
 	{
 		for (auto it = m_Groups.begin(); it != m_Groups.end(); ++it)
 		{
-			(*it)->drawDoodads(doodadset, ofs, roll);
+			(*it)->drawDoodads(_doodadSet);
 		}
 	}
 	PERF_STOP(PERF_MAP_MODELS_WMOs_DOODADS);
@@ -333,25 +335,21 @@ bool WMO::draw(int doodadset, cvec3 ofs, const float roll)
 	}
 	PERF_STOP(PERF_MAP_MODELS_WMOs_LIQUIDS);
 
-
-
 	_TechniquesMgr->m_Debug_GeometryPass->Bind();
-
 	_TechniquesMgr->m_Debug_GeometryPass->SetPVW();
 
 	//#ifdef _DEBUG
 		//DEBUG_DrawLightPlaceHolders();
 		//DEBUG_DrawFogPositions();
-	//DEBUG_DrawBoundingBoxes();
+	DEBUG_DrawBoundingBoxes();
 	//DEBUG_DrawPortalsRelations();
-	DEBUG_DrawPortals();
+	//DEBUG_DrawPortals();
 	//#endif
 
 	_TechniquesMgr->m_Debug_GeometryPass->Unbind();
 
 	return true;
 }
-
 
 bool WMO::drawSkybox()
 {
@@ -384,7 +382,7 @@ bool WMO::drawSkybox()
 }
 
 
-//#ifdef _DEBUG1
+
 
 void WMO::DEBUG_DrawLightPlaceHolders()
 {
@@ -435,7 +433,7 @@ void WMO::DEBUG_DrawBoundingBoxes()
 		WMOGroup* g = m_Groups[i];
 		float fc[2] = {1, 0};
 
-		_TechniquesMgr->m_Debug_GeometryPass->SetColor(vec3(fc[i % 2], fc[(i / 2) % 2], fc[(i / 3) % 2]));
+		_TechniquesMgr->m_Debug_GeometryPass->SetColor4(vec4(fc[i % 2], fc[(i / 2) % 2], fc[(i / 3) % 2], 0.7f));
 
 		vector<vec3> verts;
 
@@ -505,11 +503,11 @@ void WMO::DEBUG_DrawPortalsRelations()
 
 		if (portalReference->side > 0)
 		{
-			_TechniquesMgr->m_Debug_GeometryPass->SetColor(vec3(1.0f, 0.0f, 0.0f));
+			_TechniquesMgr->m_Debug_GeometryPass->SetColor4(vec4(1.0f, 0.0f, 0.0f, 0.8f));
 		}
 		else
 		{
-			_TechniquesMgr->m_Debug_GeometryPass->SetColor(vec3(0.0f, 0.0f, 1.0f));
+			_TechniquesMgr->m_Debug_GeometryPass->SetColor4(vec4(0.0f, 0.0f, 1.0f, 0.8f));
 		}
 
 		vec3 pc;
@@ -547,7 +545,7 @@ void WMO::DEBUG_DrawPortalsRelations()
 
 void WMO::DEBUG_DrawPortals()
 {
-	_TechniquesMgr->m_Debug_GeometryPass->SetColor(vec3(0.0f, 1.0f, 0.0f));
+	_TechniquesMgr->m_Debug_GeometryPass->SetColor4(vec4(0.0f, 1.0f, 0.0f, 0.5f));
 
 	for (uint32_t i = 0; i < header.nPortals; i++)
 	{

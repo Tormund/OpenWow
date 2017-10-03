@@ -85,7 +85,6 @@ void World::drawShader(GLint _color)
 	m_gbuffer->BindForGeomPass();
 	m_gbuffer->Clear();
 	RenderGeom();
-	_PipelineGlobal->RenderCamera(mainCamera);
 
 	// Postprocess pass
 	m_gbuffer->BindForLightPass();
@@ -118,7 +117,7 @@ void World::drawShader(GLint _color)
 	m_gbuffer->BindForGeomPass();
 	m_gbuffer->Clear();
 	RenderGeom();
-	
+	_PipelineGlobal->RenderCamera(mainCamera);
 
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 }

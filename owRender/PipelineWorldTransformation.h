@@ -6,6 +6,7 @@ public:
 	PipelineWorldTransformation() 
 	{ 
 		Clear();
+		m_IsMatrixPushed = false;
 	}
 	inline void Clear()
 	{
@@ -30,13 +31,17 @@ public:
 
 	inline void Mult(cmat4 mat);
 
-	inline const mat4& GetWorld()
-	{
-		return worldTransformation;
-	}
+	//
+
+	inline void SetWorld(const mat4 _world);
+	inline const mat4& GetWorld();
+	inline void Push();
+	inline void Pop();
 
 private:
 	mat4 worldTransformation;
+	bool m_IsMatrixPushed;
+	mat4 m_PushedWorldTranformation;
 };
 
 #include "PipelineWorldTransformation.inl"

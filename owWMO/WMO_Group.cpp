@@ -12,7 +12,7 @@
 #include "Wmo_Light.h"
 #include "Wmo_Material.h"
 
-WMOGroup::WMOGroup(const WMO* _parentWMO, const uint32_t _groupIndex, File& f, char* names) : m_ParentWMO(_parentWMO), m_GroupIndex(_groupIndex)
+WMOGroup::WMOGroup(const WMO* _parentWMO, const uint32_t _groupIndex, File& f) : m_ParentWMO(_parentWMO), m_GroupIndex(_groupIndex)
 {
 	nTriangles = 0;
 	materials = nullptr;
@@ -47,11 +47,11 @@ WMOGroup::WMOGroup(const WMO* _parentWMO, const uint32_t _groupIndex, File& f, c
 
 	if (groupInfo.nameoffset > 0)
 	{
-		m_GropName = string(names + groupInfo.nameoffset);
+		m_GroupName = string(m_ParentWMO->m_GroupsNames + groupInfo.nameoffset);
 	}
 	else
 	{
-		m_GropName = "(no name)";
+		m_GroupName = "(no name)";
 	}
 
 }
@@ -84,23 +84,24 @@ void WMOGroup::initDisplayList()
 	{
 		return;
 	}
-	f.Seek(0x14); // a header at 0x14
 
-	// read MOGP chunk header
-	f.ReadBytes(&wmoGroupHeader, WMOGroupHeader::__size);
+	f.SeekRelative(12); // Version 4 + 4 + 4
+
+	f.SeekRelative(8); // Chunk and size 4 + 4
+	f.ReadBytes(&m_Header, WMOGroupHeader::__size);
 
 
-	WMOFog* wf = m_ParentWMO->m_Fogs[wmoGroupHeader.m_Fogs[0]];
+	WMOFog* wf = m_ParentWMO->m_Fogs[m_Header.m_Fogs[0]];
 	if (wf->fogDef.largerRadius <= 0)
 		fog = -1; // default outdoor fog..?
 	else
-		fog = wmoGroupHeader.m_Fogs[0];
+		fog = m_Header.m_Fogs[0];
 
 
-	bounds.SetBounds(wmoGroupHeader.boundingBox.min, wmoGroupHeader.boundingBox.max);
+	bounds.SetBounds(m_Header.boundingBox.min, m_Header.boundingBox.max);
 
 
-	f.Seek(0x58); // first chunk at 0x58
+	//f.Seek((4 + 4 + 4) + (4 + 4) + WMOGroupHeader::__size); // first chunk at 0x58
 
 	char fourcc[5];
 	uint32_t size = 0;
@@ -491,26 +492,17 @@ void WMOGroup::initLighting()
 	return true;
 }*/
 
-bool WMOGroup::draw2(cvec3 ofs, float roll)
+bool WMOGroup::draw2()
 {
 	visible = false;
 
-	/*glm::mat4 transformation = *_Pipeline->GetWorld(); // your transformation matrix.
-	glm::vec3 scale;
-	glm::quat rotation;
-	glm::vec3 translation;
-	glm::vec3 skew;
-	glm::vec4 perspective;
-	glm::decompose(transformation, scale, rotation, translation, skew, perspective);*/
+	vec3 pos = (_Pipeline->GetWorld() * vec4(bounds.GetCenter(), 1.0f)).xyz;
 
-	vec3 pos = bounds.GetCenter() + ofs;
-	rotate(ofs.x, ofs.z, &pos.x, &pos.z, roll);
-
-	//float dist = glm::length(pos - _Camera->Position);
-	//if (dist > _Settings->culldistance + bounds.GetRadius())
-	//{
-	//	return false;
-	//}
+	float dist = glm::length(pos - _Camera->Position);
+	if (dist > _Settings->culldistance + bounds.GetRadius())
+	{
+		return false;
+	}
 
 	if (!_Render->frustum.intersectsSphere(pos, bounds.GetRadius()))
 	{
@@ -616,7 +608,7 @@ bool WMOGroup::draw2(cvec3 ofs, float roll)
 	return true;
 }
 
-bool WMOGroup::drawDoodads(int doodadset, cvec3 ofs, float roll)
+bool WMOGroup::drawDoodads(uint32_t _doodadSet)
 {
 	if (!visible)
 	{
@@ -635,10 +627,10 @@ bool WMOGroup::drawDoodads(int doodadset, cvec3 ofs, float roll)
 	//**********glColor4f(1, 1, 1, 1);
 	for (uint32_t i = 0; i < nDoodads; i++)
 	{
-		short doodadIndex = m_DoodadsIndexes[i];
+		uint16_t doodadIndex = m_DoodadsIndexes[i];
 
 #ifdef DOODADS_INCL
-		if (m_ParentWMO->doodadsets[doodadset]->InSet(doodadIndex) || m_ParentWMO->doodadsets[0]->InSet(doodadIndex))
+		if (m_ParentWMO->doodadsets[_doodadSet]->InSet(doodadIndex) || m_ParentWMO->doodadsets[0]->InSet(doodadIndex))
 		{
 			DoodadInstance* doodadInstance = m_ParentWMO->m_MDXInstances[doodadIndex];
 
@@ -647,7 +639,7 @@ bool WMOGroup::drawDoodads(int doodadset, cvec3 ofs, float roll)
 			//***	WMOLight::setupOnce(GL_LIGHT2, doodadInstance->ldir, doodadInstance->lcol);
 			}
 
-			m_ParentWMO->m_MDXInstances[doodadIndex]->Draw(ofs, roll);
+			m_ParentWMO->m_MDXInstances[doodadIndex]->Draw();
 }
 #endif
 	}

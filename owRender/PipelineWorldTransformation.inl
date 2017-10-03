@@ -68,3 +68,29 @@ inline void PipelineWorldTransformation::Mult(cmat4 mat)
 {
 	worldTransformation *= mat;
 }
+
+// Push / Pop
+
+inline void PipelineWorldTransformation::SetWorld(const mat4 _world)
+{
+	worldTransformation = _world;
+}
+
+inline const mat4& PipelineWorldTransformation::GetWorld()
+{
+	return worldTransformation;
+}
+
+inline void PipelineWorldTransformation::Push()
+{
+	assert1(!m_IsMatrixPushed);
+	m_PushedWorldTranformation = worldTransformation;
+	m_IsMatrixPushed = true;
+}
+
+inline void PipelineWorldTransformation::Pop()
+{
+	assert1(m_IsMatrixPushed);
+	worldTransformation = m_PushedWorldTranformation;
+	m_IsMatrixPushed = false;
+}

@@ -8,8 +8,8 @@ public:
 	Debug_GeometryPass();
 	virtual bool Init();
 
-	inline void SetColor(cvec3 _color)
+	inline void SetColor4(cvec4 _color)
 	{
-		setVec3("gColor", _color);
+		setVec4("gColor", _color);
 	}
 };

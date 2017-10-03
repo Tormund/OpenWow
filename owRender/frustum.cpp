@@ -25,19 +25,7 @@ void Frustum::retrieve()
 	float mat[16];
 	memcpy(&mat, glm::value_ptr(_PipelineGlobal->GetPV()), 16 * sizeof(float));
 
-	planes[FLEFT].a = mat[3] - mat[0];
-	planes[FLEFT].b = mat[7] - mat[4];
-	planes[FLEFT].c = mat[11] - mat[8];
-	planes[FLEFT].d = mat[15] - mat[12];
-	planes[FLEFT].normalize();
-
-	planes[FRIGHT].a = mat[3] + mat[0];
-	planes[FRIGHT].b = mat[7] + mat[4];
-	planes[FRIGHT].c = mat[11] + mat[8];
-	planes[FRIGHT].d = mat[15] + mat[12];
-	planes[FRIGHT].normalize();
-
-	/*planes[FRIGHT].a = mat[3] - mat[0];
+	planes[FRIGHT].a = mat[3] - mat[0];
 	planes[FRIGHT].b = mat[7] - mat[4];
 	planes[FRIGHT].c = mat[11] - mat[8];
 	planes[FRIGHT].d = mat[15] - mat[12];
@@ -47,7 +35,7 @@ void Frustum::retrieve()
 	planes[FLEFT].b = mat[7] + mat[4];
 	planes[FLEFT].c = mat[11] + mat[8];
 	planes[FLEFT].d = mat[15] + mat[12];
-	planes[FLEFT].normalize();*/
+	planes[FLEFT].normalize();
 
 	planes[FBOTTOM].a = mat[3] + mat[1];
 	planes[FBOTTOM].b = mat[7] + mat[5];
@@ -82,7 +70,7 @@ bool Frustum::contains(cvec3 v) const
 
 	for (uint8_t i = 0; i < 6; i++)
 	{
-		if ((planes[i].a*v.x + planes[i].b*v.y + planes[i].c*v.z + planes[i].d) <= 0)
+		if ((planes[i].a * v.x + planes[i].b * v.y + planes[i].c * v.z + planes[i].d) <= 0)
 		{
 			_Perfomance->Stop(PERF_FRUSTRUM);
 			return false;

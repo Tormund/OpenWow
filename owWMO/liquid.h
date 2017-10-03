@@ -2,23 +2,83 @@
 
 class WMOMaterial;
 
+struct LiquidInfo
+{
+	CRange height;
+	struct SLVert
+	{
+		union
+		{
+			struct SWVert
+			{
+				char depth;
+				char flow0Pct;
+				char flow1Pct;
+				char filler;
+				float height;
+			} waterVert;
+
+			struct SOVert
+			{
+				char depth;
+				char foam;
+				char wet;
+				char filler;
+			} oceanVert;
+
+			struct SMVert
+			{
+				unsigned __int16 s;
+				unsigned __int16 t;
+				float height;
+			} magmaVert;
+		};
+	} verts[9 * 9];
+
+	struct SLTiles
+	{
+		char tiles[8][8]; // 0x0f or 0x8 mean don't render (?)
+	} tiles;
+
+	uint32_t nFlowvs;
+
+	struct SWFlowv
+	{
+		CAaSphere sphere;
+		C3Vector dir;
+		float velocity;
+		float amplitude;
+		float frequency;
+	} flowvs[2]; // always 2 in file, independent on nFlowvs.
+};
+
+
+
 struct Liquid_Vertex
 {
 	union
 	{
-		struct SMOWaterVert
+		struct SWVert
 		{
-			uint8_t flow1;
-			uint8_t flow2;
-			uint8_t flow1Pct;
-			uint8_t filler;
+			char depth;
+			char flow0Pct;
+			char flow1Pct;
+			char filler;
 			float height;
-		}  waterVert;
+		} waterVert;
+
+		struct SOVert
+		{
+			char depth;
+			char foam;
+			char wet;
+			char filler;
+		} oceanVert;
 
 		struct SMOMagmaVert
 		{
-			int16_t s;
-			int16_t t;
+			uint16_t s;
+			uint16_t t;
 			float height;
 		} magmaVert;
 	};

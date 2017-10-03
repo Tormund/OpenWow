@@ -14,8 +14,9 @@ WMOInstance::WMOInstance(WMO* _wmoObject, File& f) : wmoObject(_wmoObject)
 	placementInfo->rotation.y = placementInfo->rotation.y - PI / 2.0;
 
 
+
 	// Debug
-	//Debug::Info("OFFSET [%f, %f, %f] ROT = [%f]", placementInfo->position.x, placementInfo->position.y, placementInfo->position.z, placementInfo->rotation.x);
+	Debug::Info("ROTATES [%f, %f, %f]", placementInfo->rotation.x, placementInfo->rotation.y, placementInfo->rotation.z);
 }
 
 WMOInstance::WMOInstance(WMO* _wmoObject, WMOPlacementInfo* _placementInfo) : wmoObject(_wmoObject)
@@ -42,11 +43,11 @@ void WMOInstance::draw()
 
 	_Pipeline->Translate(placementInfo->position);
 
-	/*_Pipeline->RotateX(placementInfo->rotation.z);
+	_Pipeline->RotateX(placementInfo->rotation.z);
 	_Pipeline->RotateY(placementInfo->rotation.y);
-	_Pipeline->RotateZ(placementInfo->rotation.x);*/
+	_Pipeline->RotateZ(placementInfo->rotation.x);
 		
-	wmoObject->draw(placementInfo->doodadSetIndex, placementInfo->position, 0/*placementInfo->rotation.y*/);
+	wmoObject->draw(placementInfo->doodadSetIndex);
 
 	PERF_INC(PERF_MAP_MODELS_WMOs);
 }
