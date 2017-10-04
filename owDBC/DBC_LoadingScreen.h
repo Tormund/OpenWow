@@ -2,10 +2,10 @@
 
 #include "DBCFile.h"
 
-__DBC_DEF_BEGIN(gLoadingScreensDB)
+DBC_DEF_BEGIN(DBC_LoadingScreen)
 
-ADD_STRING(Name, 1);
-ADD_STRING(FileName, 2);
-ADD_TYPE_VALUE(uint32_t, HasWideScreen, 3);
+__DBC_STRING(Name, 2);
+__DBC_STRING(FileName, 3);
+__DBC_TVALUE(uint32_t, HasWideScreen, 4);
 
-__DBC_DEF_END
+DBC_DEF_END

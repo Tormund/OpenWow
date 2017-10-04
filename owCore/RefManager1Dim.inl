@@ -1,7 +1,5 @@
 #pragma once
 
-#include <map>
-
 template <class OBJECT_TYPE>
 inline OBJECT_TYPE* RefManager1Dim<OBJECT_TYPE>::Add(cstring name)
 {
@@ -11,7 +9,6 @@ inline OBJECT_TYPE* RefManager1Dim<OBJECT_TYPE>::Add(cstring name)
 	if ((item = GetItemByName(name)) != nullptr)
 	{
 		item->AddRef();
-		//Debug::Warn("Item [%s] already exists", name.c_str());
 		return item;
 	}
 
@@ -36,7 +33,6 @@ inline void RefManager1Dim<OBJECT_TYPE>::Delete(cstring name)
 	OBJECT_TYPE* item = GetItemByName(name);
 	if (item != nullptr)
 	{
-
 		item->DelRef();
 
 		if (item->NeedDelete())
@@ -54,7 +50,7 @@ inline void RefManager1Dim<OBJECT_TYPE>::Delete(OBJECT_TYPE* item)
 	{
 		if (it->second == item)
 		{
-			this.Delete(it->first);
+			this->Delete(it->first);
 			return;
 		}
 	}

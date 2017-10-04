@@ -185,6 +185,7 @@
     <ClCompile Include="ParticleEmitters.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="RibbonEmitter.cpp" />
+    <ClCompile Include="Sky_Model.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -208,6 +209,7 @@
     <ClInclude Include="Particle.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="RibbonEmitter.h" />
+    <ClInclude Include="Sky_Model.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

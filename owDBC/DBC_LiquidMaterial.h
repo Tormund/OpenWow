@@ -2,9 +2,9 @@
 
 #include "DBCFile.h"
 
-__DBC_DEF_BEGIN(gLiquidMaterialDB)
+DBC_DEF_BEGIN(DBC_LiquidMaterial)
 
-ADD_TYPE_VALUE(uint32_t, LiquidVertexFormat, 1);
-ADD_TYPE_VALUE(uint32_t, Flags, 2);
+__DBC_TVALUE(uint32_t, LiquidVertexFormat, 2);
+__DBC_TVALUE(uint32_t, Flags, 3);
 
-__DBC_DEF_END
+DBC_DEF_END

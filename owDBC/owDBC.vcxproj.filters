@@ -1,32 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="DBC_LoadingScreen.cpp">
-      <Filter>Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DBC_Map.cpp">
-      <Filter>Files</Filter>
-    </ClCompile>
     <ClCompile Include="DBCFile.cpp">
       <Filter>General</Filter>
     </ClCompile>
     <ClCompile Include="DBCs.cpp">
       <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="ForeignKey.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="DBC_LiquidType.cpp">
-      <Filter>Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DBC_LiquidMaterial.cpp">
-      <Filter>Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DBC_Light.cpp">
-      <Filter>Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DBC_LightSkyBox.cpp">
-      <Filter>Files</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
@@ -43,9 +22,6 @@
     <ClInclude Include="DBCs.h">
       <Filter>General</Filter>
     </ClInclude>
-    <ClInclude Include="ForeignKey.h">
-      <Filter>General</Filter>
-    </ClInclude>
     <ClInclude Include="DBC_LiquidType.h">
       <Filter>Files</Filter>
     </ClInclude>
@@ -60,6 +36,21 @@
     </ClInclude>
     <ClInclude Include="..\shared\owDBC.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="DBC_AreaTable.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DBC_LiquidObject.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DBC_LightParams.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DBC_LightIntBand.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DBC_LightFloatBand.h">
+      <Filter>Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Files">
@@ -68,5 +59,10 @@
     <Filter Include="General">
       <UniqueIdentifier>{3b442b07-0951-4c6c-99cc-49900aff2a7a}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DBCFile.inl">
+      <Filter>General</Filter>
+    </None>
   </ItemGroup>
 </Project>

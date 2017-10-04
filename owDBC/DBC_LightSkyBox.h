@@ -2,9 +2,9 @@
 
 #include "DBCFile.h"
 
-__DBC_DEF_BEGIN(gLightSkyboxDB)
+DBC_DEF_BEGIN(DBC_LightSkybox)
 
-ADD_STRING(Filename, 1);
-ADD_TYPE_VALUE(uint32_t, Flags, 2);
+__DBC_STRING(Filename, 2);
+__DBC_TVALUE(uint32_t, Flags, 3);
 
-__DBC_DEF_END
+DBC_DEF_END

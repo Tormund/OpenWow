@@ -38,7 +38,7 @@ void DoodadInstance::Draw()
 	_Pipeline->Scale(placementInfo->scale, -placementInfo->scale, -placementInfo->scale);
 
 	// Get actual position
-	vec3 pos = vec4(_Pipeline->GetWorld() * vec4(1.0f, 1.0f, 1.0f, 1.0f)).xyz;
+	vec3 pos = vec3(_Pipeline->GetWorld() * vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	float radius = modelObject->m_Radius * placementInfo->scale;
 
 	// Distance test

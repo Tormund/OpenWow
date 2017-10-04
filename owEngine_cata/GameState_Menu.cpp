@@ -9,11 +9,8 @@ bool GameState_Menu::Init()
 {
 	_Input->AddInputListener(this);
 
-	_ModulesMgr->LoadModule(_ModelsMgr, true);
-	_ModulesMgr->LoadModule(_WMOsMgr, true);
-
-
-	//_ModulesMgr->GetModule<UIWindow>()->Enable();
+	_ModulesMgr->LoadModule(_ModelsMgr);
+	_ModulesMgr->LoadModule(_WMOsMgr);
 
 	enableFreeCamera = false;
 	cameraSprint = false;
@@ -41,17 +38,17 @@ bool GameState_Menu::Init()
 
 	unsigned mapsX = mapsXStart;
 	unsigned mapsY = mapsYStart;
-	const unsigned mapsXdelta = 135;
+	const unsigned mapsXdelta = 200;
 	const unsigned mapsYdelta = 25;
 
 	int y = 0;
 
-	for (auto i = gMapDB.Records()->begin(); i != gMapDB.Records()->end(); ++i)
+	for (auto i = DBC_Map.Records()->begin(); i != DBC_Map.Records()->end(); ++i)
 	{
 		auto record = (i->second);
 
 		// Check
-		if (mapsY + mapsYdelta > 768)
+		if (mapsY + mapsYdelta > _Settings->windowSizeY)
 		{
 			mapsX += mapsXdelta;
 			mapsY = mapsYStart;
@@ -64,12 +61,11 @@ bool GameState_Menu::Init()
 		btn->Init(vec2(mapsX, mapsY), image);
 		btn->Attach(window);
 		btn->ShowText();
-		btn->SetText(record->Get_Directory_cstr());
-		SETBUTTONACTION_ARG(btn, GameState_Menu, this, OnBtn, gMapDBRecord*, record);
+		btn->SetText(record->Get_Name());
+		SETBUTTONACTION_ARG(btn, GameState_Menu, this, OnBtn, DBC_MapRecord*, record);
 
 		mapsY += mapsYdelta;
 	}
-
 
 	return true;
 }
@@ -244,21 +240,31 @@ void GameState_Menu::RenderUI(double t, double dt)
 //	_Render->RenderText(vec2(200, 0), string(sn));
 
 // Area and region
-		string areaName = "Unknown";
-		string regionName = "Unknown";
+
+		// Area
+		const DBÑ_AreaTableRecord* areaRecord = nullptr;
+		string areaName = "<unknown>";
 		try
 		{
-			auto rec = gMapDB.getByID(_Map->getAreaID());
-			areaName = rec->Get_Name_cstr();
-			//regionName = AreaDB::getAreaName(rec.getUInt(AreaDB::Region));
+			areaRecord = DBÑ_AreaTable.getByID(_Map->getAreaID());
+			areaName = areaRecord->Get_Name();
 		}
 		catch (DBCNotFound)
+		{}
+
+		// Region
+		const DBÑ_AreaTableRecord* regionRecord = nullptr;
+		string regionName = "<unknown>";
+		try
 		{
-			areaName = "Not found!";
+			regionRecord = areaRecord->Get_ParentAreaID();
+			regionName = regionRecord->Get_Name();
 		}
-		_Render->RenderText(vec2(5, 0), "Ïðèâåò!!!");
-		_Render->RenderText(vec2(5, 20), "Area: [" + areaName + "] [" + std::to_string(_Map->getAreaID()) + "]");
-		_Render->RenderText(vec2(5, 40), "Region: " + regionName + "]");
+		catch (DBCNotFound)
+		{}
+
+		_Render->RenderText(vec2(5, 20), "Area: [" + areaName + "] [Area id = " + std::to_string(_Map->getAreaID()) + "]");
+		_Render->RenderText(vec2(5, 40), "Region: [" + regionName + "]");
 		_Render->RenderText(vec2(5, 60), "CURRX: " + to_string(_Map->GetCurrentX()) + ", CURRZ " + to_string(_Map->GetCurrentZ()));
 
 
@@ -272,14 +278,42 @@ void GameState_Menu::RenderUI(double t, double dt)
 
 		// Time
 		_Render->RenderText(vec2(_Settings->windowSizeX - 150, 0), "TIME [" + to_string(_EnvironmentManager->m_GameTime.GetHour()) + "." + to_string(_EnvironmentManager->m_GameTime.GetMinute()) + "]");
-	
+		char buff[256];
+		
+		// Ambient
+
+		sprintf(buff, "Amb[c=[%0.2f %0.2f %0.2f] i=[%f]]", 
+				_EnvironmentManager->dayNightPhase.ambientColor.x, _EnvironmentManager->dayNightPhase.ambientColor.y, _EnvironmentManager->dayNightPhase.ambientColor.z,
+				_EnvironmentManager->dayNightPhase.ambientIntensity
+		);
+		_Render->RenderText(vec2(_Settings->windowSizeX - 400, 20), buff);
+		
+		// Day
+
+		sprintf(buff, "Day[c=[%0.2f %0.2f %0.2f] i=[%f] d=[%0.2f %0.2f %0.2f]]", 
+				_EnvironmentManager->dayNightPhase.dayColor.x, _EnvironmentManager->dayNightPhase.dayColor.y, _EnvironmentManager->dayNightPhase.dayColor.z,
+				_EnvironmentManager->dayNightPhase.dayIntensity,
+				_EnvironmentManager->dayNightPhase.dayDir.x, _EnvironmentManager->dayNightPhase.dayDir.y, _EnvironmentManager->dayNightPhase.dayDir.z
+		);
+		_Render->RenderText(vec2(_Settings->windowSizeX - 400, 40), buff);
+		
+		// Night
+
+		sprintf(buff, "Nig[c=[%0.2f %0.2f %0.2f] i=[%f] d=[%0.2f %0.2f %0.2f]]",
+				_EnvironmentManager->dayNightPhase.nightColor.x, _EnvironmentManager->dayNightPhase.nightColor.y, _EnvironmentManager->dayNightPhase.nightColor.z,
+				_EnvironmentManager->dayNightPhase.nightIntensity,
+				_EnvironmentManager->dayNightPhase.nightDir.x, _EnvironmentManager->dayNightPhase.nightDir.y, _EnvironmentManager->dayNightPhase.nightDir.z
+		);
+		_Render->RenderText(vec2(_Settings->windowSizeX - 400, 60), buff);
+
 
 
 
 		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, _World->m_gbuffer->textures[3]);
+		//glBindTexture(GL_TEXTURE_2D, _World->m_gbuffer->textures[3]);
+		glBindTexture(GL_TEXTURE_2D, _World->m_gbuffer->depthTexture);
 
-		_Render->RenderRectangle(vec2(_Settings->windowSizeX * 2.0 / 3.0, 0), vec2(_Settings->windowSizeX / 3, _Settings->windowSizeY / 3), true, COLOR_WHITE);
+		_Render->RenderRectangle(vec2(_Settings->windowSizeX * 2.0 / 3.0, _Settings->windowSizeY * 2.0 / 3.0), vec2(_Settings->windowSizeX / 3, _Settings->windowSizeY / 3), true, COLOR_WHITE);
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glDisable(GL_TEXTURE_2D);

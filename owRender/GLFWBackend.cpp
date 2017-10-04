@@ -34,11 +34,10 @@ bool GLFWBackend::Init()
 		Debug::Error("GLFW[]: Error while init GLFW!");
 		return false;
 	}
-	Debug::Info("GLFW[]: Version [%s].", glfwGetVersionString());
-
-	//
+	Debug::Print("GLFW[]: Version [%s].", glfwGetVersionString());
 
 	// Set window options
+
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -46,32 +45,31 @@ bool GLFWBackend::Init()
 	//glfwWindowHint(GLFW_SAMPLES, 8);
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 
-	//
-
 	// Monitor
+
 	primaryMonitor = glfwGetPrimaryMonitor();
-	const char* primaryMonitorName = glfwGetMonitorName(primaryMonitor);
-	Debug::Info("GLFW[]: Primary monitor name [%s]", primaryMonitorName);
+	//const char* primaryMonitorName = glfwGetMonitorName(primaryMonitor);
+	//Debug::Print("GLFW[]: Primary monitor name [%s]", primaryMonitorName);
 
 	// Videomode contain settings
+
 	const GLFWvidmode* primaryMonitorMode = glfwGetVideoMode(primaryMonitor);
-	Debug::Info("GLFW[]: Primary monitor resolution [%d, %d]", primaryMonitorMode->width, primaryMonitorMode->height);
+	Debug::Print("GLFW[]: Primary monitor resolution [%d, %d]", primaryMonitorMode->width, primaryMonitorMode->height);
 
 	// Physical size in mm
-	int32_t primaryMonitorPhysicalWidth, primaryMonitorPhysicalHeight;
-	glfwGetMonitorPhysicalSize(primaryMonitor, &primaryMonitorPhysicalWidth, &primaryMonitorPhysicalHeight);
-	Debug::Info("GLFW[]: Primary monitor physical size [%d, %d]", primaryMonitorPhysicalWidth, primaryMonitorPhysicalHeight);
-
-	//
+	//int32_t primaryMonitorPhysicalWidth, primaryMonitorPhysicalHeight;
+	//glfwGetMonitorPhysicalSize(primaryMonitor, &primaryMonitorPhysicalWidth, &primaryMonitorPhysicalHeight);
+	//Debug::Print("GLFW[]: Primary monitor physical size [%d, %d]", primaryMonitorPhysicalWidth, primaryMonitorPhysicalHeight);
 
 	// Create GLFW window
+
 	window = glfwCreateWindow(_Settings->windowSizeX, _Settings->windowSizeY, "Default window title.", nullptr, nullptr);
 
 	// Move window to center
-	uint32_t windowPositionX = (primaryMonitorMode->width / 2) - (_Settings->windowSizeX / 2);
-	uint32_t windowPositionY = (primaryMonitorMode->height / 2) - (_Settings->windowSizeY / 2);
-	glfwSetWindowPos(window, windowPositionX, windowPositionY);
-	Debug::Info("GLFW[]: Window position [%d, %d]", windowPositionX, windowPositionY);
+	//uint32_t windowPositionX = (primaryMonitorMode->width / 2) - (_Settings->windowSizeX / 2);
+	//uint32_t windowPositionY = (primaryMonitorMode->height / 2) - (_Settings->windowSizeY / 2);
+	//glfwSetWindowPos(window, windowPositionX, windowPositionY);
+	//Debug::Print("GLFW[]: Window position [%d, %d]", windowPositionX, windowPositionY);
 
 	//nativeWindow = glfwGetWin32Window(window);
 	glfwMakeContextCurrent(window);
@@ -83,9 +81,8 @@ bool GLFWBackend::Init()
 	// Resize callback
 	glfwSetFramebufferSizeCallback(window, GLFWFramebufferCallback);
 
-	//
+	// GLEW
 
-	// Loading glew libary
 	//glewExperimental = GL_TRUE;
 	GLenum err = glewInit();
 	if (err != GLEW_OK)
@@ -93,11 +90,17 @@ bool GLFWBackend::Init()
 		Debug::Error("GLFW[]: Error while init GLEW! [%s]", glewGetErrorString(err));
 		return false;
 	}
-	Debug::Info("GLFW[]: GLEW version [%s]", glewGetString(GLEW_VERSION));
+	Debug::Print("GLFW[]: GLEW version [%s]", glewGetString(GLEW_VERSION));
 
-	//
+	// OpenGL
+
+	Debug::Print("GLFW[]: OpenGL version [%s].", glGetString(GL_VERSION));
+	Debug::Print("GLFW[]: OpenGL vendor [%s].", glGetString(GL_VENDOR));
+	Debug::Print("GLFW[]: OpenGL renderer [%s].", glGetString(GL_RENDERER));
+	Debug::Print("GLFW[]: OpenGL shaders version [%s].", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
 	// Input
+
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, 0);
 	glfwSetMouseButtonCallback(window, GLFWMouseCallback);
 	glfwSetCursorPosCallback(window, GLFWMousePositionCallback);

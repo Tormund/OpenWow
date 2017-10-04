@@ -7,10 +7,10 @@ class ModulesMgr
 	CLASS_INSTANCE(ModulesMgr);
 
 public:
-	 bool LoadModule(Module* _module, bool isSystemModule = false);
+	 bool LoadModule(Module* _module);
 	 void DestroyModule(Module* _module);
 
-	 void DestroyAllModules(bool _includeSystem = true);
+	 void DestroyAllModules();
 
 	 bool IsModuleLoaded(Module* _module) const;
 

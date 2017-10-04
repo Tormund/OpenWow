@@ -1,7 +1,5 @@
 #pragma once
 
-class gLightDBRecord;
-
 class SkyColor
 {
 public:
@@ -18,6 +16,8 @@ public:
 
 //
 
+class DBC_LightRecord;
+
 class Sky
 {
 public:
@@ -25,10 +25,10 @@ public:
 	float radiusInner;
 	float radiusOuter;
 
-	Sky(gLightDBRecord* data);
+	Sky(DBC_LightRecord* data);
 
-	vector<SkyColor> colorRows[36];
-	int mmin[36];
+	vector<SkyColor> colorRows[18];
+	int mmin[18];
 
 	vec3 colorFor(int r, int t) const;
 

@@ -3,6 +3,8 @@
 // Includes
 #include "Map_Tile.h"
 
+class DBC_MapRecord;
+
 class Map
 {
 	CLASS_INSTANCE(Map);
@@ -13,7 +15,7 @@ class Map
 	void CreateMapArrays();
 	void InitGlobalsWMOs();
 
-	void PreloadMap(gMapDBRecord* _map);
+	void PreloadMap(DBC_MapRecord* _map);
 	void LoadLowTerrain();
 	void UnloadMap();
 
@@ -35,7 +37,7 @@ class Map
 
 public: // Getters
 	string GetPath() { return path; }
-	gMapDBRecord* GetTemplate() { return templateMap; }
+	DBC_MapRecord* GetTemplate() { return templateMap; }
 
 #ifdef WMO_INCL
 	WMOInstance* GetGlobalWMOInstance() { return globalWMO; }
@@ -83,7 +85,7 @@ private:
 
 private:
 	string path;
-	gMapDBRecord* templateMap;
+	DBC_MapRecord* templateMap;
 
 	bool m_BigAlpha;
 

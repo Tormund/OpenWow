@@ -70,12 +70,13 @@ bool Frustum::contains(cvec3 v) const
 
 	for (uint8_t i = 0; i < 6; i++)
 	{
-		if ((planes[i].a * v.x + planes[i].b * v.y + planes[i].c * v.z + planes[i].d) <= 0)
+		if (!planes[i].Contains(v))
 		{
 			_Perfomance->Stop(PERF_FRUSTRUM);
 			return false;
 		}
 	}
+
 	_Perfomance->Stop(PERF_FRUSTRUM);
 	return true;
 }
@@ -102,7 +103,7 @@ bool Frustum::intersects(cvec3 v1, cvec3 v2) const
 
 		for (uint8_t k = 0; k < 8; k++)
 		{
-			if ((planes[i].a * points[k].x + planes[i].b * points[k].y + planes[i].c * points[k].z + planes[i].d) > 0)
+			if (planes[i].Contains(points[k]))
 			{
 				numIn++;
 			}
@@ -119,6 +120,11 @@ bool Frustum::intersects(cvec3 v1, cvec3 v2) const
 	return true;
 }
 
+bool Frustum::intersects2(cvec3 v1, cvec3 v2) const
+{
+	return contains(v1) || contains(v2);
+}
+
 bool Frustum::intersectsSphere(cvec3 v, const float rad) const
 {
 	//return true; // BOUZI
@@ -127,8 +133,7 @@ bool Frustum::intersectsSphere(cvec3 v, const float rad) const
 
 	for (uint8_t i = 0; i < 6; ++i)
 	{
-		float distance = (planes[i].a * v.x + planes[i].b * v.y + planes[i].c * v.z + planes[i].d);
-		if (distance < -rad)
+		if (planes[i].Distance(v) < -rad)
 		{
 			_Perfomance->Stop(PERF_FRUSTRUM);
 			return false;

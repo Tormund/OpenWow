@@ -14,7 +14,7 @@ public:
 
 public:
 	static const uint32_t SPACE = 32;
-	static const uint32_t NUM_CHARS = 96;
+	static const uint32_t NUM_CHARS = 192;
 
 private:
 	GLuint m_TextureOpenglId;

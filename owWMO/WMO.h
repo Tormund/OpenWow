@@ -133,6 +133,7 @@ public:
 #ifdef DOODADS_INCL
 	char* m_Skybox_Filename;                                 // MOSB chunk
 	MDX* m_Skybox;
+	//Sky_Model* m_SkyModel;
 #endif
 
 	//-- Portals --//

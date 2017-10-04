@@ -1,7 +1,5 @@
 #pragma once
 
-class gMapDBRecord;
-
 class World
 {
 	CLASS_INSTANCE(World);
@@ -16,9 +14,6 @@ public:
 	void drawShader(GLint _color);
 	void RenderGeom();
 	void RenderPostprocess();
-
-	void DSGeometryPassBegin();
-	void DSGeometryPassEnd();
 
 	void DSDirectionalLightPass(DirectionalLight& _light);
 	void DSSimpleRenderPass();

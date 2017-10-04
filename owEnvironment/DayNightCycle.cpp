@@ -5,7 +5,7 @@
 
 DayNightCycle::DayNightCycle()
 {
-	File f("World\\dnc.db");
+	File f = "World\\dnc.db";
 	if (!f.Open())
 	{
 		Debug::Error("DayNightCycle[]: Can't init day-night cycle.");
@@ -17,13 +17,15 @@ DayNightCycle::DayNightCycle()
 	// Header
 	f.ReadBytes(&nFields1, 4);
 	f.ReadBytes(&nFields, 4);
-	assert2(nFields == nFields1, "DayNightCycle: nFields mismatch!");
-	Debug::Info("DayNightCycle nFields = [%d]", nFields);
+	assert1(nFields == nFields1);
+	assert1(nFields == 25);
 
 	// Field Descriptions
 	uint32_t magic0x53;
 	f.ReadBytes(&magic0x53, 4);
-	assert2(magic0x53 == 0x53, "DayNightCycle: magic0x53 is not 0x53!");
+	assert1(magic0x53 == 0x53);
+
+	// Final offset
 	f.ReadBytes(&d, 4); // d is now the final offset
 
 	// Skip names
@@ -31,25 +33,20 @@ DayNightCycle::DayNightCycle()
 
 	while (f.GetPos() < d)
 	{
-		DayNightPhase ols;
-		ols.init(f);
-
+		DayNightPhase ols(f);
 		dayNightPhases.push_back(ols);
 	}
 }
 
-DayNightPhase DayNightCycle::getPhase(int time)
+DayNightPhase DayNightCycle::getPhase(uint32_t _gameTime)
 {
-	int ta = time / 120;
-	int tb = (ta + 1) % 24;
+	uint32_t hourA = _gameTime / 120;
+	uint32_t hourB = (hourA + 1) % 24;
 
-	float r = (time - (ta * 120)) / 120.0f;
+	DayNightPhase* a = &dayNightPhases[hourA];
+	DayNightPhase* b = &dayNightPhases[hourB];
 
-	DayNightPhase* a = &dayNightPhases[ta];
-	DayNightPhase* b = &dayNightPhases[tb];
+	float r = static_cast<float>(_gameTime - (hourA * 120)) / 120.0f;
 
-	DayNightPhase out;
-	out.interpolate(a, b, r);
-
-	return out;
+	return DayNightPhase(a, b, r);
 }

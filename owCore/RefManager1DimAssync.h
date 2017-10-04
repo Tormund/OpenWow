@@ -114,10 +114,8 @@ private:
 public:
 	map<string, OBJECT_TYPE*> objects; // name - item
 
-protected:
-
-public:
 #ifndef DISABLE_ASSYNC
+	public:
 	HANDLE m_Thread_Loader;
 	HANDLE m_Event_Add;
 	ContainerAssync<string, OBJECT_TYPE*> m_ObjectsToLoad; // name - item

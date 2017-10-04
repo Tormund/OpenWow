@@ -30,6 +30,12 @@ class EnvironmentManager : public Module
 public:
 	void BeforeDraw();
 
+public:
+	vec4 m_OutdoorAmbientColor;
+	vec4 m_OutdoorDayDiffuseColor;
+	vec4 m_OutdoorNightDiffuseColor;
+	vec4 m_OutdoorSpecularColor;
+	
 
 public:
 	bool m_HasSky;

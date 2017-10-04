@@ -1,41 +1,45 @@
 #pragma once
 
+// Common
 #include "DBCFile.h"
 
+DBC_DEFINE(DBÑ_AreaTable);
 
-class LightIntBandDB : public DBCFile<Record>
-{
-public:
-	LightIntBandDB() :
-		DBCFile("DBFilesClient\\LightIntBand.dbc")
-	{}
+DBC_DEFINE(DBC_Light);
+DBC_DEFINE(DBC_LightFloatBand);
+DBC_DEFINE(DBC_LightIntBand);
+DBC_DEFINE(DBC_LightParams);
+DBC_DEFINE(DBC_LightSkybox);
 
-	/// Fields
-	static const size_t ID = 0;				// uint
-	static const size_t Entries = 1;		// uint
-	static const size_t Times = 2;			// uint
-	static const size_t Values = 18;		// uint
-};
+DBC_DEFINE(DBC_LiquidMaterial);
+DBC_DEFINE(DBC_LiquidObject);
+DBC_DEFINE(DBC_LiquidType);
 
-class LightFloatBandDB : public DBCFile<Record>
-{
-public:
-	LightFloatBandDB() :
-		DBCFile("DBFilesClient\\LightFloatBand.dbc")
-	{}
+DBC_DEFINE(DBC_LoadingScreen);
 
-	/// Fields
-	static const size_t ID = 0;				// uint
-	static const size_t Entries = 1;		// uint
-	static const size_t Times = 2;			// uint
-	static const size_t Values = 18;		// float
-};
+DBC_DEFINE(DBC_Map);
+
+// My files
+#include "DBC_AreaTable.h"
+
+#include "DBC_Light.h"
+#include "DBC_LightFloatBand.h"
+#include "DBC_LightIntBand.h"
+#include "DBC_LightParams.h"
+#include "DBC_LightSkyBox.h"
+
+#include "DBC_LiquidMaterial.h"
+#include "DBC_LiquidObject.h"
+#include "DBC_LiquidType.h"
+
+#include "DBC_LoadingScreen.h"
+#include "DBC_Map.h"
 
 class GroundEffectTextureDB : public DBCFile<Record>
 {
 public:
 	GroundEffectTextureDB() :
-		DBCFile("DBFilesClient\\GroundEffectTexture.dbc")
+		DBCFile("GroundEffectTexture.dbc")
 	{}
 
 	/// Fields
@@ -50,7 +54,7 @@ class GroundEffectDoodadDB : public DBCFile<Record>
 {
 public:
 	GroundEffectDoodadDB() :
-		DBCFile("DBFilesClient\\GroundEffectDoodad.dbc")
+		DBCFile("GroundEffectDoodad.dbc")
 	{}
 
 	/// Fields
@@ -60,8 +64,5 @@ public:
 
  void OpenDBs();
 
- extern LightIntBandDB gLightIntBandDB;
- extern LightFloatBandDB gLightFloatBandDB;
  extern GroundEffectDoodadDB gGroundEffectDoodadDB;
  extern GroundEffectTextureDB gGroundEffectTextureDB;
-// extern LiquidTypeDB gLiquidTypeDB;

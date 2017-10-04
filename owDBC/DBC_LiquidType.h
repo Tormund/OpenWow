@@ -2,16 +2,19 @@
 
 #include "DBCFile.h"
 
-__DBC_DEF_BEGIN(gLiquidTypeDB)
+DBC_DEF_BEGIN(DBC_LiquidType)
 
-ADD_STRING(Name, 1);
+__DBC_STRING(Name, 2);
+__DBC_TVALUE(uint32_t, Flags, 3);
+__DBC_TVALUE(uint32_t, Type, 4);			// 0: Water, 1: Ocean, 2: Magma, 3: Slime
 
-ADD_TYPE_VALUE(uint32_t, Type, 3);			// 0: Water, 1: Ocean, 2: Magma, 3: Slime
+// 5 	SoundEntries.dbc irefid
+// 6    Spell.dbc irefID
 
-ADD_TYPE_VALUE(uint32_t, LiquidMaterialID, 14);
+__DBC_REF_ID(DBC_LiquidMaterial, LiquidMaterialID, 15);
 
-ADD_STRING(Texture_FileName_Pattern, 15);
-ADD_STRING(Texture_ProceduralName, 15);
-ADD_STRING(Bump_FileName , 17);
+__DBC_STRING(Texture_FileName_Pattern, 16);
+__DBC_STRING(Texture_ProceduralName, 17);
+__DBC_STRING(Bump_FileName, 18);
 
-__DBC_DEF_END
+DBC_DEF_END

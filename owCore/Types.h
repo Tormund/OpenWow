@@ -1,7 +1,6 @@
 #pragma once
 
 // GLM Types
-#define GLM_SWIZZLE 
 #include <glm/glm.hpp>
 #include <glm/gtx/norm.hpp>
 #include <glm/gtx/rotate_vector.hpp>

@@ -80,7 +80,7 @@ void World::drawShader(GLint _color)
 	// Main frame
 	m_gbuffer->StartFrame(finalTexture1);
 	m_gbuffer->ClearFinalBuffer();
-	
+
 	// Geometry pass
 	m_gbuffer->BindForGeomPass();
 	m_gbuffer->Clear();
@@ -101,7 +101,7 @@ void World::drawShader(GLint _color)
 	//
 	// SECONDS PASS
 	//
-	
+	/*
 	// Conf test camera
 	testCamera->Position = mainCamera->Position + vec3(0, 1, 0) * 1000.0f;
 	testCamera->Yaw = mainCamera->Yaw;
@@ -118,7 +118,7 @@ void World::drawShader(GLint _color)
 	m_gbuffer->Clear();
 	RenderGeom();
 	_PipelineGlobal->RenderCamera(mainCamera);
-
+	*/
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 }
 
@@ -126,11 +126,6 @@ void World::drawShader(GLint _color)
 
 void World::RenderGeom()
 {
-	DSGeometryPassBegin();//////
-	////////////////////////////
-	m_gbuffer->Clear();
-
-
 	//------------------------------------------------------------------------------
 	// Draw sky
 	//------------------------------------------------------------------------------
@@ -225,9 +220,9 @@ void World::RenderGeom()
 	// Map water
 	//------------------------------------------------------------------------------
 	glDisable(GL_CULL_FACE);
-	//glDisable(GL_BLEND);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDisable(GL_BLEND);
+	//glEnable(GL_BLEND);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//if (_Settings->draw_map_chunk)
 	{
@@ -295,25 +290,15 @@ void World::RenderGeom()
 		_Map->RenderModels();
 	}
 	PERF_STOP(PERF_MAP_MODELS_MDXs);
-
-	//
-
-	////////////////////////////
-	DSGeometryPassEnd();////////
 }
 
 void World::RenderPostprocess()
 {
 	//DSSimpleRenderPass();
 
-	// LIGHTS, FOG ...
-	DirectionalLight dirLight;
-	dirLight.ambient = _EnvironmentManager->skies->colorSet[LIGHT_GLOBAL_AMBIENT];
-	dirLight.diffuse = _EnvironmentManager->skies->colorSet[LIGHT_GLOBAL_DIFFUSE];
-	dirLight.Direction.x = 0;
-	dirLight.Direction.y = 0;
-	dirLight.Direction.z = 0;
-	DSDirectionalLightPass(dirLight);
+	_EnvironmentManager->dayNightPhase.setupLighting();
+	DSDirectionalLightPass(_EnvironmentManager->dayNightPhase.m_dirLightDay);
+	DSDirectionalLightPass(_EnvironmentManager->dayNightPhase.m_dirLightNight);
 }
 
 void World::tick(float dt)
@@ -336,23 +321,8 @@ void World::tick(float dt)
 
 
 
-void World::DSGeometryPassBegin()
-{
-	//m_gbuffer->BindForGeomPass();
-
-	//glDepthMask(GL_TRUE);
-	//glEnable(GL_DEPTH_TEST);
-}
-
-void World::DSGeometryPassEnd()
-{
-	//glDepthMask(GL_FALSE);
-}
-
 void World::DSDirectionalLightPass(DirectionalLight& _light)
 {
-	
-
 	_TechniquesMgr->m_DSDirLightPassTech->Bind();
 	_TechniquesMgr->m_DSDirLightPassTech->SetEyeWorldPos(_Camera->Position);
 	_TechniquesMgr->m_DSDirLightPassTech->SetDirectionalLight(_light);

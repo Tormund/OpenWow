@@ -3,11 +3,11 @@
 class RefItem
 {
 public:
-	 RefItem();
+	RefItem();
 	inline virtual ~RefItem() {}
 
-	 virtual void AddRef();
-	 virtual void DelRef();
+	virtual void AddRef();
+	virtual void DelRef();
 
 	inline uint32_t GetRefsCount() const { return refcount; }
 	inline bool NeedDelete() const { return (GetRefsCount() <= 0); }

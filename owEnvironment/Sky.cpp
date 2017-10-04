@@ -5,10 +5,8 @@
 
 const float skymul = 36.0f;
 
-Sky::Sky(gLightDBRecord* data)
+Sky::Sky(DBC_LightRecord* data)
 {
-	//position = vec3(data->Get_PositionX(), data->Get_PositionY(), data->Get_PositionZ()) / skymul;
-
 	position.x = data->Get_PositionX() / skymul;
 	position.y = data->Get_PositionY() / skymul;
 	position.z = data->Get_PositionZ() / skymul;
@@ -16,30 +14,32 @@ Sky::Sky(gLightDBRecord* data)
 	radiusInner = data->Get_RadiusInner() / skymul;
 	radiusOuter = data->Get_RadiusOuter() / skymul;
 
-	for (int i = 0; i < 36; i++)
+	for (int i = 0; i < 18; i++)
 	{
 		mmin[i] = -2;
 	}
 
 	global = (position.x == 0.0f && position.y == 0.0f && position.z == 0.0f);
 
-	int FirstId = data->Get_DataIDs() * 18;
+	uint32_t ParamsClear = data->Get_Params(0) * 18;
 
-	for (int i = 0; i < 18; i++)
+	for (uint32_t i = 0; i < 18; i++)
 	{
 		try
 		{
-			auto* rec = gLightIntBandDB.getByID(FirstId + i);
-			int entries = rec->getInt(LightIntBandDB::Entries);
+			auto rec = DBC_LightIntBand.getByID(ParamsClear + i);
+			uint32_t entries = rec->Get_Count();
 
 			if (entries == 0)
+			{
 				mmin[i] = -1;
+			}
 			else
 			{
-				mmin[i] = rec->getInt(LightIntBandDB::Times);
+				mmin[i] = rec->Get_Times(0);
 				for (int l = 0; l < entries; l++)
 				{
-					SkyColor sc(rec->getInt(LightIntBandDB::Times + l), rec->getInt(LightIntBandDB::Values + l));
+					SkyColor sc(rec->Get_Times(l), rec->Get_Values(l));
 					colorRows[i].push_back(sc);
 				}
 			}

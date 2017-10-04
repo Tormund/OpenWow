@@ -12,11 +12,6 @@ WMOInstance::WMOInstance(WMO* _wmoObject, File& f) : wmoObject(_wmoObject)
 	placementInfo->rotation = glm::radians(placementInfo->rotation);
 	placementInfo->rotation.x = -placementInfo->rotation.x;
 	placementInfo->rotation.y = placementInfo->rotation.y - PI / 2.0;
-
-
-
-	// Debug
-	Debug::Info("ROTATES [%f, %f, %f]", placementInfo->rotation.x, placementInfo->rotation.y, placementInfo->rotation.z);
 }
 
 WMOInstance::WMOInstance(WMO* _wmoObject, WMOPlacementInfo* _placementInfo) : wmoObject(_wmoObject)

@@ -33,6 +33,7 @@ protected:
 	virtual OBJECT_TYPE* CreateAction(cstring name) = 0;
 	virtual bool DeleteAction(cstring name) = 0;
 
+private:
 	inline void do_add(cstring name, OBJECT_TYPE* item)
 	{
 		item->AddRef();
@@ -40,7 +41,6 @@ protected:
 		objects[name] = item;
 	}
 
-private:
 	inline void pre_delete(OBJECT_TYPE* item)
 	{
 		string itemName;

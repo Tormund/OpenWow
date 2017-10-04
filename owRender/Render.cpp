@@ -156,9 +156,6 @@ void RenderGL::Set3D()
 	glDisable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
-	// Shoothing
-	//glDisable(GL_SMOOTH);
-
 	// Depth settings
 	glDisable(GL_DEPTH_TEST);
 

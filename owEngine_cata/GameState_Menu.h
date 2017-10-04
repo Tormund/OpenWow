@@ -2,8 +2,6 @@
 
 #include "world.h"
 
-class gMapDBRecord;
-
 enum Commands2
 {
 	CMD_NONE2,
@@ -27,9 +25,9 @@ public:
 
 	//
 
-	void OnBtn(gMapDBRecord* _e)
+	void OnBtn(DBC_MapRecord* _e)
 	{
-		Debug::Green("Load level %s [%d]", _e->Get_Directory_cstr(), _e->Get_ID());
+		Debug::Green("Load level %s [%d]", _e->Get_Directory(), _e->Get_ID());
 
 		_Map->PreloadMap(_e);
 		cmd = CMD_SELECT2;

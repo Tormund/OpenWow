@@ -19,7 +19,7 @@ int main(int argumentCount, char* arguments[])
 	MPQFile::AddArchive(string("expansion1.MPQ"));
 	MPQFile::AddArchive(string("expansion2.MPQ"));
 	MPQFile::AddArchive(string("expansion3.MPQ"));
-	MPQFile::AddArchive(string("sound.MPQ"));
+	//MPQFile::AddArchive(string("sound.MPQ"));
 	MPQFile::AddArchive(string("world.MPQ"));
 	MPQFile::AddArchive(string("world2.MPQ"));
 
@@ -27,17 +27,17 @@ int main(int argumentCount, char* arguments[])
 	MPQFile::AddArchive(string("wow-update-base-15354.MPQ"));
 	MPQFile::AddArchive(string("wow-update-base-15595.MPQ"));
 
-	MPQFile::AddArchive(string("ruRU/expansion1-locale-ruRU.MPQ"));
-	MPQFile::AddArchive(string("ruRU/expansion1-speech-ruRU.MPQ"));
-	MPQFile::AddArchive(string("ruRU/expansion2-locale-ruRU.MPQ"));
-	MPQFile::AddArchive(string("ruRU/expansion2-speech-ruRU.MPQ"));
-	MPQFile::AddArchive(string("ruRU/expansion3-locale-ruRU.MPQ"));
-	MPQFile::AddArchive(string("ruRU/expansion3-speech-ruRU.MPQ"));
-	MPQFile::AddArchive(string("ruRU/locale-ruRU.MPQ"));
-	MPQFile::AddArchive(string("ruRU/speech-ruRU.MPQ"));
-	MPQFile::AddArchive(string("ruRU/wow-update-ruRU-15211.MPQ"));
-	MPQFile::AddArchive(string("ruRU/wow-update-ruRU-15354.MPQ"));
-	MPQFile::AddArchive(string("ruRU/wow-update-ruRU-15595.MPQ"));
+	MPQFile::AddArchive(string("enUS/expansion1-locale-enUS.MPQ"));
+	//MPQFile::AddArchive(string("enUS/expansion1-speech-enUS.MPQ"));
+	MPQFile::AddArchive(string("enUS/expansion2-locale-enUS.MPQ"));
+	//MPQFile::AddArchive(string("enUS/expansion2-speech-enUS.MPQ"));
+	MPQFile::AddArchive(string("enUS/expansion3-locale-enUS.MPQ"));
+	//MPQFile::AddArchive(string("enUS/expansion3-speech-enUS.MPQ"));
+	MPQFile::AddArchive(string("enUS/locale-enUS.MPQ"));
+	//MPQFile::AddArchive(string("enUS/speech-enUS.MPQ"));
+	MPQFile::AddArchive(string("enUS/wow-update-enUS-15211.MPQ"));
+	MPQFile::AddArchive(string("enUS/wow-update-enUS-15354.MPQ"));
+	MPQFile::AddArchive(string("enUS/wow-update-enUS-15595.MPQ"));
 
 	// Init engine
 	if (!_Engine->Init(argumentQueue))

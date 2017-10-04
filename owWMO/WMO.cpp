@@ -142,16 +142,9 @@ bool WMO::Init()
 				m_Skybox_Filename = new char[size + 1];
 				f.ReadBytes(m_Skybox_Filename, size);
 				m_Skybox_Filename[size] = 0x00;
-
-
 				Debug::Warn("WMO[%s]: Skybox [%s]", GetName().c_str(), m_Skybox_Filename);
-				m_Skybox = _ModelsMgr->Add(m_Skybox_Filename);
 
-				if (!m_Skybox->IsLoaded())
-				{
-					_ModelsMgr->Delete(m_Skybox_Filename);
-					m_Skybox = nullptr;
-				}
+				//m_SkyModel = new Sky_Model(m_Skybox_Filename);
 			}
 #endif
 		}
@@ -289,7 +282,7 @@ bool WMO::Init()
 	for (auto it = m_Groups.begin(); it != m_Groups.end(); ++it)
 	{
 		(*it)->initDisplayList();
-		Debug::Info("WMO[%s]: Group [%s] added.", GetName().c_str(), (*it)->m_GroupName.c_str());
+		//Debug::Info("WMO[%s]: Group [%s] added.", GetName().c_str(), (*it)->m_GroupName.c_str());
 	}
 
 	m_Loaded = true;
@@ -437,44 +430,44 @@ void WMO::DEBUG_DrawBoundingBoxes()
 
 		vector<vec3> verts;
 
-		verts.push_back(vec3(g->bounds.b1.x, g->bounds.b1.y, g->bounds.b1.z));
-		verts.push_back(vec3(g->bounds.b1.x, g->bounds.b1.y, g->bounds.b2.z));
+		verts.push_back(vec3(g->bounds.Min().x, g->bounds.Min().y, g->bounds.Min().z));
+		verts.push_back(vec3(g->bounds.Min().x, g->bounds.Min().y, g->bounds.Max().z));
 
-		verts.push_back(vec3(g->bounds.b1.x, g->bounds.b1.y, g->bounds.b1.z));
-		verts.push_back(vec3(g->bounds.b1.x, g->bounds.b2.y, g->bounds.b1.z));
+		verts.push_back(vec3(g->bounds.Min().x, g->bounds.Min().y, g->bounds.Min().z));
+		verts.push_back(vec3(g->bounds.Min().x, g->bounds.Max().y, g->bounds.Min().z));
 
-		verts.push_back(vec3(g->bounds.b1.x, g->bounds.b1.y, g->bounds.b1.z));
-		verts.push_back(vec3(g->bounds.b2.x, g->bounds.b1.y, g->bounds.b1.z));
-
-
-		verts.push_back(vec3(g->bounds.b2.x, g->bounds.b2.y, g->bounds.b2.z));
-		verts.push_back(vec3(g->bounds.b2.x, g->bounds.b1.y, g->bounds.b2.z));
-
-		verts.push_back(vec3(g->bounds.b2.x, g->bounds.b2.y, g->bounds.b2.z));
-		verts.push_back(vec3(g->bounds.b2.x, g->bounds.b2.y, g->bounds.b1.z));
-
-		verts.push_back(vec3(g->bounds.b2.x, g->bounds.b2.y, g->bounds.b2.z));
-		verts.push_back(vec3(g->bounds.b1.x, g->bounds.b2.y, g->bounds.b2.z));
+		verts.push_back(vec3(g->bounds.Min().x, g->bounds.Min().y, g->bounds.Min().z));
+		verts.push_back(vec3(g->bounds.Max().x, g->bounds.Min().y, g->bounds.Min().z));
 
 
-		verts.push_back(vec3(g->bounds.b2.x, g->bounds.b2.y, g->bounds.b1.z));
-		verts.push_back(vec3(g->bounds.b2.x, g->bounds.b1.y, g->bounds.b1.z));
+		verts.push_back(vec3(g->bounds.Max().x, g->bounds.Max().y, g->bounds.Max().z));
+		verts.push_back(vec3(g->bounds.Max().x, g->bounds.Min().y, g->bounds.Max().z));
+
+		verts.push_back(vec3(g->bounds.Max().x, g->bounds.Max().y, g->bounds.Max().z));
+		verts.push_back(vec3(g->bounds.Max().x, g->bounds.Max().y, g->bounds.Min().z));
+
+		verts.push_back(vec3(g->bounds.Max().x, g->bounds.Max().y, g->bounds.Max().z));
+		verts.push_back(vec3(g->bounds.Min().x, g->bounds.Max().y, g->bounds.Max().z));
 
 
-		verts.push_back(vec3(g->bounds.b2.x, g->bounds.b1.y, g->bounds.b1.z));
-		verts.push_back(vec3(g->bounds.b2.x, g->bounds.b1.y, g->bounds.b2.z));
+		verts.push_back(vec3(g->bounds.Max().x, g->bounds.Max().y, g->bounds.Min().z));
+		verts.push_back(vec3(g->bounds.Max().x, g->bounds.Min().y, g->bounds.Min().z));
 
-		verts.push_back(vec3(g->bounds.b2.x, g->bounds.b1.y, g->bounds.b2.z));
-		verts.push_back(vec3(g->bounds.b1.x, g->bounds.b1.y, g->bounds.b2.z));
 
-		verts.push_back(vec3(g->bounds.b1.x, g->bounds.b1.y, g->bounds.b2.z));
-		verts.push_back(vec3(g->bounds.b1.x, g->bounds.b2.y, g->bounds.b2.z));
+		verts.push_back(vec3(g->bounds.Max().x, g->bounds.Min().y, g->bounds.Min().z));
+		verts.push_back(vec3(g->bounds.Max().x, g->bounds.Min().y, g->bounds.Max().z));
 
-		verts.push_back(vec3(g->bounds.b1.x, g->bounds.b2.y, g->bounds.b2.z));
-		verts.push_back(vec3(g->bounds.b1.x, g->bounds.b2.y, g->bounds.b1.z));
+		verts.push_back(vec3(g->bounds.Max().x, g->bounds.Min().y, g->bounds.Max().z));
+		verts.push_back(vec3(g->bounds.Min().x, g->bounds.Min().y, g->bounds.Max().z));
 
-		verts.push_back(vec3(g->bounds.b1.x, g->bounds.b2.y, g->bounds.b1.z));
-		verts.push_back(vec3(g->bounds.b2.x, g->bounds.b2.y, g->bounds.b1.z));
+		verts.push_back(vec3(g->bounds.Min().x, g->bounds.Min().y, g->bounds.Max().z));
+		verts.push_back(vec3(g->bounds.Min().x, g->bounds.Max().y, g->bounds.Max().z));
+
+		verts.push_back(vec3(g->bounds.Min().x, g->bounds.Max().y, g->bounds.Max().z));
+		verts.push_back(vec3(g->bounds.Min().x, g->bounds.Max().y, g->bounds.Min().z));
+
+		verts.push_back(vec3(g->bounds.Min().x, g->bounds.Max().y, g->bounds.Min().z));
+		verts.push_back(vec3(g->bounds.Max().x, g->bounds.Max().y, g->bounds.Min().z));
 
 		GLuint buffer;
 		glGenBuffers(1, &buffer);
@@ -516,7 +509,7 @@ void WMO::DEBUG_DrawPortalsRelations()
 			pc += m_PortalVertices[j];
 		}
 		pc *= 0.25f;
-		vec3 gc = (m_Groups[portalReference->groupIndex]->bounds.b1 + m_Groups[portalReference->groupIndex]->bounds.b2) * 0.5f;
+		vec3 gc = (m_Groups[portalReference->groupIndex]->bounds.Min() + m_Groups[portalReference->groupIndex]->bounds.Max()) * 0.5f;
 
 		//
 

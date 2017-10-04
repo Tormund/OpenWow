@@ -30,7 +30,7 @@ bool Engine::Init(vector<string>& _argumentQueue)
 	//Debug::AddDebugOutput(new DebugOutput_Log);
 
 	// Load graphics
-	_ModulesMgr->LoadModule(_GLFW, true);
+	_ModulesMgr->LoadModule(_GLFW);
 
 	Debug::Green("Engine[]: Loading.");
 
@@ -43,12 +43,12 @@ bool Engine::Init(vector<string>& _argumentQueue)
 	}
 
 	// Load modules
-	_ModulesMgr->LoadModule(_Render, true);
-	//_ModulesMgr->LoadModule(_FileSystem, true);
-	_ModulesMgr->LoadModule(_TexturesMgr, true);
-	_ModulesMgr->LoadModule(_FontsMgr, true);
-	_ModulesMgr->LoadModule(_Input, true);
-	_ModulesMgr->LoadModule(_UIMgr, true);
+	_ModulesMgr->LoadModule(_Render);
+	//_ModulesMgr->LoadModule(_FileSystem);
+	_ModulesMgr->LoadModule(_TexturesMgr);
+	_ModulesMgr->LoadModule(_FontsMgr);
+	_ModulesMgr->LoadModule(_Input);
+	_ModulesMgr->LoadModule(_UIMgr);
 
 	// Add OpenGL console
 	//consoleOpenGL = new ConsoleOpenGL;

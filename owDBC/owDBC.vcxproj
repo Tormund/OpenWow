@@ -164,27 +164,27 @@
   <ItemGroup>
     <ClCompile Include="DBCFile.cpp" />
     <ClCompile Include="DBCs.cpp" />
-    <ClCompile Include="DBC_Light.cpp" />
-    <ClCompile Include="DBC_LightSkyBox.cpp" />
-    <ClCompile Include="DBC_LiquidMaterial.cpp" />
-    <ClCompile Include="DBC_LiquidType.cpp" />
-    <ClCompile Include="DBC_LoadingScreen.cpp" />
-    <ClCompile Include="DBC_Map.cpp" />
-    <ClCompile Include="ForeignKey.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\shared\owDBC.h" />
     <ClInclude Include="DBCFile.h" />
     <ClInclude Include="DBCs.h" />
+    <ClInclude Include="DBC_AreaTable.h" />
     <ClInclude Include="DBC_Light.h" />
+    <ClInclude Include="DBC_LightFloatBand.h" />
     <ClInclude Include="DBC_LightSkyBox.h" />
     <ClInclude Include="DBC_LiquidMaterial.h" />
+    <ClInclude Include="DBC_LiquidObject.h" />
     <ClInclude Include="DBC_LiquidType.h" />
     <ClInclude Include="DBC_LoadingScreen.h" />
     <ClInclude Include="DBC_Map.h" />
-    <ClInclude Include="ForeignKey.h" />
+    <ClInclude Include="DBC_LightParams.h" />
+    <ClInclude Include="DBC_LightIntBand.h" />
     <ClInclude Include="stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DBCFile.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

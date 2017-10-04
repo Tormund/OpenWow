@@ -9,7 +9,8 @@
 #include "Render.h"
 
 // Header
-#pragma pack(push, 1)
+
+#include "../shared/pack_begin.h"
 struct BLPHeader
 {
 	uint8_t magic[4];
@@ -25,7 +26,9 @@ struct BLPHeader
 	uint32_t mipOffsets[16];
 	uint32_t mipSizes[16];
 };
-#pragma pack(pop)
+#include "../shared/pack_end.h"
+
+//
 
 bool TexturesMgr::Init()
 {
@@ -36,6 +39,12 @@ bool TexturesMgr::Init()
 	black = CreateAction("black.png");
 	white = CreateAction("white.png");
 
+	bool supportCompression = glewIsSupported("GL_ARB_texture_compression GL_ARB_texture_cube_map GL_EXT_texture_compression_s3tc");
+	if (!supportCompression)
+	{
+		fail1();
+	}
+
 	return true;
 }
 
@@ -45,12 +54,10 @@ void TexturesMgr::Destroy()
 	
 	DeleteAll();
 
-	Debug::Info("TexturesMgr: All textures destroyed.");
+	Debug::Info("TexturesMgr[]: All textures destroyed.");
 }
 
 //
-
-
 
 bool TexturesMgr::LoadSoilTexture(File& _file, Texture* _texture)
 {
@@ -58,7 +65,7 @@ bool TexturesMgr::LoadSoilTexture(File& _file, Texture* _texture)
 
 	// Read data
 	int32_t sizeX, sizeY;
-	uint8_t* image = SOIL_load_image_from_memory(_file.GetData(), static_cast<int>(_file.GetSize()), &sizeX, &sizeY, 0, SOIL_LOAD_RGBA);
+	uint8_t* image = SOIL_load_image_from_memory(_file.GetData(), static_cast<int32_t>(_file.GetSize()), &sizeX, &sizeY, 0, SOIL_LOAD_RGBA);
 
 	if (SOIL_last_result() != "Image loaded from memory")
 	{
@@ -77,16 +84,9 @@ bool TexturesMgr::LoadSoilTexture(File& _file, Texture* _texture)
 	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-	/*
-	#define GL_NEAREST_MIPMAP_NEAREST         0x2700
-	#define GL_LINEAR_MIPMAP_NEAREST          0x2701
-	#define GL_NEAREST_MIPMAP_LINEAR          0x2702
-	#define GL_LINEAR_MIPMAP_LINEAR           0x2703
-	*/
-
-	// set texture filtering parameters
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	// Params
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	// Unbind
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -104,8 +104,8 @@ bool TexturesMgr::LoadBLPTexture(File& _file, Texture* _texture)
 
 	//Debug::Print("Texture[]: compression=[%d], alphaBitDepth=[%d], preferredFormat=[%d], hasMips=[%d] [%s]", header.compression, header.alphaBitDepth, header.preferredFormat, header.hasMips, _file.Path_Name().c_str());
 
-	assert1(header.formatVersion == 1);
 	assert1(header.magic[0] == 'B' && header.magic[1] == 'L' && header.magic[2] == 'P' && header.magic[3] == '2');
+	assert1(header.formatVersion == 1);
 
 	_texture->SetSize(vec2(header.width, header.height));
 
@@ -121,6 +121,9 @@ bool TexturesMgr::LoadBLPTexture(File& _file, Texture* _texture)
 		{
 			format = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
 			blocksize = 16;
+
+			//_texture = _TexturesMgr->Black();
+			//return true;
 		}
 
 		if (header.alphaBitDepth == 8 && header.preferredFormat == 7)
@@ -137,13 +140,11 @@ bool TexturesMgr::LoadBLPTexture(File& _file, Texture* _texture)
 		}*/
 
 		uint8_t* buf = new uint8_t[header.mipSizes[0]];
-		//uint8_t* ucbuf = new uint8_t[header.height * header.width * 4];
+		uint8_t* ucbuf = new uint8_t[header.height * header.width * 4];
 
 		// do every mipmap level
 		for (int i = 0; i < mipmax; i++)
 		{
-
-
 			if (header.width == 0) header.width = 1;
 			if (header.height == 0)	header.height = 1;
 
@@ -152,32 +153,35 @@ bool TexturesMgr::LoadBLPTexture(File& _file, Texture* _texture)
 				_file.Seek(header.mipOffsets[i]);
 				_file.ReadBytes(buf, header.mipSizes[i]);
 
-				int size = ((header.width + 3) / 4) * ((header.height + 3) / 4) * blocksize;
+				uint32_t size = ((header.width + 3) / 4) * ((header.height + 3) / 4) * blocksize;
 
 				glCompressedTexImage2DARB(GL_TEXTURE_2D, i, format, header.width, header.height, 0, size, buf);
+
+				//decompressDXTC(format, header.width, header.height, size, buf, ucbuf);
+				//glTexImage2D(GL_TEXTURE_2D, (GLint)i, GL_RGBA8, header.width, header.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, ucbuf);
 			}
 			else
 			{
 				break;
 			}
 
-			header.width >>= 1;
-			header.height >>= 1;
+			header.width /= 2;
+			header.height /= 2;
 		}
 
 
 		delete[] buf;
-		//delete[] ucbuf;
+		delete[] ucbuf;
 	}
 	else if (header.compression == 1)
 	{
 		unsigned int pal[256];
 		_file.ReadBytes(pal, 1024);
 
-		unsigned char *buf = new unsigned char[header.mipSizes[0]];
-		unsigned int *buf2 = new unsigned int[header.width * header.height];
-		unsigned int *p;
-		unsigned char *c, *a;
+		unsigned char* buf = new unsigned char[header.mipSizes[0]];
+		unsigned int* buf2 = new unsigned int[header.width * header.height];
+		unsigned int* p;
+		unsigned char* c, *a;
 
 		bool hasalpha = (header.alphaBitDepth != 0);
 
@@ -229,15 +233,14 @@ bool TexturesMgr::LoadBLPTexture(File& _file, Texture* _texture)
 
 				//memset(buf2, 0x00, header.width * header.height); // DELETE ME!
 				glTexImage2D(GL_TEXTURE_2D, i, GL_RGBA8, header.width, header.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buf2);
-
 			}
 			else
 			{
 				break;
 			}
 
-			header.width >>= 1;
-			header.height >>= 1;
+			header.width /= 2;
+			header.height /= 2;
 		}
 
 		delete[] buf2;
@@ -245,12 +248,12 @@ bool TexturesMgr::LoadBLPTexture(File& _file, Texture* _texture)
 	}
 	else
 	{
-		Debug::Print("Texture[%s]: compression=[%d]", _file.Path_Name().c_str(), header.compression);
+		Debug::Warn("Texture[%s]: compression=[%d]", _file.Path_Name().c_str(), header.compression);
 	}
 
 	// Params
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 	// Params
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -301,9 +304,13 @@ void TexturesMgr::LoadAction(string _name, Texture* _texture)
 	// Load texture
 	bool result;
 	if (f.Extension() == "blp")
+	{
 		result = _TexturesMgr->LoadBLPTexture(f, _texture);
+	}
 	else
+	{
 		result = _TexturesMgr->LoadSoilTexture(f, _texture);
+	}
 
 	// Check result
 	if (!result)

@@ -2,6 +2,8 @@
 
 #include "Sky.h"
 
+#define SKY_COLORSCOUNT 18
+
 enum SkyColorNames
 {
 	LIGHT_GLOBAL_DIFFUSE,
@@ -42,7 +44,7 @@ public:
 	void InitBuffer();
 
 public:
-	vec3 colorSet[18];
+	vec3 colorSet[SKY_COLORSCOUNT];
 
 	void CalculateSkiesWeights(cvec3 pos);
 	void initSky(cvec3 pos, uint32_t t);

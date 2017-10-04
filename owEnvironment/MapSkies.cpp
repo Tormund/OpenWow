@@ -14,9 +14,9 @@ const uint32_t C_SkycolorsCount = 7;
 
 MapSkies::MapSkies(uint32_t mapid)
 {
-	for (auto it = gLightDB.Records()->begin(); it != gLightDB.Records()->end(); ++it)
+	for (auto it = DBC_Light.Records()->begin(); it != DBC_Light.Records()->end(); ++it)
 	{
-		if (mapid == it->second->Get_Map())
+		if (mapid == it->second->Get_MapID()->Get_ID())
 		{
 			Sky* sky = new Sky(it->second);
 			skies.push_back(sky);
@@ -98,7 +98,7 @@ void MapSkies::initSky(cvec3 _cameraPosition, uint32_t _time)
 
 	CalculateSkiesWeights(_cameraPosition);
 
-	for (int i = 0; i < 18; i++)
+	for (int i = 0; i < SKY_COLORSCOUNT; i++)
 	{
 		colorSet[i] = vec3(1, 1, 1);
 	}
@@ -108,7 +108,7 @@ void MapSkies::initSky(cvec3 _cameraPosition, uint32_t _time)
 	{
 		if (skies[j]->weight > 0)
 		{
-			for (uint32_t i = 0; i < 18; i++)
+			for (uint32_t i = 0; i < SKY_COLORSCOUNT; i++)
 			{
 				if ((skies[j]->colorFor(i, _time).x > 1.0f) || (skies[j]->colorFor(i, _time).y > 1.0f) || (skies[j]->colorFor(i, _time).z > 1.0f))
 				{
@@ -120,7 +120,7 @@ void MapSkies::initSky(cvec3 _cameraPosition, uint32_t _time)
 		}
 	}
 
-	for (uint32_t i = 0; i < 18; i++)
+	for (uint32_t i = 0; i < SKY_COLORSCOUNT; i++)
 	{
 		colorSet[i] -= vec3(1, 1, 1);
 	}

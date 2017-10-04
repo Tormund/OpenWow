@@ -2,38 +2,61 @@
 
 // Add data
 
-#define ADD_TYPE_VALUE(type, name, field) \
-type Get_##name() const { \
-	return getValue<type>(static_cast<uint32_t>(field)); \
+#define __DBC_TVALUE(type, _name, _field) \
+type Get_##_name() const \
+{ \
+	return getValue<type>(static_cast<uint32_t>(_field - 1)); \
 }
 
-#define ADD_STRING(name, field) \
-const char* Get_##name##_cstr() const { \
-	return getString(static_cast<uint32_t>(field)); \
+#define __DBC_STRING(_name, _field) \
+const char* Get_##_name() const \
+{ \
+	return getString(static_cast<uint32_t>(_field - 1)); \
 }
 
-#define ADD_LOCALE_STRING(name, field) \
-const char* Get_##name##_cstr(int8_t _locale = -1) const { \
-	return getLocalizedString(static_cast<uint32_t>(field), _locale); \
+#define __DBC_LOCSTR(_name, _field) \
+const char* Get_##_name(int8_t _locale = -1) const \
+{ \
+	return getLocalizedString(static_cast<uint32_t>(_field - 1), _locale); \
 }
+
+#define __DBC_REF_ID(_dbc, _name, _field) \
+const _dbc##Record* Get_##_name() const \
+{ \
+	return _dbc.getByID(static_cast<uint32_t>(getValue<uint32_t>(static_cast<uint32_t>(_field - 1)))); \
+}
+
+#define __DBC_TARRAY(_type, _name, _field, _size) \
+_type Get_##_name(uint8_t _index) const \
+{ \
+    assert1(_index < _size); \
+	return getValue<_type>(static_cast<uint32_t>(_field - 1 + _index)); \
+}
+
 
 // Record create
 
-#define CONCAT(a, b) a##b
 #define CONCAT_CLASS(a) a##Record
 
-#define __DBC_DEF_BEGIN(accessName) \
-class CONCAT_CLASS(accessName); \
- extern DBCFile<CONCAT_CLASS(accessName)> accessName; \
+// Create class
+
+#define DBC_DEF_BEGIN(accessName) \
 class CONCAT_CLASS(accessName) : public Record { \
 public: \
 	CONCAT_CLASS(accessName)(const DBCFile<CONCAT_CLASS(accessName)>::Iterator& _iterator) : Record(_iterator->dbcStats, _iterator->offset) { } \
 	CONCAT_CLASS(accessName)(DBCFile<CONCAT_CLASS(accessName)>* file, uint8_t* offset) : Record(file, offset) { } \
 public:
 
-#define __DBC_DEF_END };
+#define DBC_DEF_END \
+};
 
-#define __DBC_LOAD(accessName, fileName) DBCFile<CONCAT_CLASS(accessName)> accessName(fileName);
+// Create accessor
+
+#define DBC_DEFINE(accessName) \
+class CONCAT_CLASS(accessName); \
+extern DBCFile<CONCAT_CLASS(accessName)> accessName;
+
+#define DBC_LOAD(accessName, fileName) DBCFile<CONCAT_CLASS(accessName)> accessName(fileName);
 
 
 
@@ -77,13 +100,13 @@ protected:
 class Record
 {
 public:
+	Record(const Record& _record) = delete;
 	Record(DBCStats* _dbcStats, uint8_t* offset) : dbcStats(_dbcStats), offset(offset) {}
 
-public:
 	Record& operator=(const Record& r) = delete;
 
 	// All data has ID
-	ADD_TYPE_VALUE(uint32_t, ID, 0);
+	__DBC_TVALUE(uint32_t, ID, 1);
 
 	// Get value with common type
 	template<typename T>
@@ -93,23 +116,22 @@ public:
 		return *reinterpret_cast<T*>(offset + field * 4);
 	}
 
+	// Common types
 	float_t getFloat(uint32_t field) const
 	{
 		assert2(field < dbcStats->fieldCount, std::to_string(field).c_str());
-		return *reinterpret_cast<float*>(offset + field * 4);
+		return *reinterpret_cast<float_t*>(offset + field * 4);
 	}
 	uint32_t getUInt(uint32_t field) const
 	{
 		assert2(field < dbcStats->fieldCount, std::to_string(field).c_str());
-		return *reinterpret_cast<unsigned int*>(offset + (field * 4));
+		return *reinterpret_cast<uint32_t*>(offset + (field * 4));
 	}
 	int32_t getInt(uint32_t field) const
 	{
 		assert2(field < dbcStats->fieldCount, std::to_string(field).c_str());
-		return *reinterpret_cast<int*>(offset + field * 4);
+		return *reinterpret_cast<int32_t*>(offset + field * 4);
 	}
-
-	// Get uint8_t
 	uint8_t getByte(uint32_t ofs) const
 	{
 		assert2(ofs < dbcStats->recordSize, std::to_string(ofs).c_str());
@@ -123,7 +145,9 @@ public:
 
 		size_t stringOffset = getUInt(field);
 		if (stringOffset >= dbcStats->stringSize)
+		{
 			stringOffset = 0;
+		}
 
 		assert2(stringOffset < dbcStats->stringSize, std::to_string(stringOffset).c_str());
 		return reinterpret_cast<char*>(dbcStats->stringTable + stringOffset);
@@ -159,9 +183,10 @@ class DBCException
 {
 public:
 	DBCException(const string &message) : message(message) {}
-	virtual ~DBCException() {}
+	~DBCException() {}
 
 	cstring getMessage() { return message; }
+
 private:
 	string message;
 };
@@ -169,7 +194,7 @@ private:
 class DBCNotFound : public DBCException
 {
 public:
-	DBCNotFound() : DBCException("Key was not found") {}
+	DBCNotFound(uint32_t _id) : DBCException("Key was not found [" + to_string(_id) + "]") {}
 };
 
 
@@ -177,95 +202,26 @@ public:
 // DBC File
 ///////////////////////////////////
 class File;
-template <class TT>
+template <class RECORD_T>
 class DBCFile : public File, public DBCStats
 {
-	friend TT;
+	friend RECORD_T;
+
 public:
-	DBCFile(const File& _file) : File(_file) {}
+	DBCFile(cstring _file) : File(string("DBFilesClient\\") + string(_file)) 
+	{
+		//Open();
+	}
 
 	// Open file and fill data
-	bool Open()
-	{
-		int db_type = 0;
-
-		// Tty open file
-		if (!File::Open())
-		{
-			Debug::Error("DBCFile[%s]: Can't open file.", Path_Name().c_str());
-			return false;
-		}
-
-		char header[5];
-		ReadBytes(header, 4);
-		header[4] = 0;
-
-		if (strncmp(header, "WDBC", 4) == 0)
-		{
-			db_type = 1;
-			Debug::Print("DBCFile[%s]: File header [%s]. Type [%d].", Path_Name().c_str(), header, db_type);
-		}
-		else if (strncmp(header, "WDB2", 4) == 0)
-		{
-			db_type = 2;
-			Debug::Print("DBCFile[%s]: File header [%s]. Type [%d].", Path_Name().c_str(), header, db_type);
-		}
-		else
-		{
-			Debug::Error("DBCFile[%s]: File corrupt. Header [%s]", Path_Name().c_str(), header);
-			return false;
-		}
-
-		ReadBytes(&recordCount, 4);// Number of records
-		ReadBytes(&fieldCount, 4); // Number of fields
-		ReadBytes(&recordSize, 4); // Size of a record
-		ReadBytes(&stringSize, 4); // String size
-
-		// WDB2
-		//ReadBytes(&tableHash, 4);
-		//ReadBytes(&build, 4);
-		//ReadBytes(&timestampLastWritten, 4);
-		//ReadBytes(&minId, 4);
-		//ReadBytes(&maxId, 4);
-		//ReadBytes(&locale, 4);
-		//ReadBytes(&copyTableSize, 4);
-
-		//Debug::Info("DBCFile[%s]: TableHash [%d], build [%d], TimestampLastWritten [%d]", Path_Name().c_str(), tableHash, build, timestampLastWritten);
-		//Debug::Info("DBCFile[%s]: MinId [%d], MaxId [%d] Locale [%d], CopyTableSize [%d]", Path_Name().c_str(), minId, maxId, locale, copyTableSize);
-
-		if (db_type == 2)
-		{
-			SeekRelative(28);
-
-			unsigned int check;
-			ReadBytes(&check, 4);
-			if (check == 6)
-				SeekRelative(-20);
-			else // 17
-				SeekRelative(-4);
-		}
-
-		assert1(fieldCount * 4 >= recordSize); // not always true, but it works fine till now //assert1(fieldCount*4 == recordSize);
-
-		// Pointer to data
-		stringTable = GetPos() + data + recordSize * recordCount;
-
-		// Fill record table
-		for (auto _offset = data + GetPos(); _offset != stringTable; _offset += recordSize)
-		{
-			TT* record = new TT(this, _offset);
-			records.insert(make_pair(record->getUInt(0), record));
-		}
-
-		return true;
-	}
+	bool Open();
 
 	///////////////////////////////////
 	// Iterator that iterates over records
 	///////////////////////////////////
 	class Iterator
 	{
-		friend TT;
+		friend RECORD_T;
 	public:
 		Iterator(DBCFile* file, uint8_t* offset) : record(file, offset) {}
 
@@ -275,12 +231,12 @@ public:
 			return *this;
 		}
 
-		TT const& operator*() const
+		RECORD_T const& operator*() const
 		{
 			return record;
 		}
 
-		const TT* operator->() const
+		const RECORD_T* operator->() const
 		{
 			return &record;
 		}
@@ -296,7 +252,7 @@ public:
 		}
 
 	private:
-		TT record;
+		RECORD_T record;
 	};
 
 	// Iterators
@@ -312,21 +268,16 @@ public:
 		return Iterator(this, stringTable);
 	}
 
-	const map<uint32_t, TT*>* Records() const
+	const map<uint32_t, RECORD_T*>* Records() const
 	{
 		return &records;
 	}
 
 	// Get data by ID
-	TT* getByID(uint32_t _id)
-	{
-		auto recordIt = records.find(_id);
-		if (recordIt != records.end())
-			return recordIt->second;
-
-		throw DBCNotFound();
-	}
+	RECORD_T* getByID(uint32_t _id);
 
 protected:
-	map<uint32_t, TT*> records;
+	map<uint32_t, RECORD_T*> records;
 };
+
+#include "DBCFile.inl"

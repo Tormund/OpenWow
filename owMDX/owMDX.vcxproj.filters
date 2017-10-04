@@ -54,6 +54,9 @@
     <ClCompile Include="MDX_Part_Bone.cpp">
       <Filter>MDX\Parts</Filter>
     </ClCompile>
+    <ClCompile Include="Sky_Model.cpp">
+      <Filter>Sky</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -102,6 +105,9 @@
     <ClInclude Include="MDX_Part_Bone.h">
       <Filter>MDX\Parts</Filter>
     </ClInclude>
+    <ClInclude Include="Sky_Model.h">
+      <Filter>Sky</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MDX">
@@ -112,6 +118,9 @@
     </Filter>
     <Filter Include="MDX\Parts">
       <UniqueIdentifier>{602bfe77-bf38-48b0-82cc-7eca668f2dcb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sky">
+      <UniqueIdentifier>{b7746514-28a2-4239-b94f-43ede50f235e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

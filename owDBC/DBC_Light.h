@@ -2,12 +2,14 @@
 
 #include "DBCFile.h"
 
-__DBC_DEF_BEGIN(gLightDB)
-ADD_TYPE_VALUE(uint32_t, Map, 1);
-ADD_TYPE_VALUE(float_t,  PositionX, 2);		// float
-ADD_TYPE_VALUE(float_t,  PositionY, 3);		// float
-ADD_TYPE_VALUE(float_t,  PositionZ, 4);		// float
-ADD_TYPE_VALUE(float_t,  RadiusInner, 5);	// float
-ADD_TYPE_VALUE(float_t,  RadiusOuter, 6);	// float
-ADD_TYPE_VALUE(uint32_t, DataIDs, 7);		// uint[8]
-__DBC_DEF_END
+DBC_DEF_BEGIN(DBC_Light)
+
+__DBC_REF_ID(DBC_Map,  MapID,       2);
+__DBC_TVALUE(float_t,  PositionX,   3);
+__DBC_TVALUE(float_t,  PositionY,   4);
+__DBC_TVALUE(float_t,  PositionZ,   5);
+__DBC_TVALUE(float_t,  RadiusInner, 6);
+__DBC_TVALUE(float_t,  RadiusOuter, 7);
+__DBC_TARRAY(int32_t,  Params,      8,    8);
+
+DBC_DEF_END

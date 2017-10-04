@@ -11,6 +11,11 @@ bool EnvironmentManager::Init()
 	skies = 0;
 	dayNightCycle = new DayNightCycle();
 
+	// Colors
+    m_OutdoorAmbientColor = vec4();
+	m_OutdoorDayDiffuseColor = vec4();
+	m_OutdoorNightDiffuseColor = vec4();
+	m_OutdoorSpecularColor = vec4();
 	
 	return true;
 }
@@ -39,33 +44,12 @@ void EnvironmentManager::InitSkies(uint32_t mapid)
 
 void EnvironmentManager::outdoorLighting()
 {
-	vec4 black(0, 0, 0, 0);
-	vec4 ambient(skies->colorSet[LIGHT_GLOBAL_AMBIENT], 1);
-	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, glm::value_ptr(ambient));
+	m_OutdoorAmbientColor = vec4(skies->colorSet[LIGHT_GLOBAL_AMBIENT], 1.0f); // BLACK?
 
+	m_OutdoorDayDiffuseColor = vec4(skies->colorSet[LIGHT_GLOBAL_DIFFUSE] * dayNightPhase.dayIntensity, 1.0f);
+	m_OutdoorNightDiffuseColor = vec4(skies->colorSet[LIGHT_GLOBAL_DIFFUSE] * dayNightPhase.nightIntensity, 1.0f);
 
-	// Day diffuse
-	vec4 posDay(0, 0, 0, 0);
-	vec4 colorDay(skies->colorSet[LIGHT_GLOBAL_DIFFUSE] * dayNightPhase.dayIntensity, 1.0f);
-	glLightfv(GL_LIGHT0, GL_AMBIENT, glm::value_ptr(black));
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, glm::value_ptr(colorDay));
-	glLightfv(GL_LIGHT0, GL_POSITION, glm::value_ptr(posDay));
-
-	const float spc = _Settings->useshaders ? 1.4f : 0.0f;
-	vec4 spcol(spc, spc, spc, 1.0f);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, glm::value_ptr(spcol));
-
-
-	// Night diffuse
-	vec4 posNight(0, 0, 0, 0);
-	vec4 colorNight(skies->colorSet[LIGHT_GLOBAL_DIFFUSE] * dayNightPhase.nightIntensity, 1.0f);
-	glLightfv(GL_LIGHT1, GL_AMBIENT, glm::value_ptr(black));
-	glLightfv(GL_LIGHT1, GL_DIFFUSE, glm::value_ptr(colorNight));
-	glLightfv(GL_LIGHT1, GL_POSITION, glm::value_ptr(posNight));
-
-	const float spcNight = _Settings->useshaders ? 1.4f : 0.0f;
-	vec4 spcolorNight(spcNight, spcNight, spcNight, 1.0f);
-	glLightfv(GL_LIGHT1, GL_SPECULAR, glm::value_ptr(spcolorNight));
+	m_OutdoorSpecularColor = vec4(1.4f, 1.4f, 1.4f, 1.0f);
 }
 
 
@@ -126,11 +110,12 @@ void EnvironmentManager::SetFog()
 	}
 }
 
-
 //
 
 void EnvironmentManager::BeforeDraw()
 {
+	m_GameTime.Tick();
+
 	m_HasSky = false;
 
 	dayNightPhase = dayNightCycle->getPhase(m_GameTime.GetTime());

@@ -2,8 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="DayNightCycle.cpp" />
-    <ClCompile Include="DayNightPhase.cpp" />
     <ClCompile Include="EnvironmentManager.cpp" />
     <ClCompile Include="MapSkies.cpp">
       <Filter>Skies</Filter>
@@ -11,12 +9,16 @@
     <ClCompile Include="Sky.cpp">
       <Filter>Skies</Filter>
     </ClCompile>
+    <ClCompile Include="DayNightCycle.cpp">
+      <Filter>DayNight</Filter>
+    </ClCompile>
+    <ClCompile Include="DayNightPhase.cpp">
+      <Filter>DayNight</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="..\shared\owEnvironment.h" />
-    <ClInclude Include="DayNightCycle.h" />
-    <ClInclude Include="DayNightPhase.h" />
     <ClInclude Include="EnvironmentManager.h" />
     <ClInclude Include="MapSkies.h">
       <Filter>Skies</Filter>
@@ -24,10 +26,19 @@
     <ClInclude Include="Sky.h">
       <Filter>Skies</Filter>
     </ClInclude>
+    <ClInclude Include="DayNightCycle.h">
+      <Filter>DayNight</Filter>
+    </ClInclude>
+    <ClInclude Include="DayNightPhase.h">
+      <Filter>DayNight</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Skies">
       <UniqueIdentifier>{c33aae40-2d0a-4faf-8421-5533d0201121}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DayNight">
+      <UniqueIdentifier>{ec6bbdfa-2e49-4f15-bd55-814a611e3672}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

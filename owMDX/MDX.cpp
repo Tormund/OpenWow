@@ -339,6 +339,7 @@ void MDX::draw()
 	}
 }
 
+//
 
 void MDX::drawShaderBegin()
 {

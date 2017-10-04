@@ -8,7 +8,6 @@ _className() \
 { \
 	inited = false; \
 	moduleName = typeid(this).name(); \
-	systemModule = false;\
 }\
 \
 bool Init();\
@@ -22,7 +21,6 @@ _className() \
 { \
 	inited = false; \
 	moduleName = typeid(this).name(); \
-	systemModule = false;\
 }\
 \
 _dllApi bool Init();\
@@ -41,11 +39,7 @@ public:
 
 	inline string GetName() const { return moduleName; }
 
-	inline void SetSystemModule() { systemModule = true; }
-	inline bool IsSystemModule() const { return systemModule; }
-
 protected:
 	bool inited;
 	string moduleName;
-	bool systemModule;
 };

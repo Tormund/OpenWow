@@ -100,9 +100,6 @@ void WMOGroup::initDisplayList()
 
 	bounds.SetBounds(m_Header.boundingBox.min, m_Header.boundingBox.max);
 
-
-	//f.Seek((4 + 4 + 4) + (4 + 4) + WMOGroupHeader::__size); // first chunk at 0x58
-
 	char fourcc[5];
 	uint32_t size = 0;
 	while (!f.IsEof())
@@ -263,7 +260,7 @@ void WMOGroup::initDisplayList()
 		//}
 	}
 
-	bounds.Init(vertices, nVertices, false);
+	//bounds.Calculate(vertices, nVertices, false);
 
 	initLighting();
 
@@ -496,7 +493,7 @@ bool WMOGroup::draw2()
 {
 	visible = false;
 
-	vec3 pos = (_Pipeline->GetWorld() * vec4(bounds.GetCenter(), 1.0f)).xyz;
+	vec3 pos = vec3(_Pipeline->GetWorld() * vec4(bounds.GetCenter(), 1.0f));
 
 	float dist = glm::length(pos - _Camera->Position);
 	if (dist > _Settings->culldistance + bounds.GetRadius())
@@ -508,6 +505,13 @@ bool WMOGroup::draw2()
 	{
 		return false;
 	}
+
+	//vec3 bMin = vec3(_Pipeline->GetWorld() * vec4(bounds.Min(), 1.0f));
+	//vec3 bMax = vec3(_Pipeline->GetWorld() * vec4(bounds.Max(), 1.0f));
+	//if (!_Render->frustum.intersects(bMin, bMax))
+	//{
+	//	return false;
+	//}
 
 	visible = true;
 

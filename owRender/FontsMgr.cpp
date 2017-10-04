@@ -7,12 +7,15 @@
 #include <freetype/config/ftheader.h>
 #include FT_FREETYPE_H
 
+//
 
 struct Font_Vertex
 {
 	vec2 vertex;
 	vec2 textureCoord;
 };
+
+//
 
 bool FontsMgr::Init()
 {
@@ -23,39 +26,24 @@ bool FontsMgr::Init()
 
 void FontsMgr::Destroy()
 {
-	for (auto it = Fonts.begin(); it != Fonts.end(); ++it)
-	{
-		auto font = (*it).second;
+	DeleteAll();
 
-		delete font;
-
-		Debug::Info("FontsMgr: Font [%s] destroyed.", (*it).first.c_str());
-	}
-
-	Debug::Info("FontsMgr: All fonts destroyed.");
+	Debug::Info("FontsMgr[]: All fonts destroyed.");
 }
 
 Font* FontsMgr::Add(cstring _fontFileName, uint32_t _fontSize)
 {
-	return RefManager2Dim::Add(_fontFileName + "__" + std::to_string(_fontSize));
+	return RefManager1Dim::Add(_fontFileName + "__" + std::to_string(_fontSize));
 }
 
 Font* FontsMgr::Add(File& _fontFileName, uint32_t _fontSize)
 {
-	return RefManager2Dim::Add(_fontFileName.Path_Name() + "__" + std::to_string(_fontSize));
+	return RefManager1Dim::Add(_fontFileName.Path_Name() + "__" + std::to_string(_fontSize));
 }
 
 //
 
-GLuint FontsMgr::GenerateID() // override
-{
-	GLuint fontListOpenglId;
-	glGenTextures(1, &fontListOpenglId);
-
-	return fontListOpenglId;
-}
-
-Font* FontsMgr::CreateAction(cstring _nameAndSize, GLuint id) // override
+Font* FontsMgr::CreateAction(cstring _nameAndSize)
 {
 	size_t _delimIndex = _nameAndSize.find_last_of("__");
 	if (_delimIndex == -1)
@@ -106,7 +94,7 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize, GLuint id) // override
 
 	// Step 2: Find maxAscent/Descent to calculate imageHeight //
 	size_t imageHeight = 0;
-	size_t imageWidth = 256;
+	size_t imageWidth = 512;
 	int maxDescent = 0;
 	int maxAscent = 0;
 	size_t lineSpace = imageWidth;
@@ -154,13 +142,12 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize, GLuint id) // override
 	size_t x = 0;
 	size_t y = maxAscent;
 
-	//listOpenglIndex = glGenLists(Font::NUM_CHARS);
-
 	vector<Font_Vertex> fontVertices;
 	float xOffset = 0.0f;
 
 	for (uint32_t ch = 0; ch < Font::NUM_CHARS; ++ch)
 	{
+		//Debug::Warn("Char [%c] %d", char(ch), ch);
 		size_t charIndex = FT_Get_Char_Index(face, ch + Font::SPACE);
 
 		FT_Load_Glyph(face, charIndex, FT_LOAD_DEFAULT);
@@ -246,7 +233,7 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize, GLuint id) // override
 	return font;
 }
 
-bool FontsMgr::DeleteAction(cstring name, GLuint id) // override
+bool FontsMgr::DeleteAction(cstring name)
 {
 	return true;
 }

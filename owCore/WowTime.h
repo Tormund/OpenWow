@@ -11,6 +11,8 @@ public:
 	inline uint32_t GetHour() const { return (m_GameTime % C_Game_SecondsInDay) / C_Game_SecondsInHour; }
 	inline uint32_t GetMinute() const { return (m_GameTime % C_Game_SecondsInDay) % C_Game_SecondsInHour; }
 
+	void Tick();
+
 private:
 	uint32_t m_GameTime; // In game seconds
 

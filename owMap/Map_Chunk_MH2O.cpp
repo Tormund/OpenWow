@@ -121,8 +121,12 @@ void MapChunk::TryInitMH2O(MH2O_Header* _header, File& f)
 		MH2O_Instance* mh2o_instance = new MH2O_Instance;
 		mh2o_instance = (MH2O_Instance*)(f.GetDataFromCurrent() + _header->offsetInstances + sizeof(MH2O_Instance) * j);
 
-		auto LTYPE = gLiquidTypeDB.getByID(mh2o_instance->liquidType);
-		auto VERTEX_FMT = gLiquidMaterialDB.getByID(LTYPE->Get_LiquidMaterialID());
+		//auto LTYPE = DBC_LiquidType.getByID(mh2o_instance->liquidType);
+		//auto VERTEX_FMT = LTYPE->Get_LiquidMaterialID();
+
+		DBC_LiquidTypeRecord* LTYPE = DBC_LiquidType.getByID(mh2o_instance->liquidType);
+		//Debug::Error("TEst id = %s", LTYPE->Get_Name());
+		auto VERTEX_FMT = LTYPE->Get_LiquidMaterialID();
 
 		if (mh2o_instance->minHeightLevel - mh2o_instance->maxHeightLevel > 0.001f)
 		{
@@ -329,10 +333,6 @@ void MapChunk::createBuffer()
 
 	glBufferData(GL_ARRAY_BUFFER, mh2oVertices.size() * sizeof(MH2O_Vertex), mh2oVertices.data(), GL_STATIC_DRAW);
 
-	//glBufferSubData(GL_ARRAY_BUFFER, globalBufferSize * 0 * sizeof(float), globalBufferSize * 3 * sizeof(float), vertices.data());
-	//glBufferSubData(GL_ARRAY_BUFFER, globalBufferSize * 3 * sizeof(float), globalBufferSize * 2 * sizeof(float), texturecoords.data());
-	//glBufferSubData(GL_ARRAY_BUFFER, globalBufferSize * 5 * sizeof(float), globalBufferSize * 3 * sizeof(float), normals.data());
-
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
@@ -356,7 +356,6 @@ void MapChunk::drawWater()
 
 	glBindBuffer(GL_ARRAY_BUFFER, globalBufferWater);
 
-
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
@@ -365,17 +364,14 @@ void MapChunk::drawWater()
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (const GLvoid*)(3 * sizeof(float)));	
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (const GLvoid*)(5 * sizeof(float)));
 
-
-
 	size_t texidx = (size_t)(_TimeManager->animtime / 60.0) % wTextures.size();
-
 	wTextures[texidx]->Bind();
 	wTextures[texidx]->Bind(5);
+
 	_TechniquesMgr->m_WMO_MH2O_GeometryPass->SetWaterColor(_EnvironmentManager->GetSkyColor(RIVER_COLOR_LIGHT));
 	//_TechniquesMgr->m_WMO_MH2O_GeometryPass->SetWaterColor(vec3(1.0, 1.0, 1.0));
 
 	glDrawArrays(GL_QUADS, 0, globalBufferSize);
-
 	PERF_INC(PERF_MAP_CHUNK_MH20);
 
 	glDisableVertexAttribArray(2);
