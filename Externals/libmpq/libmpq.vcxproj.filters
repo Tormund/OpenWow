@@ -7,6 +7,24 @@
     <ClCompile Include="huffman.c" />
     <ClCompile Include="mpq.c" />
     <ClCompile Include="wave.c" />
+    <ClCompile Include="..\zlib\adler32.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\zlib\crc32.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\zlib\inffast.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\zlib\inflate.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\zlib\inftrees.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\zlib\zutil.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
@@ -20,5 +38,10 @@
     <ClInclude Include="pack_end.h" />
     <ClInclude Include="platform.h" />
     <ClInclude Include="wave.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="zlib">
+      <UniqueIdentifier>{caa7c9b6-a5b0-49bc-9d14-285e9399c0f9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

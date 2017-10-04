@@ -24,7 +24,7 @@
 #include <string.h>
 
 /* zlib includes. */
-#include <zlib.h>
+#include "../zlib/zlib.h"
 //#include <bzlib.h>
 
 /* libmpq main includes. */

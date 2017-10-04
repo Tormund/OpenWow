@@ -46,24 +46,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "owTest", "owTest\owTest.vcx
 		{E722B6DA-F485-4EAA-8E72-205CE3D4CEB5} = {E722B6DA-F485-4EAA-8E72-205CE3D4CEB5}
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shaders", "Shaders", "{57229CFC-3ED4-4E66-A65A-87F7802A3477}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shared", "shared", "{C8B50526-DF4C-4967-B575-671360520ACF}"
-	ProjectSection(SolutionItems) = preProject
-		shared\owCore.h = shared\owCore.h
-		shared\owDBC.h = shared\owDBC.h
-		shared\owGame.h = shared\owGame.h
-		shared\owMap.h = shared\owMap.h
-		shared\owMDX.h = shared\owMDX.h
-		shared\owRender.h = shared\owRender.h
-		shared\owShared.h = shared\owShared.h
-		shared\owWMO.h = shared\owWMO.h
-		shared\pack_begin.h = shared\pack_begin.h
-		shared\pack_end.h = shared\pack_end.h
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "owMDX", "owMDX\owMDX.vcxproj", "{3E02CB79-5276-4FF6-AA91-9BDF2AD8A25A}"
 	ProjectSection(ProjectDependencies) = postProject
+		{E91AA808-E8ED-4F59-A7FB-D475E8B26BE9} = {E91AA808-E8ED-4F59-A7FB-D475E8B26BE9}
 		{0CC7FA61-23DE-4D9F-A6F4-FDA327AB5984} = {0CC7FA61-23DE-4D9F-A6F4-FDA327AB5984}
 		{A4E6F769-0036-4128-A409-495D9207F587} = {A4E6F769-0036-4128-A409-495D9207F587}
 		{E722B6DA-F485-4EAA-8E72-205CE3D4CEB5} = {E722B6DA-F485-4EAA-8E72-205CE3D4CEB5}
@@ -93,41 +78,18 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "owWMO", "owWMO\owWMO.vcxpro
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "owMap", "owMap\owMap.vcxproj", "{2382CC5F-EFFC-4A3C-8376-A76A843C79BC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E91AA808-E8ED-4F59-A7FB-D475E8B26BE9} = {E91AA808-E8ED-4F59-A7FB-D475E8B26BE9}
+		{E735D40E-FF80-465B-B105-CA4402974DBD} = {E735D40E-FF80-465B-B105-CA4402974DBD}
+		{A4E6F769-0036-4128-A409-495D9207F587} = {A4E6F769-0036-4128-A409-495D9207F587}
+		{16F78E77-E985-44DB-9EFA-A2345A6BBC6A} = {16F78E77-E985-44DB-9EFA-A2345A6BBC6A}
+		{3E02CB79-5276-4FF6-AA91-9BDF2AD8A25A} = {3E02CB79-5276-4FF6-AA91-9BDF2AD8A25A}
+		{E722B6DA-F485-4EAA-8E72-205CE3D4CEB5} = {E722B6DA-F485-4EAA-8E72-205CE3D4CEB5}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "owEnvironment", "owEnvironment\owEnvironment.vcxproj", "{E91AA808-E8ED-4F59-A7FB-D475E8B26BE9}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_shaders", "_shaders", "{52796937-C440-4FF4-B522-EB37C29A5B17}"
-	ProjectSection(SolutionItems) = preProject
-		_gamedata\shaders\null_technique.glsl = _gamedata\shaders\null_technique.glsl
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Geometry", "Geometry", "{ED2529B1-212A-404C-8FE9-80110E8F7595}"
-	ProjectSection(SolutionItems) = preProject
-		_gamedata\shaders\Billboard.glsl = _gamedata\shaders\Billboard.glsl
-		_gamedata\shaders\commonGeometry.glsl = _gamedata\shaders\commonGeometry.glsl
-		_gamedata\shaders\Debug_GeometryPass.glsl = _gamedata\shaders\Debug_GeometryPass.glsl
-		_gamedata\shaders\MapChunk_GeometryPass.glsl = _gamedata\shaders\MapChunk_GeometryPass.glsl
-		_gamedata\shaders\MapTileLowRes_GeometryPass.glsl = _gamedata\shaders\MapTileLowRes_GeometryPass.glsl
-		_gamedata\shaders\MDX_GeometryPass.glsl = _gamedata\shaders\MDX_GeometryPass.glsl
-		_gamedata\shaders\Sky_GeometryPass.glsl = _gamedata\shaders\Sky_GeometryPass.glsl
-		_gamedata\shaders\WMO_GeomertyPass.glsl = _gamedata\shaders\WMO_GeomertyPass.glsl
-		_gamedata\shaders\WMO_MH2O_GeometryPass.glsl = _gamedata\shaders\WMO_MH2O_GeometryPass.glsl
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Postprocess", "Postprocess", "{A9A76ED3-A67F-4DB6-B4AE-A7785349F4B5}"
-	ProjectSection(SolutionItems) = preProject
-		_gamedata\shaders\commonPostprocess.glsl = _gamedata\shaders\commonPostprocess.glsl
-		_gamedata\shaders\light_pass.glsl = _gamedata\shaders\light_pass.glsl
-		_gamedata\shaders\SimpleColor.glsl = _gamedata\shaders\SimpleColor.glsl
-		_gamedata\shaders\simpleRender.glsl = _gamedata\shaders\simpleRender.glsl
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CascLib_dll", "Externals\CascLib\CascLib_vs17_dll.vcxproj", "{CB385198-50B1-4CF4-883B-11F042DED6AA}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{D50FA0CC-13B6-4C1D-A694-62385FA030E4}"
-	ProjectSection(SolutionItems) = preProject
-		_gamedata\shaders\UI_Font.glsl = _gamedata\shaders\UI_Font.glsl
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -256,10 +218,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{0CC7FA61-23DE-4D9F-A6F4-FDA327AB5984} = {7117DD40-5090-4982-B565-034F60A0D3B1}
 		{D9837E8D-ACEE-4D36-A7AF-A4B7566E5A8D} = {7117DD40-5090-4982-B565-034F60A0D3B1}
-		{ED2529B1-212A-404C-8FE9-80110E8F7595} = {52796937-C440-4FF4-B522-EB37C29A5B17}
-		{A9A76ED3-A67F-4DB6-B4AE-A7785349F4B5} = {52796937-C440-4FF4-B522-EB37C29A5B17}
 		{CB385198-50B1-4CF4-883B-11F042DED6AA} = {7117DD40-5090-4982-B565-034F60A0D3B1}
-		{D50FA0CC-13B6-4C1D-A694-62385FA030E4} = {52796937-C440-4FF4-B522-EB37C29A5B17}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {30BF641C-2C5D-4C14-B950-C07F6CD68736}

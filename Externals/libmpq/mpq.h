@@ -32,7 +32,7 @@
 extern "C" {
 #endif
 
-	/* generic includes. */
+/* generic includes. */
 #include <stdint.h>
 #include <sys/types.h>
 
@@ -51,42 +51,39 @@ extern "C" {
 #define LIBMPQ_ERROR_UNPACK			-12		/* error on unpacking file. */
 
 /* internal data structure. */
-	typedef struct mpq_archive mpq_archive_s;
+typedef struct mpq_archive mpq_archive_s;
 
-	/* file offset data type for API*/
-	typedef int64_t libmpq__off_t;
+/* file offset data type for API*/
+typedef int64_t libmpq__off_t;
 
-	/* generic information about library. */
-	const char *libmpq__version(void);
+/* string error message for a libmpq return code. */
+const char *libmpq__strerror(int32_t return_code);
 
-	/* string error message for a libmpq return code. */
-	const char *libmpq__strerror(int32_t return_code);
+/* generic mpq archive information. */
+int32_t libmpq__archive_open(mpq_archive_s **mpq_archive, const char *mpq_filename, libmpq__off_t archive_offset);
+int32_t libmpq__archive_close(mpq_archive_s *mpq_archive);
+int32_t libmpq__archive_size_packed(mpq_archive_s *mpq_archive, libmpq__off_t *packed_size);
+int32_t libmpq__archive_size_unpacked(mpq_archive_s *mpq_archive, libmpq__off_t *unpacked_size);
+int32_t libmpq__archive_offset(mpq_archive_s *mpq_archive, libmpq__off_t *offset);
+int32_t libmpq__archive_version(mpq_archive_s *mpq_archive, uint32_t *version);
+int32_t libmpq__archive_files(mpq_archive_s *mpq_archive, uint32_t *files);
 
-	/* generic mpq archive information. */
-	int32_t libmpq__archive_open(mpq_archive_s **mpq_archive, const char *mpq_filename, libmpq__off_t archive_offset);
-	int32_t libmpq__archive_close(mpq_archive_s *mpq_archive);
-	int32_t libmpq__archive_size_packed(mpq_archive_s *mpq_archive, libmpq__off_t *packed_size);
-	int32_t libmpq__archive_size_unpacked(mpq_archive_s *mpq_archive, libmpq__off_t *unpacked_size);
-	int32_t libmpq__archive_offset(mpq_archive_s *mpq_archive, libmpq__off_t *offset);
-	int32_t libmpq__archive_version(mpq_archive_s *mpq_archive, uint32_t *version);
-	int32_t libmpq__archive_files(mpq_archive_s *mpq_archive, uint32_t *files);
+/* generic file processing functions. */
+int32_t libmpq__file_size_packed(mpq_archive_s *mpq_archive, uint32_t file_number, libmpq__off_t *packed_size);
+int32_t libmpq__file_size_unpacked(mpq_archive_s *mpq_archive, uint32_t file_number, libmpq__off_t *unpacked_size);
+int32_t libmpq__file_offset(mpq_archive_s *mpq_archive, uint32_t file_number, libmpq__off_t *offset);
+int32_t libmpq__file_blocks(mpq_archive_s *mpq_archive, uint32_t file_number, uint32_t *blocks);
+int32_t libmpq__file_encrypted(mpq_archive_s *mpq_archive, uint32_t file_number, uint32_t *encrypted);
+int32_t libmpq__file_compressed(mpq_archive_s *mpq_archive, uint32_t file_number, uint32_t *compressed);
+int32_t libmpq__file_imploded(mpq_archive_s *mpq_archive, uint32_t file_number, uint32_t *imploded);
+int32_t libmpq__file_number(mpq_archive_s *mpq_archive, const char *filename, uint32_t *number);
+int32_t libmpq__file_read(mpq_archive_s *mpq_archive, uint32_t file_number, uint8_t *out_buf, libmpq__off_t out_size, libmpq__off_t *transferred);
 
-	/* generic file processing functions. */
-	int32_t libmpq__file_size_packed(mpq_archive_s *mpq_archive, uint32_t file_number, libmpq__off_t *packed_size);
-	int32_t libmpq__file_size_unpacked(mpq_archive_s *mpq_archive, uint32_t file_number, libmpq__off_t *unpacked_size);
-	int32_t libmpq__file_offset(mpq_archive_s *mpq_archive, uint32_t file_number, libmpq__off_t *offset);
-	int32_t libmpq__file_blocks(mpq_archive_s *mpq_archive, uint32_t file_number, uint32_t *blocks);
-	int32_t libmpq__file_encrypted(mpq_archive_s *mpq_archive, uint32_t file_number, uint32_t *encrypted);
-	int32_t libmpq__file_compressed(mpq_archive_s *mpq_archive, uint32_t file_number, uint32_t *compressed);
-	int32_t libmpq__file_imploded(mpq_archive_s *mpq_archive, uint32_t file_number, uint32_t *imploded);
-	int32_t libmpq__file_number(mpq_archive_s *mpq_archive, const char *filename, uint32_t *number);
-	int32_t libmpq__file_read(mpq_archive_s *mpq_archive, uint32_t file_number, uint8_t *out_buf, libmpq__off_t out_size, libmpq__off_t *transferred);
-
-	/* generic block processing functions. */
-	int32_t libmpq__block_open_offset(mpq_archive_s *mpq_archive, uint32_t file_number);
-	int32_t libmpq__block_close_offset(mpq_archive_s *mpq_archive, uint32_t file_number);
-	int32_t libmpq__block_size_unpacked(mpq_archive_s *mpq_archive, uint32_t file_number, uint32_t block_number, libmpq__off_t *unpacked_size);
-	int32_t libmpq__block_read(mpq_archive_s *mpq_archive, uint32_t file_number, uint32_t block_number, uint8_t *out_buf, libmpq__off_t out_size, libmpq__off_t *transferred);
+/* generic block processing functions. */
+int32_t libmpq__block_open_offset(mpq_archive_s *mpq_archive, uint32_t file_number);
+int32_t libmpq__block_close_offset(mpq_archive_s *mpq_archive, uint32_t file_number);
+int32_t libmpq__block_size_unpacked(mpq_archive_s *mpq_archive, uint32_t file_number, uint32_t block_number, libmpq__off_t *unpacked_size);
+int32_t libmpq__block_read(mpq_archive_s *mpq_archive, uint32_t file_number, uint32_t block_number, uint8_t *out_buf, libmpq__off_t out_size, libmpq__off_t *transferred);
 
 #ifdef __cplusplus
 }

@@ -51,15 +51,6 @@ static const char *__libmpq_error_strings[] = {
 	"error on unpacking file"
 };
 
-/* this function returns the library version information. */
-const char *libmpq__version(void)
-{
-
-	static char version[10];
-	snprintf(version, sizeof(version), "%i.%i.%i", 1, 2, 3);
-	return version;
-}
-
 /* this function returns a string message for a return code. */
 const char *libmpq__strerror(int32_t return_code)
 {
