@@ -7,23 +7,23 @@
 
 struct MapTileHeader
 {
-	uint32_t flags;
+	uint32 flags;
 
-	uint32_t MCIN;
-	uint32_t MTEX;
-	uint32_t MMDX;
-	uint32_t MMID;
-	uint32_t MWMO;
-	uint32_t MWID;
-	uint32_t MDDF;
-	uint32_t MODF;
-	uint32_t MFBO;
-	uint32_t MH2O;
-	uint32_t MTXF;
+	uint32 MCIN;
+	uint32 MTEX;
+	uint32 MMDX;
+	uint32 MMID;
+	uint32 MWMO;
+	uint32 MWID;
+	uint32 MDDF;
+	uint32 MODF;
+	uint32 MFBO;
+	uint32 MH2O;
+	uint32 MTXF;
 
-	uint8_t mamp_value;             // Cata+, explicit MAMP chunk overrides data
-	uint8_t padding[3];
-	uint32_t unused[3];
+	uint8 mamp_value;             // Cata+, explicit MAMP chunk overrides data
+	uint8 padding[3];
+	uint32 unused[3];
 };
 
 MapTile::MapTile(int x0, int z0)
@@ -42,9 +42,9 @@ MapTile::MapTile(int x0, int z0)
 	m_GamePositionX = x0 * C_TileSize;
 	m_GamePositionZ = z0 * C_TileSize;
 
-	for (uint32_t i = 0; i < C_ChunksInTile; i++)
+	for (uint32 i = 0; i < C_ChunksInTile; i++)
 	{
-		for (uint32_t j = 0; j < C_ChunksInTile; j++)
+		for (uint32 j = 0; j < C_ChunksInTile; j++)
 		{
 			chunks[i][j] = nullptr;
 		}
@@ -55,9 +55,9 @@ MapTile::~MapTile()
 {
 	Debug::Info("MapTile[%d, %d]: Unloading tile...", m_IndexX, m_IndexZ);
 
-	for (uint32_t i = 0; i < C_ChunksInTile; i++)
+	for (uint32 i = 0; i < C_ChunksInTile; i++)
 	{
-		for (uint32_t j = 0; j < C_ChunksInTile; j++)
+		for (uint32 j = 0; j < C_ChunksInTile; j++)
 		{
 			if (chunks[i][j] != nullptr)
 			{
@@ -98,9 +98,9 @@ MapTile::~MapTile()
 
 bool MapTile::Init(cstring _filename)
 {
-	for (uint32_t i = 0; i < C_ChunksInTile; i++)
+	for (uint32 i = 0; i < C_ChunksInTile; i++)
 	{
-		for (uint32_t j = 0; j < C_ChunksInTile; j++)
+		for (uint32 j = 0; j < C_ChunksInTile; j++)
 		{
 			chunks[i][j] = new MapChunk(this);
 		}
@@ -179,7 +179,7 @@ bool MapTile::parse_adt(cstring _filename, load_phases _phase)
 	int chunkJ = 0;
 
 	char fourcc[5];
-	uint32_t size;
+	uint32 size;
 	while (!f.IsEof())
 	{
 		memset(fourcc, 0, 4);
@@ -192,7 +192,7 @@ bool MapTile::parse_adt(cstring _filename, load_phases _phase)
 
 		if (strncmp(fourcc, "MVER", 4) == 0)
 		{
-			uint32_t version;
+			uint32 version;
 			f.ReadBytes(&version, 4);
 			assert4(version == 18, "Version mismatch != 18", std::to_string(version).c_str(), name);
 		}
@@ -241,7 +241,7 @@ bool MapTile::parse_adt(cstring _filename, load_phases _phase)
 		{
 #ifdef MDX_INCL
 			mdxCount = size / ModelPlacementInfo::__size;
-			for (uint32_t i = 0; i < mdxCount; i++)
+			for (uint32 i = 0; i < mdxCount; i++)
 			{
 				ModelInstance* inst = new ModelInstance(f);
 
@@ -257,9 +257,9 @@ bool MapTile::parse_adt(cstring _filename, load_phases _phase)
 		{
 #ifdef WMO_INCL
 			wmoCount = size / WMOPlacementInfo::__size;
-			for (uint32_t i = 0; i < wmoCount; i++)
+			for (uint32 i = 0; i < wmoCount; i++)
 			{
-				uint32_t wmoIndex;
+				uint32 wmoIndex;
 				f.ReadBytes(&wmoIndex, 4);
 				f.SeekRelative(-4);
 
@@ -271,9 +271,9 @@ bool MapTile::parse_adt(cstring _filename, load_phases _phase)
 		}
 		else if (strncmp(fourcc, "MH2O", 4) == 0)
 		{
-			uint8_t* abuf = f.GetDataFromCurrent();
+			uint8* abuf = f.GetDataFromCurrent();
 
-			for (uint32_t i = 0; i < C_ChunksInTile * C_ChunksInTile; i++)
+			for (uint32 i = 0; i < C_ChunksInTile * C_ChunksInTile; i++)
 			{
 				MH2O_Header* mh2o_Header = (MH2O_Header*)abuf;
 
@@ -313,7 +313,7 @@ bool MapTile::parse_adt(cstring _filename, load_phases _phase)
 			Simple as it is:
 			struct MTFX
 			{
-			uint32_t mode[nMTEX];
+			uint32 mode[nMTEX];
 			}
 			The textures with this extended rendering mode are no normal ones, but skyboxes. These skyboxes are getting added as a reflection layer on the terrain. This is used for icecubes reflecting clouds etc. The layer being the reflection one needs to have the 0x400 flag in the MCLY chunk.
 			*/
@@ -336,9 +336,9 @@ bool MapTile::parse_adt(cstring _filename, load_phases _phase)
 
 void MapTile::draw()
 {
-	for (uint32_t i = 0; i < C_ChunksInTile; i++)
+	for (uint32 i = 0; i < C_ChunksInTile; i++)
 	{
-		for (uint32_t j = 0; j < C_ChunksInTile; j++)
+		for (uint32 j = 0; j < C_ChunksInTile; j++)
 		{
 			if (chunks[i][j] != nullptr)
 			{
@@ -350,9 +350,9 @@ void MapTile::draw()
 
 void MapTile::drawWater()
 {
-	for (uint32_t i = 0; i < C_ChunksInTile; i++)
+	for (uint32 i = 0; i < C_ChunksInTile; i++)
 	{
-		for (uint32_t j = 0; j < C_ChunksInTile; j++)
+		for (uint32 j = 0; j < C_ChunksInTile; j++)
 		{
 			if (chunks[i][j] != nullptr)
 			{
@@ -403,7 +403,7 @@ void MapTile::drawModels()
 
 
 
-MapChunk* MapTile::getChunk(uint32_t x, uint32_t z)
+MapChunk* MapTile::getChunk(uint32 x, uint32 z)
 {
 	assert1(x < C_ChunksInTile && z < C_ChunksInTile);
 	return chunks[x][z];

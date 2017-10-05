@@ -30,7 +30,7 @@ public:
 	//
 
 	 void GenerateTexture();
-	 void Bind(uint8_t _textureUnit = 0) const;
+	 void Bind(uint8 _textureUnit = 0) const;
 	 void Unbind() const;
 
 private:

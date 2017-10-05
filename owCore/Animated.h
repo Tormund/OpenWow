@@ -41,7 +41,7 @@ inline T interpolateBezier(const float r, const T &v1, const T &v2, const T &in,
 }
 
 template<>
-inline Quaternion interpolate<Quaternion>(const float r, const Quaternion& v1, const Quaternion& v2)
+inline quat interpolate<quat>(const float r, const quat& v1, const quat& v2)
 {
 	return glm::slerp(v1, v2, r); //Quaternion::slerp(r, v1, v2);
 }
@@ -75,9 +75,9 @@ struct M2CompQuat
 class Quat16ToQuat32
 {
 public:
-	static const Quaternion conv(const M2CompQuat t)
+	static const quat conv(const M2CompQuat t)
 	{
-		return Quaternion(
+		return quat(
 			float(t.w > 0 ? t.w - 32767 : t.w + 32767) / 32767.0f,
 			float(t.x > 0 ? t.x - 32767 : t.x + 32767) / 32767.0f,
 			float(t.y > 0 ? t.y - 32767 : t.y + 32767) / 32767.0f,
@@ -95,7 +95,7 @@ public:
 };
 
 
-#define	MAX_ANIMATED	500
+#define	MAX_ANIMATED (500u)
 
 /*
 	Generic animated value class:
@@ -108,7 +108,7 @@ template <class T, class D = T, class Conv = Identity<T> >
 class Animated
 {
 public:
-	bool uses(uint32_t anim)
+	bool uses(uint32 anim)
 	{
 		if (global_sequence > -1)
 		{
@@ -184,7 +184,7 @@ public:
 		}
 	}
 
-	void init(M2Track<D>& b, File& f, uint32_t* gs)
+	void init(M2Track<D>& b, File& f, uint32* gs)
 	{
 		globals = gs;
 		interpolation_type = b.interpolation_type;
@@ -201,9 +201,9 @@ public:
 		// times
 		for (size_t j = 0; j < b.timestamps.size; j++)
 		{
-			M2Array<uint32_t>* pHeadTimes = (M2Array<uint32_t>*)(f.GetData() + b.timestamps.offset + j * sizeof(M2Array<uint32_t>));
+			M2Array<uint32>* pHeadTimes = (M2Array<uint32>*)(f.GetData() + b.timestamps.offset + j * sizeof(M2Array<uint32>));
 
-			uint32_t* ptimes = (uint32_t*)(f.GetData() + pHeadTimes->offset);
+			uint32* ptimes = (uint32*)(f.GetData() + pHeadTimes->offset);
 			for (size_t i = 0; i < pHeadTimes->size; i++)
 			{
 				times[j].push_back(ptimes[i]);
@@ -238,7 +238,7 @@ public:
 		}
 	}
 
-	void init(M2Track<D>& b, File& f, uint32_t* gs, File* animfiles)
+	void init(M2Track<D>& b, File& f, uint32* gs, File* animfiles)
 	{
 		globals = gs;
 		interpolation_type = b.interpolation_type;
@@ -255,13 +255,13 @@ public:
 		// times
 		for (size_t j = 0; j < b.timestamps.size; j++)
 		{
-			M2Array<uint32_t>* pHeadTimes = (M2Array<uint32_t>*)(f.GetData() + b.timestamps.offset + j * sizeof(M2Array<uint32_t>));
+			M2Array<uint32>* pHeadTimes = (M2Array<uint32>*)(f.GetData() + b.timestamps.offset + j * sizeof(M2Array<uint32>));
 			
-			uint32_t* ptimes;
+			uint32* ptimes;
 			if (animfiles[j].GetSize() > 0)
-				ptimes = (uint32_t*)(animfiles[j].GetData() + pHeadTimes->offset);
+				ptimes = (uint32*)(animfiles[j].GetData() + pHeadTimes->offset);
 			else
-				ptimes = (uint32_t*)(f.GetData() + pHeadTimes->offset);
+				ptimes = (uint32*)(f.GetData() + pHeadTimes->offset);
 
 			for (size_t i = 0; i < pHeadTimes->size; i++)
 			{
@@ -331,12 +331,12 @@ public:
 	}
 
 private:
-	int32_t interpolation_type;
-	int32_t global_sequence;
-	uint32_t* globals;
+	int32 interpolation_type;
+	int32 global_sequence;
+	uint32* globals;
 
 	size_t sizes;
-	vector<int32_t> times[MAX_ANIMATED];
+	vector<int32> times[MAX_ANIMATED];
 	vector<T> data[MAX_ANIMATED];
 
 	// Hermite interpolation

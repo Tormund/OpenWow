@@ -28,20 +28,20 @@ public:
 
 	//
 
-	MapChunk* getChunk(uint32_t x, uint32_t z);
+	MapChunk* getChunk(uint32 x, uint32 z);
 
 public:
 	vector<Texture*> m_DiffuseTextures;
 	vector<Texture*> m_SpecularTextures;
 
 #ifdef WMO_INCL
-	uint32_t wmoCount;
+	uint32 wmoCount;
 	vector<string> wmoNames;
 	vector<WMOInstance*> wmoInstances;
 #endif
 
 #ifdef MDX_INCL
-	uint32_t mdxCount;
+	uint32 mdxCount;
 	vector<string> mdxNames;
 	vector<ModelInstance*> mdxInstances;
 #endif

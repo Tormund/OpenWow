@@ -25,14 +25,14 @@ public:
 	}
 
 public:
-	uint32_t indexStart, indexCount, vertexStart, vertexEnd;
+	uint32 indexStart, indexCount, vertexStart, vertexEnd;
 	//Texture* texture, texture2;
 	int tex;
 	bool usetex2, useEnvMap, cull, trans, unlit, noZWrite, billboard;
 	float p;
 
-	int16_t texanim, color, opacity, blendmode;
-	uint16_t order;
+	int16 texanim, color, opacity, blendmode;
+	uint16 order;
 
 	// Geoset ID
 	int geoset;

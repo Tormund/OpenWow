@@ -5,7 +5,7 @@
 
 bool ConsoleOpenGL::Init()
 {
-	windowSize = vec2(_Settings->windowSizeX, _Settings->windowSizeY);
+	windowSize = vec2(Settings::windowSizeX, Settings::windowSizeY);
 	opened = false;
 	consoleFont = _FontsMgr->GetMainFont();
 	assert1(consoleFont != nullptr);

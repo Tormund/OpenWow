@@ -122,7 +122,7 @@ inline OBJECT_TYPE* RefManager2Dim<OBJECT_TYPE, ID_TYPE>::GetItemByName(cstring 
 template <class OBJECT_TYPE, class ID_TYPE>
 inline void RefManager2Dim<OBJECT_TYPE, ID_TYPE>::PrintAllInfo()
 {
-	uint32_t refsCnt = 0;
+	uint32 refsCnt = 0;
 	for (auto it = names.begin(); it != names.end(); ++it)
 	{
 		OBJECT_TYPE* item = GetItemByID(it->second);

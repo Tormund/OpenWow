@@ -3,7 +3,7 @@
 class SkyColor
 {
 public:
-	SkyColor(int _time, uint32_t _color)
+	SkyColor(int _time, uint32 _color)
 	{
 		time = _time;
 		color = fromRGB(_color);

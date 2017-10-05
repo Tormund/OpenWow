@@ -84,7 +84,7 @@ bool WMO::Init()
 	//Debug::Info("WMO[%s]: Loading...", GetName().c_str());
 
 	char fourcc[5];
-	uint32_t size;
+	uint32 size;
 	while (!f.IsEof())
 	{
 		memset(fourcc, 0, 4);
@@ -98,7 +98,7 @@ bool WMO::Init()
 
 		if (strcmp(fourcc, "MVER") == 0)                    // Version
 		{
-			uint32_t version;
+			uint32 version;
 			f.ReadBytes(&version, 4);
 			assert3(version == 17, "Version mismatch != 17", std::to_string(version).c_str());
 		}
@@ -114,7 +114,7 @@ bool WMO::Init()
 		}
 		else if (strcmp(fourcc, "MOMT") == 0)               // Materials used in this map object, 64 bytes per texture (BLP file), nMaterials entries.
 		{
-			for (uint32_t i = 0; i < header.nTextures; i++)
+			for (uint32 i = 0; i < header.nTextures; i++)
 			{
 				WMOMaterial* _mat = new WMOMaterial(this, f);
 				m_Materials.push_back(_mat);
@@ -128,7 +128,7 @@ bool WMO::Init()
 		}
 		else if (strcmp(fourcc, "MOGI") == 0)
 		{
-			for (uint32_t i = 0; i < header.nGroups; i++)
+			for (uint32 i = 0; i < header.nGroups; i++)
 			{
 				WMOGroup* group = new WMOGroup(this, i, f);
 				m_Groups.push_back(group);
@@ -153,7 +153,7 @@ bool WMO::Init()
 			assert((size % sizeof(vec3)) == 0);
 
 			m_PortalVertices = new vec3[size / sizeof(vec3)];
-			for (uint32_t i = 0; i < size / sizeof(vec3); i++)
+			for (uint32 i = 0; i < size / sizeof(vec3); i++)
 			{
 				vec3 portalVertex;
 				f.ReadBytes(&portalVertex, sizeof(vec3));
@@ -165,7 +165,7 @@ bool WMO::Init()
 			assert1((size % WMO_PortalInformation::__size) == 0);
 			assert1((size / WMO_PortalInformation::__size) == header.nPortals);
 
-			for (uint32_t i = 0; i < size / WMO_PortalInformation::__size; i++)
+			for (uint32 i = 0; i < size / WMO_PortalInformation::__size; i++)
 			{
 				WMO_PortalInformation* portalInformation = new WMO_PortalInformation;
 				f.ReadBytes(portalInformation, WMO_PortalInformation::__size);
@@ -174,7 +174,7 @@ bool WMO::Init()
 		}
 		else if (strcmp(fourcc, "MOPR") == 0)
 		{
-			for (uint32_t i = 0; i < size / WMO_PortalReferences::__size; i++)
+			for (uint32 i = 0; i < size / WMO_PortalReferences::__size; i++)
 			{
 				WMO_PortalReferences* portalReference = new WMO_PortalReferences;
 				f.ReadBytes(portalReference, WMO_PortalReferences::__size);
@@ -186,7 +186,7 @@ bool WMO::Init()
 			assert((size % sizeof(vec3)) == 0);
 
 			m_VisibleBlockVertices = new vec3[size / sizeof(vec3)];
-			for (uint32_t i = 0; i < size / sizeof(vec3); i++)
+			for (uint32 i = 0; i < size / sizeof(vec3); i++)
 			{
 				vec3 visibleVertex;
 				f.ReadBytes(&visibleVertex, sizeof(vec3));
@@ -197,7 +197,7 @@ bool WMO::Init()
 		{
 			assert1((size % WMO_VisibleBlockList::__size) == 0);
 
-			for (uint32_t i = 0; i < size / WMO_VisibleBlockList::__size; i++)
+			for (uint32 i = 0; i < size / WMO_VisibleBlockList::__size; i++)
 			{
 				WMO_VisibleBlockList* visibleBlockList = new WMO_VisibleBlockList;
 				f.ReadBytes(visibleBlockList, WMO_VisibleBlockList::__size);
@@ -207,7 +207,7 @@ bool WMO::Init()
 		}
 		else if (strcmp(fourcc, "MOLT") == 0)
 		{
-			for (uint32_t i = 0; i < header.nLights; i++)
+			for (uint32 i = 0; i < header.nLights; i++)
 			{
 				WMOLight* _wmoLight = new WMOLight(f);
 				m_Lights.push_back(_wmoLight);
@@ -215,7 +215,7 @@ bool WMO::Init()
 		}
 		else if (strcmp(fourcc, "MODS") == 0)
 		{
-			for (uint32_t i = 0; i < header.nDoodadSets; i++)
+			for (uint32 i = 0; i < header.nDoodadSets; i++)
 			{
 #ifdef DOODADS_INCL
 				WMO_DoodadSet* dds = new WMO_DoodadSet();
@@ -243,7 +243,7 @@ bool WMO::Init()
 		else if (strcmp(fourcc, "MODD") == 0) // Information for doodad instances. 40 bytes per doodad instance, nDoodads entries.
 		{
 			header.nDoodadNames = size / 40;
-			for (uint32_t i = 0; i < header.nDoodadNames; i++)
+			for (uint32 i = 0; i < header.nDoodadNames; i++)
 			{
 #ifdef DOODADS_INCL
 				DoodadInstance* _doodadInstance = new DoodadInstance(f);
@@ -259,7 +259,7 @@ bool WMO::Init()
 		}
 		else if (strcmp(fourcc, "MFOG") == 0)
 		{
-			for (uint32_t i = 0; i < (size / WMOFogDef::__size); i++)
+			for (uint32 i = 0; i < (size / WMOFogDef::__size); i++)
 			{
 				WMOFog* fog = new WMOFog(f);
 				m_Fogs.push_back(fog);
@@ -290,7 +290,7 @@ bool WMO::Init()
 	return true;
 }
 
-bool WMO::draw(uint32_t _doodadSet)
+bool WMO::draw(uint32 _doodadSet)
 {
 	if (!m_Loaded)
 	{
@@ -310,7 +310,7 @@ bool WMO::draw(uint32_t _doodadSet)
 	// WMO doodads
 
 	PERF_START(PERF_MAP_MODELS_WMOs_DOODADS);
-	if (_Settings->draw_map_wmo_doodads)
+	if (Settings::draw_map_wmo_doodads)
 	{
 		for (auto it = m_Groups.begin(); it != m_Groups.end(); ++it)
 		{
@@ -504,7 +504,7 @@ void WMO::DEBUG_DrawPortalsRelations()
 		}
 
 		vec3 pc;
-		for (uint32_t j = portalInformation->startVertex; j < portalInformation->count; j++)
+		for (uint32 j = portalInformation->startVertex; j < portalInformation->count; j++)
 		{
 			pc += m_PortalVertices[j];
 		}
@@ -540,12 +540,12 @@ void WMO::DEBUG_DrawPortals()
 {
 	_TechniquesMgr->m_Debug_GeometryPass->SetColor4(vec4(0.0f, 1.0f, 0.0f, 0.5f));
 
-	for (uint32_t i = 0; i < header.nPortals; i++)
+	for (uint32 i = 0; i < header.nPortals; i++)
 	{
 		WMO_PortalInformation* portalInformation = m_PortalInformation[i];
 		
 		vector<vec3> verts;
-		for (uint32_t j = portalInformation->startVertex; j < portalInformation->count; j++)
+		for (uint32 j = portalInformation->startVertex; j < portalInformation->count; j++)
 		{
 			verts.push_back(m_PortalVertices[j]);
 		}

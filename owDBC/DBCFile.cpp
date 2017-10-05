@@ -48,7 +48,7 @@
 	if(db_type == 2) {
 		SeekRelative(28);
 		// just some buggy check
-		uint32_t check;
+		uint32 check;
 		ReadBytes(&check, 4);
 		if(check == 6) // wrong place
 			SeekRelative(-20);

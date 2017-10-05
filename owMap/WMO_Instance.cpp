@@ -52,4 +52,4 @@ void WMOInstance::reset()
 	alreadyDraw.clear();
 }
 
-set<uint32_t> WMOInstance::alreadyDraw;
+set<uint32> WMOInstance::alreadyDraw;

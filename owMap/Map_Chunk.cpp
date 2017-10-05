@@ -139,9 +139,9 @@ void MapChunk::init(File& f, load_phases phase)
 			vec3 *ttv = tempVertexes;
 
 			// vertices
-			for (uint32_t j = 0; j < 17; j++)
+			for (uint32 j = 0; j < 17; j++)
 			{
-				for (uint32_t i = 0; i < ((j % 2) ? 8 : 9); i++)
+				for (uint32 i = 0; i < ((j % 2) ? 8 : 9); i++)
 				{
 					float h;
 					f.ReadBytes(&h, sizeof(float));
@@ -177,9 +177,9 @@ void MapChunk::init(File& f, load_phases phase)
 			vec3* ttn = tempNormals;
 			for (int j = 0; j < 17; j++)
 			{
-				for (uint32_t i = 0; i < ((j % 2) ? 8 : 9); i++)
+				for (uint32 i = 0; i < ((j % 2) ? 8 : 9); i++)
 				{
-					int8_t nor[3];
+					int8 nor[3];
 					f.ReadBytes(nor, 3);
 					*ttn++ = vec3(-(float)nor[1] / 127.0f, (float)nor[2] / 127.0f, -(float)nor[0] / 127.0f);
 				}
@@ -214,9 +214,9 @@ void MapChunk::init(File& f, load_phases phase)
 			vec3* ttn = mccvColors;
 			for (int j = 0; j < 17; j++)
 			{
-				for (uint32_t i = 0; i < ((j % 2) ? 8 : 9); i++)
+				for (uint32 i = 0; i < ((j % 2) ? 8 : 9); i++)
 				{
-					uint8_t nor[4];
+					uint8 nor[4];
 					f.ReadBytes(nor, 4);
 					*ttn++ = vec3((float)nor[2] / 127.0f, (float)nor[1] / 127.0f, (float)nor[0] / 127.0f);
 				}
@@ -233,7 +233,7 @@ void MapChunk::init(File& f, load_phases phase)
 			flipcc(blockName);
 			blockName[4] = 0x00;
 
-			uint32_t _ssize;
+			uint32 _ssize;
 			f.ReadBytes(&_ssize, 4);
 			
 			MCLV_exists = strncmp(blockName, "MCLV", 4) == 0;
@@ -244,7 +244,7 @@ void MapChunk::init(File& f, load_phases phase)
 			{
 				for (int i = 0; i < ((j % 2) ? 8 : 9); i++)
 				{
-					uint8_t nor[4];
+					uint8 nor[4];
 					f.ReadBytes(nor, 4);
 					*ttn++ = vec4((float)nor[2] / 255.0f, (float)nor[1] / 255.0f, (float)nor[0] / 255.0f, (float)nor[3] / 255.0f);
 				}
@@ -284,7 +284,7 @@ void MapChunk::init(File& f, load_phases phase)
 			char fcc[5];
 			fcc[4] = 0;
 
-			uint32_t size;
+			uint32 size;
 
 			f.SeekRelative(-4);
 			f.ReadBytes(&size, 4);
@@ -325,16 +325,16 @@ void MapChunk::init(File& f, load_phases phase)
 
 		struct MCLY
 		{
-			uint32_t textureIndex;
+			uint32 textureIndex;
 			/*struct {
-				uint32_t animation_rotation : 3;        // each tick is 45°
-				uint32_t animation_speed : 3;
-				uint32_t animation_enabled : 1;
-				uint32_t overbright : 1;                // This will make the texture way brighter. Used for lava to make it "glow".
-				uint32_t use_alpha_map : 1;             // set for every layer after the first
-				uint32_t alpha_map_compressed : 1;      // see MCAL chunk description
-				uint32_t use_cube_map_reflection : 1;   // This makes the layer behave like its a reflection of the skybox. See below
-				uint32_t : 21;
+				uint32 animation_rotation : 3;        // each tick is 45°
+				uint32 animation_speed : 3;
+				uint32 animation_enabled : 1;
+				uint32 overbright : 1;                // This will make the texture way brighter. Used for lava to make it "glow".
+				uint32 use_alpha_map : 1;             // set for every layer after the first
+				uint32 alpha_map_compressed : 1;      // see MCAL chunk description
+				uint32 use_cube_map_reflection : 1;   // This makes the layer behave like its a reflection of the skybox. See below
+				uint32 : 21;
 			} flags;*/
 
 			enum
@@ -344,16 +344,16 @@ void MapChunk::init(File& f, load_phases phase)
 				FLAG_CUBE_MAP_REFLECTIONS = 0x400,
 			};
 
-			uint32_t flags;
-			uint32_t offsetInMCAL;
-			int16_t effectId;
-			int16_t padding;
+			uint32 flags;
+			uint32 offsetInMCAL;
+			int16 effectId;
+			int16 padding;
 		};
 		MCLY mcly[4];
 		memset(mcly, 0, sizeof(struct MCLY) * 4);
 
 		//------------------------------------------- Blend buffer Init
-		uint8_t* blendbuf = new uint8_t[64 * 64 * 4];
+		uint8* blendbuf = new uint8[64 * 64 * 4];
 		memset(blendbuf, 0, 64 * 64 * 4);
 		//------------------------------------------
 
@@ -361,7 +361,7 @@ void MapChunk::init(File& f, load_phases phase)
 		f.Seek(header->ofsLayer);
 		{
 			// Texture layer definitions for this map chunk. 16 bytes per layer, up to 4 layers (thus, layer count = size / 16).
-			for (uint32_t i = 0; i < header->nLayers; i++)
+			for (uint32 i = 0; i < header->nLayers; i++)
 			{
 				f.ReadBytes(&mcly[i], 16);
 
@@ -383,18 +383,18 @@ void MapChunk::init(File& f, load_phases phase)
 		f.Seek(header->ofsAlpha);
 		{
 			// alpha maps  64 x 64 = 4096
-			uint8_t* data = f.GetDataFromCurrent();
+			uint8* data = f.GetDataFromCurrent();
 			if (header->nLayers > 0)
 			{
-				for (uint32_t i = 1; i < header->nLayers; i++)
+				for (uint32 i = 1; i < header->nLayers; i++)
 				{
 					if (!((mcly[i].flags & MCLY::FLAG_USE_ALPHA_MAP) == MCLY::FLAG_USE_ALPHA_MAP))
 					{
 						continue;
 					}
 
-					uint8_t amap[64 * 64];
-					uint8_t* abuf = data + mcly[i].offsetInMCAL;
+					uint8 amap[64 * 64];
+					uint8* abuf = data + mcly[i].offsetInMCAL;
 
 					if (_Map->IsBigAlpha() && ((mcly[i].flags & MCLY::FLAG_ALPHA_MAP_COMRESSED) == MCLY::FLAG_ALPHA_MAP_COMRESSED))
 					{ // Compressed: MPHD is only about bit depth!
@@ -426,7 +426,7 @@ void MapChunk::init(File& f, load_phases phase)
 							continue;
 						}
 
-						uint8_t* p = &amap[0];
+						uint8* p = &amap[0];
 						for (int j = 0; j < 64; j++)
 						{
 							for (int i = 0; i < 64; i++)
@@ -437,7 +437,7 @@ void MapChunk::init(File& f, load_phases phase)
 					}
 					else
 					{ // Uncompressed (2048)
-						uint8_t *p = &amap[0];
+						uint8 *p = &amap[0];
 						for (int j = 0; j < 64; j++)
 						{
 							for (int k = 0; k < 32; k++)
@@ -470,7 +470,7 @@ void MapChunk::init(File& f, load_phases phase)
 		{
 			f.Seek(header->ofsShadow);
 
-			uint8_t sbuf[64 * 64], *p, c[8];
+			uint8 sbuf[64 * 64], *p, c[8];
 			p = sbuf;
 			for (int j = 0; j < 64; j++)
 			{
@@ -594,9 +594,9 @@ void MapChunk::draw2()
 
 	// Draw chunk before fog
 	float mydist = glm::length(_Camera->Position - vcenter) - r;
-	if (mydist > _Settings->culldistance)
+	if (mydist > Settings::culldistance)
 	{
-		if (_Settings->uselowlod)
+		if (Settings::uselowlod)
 		{
 			this->drawNoDetail();
 			return;
@@ -607,10 +607,10 @@ void MapChunk::draw2()
 
 	if (!hasholes)
 	{
-		bool highres = _Settings->drawhighres;
+		bool highres = Settings::drawhighres;
 		if (highres)
 		{
-			highres = mydist < _Settings->highresdistance2;
+			highres = mydist < Settings::highresdistance2;
 		}
 
 		if (highres)
@@ -654,11 +654,11 @@ void MapChunk::draw2()
 
 	_TechniquesMgr->m_MapChunk_GeometryPass->SetLayersCount(header->nLayers);
 
-	_TechniquesMgr->m_MapChunk_GeometryPass->SetMCCVExists(header->flags.has_mccv && _Settings->enableMCCV);
-	_TechniquesMgr->m_MapChunk_GeometryPass->SetMCLVExists(MCLV_exists && _Settings->enableMCLV);
+	_TechniquesMgr->m_MapChunk_GeometryPass->SetMCCVExists(header->flags.has_mccv && Settings::enableMCCV);
+	_TechniquesMgr->m_MapChunk_GeometryPass->SetMCLVExists(MCLV_exists && Settings::enableMCLV);
 
 	// Bind textures
-	for (uint32_t i = 0; i < header->nLayers; i++)
+	for (uint32 i = 0; i < header->nLayers; i++)
 	{
 		textures[i]->Bind(i);
 		SpecularTextures[i]->Bind(5);

@@ -48,7 +48,7 @@ void Perfomance::Draw(vec2 _startPoint)
 	vec2 point = _startPoint;
 	float diff = 15.0f;
 
-	for (uint8_t i = 0; i < ARRAY_SIZE_IN_ELEMENTS(Messages); i++)
+	for (uint8 i = 0; i < OW_COUNT_ELEMENTS(Messages); i++)
 	{
 		if (Messages[i].what != PERF_DELIM)
 		{

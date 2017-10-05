@@ -210,7 +210,7 @@ void ModelRenderPass::deinit()
 	if (unlit)
 	{
 	//***	glEnable(GL_LIGHTING);
-	//***	if (_Settings->drawfog) glEnable(GL_FOG);
+	//***	if (Settings::drawfog) glEnable(GL_FOG);
 	}
 
 	if (useEnvMap)

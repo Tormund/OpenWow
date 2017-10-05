@@ -136,9 +136,9 @@ bool RenderGL::Init()
 	//glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
 
 	// Viewport
-	glViewport(0, 0, _Settings->windowSizeX, _Settings->windowSizeY);
+	glViewport(0, 0, Settings::windowSizeX, Settings::windowSizeY);
 
-	m_OrhoMatrix = glm::ortho(0.0f, _Settings->windowSizeX, _Settings->windowSizeY, 0.0f);
+	m_OrhoMatrix = glm::ortho(0.0f, Settings::windowSizeX, Settings::windowSizeY, 0.0f);
 
 	return true;
 }
@@ -362,18 +362,18 @@ void RenderGL::RenderText(cvec2 _pos, cstring _string, TextAlignW _alignW, TextA
 
 //
 
-void RenderGL::OnWindowResized(uint32_t _width, uint32_t _height)
+void RenderGL::OnWindowResized(uint32 _width, uint32 _height)
 {
 	// Window size
-	_Settings->windowSizeX = _width;
-	_Settings->windowSizeY = _height;
+	Settings::windowSizeX = _width;
+	Settings::windowSizeY = _height;
 
 	// Aspect
-	_Settings->CalculateAspectFactor();
+	Settings::CalculateAspectFactor();
 
 	// Set viewport
-	glViewport(0, 0, _Settings->windowSizeX, _Settings->windowSizeY);
+	glViewport(0, 0, Settings::windowSizeX, Settings::windowSizeY);
 
 	// Projection matix
-	m_OrhoMatrix = glm::ortho(0.0f, _Settings->windowSizeX, _Settings->windowSizeY, 0.0f);
+	m_OrhoMatrix = glm::ortho(0.0f, Settings::windowSizeX, Settings::windowSizeY, 0.0f);
 }

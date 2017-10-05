@@ -5,32 +5,32 @@
 #define __DBC_TVALUE(type, _name, _field) \
 type Get_##_name() const \
 { \
-	return getValue<type>(static_cast<uint32_t>(_field - 1)); \
+	return getValue<type>(static_cast<uint32>(_field - 1)); \
 }
 
 #define __DBC_STRING(_name, _field) \
 const char* Get_##_name() const \
 { \
-	return getString(static_cast<uint32_t>(_field - 1)); \
+	return getString(static_cast<uint32>(_field - 1)); \
 }
 
 #define __DBC_LOCSTR(_name, _field) \
-const char* Get_##_name(int8_t _locale = -1) const \
+const char* Get_##_name(int8 _locale = -1) const \
 { \
-	return getLocalizedString(static_cast<uint32_t>(_field - 1), _locale); \
+	return getLocalizedString(static_cast<uint32>(_field - 1), _locale); \
 }
 
 #define __DBC_REF_ID(_dbc, _name, _field) \
 const _dbc##Record* Get_##_name() const \
 { \
-	return _dbc.getByID(static_cast<uint32_t>(getValue<uint32_t>(static_cast<uint32_t>(_field - 1)))); \
+	return _dbc.getByID(static_cast<uint32>(getValue<uint32>(static_cast<uint32>(_field - 1)))); \
 }
 
 #define __DBC_TARRAY(_type, _name, _field, _size) \
-_type Get_##_name(uint8_t _index) const \
+_type Get_##_name(uint8 _index) const \
 { \
     assert1(_index < _size); \
-	return getValue<_type>(static_cast<uint32_t>(_field - 1 + _index)); \
+	return getValue<_type>(static_cast<uint32>(_field - 1 + _index)); \
 }
 
 
@@ -44,7 +44,7 @@ _type Get_##_name(uint8_t _index) const \
 class CONCAT_CLASS(accessName) : public Record { \
 public: \
 	CONCAT_CLASS(accessName)(const DBCFile<CONCAT_CLASS(accessName)>::Iterator& _iterator) : Record(_iterator->dbcStats, _iterator->offset) { } \
-	CONCAT_CLASS(accessName)(DBCFile<CONCAT_CLASS(accessName)>* file, uint8_t* offset) : Record(file, offset) { } \
+	CONCAT_CLASS(accessName)(DBCFile<CONCAT_CLASS(accessName)>* file, uint8* offset) : Record(file, offset) { } \
 public:
 
 #define DBC_DEF_END \
@@ -80,16 +80,16 @@ protected:
 	size_t stringSize;
 
 	// WDB2
-	uint32_t tableHash;
-	uint32_t build;
-	uint32_t timestampLastWritten;
-	uint32_t minId;
-	uint32_t maxId;
-	uint32_t locale;
-	uint32_t copyTableSize;
+	uint32 tableHash;
+	uint32 build;
+	uint32 timestampLastWritten;
+	uint32 minId;
+	uint32 maxId;
+	uint32 locale;
+	uint32 copyTableSize;
 
 	// Strings
-	uint8_t* stringTable;
+	uint8* stringTable;
 };
 
 
@@ -101,45 +101,45 @@ class Record
 {
 public:
 	Record(const Record& _record) = delete;
-	Record(DBCStats* _dbcStats, uint8_t* offset) : dbcStats(_dbcStats), offset(offset) {}
+	Record(DBCStats* _dbcStats, uint8* offset) : dbcStats(_dbcStats), offset(offset) {}
 
 	Record& operator=(const Record& r) = delete;
 
 	// All data has ID
-	__DBC_TVALUE(uint32_t, ID, 1);
+	__DBC_TVALUE(uint32, ID, 1);
 
 	// Get value with common type
 	template<typename T>
-	T getValue(uint32_t field) const
+	T getValue(uint32 field) const
 	{
 		assert2(field < dbcStats->fieldCount, std::to_string(field).c_str());
 		return *reinterpret_cast<T*>(offset + field * 4);
 	}
 
 	// Common types
-	float_t getFloat(uint32_t field) const
+	float_t getFloat(uint32 field) const
 	{
 		assert2(field < dbcStats->fieldCount, std::to_string(field).c_str());
 		return *reinterpret_cast<float_t*>(offset + field * 4);
 	}
-	uint32_t getUInt(uint32_t field) const
+	uint32 getUInt(uint32 field) const
 	{
 		assert2(field < dbcStats->fieldCount, std::to_string(field).c_str());
-		return *reinterpret_cast<uint32_t*>(offset + (field * 4));
+		return *reinterpret_cast<uint32*>(offset + (field * 4));
 	}
-	int32_t getInt(uint32_t field) const
+	int32 getInt(uint32 field) const
 	{
 		assert2(field < dbcStats->fieldCount, std::to_string(field).c_str());
-		return *reinterpret_cast<int32_t*>(offset + field * 4);
+		return *reinterpret_cast<int32*>(offset + field * 4);
 	}
-	uint8_t getByte(uint32_t ofs) const
+	uint8 getByte(uint32 ofs) const
 	{
 		assert2(ofs < dbcStats->recordSize, std::to_string(ofs).c_str());
-		return *reinterpret_cast<uint8_t*>(offset + ofs);
+		return *reinterpret_cast<uint8*>(offset + ofs);
 	}
 
 	// Strings
-	const char* getString(uint32_t field) const
+	const char* getString(uint32 field) const
 	{
 		assert2(field < dbcStats->fieldCount, std::to_string(field).c_str());
 
@@ -152,21 +152,21 @@ public:
 		assert2(stringOffset < dbcStats->stringSize, std::to_string(stringOffset).c_str());
 		return reinterpret_cast<char*>(dbcStats->stringTable + stringOffset);
 	}
-	const char* getLocalizedString(uint32_t field, int8_t locale = -1) const
+	const char* getLocalizedString(uint32 field, int8 locale = -1) const
 	{
-		int8_t loc = locale;
+		int8 loc = locale;
 		if (locale == -1)
 		{
 			assert2(field < dbcStats->fieldCount - 8, std::to_string(field).c_str());
 			for (loc = 0; loc < 8; loc++)
 			{
-				uint32_t stringOffset = getUInt(field + loc);
+				uint32 stringOffset = getUInt(field + loc);
 				if (stringOffset != 0)
 					break;
 			}
 		}
 		assert2(field + loc < dbcStats->fieldCount, std::to_string(field).c_str());
-		uint32_t stringOffset = getUInt(field + static_cast<uint32_t>(loc));
+		uint32 stringOffset = getUInt(field + static_cast<uint32>(loc));
 
 		assert2(stringOffset < dbcStats->stringSize, std::to_string(stringOffset).c_str());
 		return reinterpret_cast<char*>(dbcStats->stringTable + stringOffset);
@@ -174,7 +174,7 @@ public:
 
 public:
 	DBCStats* dbcStats;
-	uint8_t* offset;
+	uint8* offset;
 };
 
 
@@ -194,7 +194,7 @@ private:
 class DBCNotFound : public DBCException
 {
 public:
-	DBCNotFound(uint32_t _id) : DBCException("Key was not found [" + to_string(_id) + "]") {}
+	DBCNotFound(uint32 _id) : DBCException("Key was not found [" + to_string(_id) + "]") {}
 };
 
 
@@ -223,7 +223,7 @@ public:
 	{
 		friend RECORD_T;
 	public:
-		Iterator(DBCFile* file, uint8_t* offset) : record(file, offset) {}
+		Iterator(DBCFile* file, uint8* offset) : record(file, offset) {}
 
 		Iterator& operator++()
 		{
@@ -268,16 +268,16 @@ public:
 		return Iterator(this, stringTable);
 	}
 
-	const map<uint32_t, RECORD_T*>* Records() const
+	const map<uint32, RECORD_T*>* Records() const
 	{
 		return &records;
 	}
 
 	// Get data by ID
-	RECORD_T* getByID(uint32_t _id);
+	RECORD_T* getByID(uint32 _id);
 
 protected:
-	map<uint32_t, RECORD_T*> records;
+	map<uint32, RECORD_T*> records;
 };
 
 #include "DBCFile.inl"

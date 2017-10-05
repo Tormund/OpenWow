@@ -21,14 +21,14 @@ Sky::Sky(DBC_LightRecord* data)
 
 	global = (position.x == 0.0f && position.y == 0.0f && position.z == 0.0f);
 
-	uint32_t ParamsClear = data->Get_Params(0) * 18;
+	uint32 ParamsClear = data->Get_Params(0) * 18;
 
-	for (uint32_t i = 0; i < 18; i++)
+	for (uint32 i = 0; i < 18; i++)
 	{
 		try
 		{
 			auto rec = DBC_LightIntBand.getByID(ParamsClear + i);
-			uint32_t entries = rec->Get_Count();
+			uint32 entries = rec->Get_Count();
 
 			if (entries == 0)
 			{
@@ -72,7 +72,7 @@ vec3 Sky::colorFor(int r, int _time) const
 	}
 	else
 	{
-		for (uint32_t i = last; i >= 0; i--)
+		for (uint32 i = last; i >= 0; i--)
 		{
 			if (colorRows[r][i].time <= _time)
 			{

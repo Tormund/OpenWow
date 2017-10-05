@@ -14,7 +14,7 @@ private:
 	typedef map<string, SectionData*> fsDataType;
 
 public:
-	DEF_MODULE_API(FileSystem, );
+	DEF_MODULE(FileSystem);
 
 	 void Print();
 	 string Get(cstring _sectionName, cstring _keyName) const;

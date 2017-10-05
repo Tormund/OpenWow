@@ -1,14 +1,15 @@
 #pragma once
 
-class Random {
+class Random
+{
 public:
 	static  void SetSeed(unsigned long TSeed);
 
 	static  float Generate();
 	static  int GenerateMax(int TMax);
-	static  uint32_t GenerateMax(uint32_t TMax);
+	static  uint32 GenerateMax(uint32 TMax);
 	static  int GenerateRange(int TMin, int TMax);
-	static  uint32_t GenerateRange(uint32_t TMin, uint32_t TMax);
+	static  uint32 GenerateRange(uint32 TMin, uint32 TMax);
 	static  float GenerateRange(float TMin, float TMax);
 
 private:

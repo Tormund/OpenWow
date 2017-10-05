@@ -12,7 +12,7 @@ class Texture;
 class TexturesMgr : public Module, public RefManager1DimAssync<Texture>
 {
 public:
-	DEF_MODULE_API(TexturesMgr, );
+	DEF_MODULE(TexturesMgr);
 
 	 Texture* Add(cstring _textureFileName);
 	 Texture* Add(File& _textureFile);

@@ -13,9 +13,9 @@ bool MDX::isAnimated(File& f)
 	m_IsBillboard = false;
 
 	M2Vertex* verts = (M2Vertex*)(f.GetData() + header.vertices.offset);
-	for (uint32_t i = 0; i < header.vertices.size && !animGeometry; i++)
+	for (uint32 i = 0; i < header.vertices.size && !animGeometry; i++)
 	{
-		for (uint32_t b = 0; b < 4; b++)
+		for (uint32 b = 0; b < 4; b++)
 		{
 			if (verts[i].bone_weights[b] > 0)
 			{
@@ -41,7 +41,7 @@ bool MDX::isAnimated(File& f)
 	}
 	else
 	{
-		for (uint32_t i = 0; i < header.bones.size; i++)
+		for (uint32 i = 0; i < header.bones.size; i++)
 		{
 			M2CompBone& bb = bo[i];
 			if (bb.translation.interpolation_type || bb.rotation.interpolation_type || bb.scale.interpolation_type)
@@ -65,7 +65,7 @@ bool MDX::isAnimated(File& f)
 	if (header.colors.size)
 	{
 		M2Color* cols = (M2Color*)(f.GetData() + header.colors.offset);
-		for (uint32_t i = 0; i < header.colors.size; i++)
+		for (uint32 i = 0; i < header.colors.size; i++)
 		{
 			if (cols[i].color.interpolation_type || cols[i].alpha.interpolation_type)
 			{
@@ -79,7 +79,7 @@ bool MDX::isAnimated(File& f)
 	if (header.texture_weights.size && !animMisc)
 	{
 		M2TextureWeight* trs = (M2TextureWeight*)(f.GetData() + header.texture_weights.offset);
-		for (uint32_t i = 0; i < header.texture_weights.size; i++)
+		for (uint32 i = 0; i < header.texture_weights.size; i++)
 		{
 			if (trs[i].weight.interpolation_type)
 			{
@@ -106,7 +106,7 @@ void MDX::initAnimated(File& f)
 
 		animfiles = new File[header.sequences.size];
 		char tempname[256];
-		for (uint32_t i = 0; i < header.sequences.size; i++)
+		for (uint32 i = 0; i < header.sequences.size; i++)
 		{
 			sprintf_s(tempname, "%s%04d-%02d.anim", m_ModelName.c_str(), m_Sequences[i].id, m_Sequences[i].variationIndex);
 			if (MPQFile::GetFileSize(tempname) > 0)
@@ -127,7 +127,7 @@ void MDX::initAnimated(File& f)
 	{
 		m_Part_Bones = new MDX_Part_Bone[header.bones.size];
 		M2CompBone* bonesDefs = (M2CompBone*)(f.GetData() + header.bones.offset);
-		for (uint32_t i = 0; i < header.bones.size; i++)
+		for (uint32 i = 0; i < header.bones.size; i++)
 		{
 			m_Part_Bones[i].init(f, bonesDefs[i], m_GlobalLoops, animfiles);
 		}
@@ -137,7 +137,7 @@ void MDX::initAnimated(File& f)
 	{
 		m_TexturesAnims = new MDX_Part_TextureAnim[header.texture_transforms.size];
 		M2TextureTransform* textureAnimDefs = (M2TextureTransform*)(f.GetData() + header.texture_transforms.offset);
-		for (uint32_t i = 0; i < header.texture_transforms.size; i++)
+		for (uint32 i = 0; i < header.texture_transforms.size; i++)
 		{
 			m_TexturesAnims[i].init(f, textureAnimDefs[i], m_GlobalLoops);
 		}
@@ -150,7 +150,7 @@ void MDX::initAnimated(File& f)
 	{
 		M2Particle* pdefs = (M2Particle*)(f.GetData() + header.particle_emitters.offset);
 		particleSystems = new ParticleSystem[header.particle_emitters.size];
-		for (uint32_t i = 0; i < header.particle_emitters.size; i++)
+		for (uint32 i = 0; i < header.particle_emitters.size; i++)
 		{
 			particleSystems[i].model = this;
 			particleSystems[i].init(f, pdefs[i], m_GlobalLoops);
@@ -162,7 +162,7 @@ void MDX::initAnimated(File& f)
 	{
 		M2Ribbon* rdefs = (M2Ribbon*)(f.GetData() + header.ribbon_emitters.offset);
 		ribbons = new RibbonEmitter[header.ribbon_emitters.size];
-		for (uint32_t i = 0; i < header.ribbon_emitters.size; i++)
+		for (uint32 i = 0; i < header.ribbon_emitters.size; i++)
 		{
 			ribbons[i].model = this;
 			ribbons[i].init(f, rdefs[i], m_GlobalLoops);
@@ -176,7 +176,7 @@ void MDX::initAnimated(File& f)
 	{
 		m_Cameras = new MDX_Part_Camera[header.cameras.size];
 		M2Camera* cameraDefs = (M2Camera*)(f.GetData() + header.cameras.offset);
-		for (uint32_t i = 0; i < header.cameras.size; i++)
+		for (uint32 i = 0; i < header.cameras.size; i++)
 		{
 			m_Cameras[i].init(f, cameraDefs[i], m_GlobalLoops);
 		}
@@ -187,7 +187,7 @@ void MDX::initAnimated(File& f)
 	{
 		m_Lights = new MDX_Part_Light[header.lights.size];
 		M2Light* lightsDefs = (M2Light*)(f.GetData() + header.lights.offset);
-		for (uint32_t i = 0; i < header.lights.size; i++)
+		for (uint32 i = 0; i < header.lights.size; i++)
 		{
 			m_Lights[i].init(f, lightsDefs[i], m_GlobalLoops);
 		}
@@ -196,20 +196,20 @@ void MDX::initAnimated(File& f)
 	animcalc = false;
 }
 
-void MDX::calcBones(uint32_t _animationIndex, int time)
+void MDX::calcBones(uint32 _animationIndex, int time)
 {
-	for (uint32_t i = 0; i < header.bones.size; i++)
+	for (uint32 i = 0; i < header.bones.size; i++)
 	{
 		m_Part_Bones[i].calc = false;
 	}
 
-	for (uint32_t i = 0; i < header.bones.size; i++)
+	for (uint32 i = 0; i < header.bones.size; i++)
 	{
 		m_Part_Bones[i].calcMatrix(m_Part_Bones, _animationIndex, time);
 	}
 }
 
-void MDX::animate(uint32_t _animationIndex)
+void MDX::animate(uint32 _animationIndex)
 {
 	int tmax = m_Sequences[_animationIndex].duration;
 	animtime = _TimeManager->globalTime % tmax;
@@ -224,12 +224,12 @@ void MDX::animate(uint32_t _animationIndex)
 	if (animGeometry)
 	{
 		M2Vertex* ov = m_OriginalVertexes;
-		for (uint32_t i = 0, k = 0; i < header.vertices.size; ++i, ++ov)
+		for (uint32 i = 0, k = 0; i < header.vertices.size; ++i, ++ov)
 		{
 			vec3 vertex(0, 0, 0);
 			vec3 normal(0, 0, 0);
 
-			for (uint32_t b = 0; b < 4; b++)
+			for (uint32 b = 0; b < 4; b++)
 			{
 				if (ov->bone_weights[b] > 0)
 				{
@@ -256,7 +256,7 @@ void MDX::animate(uint32_t _animationIndex)
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
-	for (uint32_t i = 0; i < header.lights.size; i++)
+	for (uint32 i = 0; i < header.lights.size; i++)
 	{
 		if (m_Lights[i].parent >= 0)
 		{
@@ -266,14 +266,14 @@ void MDX::animate(uint32_t _animationIndex)
 	}
 
 #ifdef MDX_PARTICLES_ENABLE
-	for (uint32_t i = 0; i < header.particle_emitters.size; i++)
+	for (uint32 i = 0; i < header.particle_emitters.size; i++)
 	{
 		// random time distribution for teh win ..?
 		int pt = (animtime + (int)(tmax*particleSystems[i].tofs)) % tmax;
 		particleSystems[i].setup(_animationIndex, pt);
 	}
 
-	for (uint32_t i = 0; i < header.ribbon_emitters.size; i++)
+	for (uint32 i = 0; i < header.ribbon_emitters.size; i++)
 	{
 		ribbons[i].setup(_animationIndex, animtime);
 	}
@@ -282,7 +282,7 @@ void MDX::animate(uint32_t _animationIndex)
 
 	if (animTextures)
 	{
-		for (uint32_t i = 0; i < header.texture_transforms.size; i++)
+		for (uint32 i = 0; i < header.texture_transforms.size; i++)
 		{
 			m_TexturesAnims[i].calc(_animationIndex, animtime);
 		}

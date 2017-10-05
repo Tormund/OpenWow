@@ -7,7 +7,7 @@ class DayNightCycle
 public:
 	DayNightCycle();
 
-	DayNightPhase getPhase(uint32_t _gameTime);
+	DayNightPhase getPhase(uint32 _gameTime);
 
 private:
 	vector<DayNightPhase> dayNightPhases;

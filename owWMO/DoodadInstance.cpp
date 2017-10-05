@@ -18,7 +18,7 @@ DoodadInstance::DoodadInstance(File& f)
 
 
 
-	//uint32_t d1;
+	//uint32 d1;
 	//f.ReadBytes(&d1, 4); // (B,G,R,A) Lightning-color. 
 	//lcol = fromARGB(d1);
 }
@@ -42,7 +42,7 @@ void DoodadInstance::Draw()
 	float radius = modelObject->m_Radius * placementInfo->scale;
 
 	// Distance test
-	if (glm::length2(pos - _Camera->Position) > (_Settings->doodaddrawdistance2 + radius))
+	if (glm::length2(pos - _Camera->Position) > (Settings::doodaddrawdistance2 + radius))
 	{
 		_Pipeline->Pop(); // restore matrix
 		return;

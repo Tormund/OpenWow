@@ -117,7 +117,7 @@ void Map::InitGlobalsWMOs()
 
 	// Load low-resolution WMOs
 	Debug::Info("Map_GlobalWMOs[]: Low WMOs count [%d].", lowResolutionWMOsCount);
-	for (uint32_t i = 0; i < lowResolutionWMOsCount; i++)
+	for (uint32 i = 0; i < lowResolutionWMOsCount; i++)
 	{
 		const string name = lowResolutionWMOsNames[lowResolutionWMOsplacementInfo[i]->nameIndex];
 
@@ -146,7 +146,7 @@ void Map::PreloadMap(DBC_MapRecord* _map)
 	}
 
 	char fourcc[5];
-	uint32_t size;
+	uint32 size;
 
 	while (!f.IsEof())
 	{
@@ -161,7 +161,7 @@ void Map::PreloadMap(DBC_MapRecord* _map)
 
 		if (strcmp(fourcc, "MVER") == 0)
 		{
-			uint32_t version;
+			uint32 version;
 			f.ReadBytes(&version, 4);
 			assert3(version == 18, "Version mismatch != 18", std::to_string(version).c_str());
 		}
@@ -181,7 +181,7 @@ void Map::PreloadMap(DBC_MapRecord* _map)
 			// unit32 something
 			// unit32 unused[6]
 
-			uint32_t flags;
+			uint32 flags;
 			f.ReadBytes(&flags, 4);
 
 			m_BigAlpha = ((flags & Map_TerrainShaders_BigAlpha) == Map_TerrainShaders_BigAlpha);
@@ -199,7 +199,7 @@ void Map::PreloadMap(DBC_MapRecord* _map)
 			{
 				for (int j = 0; j < 64; j++)
 				{
-					uint32_t flags;
+					uint32 flags;
 					f.ReadBytes(&flags, 4);
 
 					if ((flags & Map_HasADT) == Map_HasADT)
@@ -213,7 +213,7 @@ void Map::PreloadMap(DBC_MapRecord* _map)
 						m_TileIsWater[j][i] = true;
 					}
 
-					uint32_t asyncId;
+					uint32 asyncId;
 					f.ReadBytes(&asyncId, 4);
 				}
 			}
@@ -232,7 +232,7 @@ void Map::PreloadMap(DBC_MapRecord* _map)
 		}
 		else if (strcmp(fourcc, "MODF") == 0)
 		{
-			uint32_t globalWMOCount = WMOPlacementInfo::__size;
+			uint32 globalWMOCount = WMOPlacementInfo::__size;
 			assert4(globalWMOCount > 1, "Map has more then 1 global WMO ", templateMap->Get_Directory(), std::to_string(globalWMOCount).c_str());
 
 			if (globalWMOCount > 0)
@@ -271,11 +271,11 @@ void Map::LoadLowTerrain()
 	}
 
 	// Offsets to MARE
-	uint32_t MARE_Offsets[C_TilesInMap][C_TilesInMap];
-	memset(MARE_Offsets, 0x00, C_TilesInMap * C_TilesInMap * sizeof(uint32_t));
+	uint32 MARE_Offsets[C_TilesInMap][C_TilesInMap];
+	memset(MARE_Offsets, 0x00, C_TilesInMap * C_TilesInMap * sizeof(uint32));
 
 	char fourcc[5];
-	uint32_t size;
+	uint32 size;
 
 	while (!f.IsEof())
 	{
@@ -290,7 +290,7 @@ void Map::LoadLowTerrain()
 
 		if (strcmp(fourcc, "MVER") == 0)
 		{
-			uint32_t version;
+			uint32 version;
 			f.ReadBytes(&version, 4);
 			assert3(version == 18, "Version mismatch != 18", std::to_string(version).c_str());
 		}
@@ -308,10 +308,10 @@ void Map::LoadLowTerrain()
 		}
 		else if (strncmp(fourcc, "MODF", 4) == 0) // Placement information for the WMO. Appears to be the same 64 byte structure used in the WDT and ADT MODF chunks.
 		{
-			uint32_t count = size / WMOPlacementInfo::__size;
+			uint32 count = size / WMOPlacementInfo::__size;
 
 #ifdef WMO_INCL
-			for (uint32_t i = 0; i < count; i++)
+			for (uint32 i = 0; i < count; i++)
 			{
 				WMOPlacementInfo* placement = new WMOPlacementInfo;
 				f.ReadBytes(placement, WMOPlacementInfo::__size);
@@ -321,7 +321,7 @@ void Map::LoadLowTerrain()
 		}
 		else if (strncmp(fourcc, "MAOF", 4) == 0) // Contains 64*64 = 4096 unsigned 32-bit integers, these are absolute offsets in the file to each map tile's MapAreaLow-array-entry. For unused tiles the value is 0.
 		{
-			f.ReadBytes(MARE_Offsets, C_TilesInMap * C_TilesInMap * sizeof(uint32_t));
+			f.ReadBytes(MARE_Offsets, C_TilesInMap * C_TilesInMap * sizeof(uint32));
 		}
 		else if (strncmp(fourcc, "MARE", 4) == 0) // Heightmap for one map tile.
 		{
@@ -344,7 +344,7 @@ void Map::LoadLowTerrain()
 
 	// Minimap
 	glGenTextures(1, &minimap);
-	uint32_t* texbuf = new uint32_t[512 * 512];
+	uint32* texbuf = new uint32[512 * 512];
 	memset(texbuf, 0, 512 * 512 * 4);
 
 	// Heightmap
@@ -369,7 +369,7 @@ void Map::LoadLowTerrain()
 					for (int x = 0; x < 8; x++)
 					{
 						short hval = tilebuf[(z * 2) * 17 + x * 2]; // for now
-						uint8_t r, g, b;
+						uint8 r, g, b;
 						if (hval < 0)
 						{
 							// water = blue
@@ -384,7 +384,7 @@ void Map::LoadLowTerrain()
 							/*
 							float fh = hval / 1600.0f;
 							if (fh > 1.0f) fh = 1.0f;
-							uint8_t c = (uint8_t) (fh * 255.0f);
+							uint8 c = (uint8) (fh * 255.0f);
 							r = g = b = c;
 							*/
 
@@ -392,7 +392,7 @@ void Map::LoadLowTerrain()
 							// brown: 137, 84, 21	600-1200
 							// gray: 96, 96, 96		1200-1600
 							// white: 255, 255, 255
-							uint8_t r1, r2, g1, g2, b1, b2;
+							uint8 r1, r2, g1, g2, b1, b2;
 							float t;
 
 							if (hval < 600)
@@ -429,9 +429,9 @@ void Map::LoadLowTerrain()
 
 							// TODO: add a regular palette here
 
-							r = (uint8_t)(r2*t + r1*(1.0f - t));
-							g = (uint8_t)(g2*t + g1*(1.0f - t));
-							b = (uint8_t)(b2*t + b1*(1.0f - t));
+							r = (uint8)(r2*t + r1*(1.0f - t));
+							g = (uint8)(g2*t + g1*(1.0f - t));
+							b = (uint8)(b2*t + b1*(1.0f - t));
 						}
 
 						texbuf[(j * 8 + z) * 512 + i * 8 + x] = (r) | (g << 8) | (b << 16) | (255 << 24);
@@ -537,7 +537,7 @@ void Map::Tick()
 {
 	bool loading = false;
 	int enteredTileX, enteredTileZ;
-	int midTile = static_cast<uint32_t>(C_RenderedTiles / 2);
+	int midTile = static_cast<uint32>(C_RenderedTiles / 2);
 	if (current[midTile][midTile] != nullptr || outOfBounds)
 	{
 		if (outOfBounds ||
@@ -789,7 +789,7 @@ void Map::ClearCache()
 	}
 }
 
-uint32_t Map::getAreaID()
+uint32 Map::getAreaID()
 {
 	MapTile* curTile;
 

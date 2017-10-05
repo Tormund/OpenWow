@@ -9,13 +9,13 @@ class Engine
 
 public:
 	 bool Init(vector<string>& _argumentQueue);
-	 void Destroy(uint32_t _errorCode = 0);
+	 void Destroy(uint32 _errorCode = 0);
 
 	 bool SetGameState(GameState* _newGameState);
 
 	 bool Tick();
 
-	inline string GetArgument(uint8_t index) 
+	inline string GetArgument(uint8 index) 
 	{ 
 		if (arguments.size() > (index + 1))
 		{
@@ -28,19 +28,19 @@ public:
 	}
 	inline GameState* GetCurrentGameState() const { return currentGameState; }
 
-	inline uint32_t GetFPS() const { return framesPerSecond; }
+	inline uint32 GetFPS() const { return framesPerSecond; }
 
 private:
 	vector<string> arguments;
 	bool needExit;
 	GameState* currentGameState;
 
-	uint32_t framesCounter, framesPerSecond;
+	uint32 framesCounter, framesPerSecond;
 	double framesTimer;
 
-	uint32_t t;
-	uint32_t last_t;
-	uint32_t _time;
+	uint32 t;
+	uint32 last_t;
+	uint32 _time;
 
 	ConsoleOpenGL* consoleOpenGL;
 };

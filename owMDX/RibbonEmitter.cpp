@@ -7,7 +7,7 @@
 // General
 #include "RibbonEmitter.h"
 
-void RibbonEmitter::init(File& f, M2Ribbon& mta, uint32_t * globals)
+void RibbonEmitter::init(File& f, M2Ribbon& mta, uint32 * globals)
 {
 	color.init(mta.colorTrack, f, globals);
 	opacity.init(mta.alphaTrack, f, globals);

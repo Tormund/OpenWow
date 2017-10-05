@@ -56,7 +56,7 @@ MDX::~MDX()
 
 	if (header.textures.size)
 	{
-		for (uint32_t i = 0; i < header.textures.size; i++)
+		for (uint32 i = 0; i < header.textures.size; i++)
 		{
 			if (textures[i] != nullptr)
 			{
@@ -133,7 +133,7 @@ void MDX::Init(bool forceAnim)
 
 	if (header.global_loops.size)
 	{
-		m_GlobalLoops = new uint32_t[header.global_loops.size];
+		m_GlobalLoops = new uint32[header.global_loops.size];
 		memcpy(m_GlobalLoops, (f.GetData() + header.global_loops.offset), sizeof(M2Loop) * header.global_loops.size);
 	}
 
@@ -162,7 +162,7 @@ void MDX::initCommon(File& f)
 	//}
 
 	// vertices, m_Normals
-	for (uint32_t i = 0; i < header.vertices.size; i++)
+	for (uint32 i = 0; i < header.vertices.size; i++)
 	{
 		m_OriginalVertexes[i].pos = From_XYZ_To_XZminusY_RET(m_OriginalVertexes[i].pos);
 		m_OriginalVertexes[i].normal = From_XYZ_To_XZminusY_RET(m_OriginalVertexes[i].normal);
@@ -188,7 +188,7 @@ void MDX::initCommon(File& f)
 		texdef = (M2Texture*)(f.GetData() + header.textures.offset);
 
 		char texname[256];
-		for (uint32_t i = 0; i < header.textures.size; i++)
+		for (uint32 i = 0; i < header.textures.size; i++)
 		{
 			// Error check
 			if (i > TEXTURE_MAX - 1)
@@ -226,7 +226,7 @@ void MDX::initCommon(File& f)
 	{
 		colors = new MDX_Part_Color[header.colors.size];
 		M2Color* colorDefs = (M2Color*)(f.GetData() + header.colors.offset);
-		for (uint32_t i = 0; i < header.colors.size; i++)
+		for (uint32 i = 0; i < header.colors.size; i++)
 		{
 			colors[i].init(f, colorDefs[i], m_GlobalLoops);
 		}
@@ -235,11 +235,11 @@ void MDX::initCommon(File& f)
 	// init transparency
 	if (header.texture_weights.size)
 	{
-		transLookup = (uint16_t*)(f.GetData() + header.transparency_lookup_table.offset);
+		transLookup = (uint16*)(f.GetData() + header.transparency_lookup_table.offset);
 
 		transparency = new MDX_Part_Transparency[header.texture_weights.size];
 		M2TextureWeight* trDefs = (M2TextureWeight*)(f.GetData() + header.texture_weights.offset);
-		for (uint32_t i = 0; i < header.texture_weights.size; i++)
+		for (uint32 i = 0; i < header.texture_weights.size; i++)
 		{
 			transparency[i].init(f, trDefs[i], m_GlobalLoops);
 		}
@@ -320,19 +320,19 @@ void MDX::draw()
 
 		// draw particle systems
 #ifdef MDX_PARTICLES_ENABLE
-		for (uint32_t i = 0; i < header.particle_emitters.size; i++)
+		for (uint32 i = 0; i < header.particle_emitters.size; i++)
 		{
 			particleSystems[i].draw();
 		}
 
 		// draw ribbons
-		for (uint32_t i = 0; i < header.ribbon_emitters.size; i++)
+		for (uint32 i = 0; i < header.ribbon_emitters.size; i++)
 		{
 			ribbons[i].draw();
 		}
 #endif
 
-		//--------------if (_Settings->drawfog)
+		//--------------if (Settings::drawfog)
 		//--------------{
 		//--------------	glEnable(GL_FOG);
 		//--------------}
@@ -378,7 +378,7 @@ void MDX::lightsOn(GLuint lbase)
 	}*/
 
 	// setup lights
-	for (uint32_t i = 0, l = lbase; i < header.lights.size; i++)
+	for (uint32 i = 0, l = lbase; i < header.lights.size; i++)
 	{
 		m_Lights[i].setup(animtime, l++);
 	}
@@ -391,7 +391,7 @@ void MDX::lightsOff(GLuint lbase)
 		return;
 	}*/
 
-	for (uint32_t i = 0, l = lbase; i < header.lights.size; i++)
+	for (uint32 i = 0, l = lbase; i < header.lights.size; i++)
 	{
 		glDisable(l++);
 	}
@@ -405,7 +405,7 @@ void MDX::updateEmitters(float dt)
 	}
 
 #ifdef MDX_PARTICLES_ENABLE
-	for (uint32_t i = 0; i < header.particle_emitters.size; i++)
+	for (uint32 i = 0; i < header.particle_emitters.size; i++)
 	{
 		particleSystems[i].update(dt);
 	}

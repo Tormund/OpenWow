@@ -46,7 +46,7 @@ ByteBuffer::ByteBuffer(uint64_t _size) :
 	Allocate(_size);
 }
 
-ByteBuffer::ByteBuffer(uint8_t* _data, uint64_t _size) :
+ByteBuffer::ByteBuffer(uint8* _data, uint64_t _size) :
 	isFilled(false),
 	isOnlyPointerToData(false),
 	isEof(true),
@@ -88,7 +88,7 @@ void ByteBuffer::Allocate(uint64_t _size)
 	{
 		if (!allocated)
 		{
-			data = new uint8_t[_size];
+			data = new uint8[_size];
 			allocated = true;
 		}
 	}
@@ -97,7 +97,7 @@ void ByteBuffer::Allocate(uint64_t _size)
 	bufferSize = _size;
 }
 
-void ByteBuffer::CopyData(uint8_t* _data, uint64_t _size)
+void ByteBuffer::CopyData(uint8* _data, uint64_t _size)
 {
 	if (!allocated)
 	{
@@ -120,7 +120,7 @@ void ByteBuffer::CopyData(uint8_t* _data, uint64_t _size)
 	position = 0;
 }
 
-void ByteBuffer::Init(uint8_t* _dataPtr, uint64_t _size)
+void ByteBuffer::Init(uint8* _dataPtr, uint64_t _size)
 {
 	isEof = (_size == 0);
 

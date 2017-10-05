@@ -6,32 +6,32 @@ struct WMOMaterialDef
 {
 	struct
 	{
-		uint32_t F_UNLIT : 1;                    // disable lighting logic in shader (but can still use vertex colors)
-		uint32_t F_UNFOGGED : 1;                 // disable fog shading (rarely used)
-		uint32_t F_UNCULLED : 1;                 // two-sided
-		uint32_t F_EXTLIGHT : 1;                 // darkened, the intern face of windows are flagged 0x08
-		uint32_t F_SIDN : 1;                     // (bright at night, unshaded) (used on windows and lamps in Stormwind, for example) (see emissive color)
-		uint32_t F_WINDOW : 1;                   // lighting related (flag checked in CMapObj::UpdateSceneMaterials)
-		uint32_t F_CLAMP_S : 1;                  // tex clamp S (force this material's textures to use clamp s addressing)
-		uint32_t F_CLAMP_T : 1;                  // tex clamp T (force this material's textures to use clamp t addressing)
-		uint32_t : 24;
+		uint32 F_UNLIT : 1;                    // disable lighting logic in shader (but can still use vertex colors)
+		uint32 F_UNFOGGED : 1;                 // disable fog shading (rarely used)
+		uint32 F_UNCULLED : 1;                 // two-sided
+		uint32 F_EXTLIGHT : 1;                 // darkened, the intern face of windows are flagged 0x08
+		uint32 F_SIDN : 1;                     // (bright at night, unshaded) (used on windows and lamps in Stormwind, for example) (see emissive color)
+		uint32 F_WINDOW : 1;                   // lighting related (flag checked in CMapObj::UpdateSceneMaterials)
+		uint32 F_CLAMP_S : 1;                  // tex clamp S (force this material's textures to use clamp s addressing)
+		uint32 F_CLAMP_T : 1;                  // tex clamp T (force this material's textures to use clamp t addressing)
+		uint32 : 24;
 	} flags;
 
-	uint32_t shader;                 // Index into CMapObj::s_wmoShaderMetaData. See below (shader types).
-	uint32_t blendMode;              // Blending: see Blend_State_Table
-	uint32_t diffuseNameIndex;       // offset into MOTX
+	uint32 shader;                 // Index into CMapObj::s_wmoShaderMetaData. See below (shader types).
+	uint32 blendMode;              // Blending: see Blend_State_Table
+	uint32 diffuseNameIndex;       // offset into MOTX
 	CImVector emissive_color;        // emissive color; see below (emissive color)
 	CImVector sidn_emissive_color;   // set at runtime; gets sidn-manipulated emissive color; see below (emissive color)
-	uint32_t envNameIndex;
-	uint32_t diffColor;
-	uint32_t ground_type;            //  &TerrainTypeRec::m_ID
-	uint32_t texture_2;
-	uint32_t color_2;
-	uint32_t flags_2;
-	uint32_t runTimeData[4];         // This data is explicitly nulled upon loading. Contains textures or similar stuff.
+	uint32 envNameIndex;
+	uint32 diffColor;
+	uint32 ground_type;            //  &TerrainTypeRec::m_ID
+	uint32 texture_2;
+	uint32 color_2;
+	uint32 flags_2;
+	uint32 runTimeData[4];         // This data is explicitly nulled upon loading. Contains textures or similar stuff.
 
 	// Size
-	static const uint32_t __size = 64;
+	static const uint32 __size = 64;
 };
 
 class WMOMaterial
@@ -44,8 +44,8 @@ public:
 
 	void SetBlendMode();
 
-	uint32_t GetBlendMode() const { return matDef.blendMode; }
-	uint32_t GetDiffuseColor() const { return matDef.diffColor; }
+	uint32 GetBlendMode() const { return matDef.blendMode; }
+	uint32 GetDiffuseColor() const { return matDef.diffColor; }
 
 	CImVector EmissiveColor() const { return matDef.emissive_color; }
 
@@ -58,7 +58,7 @@ public:
 	bool IsTexClampS() const { return matDef.flags.F_CLAMP_S; }
 	bool IsTesClampT() const { return matDef.flags.F_CLAMP_T; }
 
-	uint32_t GetShader() const { return matDef.shader; }
+	uint32 GetShader() const { return matDef.shader; }
 
 private:
 	const WMO* m_ParentWMO;

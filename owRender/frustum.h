@@ -1,6 +1,6 @@
 #pragma once
 
-struct Plane
+struct Plane2
 {
 	inline void normalize()
 	{
@@ -24,9 +24,9 @@ struct Plane
 	float a, b, c, d;
 };
 
-struct Frustum
+struct Frustum2
 {
-	Plane planes[6];
+	Plane2 planes[6];
 
 	void retrieve();
 

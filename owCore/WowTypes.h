@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstdint>
-
 #include "../shared/pack_begin.h"
 
 struct C3iVector
@@ -29,7 +27,7 @@ struct C4iVector
 
 struct C33Matrix
 {
-	C3Vector columns[3];
+	vec3 columns[3];
 };
 
 struct C44Matrix // todo: row or column?
@@ -39,7 +37,7 @@ struct C44Matrix // todo: row or column?
 
 struct C4Plane
 {
-	C3Vector normal;
+	vec3 normal;
 	float distance;
 };
 
@@ -67,61 +65,61 @@ struct CRange
 
 struct CAaBox
 {
-	C3Vector min;
-	C3Vector max;
+	vec3 min;
+	vec3 max;
 };
 
 struct CAaSphere
 {
-	C3Vector position;
+	vec3 position;
 	float radius;
 };
 
 struct CArgb
 {
 	CArgb() : r(0), g(0), b(0), a(0) {}
-	CArgb(uint8_t _r, uint8_t _g, uint8_t _b, uint8_t _a) : r(_r), g(_g), b(_b), a(_a) {}
+	CArgb(uint8 _r, uint8 _g, uint8 _b, uint8 _a) : r(_r), g(_g), b(_b), a(_a) {}
 
-	uint8_t r;
-	uint8_t g;
-	uint8_t b;
-	uint8_t a;
+	uint8 r;
+	uint8 g;
+	uint8 b;
+	uint8 a;
 };
 
 struct CImVector
 {
 	CImVector() : b(0), g(0), r(0), a(0) {}
-	CImVector(uint8_t _b, uint8_t _g, uint8_t _r, uint8_t _a) : b(_b), g(_g), r(_r), a(_a) {}
+	CImVector(uint8 _b, uint8 _g, uint8 _r, uint8 _a) : b(_b), g(_g), r(_r), a(_a) {}
 
-	uint8_t b;
-	uint8_t g;
-	uint8_t r;
-	uint8_t a;
+	uint8 b;
+	uint8 g;
+	uint8 r;
+	uint8 a;
 };
 
 struct C3sVector
 {
-	int16_t x;
-	int16_t y;
-	int16_t z;
+	int16 x;
+	int16 y;
+	int16 z;
 };
 
 struct C3Segment
 {
-	C3Vector start;
-	C3Vector end;
+	vec3 start;
+	vec3 end;
 };
 
 struct CFacet
 {
 	C4Plane plane;
-	C3Vector vertices[3];
+	vec3 vertices[3];
 };
 
 struct C3Ray
 {
-	C3Vector origin;
-	C3Vector dir;
+	vec3 origin;
+	vec3 dir;
 };
 
 #include "../shared/pack_end.h"

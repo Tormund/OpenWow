@@ -3,7 +3,7 @@
 // General
 #include "MDX_Part_Light.h"
 
-void MDX_Part_Light::init(File& f, M2Light& mld, uint32_t* global)
+void MDX_Part_Light::init(File& f, M2Light& mld, uint32* global)
 {
 	tpos = pos = From_XYZ_To_XZminusY_RET(mld.position);
 	tdir = dir = vec3(0, 1, 0); // no idea

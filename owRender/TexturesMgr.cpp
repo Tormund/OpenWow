@@ -13,18 +13,18 @@
 #include "../shared/pack_begin.h"
 struct BLPHeader
 {
-	uint8_t magic[4];
-	uint32_t formatVersion;
+	uint8 magic[4];
+	uint32 formatVersion;
 
-	uint8_t compression;     // Compression: 1 for uncompressed, 2 for DXTC, 3 (cataclysm) for plain A8R8G8B8 textures
-	uint8_t alphaBitDepth;   // Alpha channel bit depth: 0, 1, 4 or 8
-	uint8_t preferredFormat; // (compressed, alpha:0 or 1): 0, (compressed, alpha:8): 1, uncompressed: 2,4 or 8 (mostly 8)
-	uint8_t hasMips;
+	uint8 compression;     // Compression: 1 for uncompressed, 2 for DXTC, 3 (cataclysm) for plain A8R8G8B8 textures
+	uint8 alphaBitDepth;   // Alpha channel bit depth: 0, 1, 4 or 8
+	uint8 preferredFormat; // (compressed, alpha:0 or 1): 0, (compressed, alpha:8): 1, uncompressed: 2,4 or 8 (mostly 8)
+	uint8 hasMips;
 
-	uint32_t width;
-	uint32_t height;
-	uint32_t mipOffsets[16];
-	uint32_t mipSizes[16];
+	uint32 width;
+	uint32 height;
+	uint32 mipOffsets[16];
+	uint32 mipSizes[16];
 };
 #include "../shared/pack_end.h"
 
@@ -64,8 +64,8 @@ bool TexturesMgr::LoadSoilTexture(File& _file, Texture* _texture)
 	_texture->Bind();
 
 	// Read data
-	int32_t sizeX, sizeY;
-	uint8_t* image = SOIL_load_image_from_memory(_file.GetData(), static_cast<int32_t>(_file.GetSize()), &sizeX, &sizeY, 0, SOIL_LOAD_RGBA);
+	int32 sizeX, sizeY;
+	uint8* image = SOIL_load_image_from_memory(_file.GetData(), static_cast<int32>(_file.GetSize()), &sizeX, &sizeY, 0, SOIL_LOAD_RGBA);
 
 	if (SOIL_last_result() != "Image loaded from memory")
 	{
@@ -139,8 +139,8 @@ bool TexturesMgr::LoadBLPTexture(File& _file, Texture* _texture)
 			blocksize = 16;
 		}*/
 
-		uint8_t* buf = new uint8_t[header.mipSizes[0]];
-		uint8_t* ucbuf = new uint8_t[header.height * header.width * 4];
+		uint8* buf = new uint8[header.mipSizes[0]];
+		uint8* ucbuf = new uint8[header.height * header.width * 4];
 
 		// do every mipmap level
 		for (int i = 0; i < mipmax; i++)
@@ -153,7 +153,7 @@ bool TexturesMgr::LoadBLPTexture(File& _file, Texture* _texture)
 				_file.Seek(header.mipOffsets[i]);
 				_file.ReadBytes(buf, header.mipSizes[i]);
 
-				uint32_t size = ((header.width + 3) / 4) * ((header.height + 3) / 4) * blocksize;
+				uint32 size = ((header.width + 3) / 4) * ((header.height + 3) / 4) * blocksize;
 
 				glCompressedTexImage2DARB(GL_TEXTURE_2D, i, format, header.width, header.height, 0, size, buf);
 
@@ -199,9 +199,9 @@ bool TexturesMgr::LoadBLPTexture(File& _file, Texture* _texture)
 				p = buf2;
 				c = buf;
 				a = buf + header.width * header.height;
-				for (uint32_t y = 0; y < header.height; y++)
+				for (uint32 y = 0; y < header.height; y++)
 				{
-					for (uint32_t x = 0; x < header.width; x++)
+					for (uint32 x = 0; x < header.width; x++)
 					{
 						unsigned int k = pal[*c++];
 						k = ((k & 0x00FF0000) >> 16) | ((k & 0x0000FF00)) | ((k & 0x000000FF) << 16);
@@ -335,7 +335,7 @@ bool TexturesMgr::loadBLP(File& _file, Texture* _texture)
 {
 	// Vars
 	int offsets[16], sizes[16], type = 0;
-	uint32_t width = 0, height = 0;
+	uint32 width = 0, height = 0;
 	GLint format = 0;
 	char attr[4];
 
@@ -363,8 +363,8 @@ bool TexturesMgr::loadBLP(File& _file, Texture* _texture)
 	bool hasmipmaps = (attr[3] > 0);
 	size_t mipmax = hasmipmaps ? 16 : 1;
 
-	uint32_t w = width;
-	uint32_t h = height;
+	uint32 w = width;
+	uint32 h = height;
 
 	_texture->SetSize(vec2(width, height));
 
@@ -533,11 +533,11 @@ bool TexturesMgr::loadBLP(File& _file, Texture* _texture)
 					p = buf2;
 					c = buf;
 					a = buf + width*height;
-					for (uint32_t y = 0; y < height; y++)
+					for (uint32 y = 0; y < height; y++)
 					{
-						for (uint32_t x = 0; x < width; x++)
+						for (uint32 x = 0; x < width; x++)
 						{
-							uint32_t k = pal[*c++];
+							uint32 k = pal[*c++];
 
 							k = ((k & 0x00FF0000) >> 16) | ((k & 0x0000FF00)) | ((k & 0x000000FF) << 16);
 

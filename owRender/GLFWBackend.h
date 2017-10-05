@@ -5,13 +5,13 @@ class Module;
 class GLFWBackend : public Module
 {
 public:
-	DEF_MODULE_API(GLFWBackend, );
+	DEF_MODULE(GLFWBackend);
 
 	 bool SwapWindowBuffers();
 
 	 //
 
-	 void SetWindowSize(int32_t _width, int32_t _height);
+	 void SetWindowSize(int32 _width, int32 _height);
 	 void SetWindowTitle(cstring _title);
 
 	 void ShowCursor();

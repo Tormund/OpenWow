@@ -7,8 +7,8 @@ class FontsMgr : public Module, public RefManager1Dim<Font>
 public:
 	DEF_MODULE(FontsMgr);
 
-	Font* Add(cstring _fontFileName, uint32_t _fontSize);
-	Font* Add(File& _fontFileName, uint32_t _fontSize);
+	Font* Add(cstring _fontFileName, uint32 _fontSize);
+	Font* Add(File& _fontFileName, uint32 _fontSize);
 
 	//
 	

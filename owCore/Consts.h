@@ -1,6 +1,6 @@
 #pragma once
 
-extern vec2 VECTOR_ZERO;
+const vec2 VECTOR_ZERO = vec2(0.0f, 0.0f);
 
 #define MAX_FRAMES_PER_SEC 60
 

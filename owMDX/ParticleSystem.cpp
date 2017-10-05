@@ -30,7 +30,7 @@ ParticleSystem::~ParticleSystem()
 	delete emitter;
 }
 
-void ParticleSystem::init(File& f, M2Particle& mta, uint32_t* globals)
+void ParticleSystem::init(File& f, M2Particle& mta, uint32* globals)
 {
 	speed.init(mta.emissionSpeed, f, globals);
 	variation.init(mta.speedVariation, f, globals);
@@ -48,7 +48,7 @@ void ParticleSystem::init(File& f, M2Particle& mta, uint32_t* globals)
 
 	vec3 colors2[3];
 	memcpy(colors2, f.GetData() + mta.colorTrack.values.offset, sizeof(vec3) * 3);
-	for (uint32_t i = 0; i < 3; i++)
+	for (uint32 i = 0; i < 3; i++)
 	{
 		float opacity = *(short*)(f.GetData() + mta.alphaTrack.values.offset + i * 2);
 		colors[i] = vec4(colors2[i].x / 255.0f, colors2[i].y / 255.0f, colors2[i].z / 255.0f, opacity / 32767.0f);

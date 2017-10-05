@@ -10,10 +10,10 @@ enum LightType
 
 struct WMOLightDef
 {
-	uint8_t type;
-	uint8_t useAtten;
-	uint8_t pad[2];
-	uint32_t color;
+	uint8 type;
+	uint8 useAtten;
+	uint8 pad[2];
+	uint32 color;
 	vec3 pos;
 	float intensity;
 	float attenStart;
@@ -21,7 +21,7 @@ struct WMOLightDef
 	float unk[4];
 
 	//
-	static const uint32_t __size = 48;
+	static const uint32 __size = 48;
 };
 
 class WMOLight

@@ -3,7 +3,7 @@
 // General
 #include "MDX_Part_TextureAnim.h"
 
-void MDX_Part_TextureAnim::init(File& f, M2TextureTransform& mta, uint32_t * global)
+void MDX_Part_TextureAnim::init(File& f, M2TextureTransform& mta, uint32 * global)
 {
 	trans.init(mta.translation, f, global);
 	roll.init(mta.rotation, f, global);

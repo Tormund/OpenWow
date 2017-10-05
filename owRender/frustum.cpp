@@ -18,7 +18,7 @@ enum Directions
 	FFRONT
 };
 
-void Frustum::retrieve()
+void Frustum2::retrieve()
 {
 	_Perfomance->Start(PERF_FRUSTRUM);
 
@@ -64,11 +64,11 @@ void Frustum::retrieve()
 	_Perfomance->Stop(PERF_FRUSTRUM);
 }
 
-bool Frustum::contains(cvec3 v) const
+bool Frustum2::contains(cvec3 v) const
 {
 	_Perfomance->Start(PERF_FRUSTRUM);
 
-	for (uint8_t i = 0; i < 6; i++)
+	for (uint8 i = 0; i < 6; i++)
 	{
 		if (!planes[i].Contains(v))
 		{
@@ -81,7 +81,7 @@ bool Frustum::contains(cvec3 v) const
 	return true;
 }
 
-bool Frustum::intersects(cvec3 v1, cvec3 v2) const
+bool Frustum2::intersects(cvec3 v1, cvec3 v2) const
 {
 	//return true; // BOUZI
 
@@ -97,11 +97,11 @@ bool Frustum::intersects(cvec3 v1, cvec3 v2) const
 	points[6] = vec3(v2.x, v2.y, v1.z);
 	points[7] = vec3(v2.x, v2.y, v2.z);
 
-	for (uint8_t i = 0; i < 6; i++)
+	for (uint8 i = 0; i < 6; i++)
 	{
-		uint8_t numIn = 0;
+		uint8 numIn = 0;
 
-		for (uint8_t k = 0; k < 8; k++)
+		for (uint8 k = 0; k < 8; k++)
 		{
 			if (planes[i].Contains(points[k]))
 			{
@@ -120,18 +120,18 @@ bool Frustum::intersects(cvec3 v1, cvec3 v2) const
 	return true;
 }
 
-bool Frustum::intersects2(cvec3 v1, cvec3 v2) const
+bool Frustum2::intersects2(cvec3 v1, cvec3 v2) const
 {
 	return contains(v1) || contains(v2);
 }
 
-bool Frustum::intersectsSphere(cvec3 v, const float rad) const
+bool Frustum2::intersectsSphere(cvec3 v, const float rad) const
 {
 	//return true; // BOUZI
 
 	_Perfomance->Start(PERF_FRUSTRUM);
 
-	for (uint8_t i = 0; i < 6; ++i)
+	for (uint8 i = 0; i < 6; ++i)
 	{
 		if (planes[i].Distance(v) < -rad)
 		{

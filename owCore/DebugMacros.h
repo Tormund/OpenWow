@@ -1,5 +1,17 @@
 #pragma once
 
+namespace StaticAssert
+{
+	template<bool>
+	struct StaticAssertFailed;
+
+	template<>
+	struct StaticAssertFailed<true> {};
+}
+#define assert_static(exp) (StaticAssert::StaticAssertFailed<(exp) != 0>())
+
+//
+
 #define assert1(expr) \
 if(!(expr))\
 {\

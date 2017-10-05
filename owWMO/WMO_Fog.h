@@ -4,10 +4,10 @@ struct WMOFogDef
 {
 	struct
 	{
-		uint32_t flag_infinite_radius : 1; // F_IEBLEND: Ignore radius in CWorldView::QueryCameraFog
-		uint32_t : 3;                      // unused as of 7.0.1.20994
-		uint32_t flag_0x10 : 1;
-		uint32_t : 27;                     // unused as of 7.0.1.20994
+		uint32 flag_infinite_radius : 1; // F_IEBLEND: Ignore radius in CWorldView::QueryCameraFog
+		uint32 : 3;                      // unused as of 7.0.1.20994
+		uint32 flag_0x10 : 1;
+		uint32 : 27;                     // unused as of 7.0.1.20994
 	} flags;
 
 	vec3 position;
@@ -31,7 +31,7 @@ struct WMOFogDef
 	} underwater_fog;
 
 	//
-	static const uint32_t __size = 48;
+	static const uint32 __size = 48;
 };
 
 

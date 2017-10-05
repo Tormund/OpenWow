@@ -77,7 +77,7 @@ DayNightPhase::DayNightPhase(File& f)
 	f.SeekRelative(4);
 	f.ReadBytes(&fogColor.z, 4);
 
-	uint32_t time = (uint32_t)h * 60 * 2 + (uint32_t)m * 2;
+	uint32 time = (uint32)h * 60 * 2 + (uint32)m * 2;
 
 	m_dirLightDay.ambient = vec3();
 	m_dirLightDay.diffuse = vec3();

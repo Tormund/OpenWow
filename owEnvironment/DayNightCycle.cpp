@@ -12,7 +12,7 @@ DayNightCycle::DayNightCycle()
 		return;
 	}
 
-	uint32_t nFields1, nFields, d;
+	uint32 nFields1, nFields, d;
 
 	// Header
 	f.ReadBytes(&nFields1, 4);
@@ -21,7 +21,7 @@ DayNightCycle::DayNightCycle()
 	assert1(nFields == 25);
 
 	// Field Descriptions
-	uint32_t magic0x53;
+	uint32 magic0x53;
 	f.ReadBytes(&magic0x53, 4);
 	assert1(magic0x53 == 0x53);
 
@@ -38,10 +38,10 @@ DayNightCycle::DayNightCycle()
 	}
 }
 
-DayNightPhase DayNightCycle::getPhase(uint32_t _gameTime)
+DayNightPhase DayNightCycle::getPhase(uint32 _gameTime)
 {
-	uint32_t hourA = _gameTime / 120;
-	uint32_t hourB = (hourA + 1) % 24;
+	uint32 hourA = _gameTime / 120;
+	uint32 hourB = (hourA + 1) % 24;
 
 	DayNightPhase* a = &dayNightPhases[hourA];
 	DayNightPhase* b = &dayNightPhases[hourB];

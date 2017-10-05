@@ -81,7 +81,7 @@ bool DBCFile<RECORD_T>::Open()
 }
 
 template <class RECORD_T>
-RECORD_T* DBCFile<RECORD_T>::getByID(uint32_t _id)
+RECORD_T* DBCFile<RECORD_T>::getByID(uint32 _id)
 {
 	auto recordIt = records.find(_id);
 	if (recordIt != records.end())

@@ -22,9 +22,6 @@
     <Filter Include="RefManager">
       <UniqueIdentifier>{1e0aa16e-9a5d-41ce-ba51-305029359e7a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Memory">
-      <UniqueIdentifier>{1c087543-2cdc-4768-baeb-8f29f42fd579}</UniqueIdentifier>
-    </Filter>
     <Filter Include="RefManager\2 Dim">
       <UniqueIdentifier>{d7879282-8d68-4c32-8b0b-ca4948a9fc99}</UniqueIdentifier>
     </Filter>
@@ -76,9 +73,6 @@
       <Filter>Debug</Filter>
     </ClCompile>
     <ClCompile Include="Input.cpp">
-      <Filter>Input</Filter>
-    </ClCompile>
-    <ClCompile Include="InputListener.cpp">
       <Filter>Input</Filter>
     </ClCompile>
     <ClCompile Include="Console.cpp">
@@ -164,23 +158,17 @@
     <ClCompile Include="BoundingBox.cpp">
       <Filter>Types</Filter>
     </ClCompile>
-    <ClCompile Include="WowConsts.cpp">
-      <Filter>Types</Filter>
-    </ClCompile>
     <ClCompile Include="TimeManager.cpp">
       <Filter>World</Filter>
-    </ClCompile>
-    <ClCompile Include="Consts.cpp">
-      <Filter>Types</Filter>
-    </ClCompile>
-    <ClCompile Include="WowTime.cpp">
-      <Filter>Types</Filter>
     </ClCompile>
     <ClCompile Include="CASCFile.cpp">
       <Filter>Files\CASCFile</Filter>
     </ClCompile>
     <ClCompile Include="CASCFolder.cpp">
       <Filter>Files\CASCFile</Filter>
+    </ClCompile>
+    <ClCompile Include="Primitives.cpp">
+      <Filter>Types</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -328,6 +316,18 @@
     </ClInclude>
     <ClInclude Include="CASCFolder.h">
       <Filter>Files\CASCFile</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform.h">
+      <Filter>Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Math.h">
+      <Filter>Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Primitives.h">
+      <Filter>Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>Types</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

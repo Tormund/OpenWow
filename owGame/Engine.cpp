@@ -70,7 +70,7 @@ bool Engine::Init(vector<string>& _argumentQueue)
 	return true;
 }
 
-void Engine::Destroy(uint32_t _errorCode)
+void Engine::Destroy(uint32 _errorCode)
 {
 	Debug::Green("Engine[]: Destroy engine.");
 
@@ -114,8 +114,8 @@ bool Engine::SetGameState(GameState* _newGameState)
 bool Engine::Tick()
 {
 	last_t = t;
-	t = static_cast<uint32_t>(glfwGetTime() * 1000.0);
-	uint32_t dt = t - last_t;
+	t = static_cast<uint32>(glfwGetTime() * 1000.0);
+	uint32 dt = t - last_t;
 	_time += dt;
 
 	double dTime = static_cast<double>(_time) / 1000.0;

@@ -9,7 +9,7 @@
 
 bool UIMgr::Init()
 {
-	screenSize = _Settings->GetWindowSize();
+	screenSize = Settings::GetWindowSize();
 	idCounter = 0;
 	baseWindow = new UIWindow();
 	baseWindow->Init(VECTOR_ZERO, screenSize, nullptr);

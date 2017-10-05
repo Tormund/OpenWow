@@ -1,6 +1,6 @@
 #pragma once
 
-enum PerfomanceTimer : uint8_t
+enum PerfomanceTimer : uint8
 {
 	// Map perfomance
 	PERF_MAP = 0,
@@ -42,7 +42,7 @@ class Perfomance
 
 	inline void FrameBegin()
 	{
-		for (uint8_t i = 0; i < PERF_TIMERS_COUNT; i++)
+		for (uint8 i = 0; i < PERF_TIMERS_COUNT; i++)
 		{
 			m_Timer[i] = 0.0;
 			m_TimerCurrent[i] = 0.0;
@@ -66,7 +66,7 @@ class Perfomance
 
 	inline string GetTimer(PerfomanceTimer _timer)
 	{
-		return to_string(static_cast<uint32_t>(m_Timer[_timer] * 1000.0));
+		return to_string(static_cast<uint32>(m_Timer[_timer] * 1000.0));
 	}
 
 	inline string GetInc(PerfomanceTimer _timer)
@@ -77,15 +77,15 @@ class Perfomance
 	inline string Sum()
 	{
 		double timerSum = 0.0;
-		uint32_t drawSum = 0;
+		uint32 drawSum = 0;
 
-		for (uint8_t i = 0; i < PERF_TIMERS_COUNT; i++)
+		for (uint8 i = 0; i < PERF_TIMERS_COUNT; i++)
 		{
 			timerSum += m_Timer[i];
 			drawSum += m_DrawCount[i];
 		}
 
-		return "t: [" + to_string(static_cast<uint32_t>(timerSum * 1000.0)) + "] c: [" + to_string(drawSum) + "]";
+		return "t: [" + to_string(static_cast<uint32>(timerSum * 1000.0)) + "] c: [" + to_string(drawSum) + "]";
 	}
 
 	// Statistics
@@ -101,7 +101,7 @@ class Perfomance
 private:
 	double m_Timer[PERF_TIMERS_COUNT];
 	double m_TimerCurrent[PERF_TIMERS_COUNT];
-	uint32_t m_DrawCount[PERF_TIMERS_COUNT];
+	uint32 m_DrawCount[PERF_TIMERS_COUNT];
 };
 
 #define _Perfomance Perfomance::instance()

@@ -10,7 +10,7 @@ World::World()
 	mainCamera = new Camera;
 	testCamera = new Camera;
 	_PipelineGlobal->SetCamera(mainCamera);
-	_PipelineGlobal->SetProjection(45.0f, _Settings->aspectRatio, 1.0f, 10000.0f);
+	_PipelineGlobal->SetProjection(45.0f, Settings::aspectRatio, 1.0f, 10000.0f);
 
 	_EnvironmentManager->Init();
 
@@ -18,13 +18,13 @@ World::World()
 
 	glGenTextures(1, &finalTexture1);
 	glBindTexture(GL_TEXTURE_2D, finalTexture1);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, _Settings->windowSizeX, _Settings->windowSizeY, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Settings::windowSizeX, Settings::windowSizeY, 0, GL_RGB, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
 	glGenTextures(1, &finalTexture2);
 	glBindTexture(GL_TEXTURE_2D, finalTexture2);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, _Settings->windowSizeX, _Settings->windowSizeY, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Settings::windowSizeX, Settings::windowSizeY, 0, GL_RGB, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
@@ -33,7 +33,7 @@ World::World()
 
 	//----------------------------------------------------------------//
 
-	_Settings->CalculateSquareDistances();
+	Settings::CalculateSquareDistances();
 
 	// Fog params
 	l_const = 0.0f;
@@ -137,7 +137,7 @@ void World::RenderGeom()
 	//------------------------------------------------------------------------------
 	// Draw sky from WMO
 	//------------------------------------------------------------------------------
-	//if (_Settings->draw_map_mdx)
+	//if (Settings::draw_map_mdx)
 	//{
 	_Map->RenderSky();
 	//}
@@ -155,28 +155,18 @@ void World::RenderGeom()
 #endif
 	}
 
-	/*glEnable(GL_CULL_FACE);
-	glEnable(GL_DEPTH_TEST);
-	DSGeometryPassEnd();
-	DSSimpleRenderPass222();
-	m_gbuffer->BindForFinalPass(_color);
-	m_gbuffer->Clear();
-	//m_gbuffer->StartFrame();
-	DSGeometryPassBegin();*/
-
 	//
-
 	PERF_START(PERF_MAP);
+	//
 
 	//------------------------------------------------------------------------------
 	// Map low-resolution tiles
 	//------------------------------------------------------------------------------
 	glEnable(GL_CULL_FACE);
 	glDisable(GL_DEPTH_TEST);
-	glDisable(GL_BLEND);
 
 	PERF_START(PERF_MAP_LOWRESOLUTION);
-	if (/*_Settings->drawfog &&*/ _Settings->draw_map_chunk)
+	if (/*Settings::drawfog &&*/ Settings::draw_map_chunk)
 	{
 		_TechniquesMgr->m_MapTileLowRes_GeometryPass->Bind();
 		_Pipeline->Clear();
@@ -196,12 +186,11 @@ void World::RenderGeom()
 	//------------------------------------------------------------------------------
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
-	glDisable(GL_BLEND);
 
 	PERF_START(PERF_MAP_CHUNK_GEOMETRY);
-	if (_Settings->draw_map_chunk)
+	if (Settings::draw_map_chunk)
 	{
-		_Settings->uselowlod = _Settings->drawfog;
+		Settings::uselowlod = Settings::drawfog;
 
 		_TechniquesMgr->m_MapChunk_GeometryPass->Bind();
 		_Pipeline->Clear();
@@ -216,15 +205,15 @@ void World::RenderGeom()
 
 	//
 
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	//------------------------------------------------------------------------------
 	// Map water
 	//------------------------------------------------------------------------------
 	glDisable(GL_CULL_FACE);
-	glDisable(GL_BLEND);
-	//glEnable(GL_BLEND);
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	//if (_Settings->draw_map_chunk)
+	//if (Settings::draw_map_chunk)
 	{
 		_TechniquesMgr->m_WMO_MH2O_GeometryPass->Bind();
 		_Pipeline->Clear();
@@ -246,7 +235,6 @@ void World::RenderGeom()
 	// Global WMO
 	//------------------------------------------------------------------------------
 	glDisable(GL_CULL_FACE);
-	glDisable(GL_BLEND);
 
 	PERF_START(PERF_MAP_MODELS_WMO_GLOBAL);
 	if (_Map->MapHasGlobalWMO())
@@ -265,10 +253,9 @@ void World::RenderGeom()
 	// WMOs
 	//------------------------------------------------------------------------------
 	glDisable(GL_CULL_FACE);
-	glDisable(GL_BLEND);
 
 	PERF_START(PERF_MAP_MODELS_WMOs);
-	if (_Settings->draw_map_wmo)
+	if (Settings::draw_map_wmo)
 	{
 		_Map->RenderObjects();
 	}
@@ -280,16 +267,15 @@ void World::RenderGeom()
 	// Map MDXs
 	//------------------------------------------------------------------------------
 	glDisable(GL_CULL_FACE);
-	glDisable(GL_BLEND);
-	//glEnable(GL_BLEND);
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	PERF_START(PERF_MAP_MODELS_MDXs);
-	if (_Settings->draw_map_mdx)
+	if (Settings::draw_map_mdx)
 	{
 		_Map->RenderModels();
 	}
 	PERF_STOP(PERF_MAP_MODELS_MDXs);
+
+	glDisable(GL_BLEND);
 }
 
 void World::RenderPostprocess()
@@ -303,7 +289,7 @@ void World::RenderPostprocess()
 
 void World::tick(float dt)
 {
-	_Settings->CalculateSquareDistances();
+	Settings::CalculateSquareDistances();
 
 	_Map->Tick();
 

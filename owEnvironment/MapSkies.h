@@ -38,7 +38,7 @@ enum SkyColorNames
 class MapSkies
 {
 public:
-	MapSkies(uint32_t mapid);
+	MapSkies(uint32 mapid);
 	~MapSkies();
 
 	void InitBuffer();
@@ -47,7 +47,7 @@ public:
 	vec3 colorSet[SKY_COLORSCOUNT];
 
 	void CalculateSkiesWeights(cvec3 pos);
-	void initSky(cvec3 pos, uint32_t t);
+	void initSky(cvec3 pos, uint32 t);
 
 	bool drawSky(cvec3 pos);
 	bool hasSkies() { return !skies.empty(); }

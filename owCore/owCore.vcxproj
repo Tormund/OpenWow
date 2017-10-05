@@ -35,10 +35,12 @@
     <ClCompile Include="InfoPortions.cpp" />
     <ClCompile Include="MathUtils.cpp" />
     <ClCompile Include="MPQFile.cpp" />
+    <ClCompile Include="Primitives.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="RefManager1Dim.cpp" />
     <ClCompile Include="ByteBuffer.cpp" />
     <ClCompile Include="Console.cpp" />
-    <ClCompile Include="Consts.cpp" />
     <ClCompile Include="DebugOutput_ConsoleWindows.cpp" />
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="LocalFile.cpp" />
@@ -46,7 +48,6 @@
     <ClCompile Include="DebugOutput.cpp" />
     <ClCompile Include="INIFile.cpp" />
     <ClCompile Include="Input.cpp" />
-    <ClCompile Include="InputListener.cpp" />
     <ClCompile Include="DebugOutput_Log.cpp" />
     <ClCompile Include="RefItem.cpp" />
     <ClCompile Include="ModulesMgr.cpp" />
@@ -61,8 +62,6 @@
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="UtilsConvert.cpp" />
     <ClCompile Include="WowChunkUtils.cpp" />
-    <ClCompile Include="WowConsts.cpp" />
-    <ClCompile Include="WowTime.cpp" />
     <ClCompile Include="XMLFile.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -84,9 +83,14 @@
     <ClInclude Include="GameModule.h" />
     <ClInclude Include="InfoPortions.h" />
     <ClInclude Include="Macros.h" />
+    <ClInclude Include="Math.h" />
     <ClInclude Include="MathUtils.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="MPQFile.h" />
+    <ClInclude Include="Platform.h" />
+    <ClInclude Include="Primitives.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="RefManager1Dim.h" />
     <ClInclude Include="ByteBuffer.h" />
     <ClInclude Include="Color.h" />
@@ -116,6 +120,7 @@
     <ClInclude Include="Settings.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TimeManager.h" />
+    <ClInclude Include="Timer.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="WowChunkUtils.h" />

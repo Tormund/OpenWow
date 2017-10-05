@@ -6,7 +6,7 @@
 // Additional
 #include "TechniquesManager.h"
 
-Font::Font(GLuint textureOpenglId, GLuint _fontBufferObj, uint32_t* charWidthArray, uint32_t charHeight) :
+Font::Font(GLuint textureOpenglId, GLuint _fontBufferObj, uint32* charWidthArray, uint32 charHeight) :
 	RefItem(),
 	m_TextureOpenglId(textureOpenglId),
 	m_FontBuffer(_fontBufferObj),
@@ -34,9 +34,9 @@ void Font::Render(cstring _string, vec2 _offset) const
 
 	glBindTexture(GL_TEXTURE_2D, m_TextureOpenglId);
 
-	for (uint32_t i = 0; i < _string.length(); i++)
+	for (uint32 i = 0; i < _string.length(); i++)
 	{
-		uint8_t ch = _string.c_str()[i];
+		uint8 ch = _string.c_str()[i];
 
 		_TechniquesMgr->m_UI_Font->SetCharOffset(_offset);
 		_offset.x += static_cast<float>(m_CharWidthArray[ch - SPACE]);
@@ -52,9 +52,9 @@ void Font::Render(cstring _string, vec2 _offset) const
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-uint32_t Font::GetStringWidth(cstring _string) const
+uint32 Font::GetStringWidth(cstring _string) const
 {
-	uint32_t width = 0;
+	uint32 width = 0;
 
 	for (auto it = _string.begin(); it != _string.end(); ++it)
 	{
@@ -64,7 +64,7 @@ uint32_t Font::GetStringWidth(cstring _string) const
 	return width;
 }
 
-uint32_t Font::GetHeight() const
+uint32 Font::GetHeight() const
 {
 	return m_CharHeight;
 }

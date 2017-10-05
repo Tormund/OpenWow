@@ -40,12 +40,12 @@ struct LiquidInfo
 		char tiles[8][8]; // 0x0f or 0x8 mean don't render (?)
 	} tiles;
 
-	uint32_t nFlowvs;
+	uint32 nFlowvs;
 
 	struct SWFlowv
 	{
 		CAaSphere sphere;
-		C3Vector dir;
+		vec3 dir;
 		float velocity;
 		float amplitude;
 		float frequency;
@@ -77,8 +77,8 @@ struct Liquid_Vertex
 
 		struct SMOMagmaVert
 		{
-			uint16_t s;
-			uint16_t t;
+			uint16 s;
+			uint16 t;
 			float height;
 		} magmaVert;
 	};
@@ -86,9 +86,9 @@ struct Liquid_Vertex
 
 struct Liquid_Flag
 {
-	uint8_t liquid : 6;
-	uint8_t fishable : 1;
-	uint8_t shared : 1;
+	uint8 liquid : 6;
+	uint8 fishable : 1;
+	uint8 shared : 1;
 
 	// 0x01
 	// 0x02
@@ -106,7 +106,7 @@ struct Liquid_Flag
 class Liquid
 {
 public:
-	Liquid(uint32_t x, uint32_t y, vec3 base, float tilesize = LQ_DEFAULT_TILESIZE);
+	Liquid(uint32 x, uint32 y, vec3 base, float tilesize = LQ_DEFAULT_TILESIZE);
 	~Liquid();
 
 	void initFromTerrain(File& f, int flags);
@@ -120,8 +120,8 @@ private:
 	void initTextures(const char *basename, int first, int last);
 
 private:
-	uint32_t m_TilesX, m_TilesY;
-	uint32_t m_TilesCount;
+	uint32 m_TilesX, m_TilesY;
+	uint32 m_TilesCount;
 	Liquid_Flag m_LastFlag;
 	GLuint m_OGLList;
 

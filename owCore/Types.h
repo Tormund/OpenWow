@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Platform.h"
+
 // GLM Types
 #include <glm/glm.hpp>
 #include <glm/gtx/norm.hpp>
@@ -20,8 +22,8 @@ typedef const glm::vec4& cvec4;
 typedef glm::mat4x4 mat4;
 typedef const glm::mat4x4& cmat4;
 
-typedef glm::quat Quaternion;
-typedef const glm::quat& cQuaternion;
+typedef glm::quat quat;
+typedef const glm::quat& cquat;
 
 #include "Matrix.h"
 typedef const Matrix& cMatrix;
@@ -44,13 +46,11 @@ inline glm::vec3 operator*(const glm::mat4x4& mat, cvec3 v)
 	return o;
 }
 
-typedef glm::vec2 C2Vector;
-typedef glm::vec3 C3Vector;
-
 // Own types
 #include "BoundingBox.h"
 #include "Color.h"
 #include "Rect.h"
+#include "Primitives.h"
 
 // STL Types
 #include <map>

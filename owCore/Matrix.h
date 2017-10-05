@@ -94,7 +94,7 @@ public:
 		return t;
 	}
 
-	void quaternionRotate(const Quaternion& q)
+	void quaternionRotate(const quat& q)
 	{
 		/*
 			###0
@@ -116,7 +116,7 @@ public:
 		m[3][3] = 1.0f;
 	}
 
-	static const Matrix newQuatRotate(const Quaternion& qr)
+	static const Matrix newQuatRotate(const quat& qr)
 	{
 		Matrix t;
 		t.quaternionRotate(qr);

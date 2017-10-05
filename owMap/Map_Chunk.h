@@ -78,7 +78,7 @@ public:
 
 private:
 	GLuint globalBufferWater;
-	uint32_t globalBufferSize;	
+	uint32 globalBufferSize;	
 
 	vector<Texture*> wTextures;
 	

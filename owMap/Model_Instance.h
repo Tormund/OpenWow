@@ -14,15 +14,15 @@ enum MDDFFlags
 
 struct ModelPlacementInfo
 {
-	uint32_t nameId;
-	uint32_t uniqueId;
+	uint32 nameId;
+	uint32 uniqueId;
 	vec3 position;
 	vec3 rotation;
-	uint16_t scale;
-	uint16_t flags;
+	uint16 scale;
+	uint16 flags;
 
 	//
-	static const uint32_t __size = 36;
+	static const uint32 __size = 36;
 };
 
 class ModelInstance

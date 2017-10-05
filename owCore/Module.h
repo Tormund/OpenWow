@@ -15,7 +15,7 @@ void Destroy();
 
 //------------------------------------------
 
-#define DEF_MODULE_API(_className, _dllApi) \
+/*#define DEF_MODULE_API(_className, _dllApi) \
 CLASS_INSTANCE_API(_className, _dllApi) \
 _className() \
 { \
@@ -24,7 +24,7 @@ _className() \
 }\
 \
 _dllApi bool Init();\
-_dllApi void Destroy();
+_dllApi void Destroy();*/
 
 //------------------------------------------
 

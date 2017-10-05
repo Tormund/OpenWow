@@ -7,8 +7,6 @@ bool ModulesMgr::LoadModule(Module* _module)
 {
 	assert1(_module != nullptr);
 
-	//Debug::Green("Module [%s] initializating...", _module->GetName().c_str());
-
 	if (!_module->Init())
 	{
 		Debug::Error("Module [%s] failed init.", _module->GetName().c_str());

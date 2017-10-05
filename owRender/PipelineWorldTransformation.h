@@ -26,7 +26,7 @@ public:
 	inline void Scale(float _scaleX, float _scaleY, float _scaleZ);
 	inline void Scale(cvec3 _scale);
 
-	inline void Quat(cQuaternion _quat);
+	inline void Quat(cquat _quat);
 	inline void Quat(float w, float x, float y, float z);
 
 	inline void Mult(cmat4 mat);

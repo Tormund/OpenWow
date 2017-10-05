@@ -30,10 +30,10 @@ public:
 	HGLRC glrc4;*/
 
 private:
-	void OnWindowResized(uint32_t _width, uint32_t _height);
+	void OnWindowResized(uint32 _width, uint32 _height);
 
 public:
-	Frustum frustum;
+	Frustum2 frustum;
 
 private:
 	mat4 m_OrhoMatrix;

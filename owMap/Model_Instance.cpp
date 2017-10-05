@@ -24,7 +24,7 @@ ModelInstance::~ModelInstance()
 void ModelInstance::draw()
 {
 	float dist = glm::length(placementInfo->position - _Camera->Position);
-	if (dist > _Settings->modeldrawdistance + modelObject->m_Radius * sc)
+	if (dist > Settings::modeldrawdistance + modelObject->m_Radius * sc)
 	{
 		//return;
 	}

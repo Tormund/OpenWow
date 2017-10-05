@@ -3,7 +3,7 @@
 // General
 #include "MDX_Part_Camera.h"
 
-void MDX_Part_Camera::init(File& f, M2Camera& mcd, uint32_t* global)
+void MDX_Part_Camera::init(File& f, M2Camera& mcd, uint32* global)
 {
 	nearclip = mcd.near_clip;
 	farclip = mcd.far_clip;
@@ -27,7 +27,7 @@ void MDX_Part_Camera::setup(int time)
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(fov, _Settings->aspectRatio, nearclip, farclip);
+	gluPerspective(fov, Settings::aspectRatio, nearclip, farclip);
 
 	vec3 p = pos + tPos.getValue(0, time);
 	vec3 t = target + tTarget.getValue(0, time);

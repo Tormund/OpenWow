@@ -15,7 +15,7 @@ struct MH20_Attributes
 struct MH2O_Instance
 {
 	/*
-	uint16_t flags;
+	uint16 flags;
 	known values:
 	2
 	-> Means no min and max values
@@ -29,16 +29,16 @@ struct MH2O_Instance
 
 	[TODO] Find all other values
 	*/
-	uint16_t liquidType;
+	uint16 liquidType;
 
 	/*
-	uint16_t type;
+	uint16 type;
 	The type seems tobee depend on the flags ??
-	Maybe its an uint32_t and in general -> flags
+	Maybe its an uint32 and in general -> flags
 
 	[TODO] Find all other values
 	*/
-	uint16_t liquidObject;
+	uint16 liquidObject;
 
 	/*
 	float min;
@@ -53,7 +53,7 @@ struct MH2O_Instance
 	float maxHeightLevel;
 
 	/*
-	uint8_t x, y, w, h;
+	uint8 x, y, w, h;
 	These 4 values are used to define the size of the sub mask and
 	the count of height and alpha values needed.
 
@@ -81,21 +81,21 @@ struct MH2O_Instance
 	XXXXXXXX_
 	|---w--|
 	*/
-	uint8_t xOffset;
-	uint8_t yOffset;
-	uint8_t width;
-	uint8_t height;
+	uint8 xOffset;
+	uint8 yOffset;
+	uint8 width;
+	uint8 height;
 
 	/*
-	This is a more detailed version of the VisibilityMask. Its an uint8_t[w*h/8] data block.
+	This is a more detailed version of the VisibilityMask. Its an uint8[w*h/8] data block.
 	The grid is created as before but every line only contains w bits
 	If the offset is 0 then every quad marked by x y w h is displayed
 	*/
-	uint32_t offsetExistsBitmap;
+	uint32 offsetExistsBitmap;
 
 
 	/*
-	uint32_t ofsHeigthAlpha;
+	uint32 ofsHeigthAlpha;
 
 	This offset points to an array of heights and after that there is an array of alpha values.
 
@@ -104,10 +104,10 @@ struct MH2O_Instance
 
 	the heights array float[(w+1)*(h+1)] is only present if the flags == 5 otherwise (2) its not required
 
-	the alpha array uint8_t[(w+1)*(h+1)] seems tobe always present if the offset is given and comes always
+	the alpha array uint8[(w+1)*(h+1)] seems tobe always present if the offset is given and comes always
 	after the heights array and if heights are not given it is directly at ofsHeigthAlpha
 	*/
-	uint32_t offsetVertexData;
+	uint32 offsetVertexData;
 };
 
 //
@@ -116,7 +116,7 @@ void MapChunk::TryInitMH2O(MH2O_Header* _header, File& f)
 {
 	//Debug::Green("MH2O: layers = %d", mh2o_Header->layersCount);
 
-	for (uint32_t j = 0; j < _header->layersCount; j++)
+	for (uint32 j = 0; j < _header->layersCount; j++)
 	{
 		MH2O_Instance* mh2o_instance = new MH2O_Instance;
 		mh2o_instance = (MH2O_Instance*)(f.GetDataFromCurrent() + _header->offsetInstances + sizeof(MH2O_Instance) * j);
@@ -165,7 +165,7 @@ void MapChunk::TryInitMH2O(MH2O_Header* _header, File& f)
 
 			for (size_t k = 0; k < (size_t)(waterLayer.w * waterLayer.h); k++)
 			{
-				if (getBitL2H(waterLayer.mask, (uint32_t)k))
+				if (getBitL2H(waterLayer.mask, (uint32)k))
 				{
 					waterLayer.renderTiles.push_back(true);
 				}
@@ -185,16 +185,16 @@ void MapChunk::TryInitMH2O(MH2O_Header* _header, File& f)
 
 		//Debug::Error("GOOOOD!!!");
 
-		const uint32_t vertexDataSize = (mh2o_instance->width + 1) * (mh2o_instance->height + 1);
+		const uint32 vertexDataSize = (mh2o_instance->width + 1) * (mh2o_instance->height + 1);
 
 		if (VERTEX_FMT->Get_LiquidVertexFormat() == 0)
 		{
 			//Debug::Info("Case 0, Height and Depth data");
 
 			float* pHeights = (float*)(f.GetDataFromCurrent() + mh2o_instance->offsetVertexData);
-			uint8_t* pDepths = (uint8_t*)f.GetDataFromCurrent() + mh2o_instance->offsetVertexData + (sizeof(float) * vertexDataSize);
+			uint8* pDepths = (uint8*)f.GetDataFromCurrent() + mh2o_instance->offsetVertexData + (sizeof(float) * vertexDataSize);
 
-			for (uint32_t g = 0; g < vertexDataSize; g++)
+			for (uint32 g = 0; g < vertexDataSize; g++)
 			{
 				waterLayer.heights.push_back(mh2o_instance->maxHeightLevel);
 				//waterLayer.heights.push_back(pHeights[g]);
@@ -209,14 +209,14 @@ void MapChunk::TryInitMH2O(MH2O_Header* _header, File& f)
 
 			struct uv_map_entry
 			{
-				uint16_t x;                      // divided by 8 for shaders
-				uint16_t y;
+				uint16 x;                      // divided by 8 for shaders
+				uint16 y;
 			};
 
 			float* pHeights = (float*)(f.GetDataFromCurrent() + mh2o_instance->offsetVertexData);
 			uv_map_entry* pUVMap = (uv_map_entry*)f.GetDataFromCurrent() + mh2o_instance->offsetVertexData + (sizeof(float) * vertexDataSize);
 
-			for (uint32_t g = 0; g < vertexDataSize; g++)
+			for (uint32 g = 0; g < vertexDataSize; g++)
 			{
 				waterLayer.heights.push_back(pHeights[g]);
 				//waterLayer.alphas.push_back( pUnknowns[g] );
@@ -246,9 +246,9 @@ void MapChunk::createBuffer()
 	{
 		MH2O_WaterLayer& layer = m_WaterLayers[l];
 
-		for (uint8_t y = layer.y; y < layer.h + layer.y; y++)
+		for (uint8 y = layer.y; y < layer.h + layer.y; y++)
 		{
-			for (uint8_t x = layer.x; x < layer.w + layer.x; x++)
+			for (uint8 x = layer.x; x < layer.w + layer.x; x++)
 			{
 
 				unsigned tx = x - layer.x;
@@ -321,7 +321,7 @@ void MapChunk::createBuffer()
 		}
 	}
 
-	globalBufferSize = static_cast<uint32_t>(mh2oVertices.size());
+	globalBufferSize = static_cast<uint32>(mh2oVertices.size());
 
 	if (globalBufferSize == 0)
 	{
@@ -388,9 +388,9 @@ void MapChunk::drawWater()
 	{
 	MH2O_WaterLayer& layer = waterLayer[l];
 
-	for (uint8_t y = layer.y; y < layer.h + layer.y; y++)
+	for (uint8 y = layer.y; y < layer.h + layer.y; y++)
 	{
-	for (uint8_t x = layer.x; x < layer.w + layer.x; x++)
+	for (uint8 x = layer.x; x < layer.w + layer.x; x++)
 	{
 
 	unsigned tx = x - layer.x;

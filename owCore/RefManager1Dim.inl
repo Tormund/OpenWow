@@ -98,7 +98,7 @@ inline std::string RefManager1Dim<OBJECT_TYPE>::GetNameByItem(OBJECT_TYPE* item)
 template <class OBJECT_TYPE>
 inline void RefManager1Dim<OBJECT_TYPE>::PrintAllInfo()
 {
-	uint32_t refsCnt = 0;
+	uint32 refsCnt = 0;
 	for (auto it = objects.begin(); it != objects.end(); ++it)
 	{
 		refsCnt += it->second->GetRefsCount();

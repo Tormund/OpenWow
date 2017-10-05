@@ -74,10 +74,10 @@ public:
 
 	MDX_Part_TextureAnim* m_TexturesAnims;
 	M2Sequence* m_Sequences;
-	uint32_t* m_GlobalLoops;
+	uint32* m_GlobalLoops;
 	MDX_Part_Color* colors;
 
-	uint16_t* transLookup;
+	uint16* transLookup;
 	MDX_Part_Transparency* transparency;
 
 
@@ -95,8 +95,8 @@ public:
 	void initAnimated(File& f);
 	void initStatic(File& f);
 
-	void animate(uint32_t _animationIndex);
-	void calcBones(uint32_t _animationIndex, int time);
+	void animate(uint32 _animationIndex);
+	void calcBones(uint32 _animationIndex, int time);
 
 	void lightsOn(GLuint lbase);
 	void lightsOff(GLuint lbase);

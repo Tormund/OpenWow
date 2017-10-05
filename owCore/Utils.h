@@ -33,8 +33,6 @@ public:
 	static  InputMode ToInputMode(string& _string);
 
 	// Parse
-	static   int ParseDuration(string& _string);
-	static   int ParseDirection(string& _string);
 	static   string ParseSectionName(string& _string);
 	static   string ParseSectionAndIncludeName(string& _string, string& _includeSectionName);
 	static   void ParseKeyPair(string& _string, string& key, string& val);
@@ -61,32 +59,32 @@ public:
 	static   bool PointInRectangle(const vec2 _point, const vec2 _rectStart, const vec2 _rectEnd);
 };
 
-inline bool getBitH2L(uint8_t* data, uint32_t bit)
+inline bool getBitH2L(uint8* data, uint32 bit)
 {
-	uint8_t mask = 0x80;
+	uint8 mask = 0x80;
 	mask >>= (bit % 8);
 
 	return ((data[bit / 8]) & mask) == mask;
 }
 
-inline bool getBitL2H(uint8_t* data, uint32_t bit)
+inline bool getBitL2H(uint8* data, uint32 bit)
 {
-	uint8_t mask = 0x1;
+	uint8 mask = 0x1;
 	mask <<= (bit % 8);
 
 	return ((data[bit / 8]) & mask) == mask;
 }
 
-inline vec4 fromARGB(uint32_t color)
+inline vec4 fromARGB(uint32 color)
 {
 	const float a = ((color & 0xFF000000) >> 24) / 255.0f;
 	const float r = ((color & 0x00FF0000) >> 16) / 255.0f;
-	const float g = ((color & 0x0000FF00) >> 8 ) / 255.0f;
-	const float b = ((color & 0x000000FF)      ) / 255.0f;
+	const float g = ((color & 0x0000FF00) >> 8) / 255.0f;
+	const float b = ((color & 0x000000FF)) / 255.0f;
 	return vec4(r, g, b, a);
 }
 
-inline vec3 fromRGB(uint32_t color)
+inline vec3 fromRGB(uint32 color)
 {
 	const float r = ((color & 0xFF0000) >> 16) / 255.0f;
 	const float g = ((color & 0x00FF00) >> 8) / 255.0f;
@@ -94,18 +92,17 @@ inline vec3 fromRGB(uint32_t color)
 	return vec3(r, g, b);
 }
 
-inline vec4 fromBGRA(uint32_t color)
+inline vec4 fromBGRA(uint32 color)
 {
 	const float b = ((color & 0xFF000000) >> 24) / 255.0f;
 	const float g = ((color & 0x00FF0000) >> 16) / 255.0f;
-	const float r = ((color & 0x0000FF00) >> 8 ) / 255.0f;
-	const float a = ((color & 0x000000FF)      ) / 255.0f;
+	const float r = ((color & 0x0000FF00) >> 8) / 255.0f;
+	const float a = ((color & 0x000000FF)) / 255.0f;
 	return vec4(r, g, b, a);
 }
 
-inline vec4 fromABGR(uint32_t color)
+inline vec4 fromABGR(uint32 color)
 {
-
 	const float a = ((color & 0xFF000000) >> 24) / 255.0f;
 	const float b = ((color & 0x00FF0000) >> 16) / 255.0f;
 	const float g = ((color & 0x0000FF00) >> 8) / 255.0f;

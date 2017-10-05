@@ -18,7 +18,7 @@ bool GameState_Menu::Init()
 	minimapActive = false;
 
 	window = new UIWindow();
-	window->Init(VECTOR_ZERO, vec2(_Settings->windowSizeX, _Settings->windowSizeY), nullptr);
+	window->Init(VECTOR_ZERO, vec2(Settings::windowSizeX, Settings::windowSizeY), nullptr);
 	_UIMgr->Attach(window);
 
     _TimeManager->globalTime = 0;
@@ -48,7 +48,7 @@ bool GameState_Menu::Init()
 		auto record = (i->second);
 
 		// Check
-		if (mapsY + mapsYdelta > _Settings->windowSizeY)
+		if (mapsY + mapsYdelta > Settings::windowSizeY)
 		{
 			mapsX += mapsXdelta;
 			mapsY = mapsYStart;
@@ -218,7 +218,7 @@ void GameState_Menu::RenderUI(double t, double dt)
 
 	if (cmd == CMD_LOAD_WORLD2)
 	{
-		_Render->RenderText(vec2(_Settings->windowSizeX / 2, 20 / 2), "Loading...");
+		_Render->RenderText(vec2(Settings::windowSizeX / 2, 20 / 2), "Loading...");
 		cmd = CMD_DO_LOAD_WORLD2;
 	}
 	else if (cmd == CMD_SELECT2)
@@ -257,8 +257,11 @@ void GameState_Menu::RenderUI(double t, double dt)
 		string regionName = "<unknown>";
 		try
 		{
-			regionRecord = areaRecord->Get_ParentAreaID();
-			regionName = regionRecord->Get_Name();
+			if (areaRecord != nullptr)
+			{
+				regionRecord = areaRecord->Get_ParentAreaID();
+				regionName = regionRecord->Get_Name();
+			}
 		}
 		catch (DBCNotFound)
 		{}
@@ -272,12 +275,12 @@ void GameState_Menu::RenderUI(double t, double dt)
 
 		_Perfomance->Draw(vec2(5, 100));
 
-		_Render->RenderText(vec2(5, _Settings->windowSizeY - 66), "REAL CamPos: [" + to_string(_World->mainCamera->Position.x) + "], [" + to_string(_World->mainCamera->Position.y) + "], [" + to_string(_World->mainCamera->Position.z) + "]");
-		_Render->RenderText(vec2(5, _Settings->windowSizeY - 44), "CamPos: [" + to_string(-(_World->mainCamera->Position.x - C_ZeroPoint)) + "], [" + to_string(-(_World->mainCamera->Position.z - C_ZeroPoint)) + "], [" + to_string(_World->mainCamera->Position.y) + "]");
-		_Render->RenderText(vec2(5, _Settings->windowSizeY - 22), "CamRot: [" + to_string(_World->mainCamera->Direction.x) + "], [" + to_string(_World->mainCamera->Direction.y) + "], [" + to_string(_World->mainCamera->Direction.z) + "]");
+		_Render->RenderText(vec2(5, Settings::windowSizeY - 66), "REAL CamPos: [" + to_string(_World->mainCamera->Position.x) + "], [" + to_string(_World->mainCamera->Position.y) + "], [" + to_string(_World->mainCamera->Position.z) + "]");
+		_Render->RenderText(vec2(5, Settings::windowSizeY - 44), "CamPos: [" + to_string(-(_World->mainCamera->Position.x - C_ZeroPoint)) + "], [" + to_string(-(_World->mainCamera->Position.z - C_ZeroPoint)) + "], [" + to_string(_World->mainCamera->Position.y) + "]");
+		_Render->RenderText(vec2(5, Settings::windowSizeY - 22), "CamRot: [" + to_string(_World->mainCamera->Direction.x) + "], [" + to_string(_World->mainCamera->Direction.y) + "], [" + to_string(_World->mainCamera->Direction.z) + "]");
 
 		// Time
-		_Render->RenderText(vec2(_Settings->windowSizeX - 150, 0), "TIME [" + to_string(_EnvironmentManager->m_GameTime.GetHour()) + "." + to_string(_EnvironmentManager->m_GameTime.GetMinute()) + "]");
+		_Render->RenderText(vec2(Settings::windowSizeX - 150, 0), "TIME [" + to_string(_EnvironmentManager->m_GameTime.GetHour()) + "." + to_string(_EnvironmentManager->m_GameTime.GetMinute()) + "]");
 		char buff[256];
 		
 		// Ambient
@@ -286,7 +289,7 @@ void GameState_Menu::RenderUI(double t, double dt)
 				_EnvironmentManager->dayNightPhase.ambientColor.x, _EnvironmentManager->dayNightPhase.ambientColor.y, _EnvironmentManager->dayNightPhase.ambientColor.z,
 				_EnvironmentManager->dayNightPhase.ambientIntensity
 		);
-		_Render->RenderText(vec2(_Settings->windowSizeX - 400, 20), buff);
+		_Render->RenderText(vec2(Settings::windowSizeX - 400, 20), buff);
 		
 		// Day
 
@@ -295,7 +298,7 @@ void GameState_Menu::RenderUI(double t, double dt)
 				_EnvironmentManager->dayNightPhase.dayIntensity,
 				_EnvironmentManager->dayNightPhase.dayDir.x, _EnvironmentManager->dayNightPhase.dayDir.y, _EnvironmentManager->dayNightPhase.dayDir.z
 		);
-		_Render->RenderText(vec2(_Settings->windowSizeX - 400, 40), buff);
+		_Render->RenderText(vec2(Settings::windowSizeX - 400, 40), buff);
 		
 		// Night
 
@@ -304,7 +307,7 @@ void GameState_Menu::RenderUI(double t, double dt)
 				_EnvironmentManager->dayNightPhase.nightIntensity,
 				_EnvironmentManager->dayNightPhase.nightDir.x, _EnvironmentManager->dayNightPhase.nightDir.y, _EnvironmentManager->dayNightPhase.nightDir.z
 		);
-		_Render->RenderText(vec2(_Settings->windowSizeX - 400, 60), buff);
+		_Render->RenderText(vec2(Settings::windowSizeX - 400, 60), buff);
 
 
 
@@ -313,7 +316,7 @@ void GameState_Menu::RenderUI(double t, double dt)
 		//glBindTexture(GL_TEXTURE_2D, _World->m_gbuffer->textures[3]);
 		glBindTexture(GL_TEXTURE_2D, _World->m_gbuffer->depthTexture);
 
-		_Render->RenderRectangle(vec2(_Settings->windowSizeX * 2.0 / 3.0, _Settings->windowSizeY * 2.0 / 3.0), vec2(_Settings->windowSizeX / 3, _Settings->windowSizeY / 3), true, COLOR_WHITE);
+		_Render->RenderRectangle(vec2(Settings::windowSizeX * 2.0 / 3.0, Settings::windowSizeY * 2.0 / 3.0), vec2(Settings::windowSizeX / 3, Settings::windowSizeY / 3), true, COLOR_WHITE);
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glDisable(GL_TEXTURE_2D);
@@ -349,7 +352,7 @@ MOUSE_MOVED_(GameState_Menu)
 {
 	if (cmd == CMD_IN_WORLD2 && enableFreeCamera)
 	{
-		vec2 mouseDelta = (_mousePos - lastMousePos) / _Settings->GetWindowSize();
+		vec2 mouseDelta = (_mousePos - lastMousePos) / Settings::GetWindowSize();
 
 		_World->mainCamera->ProcessMouseMovement(mouseDelta.x, -mouseDelta.y);
 
@@ -447,31 +450,25 @@ KEYBD_PRESSED(GameState_Menu)
 		return true;
 	}
 
-	if (_key == GLFW_KEY_L)
-	{
-		_Settings->lighting = !_Settings->lighting;
-		return true;
-	}
-
 	if (_key == GLFW_KEY_KP_1)
 	{
-		_Settings->draw_map_chunk = !_Settings->draw_map_chunk;
+		Settings::draw_map_chunk = !Settings::draw_map_chunk;
 		return true;
 	}
 	if (_key == GLFW_KEY_KP_2)
 	{
-		_Settings->draw_map_wmo = !_Settings->draw_map_wmo;
+		Settings::draw_map_wmo = !Settings::draw_map_wmo;
 		return true;
 	}
 	if (_key == GLFW_KEY_KP_3)
 	{
-		_Settings->draw_map_wmo_doodads = !_Settings->draw_map_wmo_doodads;
+		Settings::draw_map_wmo_doodads = !Settings::draw_map_wmo_doodads;
 		return true;
 	}
 
 	if (_key == GLFW_KEY_KP_4)
 	{
-		_Settings->draw_map_mdx = !_Settings->draw_map_mdx;
+		Settings::draw_map_mdx = !Settings::draw_map_mdx;
 		return true;
 	}
 
@@ -479,39 +476,32 @@ KEYBD_PRESSED(GameState_Menu)
 
 	if (_key == GLFW_KEY_KP_7)
 	{
-		_Settings->disable_pipeline = !_Settings->disable_pipeline;
+		Settings::disable_pipeline = !Settings::disable_pipeline;
 		return true;
 	}
-
-	if (_key == GLFW_KEY_KP_8)
-	{
-		_Settings->useOldMDXShader = !_Settings->useOldMDXShader;
-		return true;
-	}
-
 
 
 	if (_key == GLFW_KEY_C)
 	{
-		_Settings->enableMCCV = !_Settings->enableMCCV;
+		Settings::enableMCCV = !Settings::enableMCCV;
 		return true;
 	}
 
 	if (_key == GLFW_KEY_V)
 	{
-		_Settings->enableMCLV = !_Settings->enableMCLV;
+		Settings::enableMCLV = !Settings::enableMCLV;
 		return true;
 	}
 
 	if (_key == GLFW_KEY_H)
 	{
-		_Settings->drawhighres = !_Settings->drawhighres;
+		Settings::drawhighres = !Settings::drawhighres;
 		return true;
 	}
 
 	if (_key == GLFW_KEY_F)
 	{
-		_Settings->drawfog = !_Settings->drawfog;
+		Settings::drawfog = !Settings::drawfog;
 		return true;
 	}
 

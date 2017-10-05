@@ -57,17 +57,17 @@ bool GLFWBackend::Init()
 	Debug::Print("GLFW[]: Primary monitor resolution [%d, %d]", primaryMonitorMode->width, primaryMonitorMode->height);
 
 	// Physical size in mm
-	//int32_t primaryMonitorPhysicalWidth, primaryMonitorPhysicalHeight;
+	//int32 primaryMonitorPhysicalWidth, primaryMonitorPhysicalHeight;
 	//glfwGetMonitorPhysicalSize(primaryMonitor, &primaryMonitorPhysicalWidth, &primaryMonitorPhysicalHeight);
 	//Debug::Print("GLFW[]: Primary monitor physical size [%d, %d]", primaryMonitorPhysicalWidth, primaryMonitorPhysicalHeight);
 
 	// Create GLFW window
 
-	window = glfwCreateWindow(_Settings->windowSizeX, _Settings->windowSizeY, "Default window title.", nullptr, nullptr);
+	window = glfwCreateWindow(Settings::windowSizeX, Settings::windowSizeY, "Default window title.", nullptr, nullptr);
 
 	// Move window to center
-	//uint32_t windowPositionX = (primaryMonitorMode->width / 2) - (_Settings->windowSizeX / 2);
-	//uint32_t windowPositionY = (primaryMonitorMode->height / 2) - (_Settings->windowSizeY / 2);
+	//uint32 windowPositionX = (primaryMonitorMode->width / 2) - (Settings::windowSizeX / 2);
+	//uint32 windowPositionY = (primaryMonitorMode->height / 2) - (Settings::windowSizeY / 2);
 	//glfwSetWindowPos(window, windowPositionX, windowPositionY);
 	//Debug::Print("GLFW[]: Window position [%d, %d]", windowPositionX, windowPositionY);
 
@@ -126,7 +126,7 @@ bool GLFWBackend::SwapWindowBuffers()
 
 //
 
-void GLFWBackend::SetWindowSize(int32_t _width, int32_t _height)
+void GLFWBackend::SetWindowSize(int32 _width, int32 _height)
 {
 	glfwSetWindowSize(window, _width, _height);
 	_Render->OnWindowResized(_width, _height);

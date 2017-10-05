@@ -107,7 +107,7 @@ void TechniquesMgr::Init()
 
 	m_DSDirLightPassTech->BindToPostprocess();
 
-	m_DSDirLightPassTech->SetScreenSize(_Settings->windowSizeX, _Settings->windowSizeY);
+	m_DSDirLightPassTech->SetScreenSize(Settings::windowSizeX, Settings::windowSizeY);
 	m_DSDirLightPassTech->SetMatSpecularPower(64);
 	
 	m_DSDirLightPassTech->Unbind();
@@ -124,7 +124,7 @@ void TechniquesMgr::Init()
 
 	m_DSDirLightPassTech->BindToPostprocess();
 
-	m_SimpleRender->SetScreenSize(_Settings->windowSizeX, _Settings->windowSizeY);
+	m_SimpleRender->SetScreenSize(Settings::windowSizeX, Settings::windowSizeY);
 	m_SimpleRender->Unbind();*/
 
 	m_UI_Font = new UI_Font();

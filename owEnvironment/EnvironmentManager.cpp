@@ -33,7 +33,7 @@ void EnvironmentManager::Destroy()
 	}
 }
 
-void EnvironmentManager::InitSkies(uint32_t mapid)
+void EnvironmentManager::InitSkies(uint32 mapid)
 {
 	skies = new MapSkies(mapid);
 }
@@ -90,12 +90,12 @@ void EnvironmentManager::SetAmbientLights(bool on)
 
 void EnvironmentManager::SetFog()
 {
-	if (_Settings->drawfog)
+	if (Settings::drawfog)
 	{
-		float fogdist = _Settings->fogdistance;
+		float fogdist = Settings::fogdistance;
 		float fogstart = 0.5f;
 
-		_Settings->culldistance = fogdist;
+		Settings::culldistance = fogdist;
 
 		vec4 fogcolor(skies->colorSet[FOG_COLOR], 1);
 		glFogfv(GL_FOG_COLOR, glm::value_ptr(fogcolor)); // TODO: retreive fogstart and fogend from lights.lit somehow
@@ -106,7 +106,7 @@ void EnvironmentManager::SetFog()
 	else
 	{
 		glDisable(GL_FOG);
-		_Settings->culldistance = _Settings->mapdrawdistance;
+		Settings::culldistance = Settings::mapdrawdistance;
 	}
 }
 

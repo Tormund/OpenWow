@@ -55,7 +55,7 @@ inline void PipelineWorldTransformation::Scale(cvec3 _scale)
 
 // Pure
 
-inline void PipelineWorldTransformation::Quat(cQuaternion _quat)
+inline void PipelineWorldTransformation::Quat(cquat _quat)
 {
 	worldTransformation *= glm::toMat4(_quat);
 }

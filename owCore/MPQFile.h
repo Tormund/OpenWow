@@ -6,11 +6,11 @@
 struct MPQFileLocation
 {
 	MPQFileLocation() : archive(nullptr), fileNumber(0), exists(false) {}
-	MPQFileLocation(mpq_archive* _archive, uint32_t _fileNumber) : archive(_archive), fileNumber(_fileNumber), exists(true) {}
+	MPQFileLocation(mpq_archive* _archive, uint32 _fileNumber) : archive(_archive), fileNumber(_fileNumber), exists(true) {}
 
 	bool exists;
 	mpq_archive* archive;
-	uint32_t fileNumber;
+	uint32 fileNumber;
 };
 
 class MPQFile

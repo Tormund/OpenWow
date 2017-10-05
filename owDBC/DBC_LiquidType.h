@@ -5,8 +5,8 @@
 DBC_DEF_BEGIN(DBC_LiquidType)
 
 __DBC_STRING(Name, 2);
-__DBC_TVALUE(uint32_t, Flags, 3);
-__DBC_TVALUE(uint32_t, Type, 4);			// 0: Water, 1: Ocean, 2: Magma, 3: Slime
+__DBC_TVALUE(uint32, Flags, 3);
+__DBC_TVALUE(uint32, Type, 4);			// 0: Water, 1: Ocean, 2: Magma, 3: Slime
 
 // 5 	SoundEntries.dbc irefid
 // 6    Spell.dbc irefID

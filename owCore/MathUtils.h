@@ -23,19 +23,19 @@ inline vec3 fixCoordSystem2(cvec3 v)
 	return vec3(v.x, v.z, v.y);
 }
 
-inline Quaternion fixCoordSystemQuat(C4ImQuaternion v)
+inline quat fixCoordSystemQuat(C4ImQuaternion v)
 {
-	return Quaternion(v.w, -v.x, -v.z, v.y);
+	return quat(v.w, -v.x, -v.z, v.y);
 }
 
-inline Quaternion fixCoordSystemQuat(C4Quaternion v)
+inline quat fixCoordSystemQuat(C4Quaternion v)
 {
-	return Quaternion(v.w, -v.x, -v.z, v.y);
+	return quat(v.w, -v.x, -v.z, v.y);
 }
 
-inline Quaternion fixCoordSystemQuat(cQuaternion v)
+inline quat fixCoordSystemQuat(cquat v)
 {
-	return Quaternion(v.w, -v.x, -v.z, v.y);
+	return quat(v.w, -v.x, -v.z, v.y);
 }
 
 inline void rotate(float x0, float y0, float *x, float *y, float angle)
@@ -46,16 +46,3 @@ inline void rotate(float x0, float y0, float *x, float *y, float angle)
 	*y = xa * sinf(angle) + ya * cosf(angle) + y0;
 }
 
-inline Matrix glQuaternionRotate(cvec3 vdir, float w)
-{
-	Matrix m;
-	Quaternion q(w, vdir);
-	m.quaternionRotate(q);
-	return m;
-}
-
-inline mat4 glQuaternionRotate2(cvec3 vdir, float w)
-{
-	Quaternion q(w, vdir);
-	return glm::mat4() * glm::toMat4(q);
-}

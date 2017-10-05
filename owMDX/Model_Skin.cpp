@@ -17,30 +17,30 @@ Model_Skin::Model_Skin(MDX* _model, File& _mF, File& _aF) : m_ModelObject(_model
 	M2SkinProfile* view = (M2SkinProfile*)(_aF.GetData());
 
 	// Skin data
-	uint16_t* vertexesIndex = (uint16_t*)(_aF.GetData() + view->vertices.offset);
-	uint16_t* indexesIndex = (uint16_t*)(_aF.GetData() + view->indices.offset);
+	uint16* vertexesIndex = (uint16*)(_aF.GetData() + view->vertices.offset);
+	uint16* indexesIndex = (uint16*)(_aF.GetData() + view->indices.offset);
 	M2SkinSection* ops = (M2SkinSection*)(_aF.GetData() + view->submeshes.offset);
 	M2Batch* tex = (M2Batch*)(_aF.GetData() + view->batches.offset);
 
 
 	showGeosets = new bool[view->submeshes.size];
-	for (uint32_t i = 0; i < view->submeshes.size; i++)
+	for (uint32 i = 0; i < view->submeshes.size; i++)
 	{
 		showGeosets[i] = true;
 	}
 
-	indices = new uint16_t[view->indices.size];
-	for (uint32_t i = 0; i < view->indices.size; i++)
+	indices = new uint16[view->indices.size];
+	for (uint32 i = 0; i < view->indices.size; i++)
 	{
 		indices[i] = vertexesIndex[indexesIndex[i]];
 	}
 
 	M2Material* renderFlags = (M2Material*)(_mF.GetData() + _model->header.materials.offset);
-	uint16_t* texlookup = (uint16_t*)(_mF.GetData() + _model->header.texture_lookup_table.offset);
-	uint16_t* texanimlookup = (uint16_t*)(_mF.GetData() + _model->header.texture_transforms_lookup_table.offset);
-	uint16_t* texunitlookup = (uint16_t*)(_mF.GetData() + _model->header.tex_unit_lookup_table.offset);
+	uint16* texlookup = (uint16*)(_mF.GetData() + _model->header.texture_lookup_table.offset);
+	uint16* texanimlookup = (uint16*)(_mF.GetData() + _model->header.texture_transforms_lookup_table.offset);
+	uint16* texunitlookup = (uint16*)(_mF.GetData() + _model->header.tex_unit_lookup_table.offset);
 
-	for (uint32_t j = 0; j < view->batches.size; j++)
+	for (uint32 j = 0; j < view->batches.size; j++)
 	{
 		ModelRenderPass* pass = new ModelRenderPass();
 
@@ -52,7 +52,7 @@ Model_Skin::Model_Skin(MDX* _model, File& _mF, File& _aF) : m_ModelObject(_model
 		pass->noZWrite = false;
 		pass->billboard = false;
 
-		uint16_t geoset = tex[j].skinSectionIndex;
+		uint16 geoset = tex[j].skinSectionIndex;
 
 		pass->geoset = (int)geoset;
 

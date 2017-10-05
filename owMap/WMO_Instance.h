@@ -2,18 +2,18 @@
 
 struct WMOPlacementInfo
 {
-	uint32_t nameIndex;
-	uint32_t uniqueId;
+	uint32 nameIndex;
+	uint32 uniqueId;
 	vec3 position;
 	vec3 rotation;
 	CAaBox boundingBox;
-	uint16_t flags;
-	uint16_t doodadSetIndex;
-	uint16_t nameSet;
-	uint16_t unk;
+	uint16 flags;
+	uint16 doodadSetIndex;
+	uint16 nameSet;
+	uint16 unk;
 
 	// Size in bytes
-	static const uint32_t __size = 64;
+	static const uint32 __size = 64;
 };
 
 class WMOInstance
@@ -38,5 +38,5 @@ private:
 	WMO* wmoObject;
 	WMOPlacementInfo* placementInfo;
 
-	static std::set<uint32_t> alreadyDraw;
+	static std::set<uint32> alreadyDraw;
 };

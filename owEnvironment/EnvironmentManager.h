@@ -12,7 +12,7 @@ class EnvironmentManager : public Module
 {
 	DEF_MODULE(EnvironmentManager);
 
-	void InitSkies(uint32_t mapid);
+	void InitSkies(uint32 mapid);
 
 	//
 

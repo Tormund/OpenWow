@@ -9,9 +9,9 @@ public:
 	virtual void AddRef();
 	virtual void DelRef();
 
-	inline uint32_t GetRefsCount() const { return refcount; }
+	inline uint32 GetRefsCount() const { return refcount; }
 	inline bool NeedDelete() const { return (GetRefsCount() <= 0); }
 
 private:
-	uint32_t refcount;
+	uint32 refcount;
 };

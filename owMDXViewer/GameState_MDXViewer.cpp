@@ -16,12 +16,12 @@ bool GameState_MDXViewer::Init()
 	cameraSprint = false;
 
 	window = new UIWindow();
-	window->Init(VECTOR_ZERO, _Settings->GetWindowSize(), nullptr);
+	window->Init(VECTOR_ZERO, Settings::GetWindowSize(), nullptr);
 	_UIMgr->Attach(window);
 
 	auto camera = new Camera;
 	_PipelineGlobal->SetCamera(camera);
-	_PipelineGlobal->SetProjection(45.0f, _Settings->aspectRatio, 0.1f, 10000.0f);
+	_PipelineGlobal->SetProjection(45.0f, Settings::aspectRatio, 0.1f, 10000.0f);
 
 	currentModel = nullptr;
 	if (_Engine->GetArgument(0).empty())
@@ -118,9 +118,9 @@ void GameState_MDXViewer::Render(double t, double dt)
 
 void GameState_MDXViewer::RenderUI(double t, double dt)
 {
-	_Render->RenderText(vec2(5, _Settings->GetWindowSize().y - 22), "Cam:" + to_string(_Camera->Position.x) + "," + to_string(_Camera->Position.y) + "," + to_string(_Camera->Position.z));
-	_Render->RenderText(vec2(5, _Settings->GetWindowSize().y - 44), "CamDir:" + to_string(_Camera->Direction.x) + "," + to_string(_Camera->Direction.y) + "," + to_string(_Camera->Direction.z));
-	_Render->RenderText(vec2(5, _Settings->GetWindowSize().y - 66), "CamDirYawPitch:" + to_string(_Camera->Yaw) + "," + to_string(_Camera->Pitch));
+	_Render->RenderText(vec2(5, Settings::GetWindowSize().y - 22), "Cam:" + to_string(_Camera->Position.x) + "," + to_string(_Camera->Position.y) + "," + to_string(_Camera->Position.z));
+	_Render->RenderText(vec2(5, Settings::GetWindowSize().y - 44), "CamDir:" + to_string(_Camera->Direction.x) + "," + to_string(_Camera->Direction.y) + "," + to_string(_Camera->Direction.z));
+	_Render->RenderText(vec2(5, Settings::GetWindowSize().y - 66), "CamDirYawPitch:" + to_string(_Camera->Yaw) + "," + to_string(_Camera->Pitch));
 }
 
 //
@@ -131,7 +131,7 @@ MOUSE_MOVED_(GameState_MDXViewer)
 {
 	if (enableFreeCamera)
 	{
-		vec2 mouseDelta = (_mousePos - lastMousePos) / _Settings->GetWindowSize();
+		vec2 mouseDelta = (_mousePos - lastMousePos) / Settings::GetWindowSize();
 
 		_Camera->ProcessMouseMovement(mouseDelta.x, -mouseDelta.y);
 
@@ -185,46 +185,46 @@ KEYBD_PRESSED(GameState_MDXViewer)
 
 	if (_key == GLFW_KEY_L)
 	{
-		_Settings->lighting = !_Settings->lighting;
+		Settings::lighting = !Settings::lighting;
 		return true;
 	}
 
 	if (_key == GLFW_KEY_F5)
 	{
-		_Settings->drawmodels = !_Settings->drawmodels;
+		Settings::drawmodels = !Settings::drawmodels;
 		return true;
 	}
 	if (_key == GLFW_KEY_F6)
 	{
-		_Settings->draw_map_wmo_doodads = !_Settings->draw_map_wmo_doodads;
+		Settings::draw_map_wmo_doodads = !Settings::draw_map_wmo_doodads;
 		return true;
 	}
 	if (_key == GLFW_KEY_F7)
 	{
-		_Settings->drawterrain = !_Settings->drawterrain;
+		Settings::drawterrain = !Settings::drawterrain;
 		return true;
 	}
 	if (_key == GLFW_KEY_F8)
 	{
-		_Settings->drawwmo = !_Settings->drawwmo;
+		Settings::drawwmo = !Settings::drawwmo;
 		return true;
 	}
 
 	if (_key == GLFW_KEY_C)
 	{
-		_Settings->drawColors = !_Settings->drawColors;
+		Settings::drawColors = !Settings::drawColors;
 		return true;
 	}
 
 	if (_key == GLFW_KEY_H)
 	{
-		_Settings->drawhighres = !_Settings->drawhighres;
+		Settings::drawhighres = !Settings::drawhighres;
 		return true;
 	}
 
 	if (_key == GLFW_KEY_F)
 	{
-		_Settings->drawfog = !_Settings->drawfog;
+		Settings::drawfog = !Settings::drawfog;
 		return true;
 	}
 

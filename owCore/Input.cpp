@@ -1,8 +1,5 @@
 #include "stdafx.h"
 
-// Common
-#include "InputListener.h"
-
 // General
 #include "Input.h"
 
@@ -111,7 +108,7 @@ void Input::KeyboardCallback(int key, int scancode, int action, int mods)
 	}
 }
 
-void Input::CharCallback(uint32_t _char)
+void Input::CharCallback(uint32 _char)
 {
 	for (auto it = inputListeners.begin(); it != inputListeners.end(); ++it)
 		if ((*it)->OnCharInput(_char))

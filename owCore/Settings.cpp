@@ -3,38 +3,49 @@
 // General
 #include "Settings.h"
 
-Settings::Settings()
+	// Render settings
+float Settings::windowSizeX;
+float Settings::windowSizeY;
+float Settings::aspectRatio;
+float Settings::aspectFactor;
+
+// Distances
+float Settings::mapdrawdistance = 998.0f * 12.0f;
+float Settings::modeldrawdistance = 384.0f * 12.0f;
+float Settings::doodaddrawdistance = 64.0f * 12.0f;
+float Settings::highresdistance = 384.0f * 12.0f;
+float Settings::culldistance;
+
+float Settings::mapdrawdistance2;
+float Settings::modeldrawdistance2;
+float Settings::doodaddrawdistance2;
+float Settings::highresdistance2;
+float Settings::culldistance2;
+
+float Settings::fogdistance = 51200.0f;
+
+// Drawing
+bool Settings::draw_map_chunk = true;
+bool Settings::draw_map_wmo = true;
+bool Settings::draw_map_wmo_doodads = true;
+bool Settings::draw_map_mdx = true;
+
+
+bool Settings::loading;
+bool Settings::drawhighres;
+bool Settings::drawfog;
+
+// Quality
+bool Settings::uselowlod = true;
+bool Settings::enableMCCV = true;
+bool Settings::enableMCLV = true;
+
+// Perfomance
+bool Settings::disable_pipeline = false;
+
+//
+
+void Settings::Init()
 {
-	// Distances
-	highresdistance = 384.0f * 12.0f;
-	mapdrawdistance = 998.0f * 12.0f;
-	modeldrawdistance = 384.0f * 12.0f;
-	doodaddrawdistance = 64.0f * 12.0f;
-
-	fogdistance = 51200.0f;
-	culldistance = fogdistance;
-
-	// Draw enable flag
-	draw_map_chunk = true;
-	draw_map_wmo = true;
-	draw_map_wmo_doodads = false;
-	draw_map_mdx = true;
-
-	disable_pipeline = false;
-
-	useOldMDXShader = false;
-
-	lighting = true;
-	
-	drawhighres = true;
-	drawfog = false;
-	drawColors = true;
-
-	useshaders = true;
-
-
-	enableMCCV = true;
-	enableMCLV = true;
-
-	SetWindowSize(1240, 1024);
+	SetWindowSize(1280, 1024);
 }

@@ -12,7 +12,7 @@
 #include "Wmo_Light.h"
 #include "Wmo_Material.h"
 
-WMOGroup::WMOGroup(const WMO* _parentWMO, const uint32_t _groupIndex, File& f) : m_ParentWMO(_parentWMO), m_GroupIndex(_groupIndex)
+WMOGroup::WMOGroup(const WMO* _parentWMO, const uint32 _groupIndex, File& f) : m_ParentWMO(_parentWMO), m_GroupIndex(_groupIndex)
 {
 	nTriangles = 0;
 	materials = nullptr;
@@ -101,7 +101,7 @@ void WMOGroup::initDisplayList()
 	bounds.SetBounds(m_Header.boundingBox.min, m_Header.boundingBox.max);
 
 	char fourcc[5];
-	uint32_t size = 0;
+	uint32 size = 0;
 	while (!f.IsEof())
 	{
 		memset(fourcc, 0, 4);
@@ -120,7 +120,7 @@ void WMOGroup::initDisplayList()
 		}
 		else if (strcmp(fourcc, "MOVI") == 0) // Vertex indices for triangles
 		{
-			indices = (uint16_t*)f.GetDataFromCurrent();
+			indices = (uint16*)f.GetDataFromCurrent();
 		}
 		else if (strcmp(fourcc, "MOVT") == 0) // Vertices chunk.
 		{
@@ -142,13 +142,13 @@ void WMOGroup::initDisplayList()
 		}
 		else if (strcmp(fourcc, "MOLR") == 0) // Light references
 		{
-			nLights = size / sizeof(uint16_t);
-			m_WMOLightsIndexes = (uint16_t*)f.GetDataFromCurrent();
+			nLights = size / sizeof(uint16);
+			m_WMOLightsIndexes = (uint16*)f.GetDataFromCurrent();
 		}
 		else if (strcmp(fourcc, "MODR") == 0) // Doodad references
 		{
-			nDoodads = size / sizeof(uint16_t);
-			m_DoodadsIndexes = (uint16_t*)f.GetDataFromCurrent();
+			nDoodads = size / sizeof(uint16);
+			m_DoodadsIndexes = (uint16*)f.GetDataFromCurrent();
 		}
 		else if (strcmp(fourcc, "MOBN") == 0)
 		{
@@ -159,7 +159,7 @@ void WMOGroup::initDisplayList()
 		else if (strcmp(fourcc, "MOCV") == 0) // Vertex colors
 		{
 			m_HasVertexColors = true;
-			m_VertexColors = (uint32_t*)f.GetDataFromCurrent();
+			m_VertexColors = (uint32*)f.GetDataFromCurrent();
 		}
 		else if (strcmp(fourcc, "MLIQ") == 0) // Liquid
 		{
@@ -216,7 +216,7 @@ void WMOGroup::initDisplayList()
 	}
 
 	// Converts
-	for (uint32_t i = 0; i < nVertices; i++)
+	for (uint32 i = 0; i < nVertices; i++)
 	{
 		vertices[i] = From_XYZ_To_XZminusY_RET(vertices[i]);
 		normals[i] = From_XYZ_To_XZminusY_RET(normals[i]);
@@ -264,7 +264,7 @@ void WMOGroup::initDisplayList()
 
 	initLighting();
 
-	for (uint32_t b = 0; b < nBatches; b++)
+	for (uint32 b = 0; b < nBatches; b++)
 	{
 
 		WMOBatch* batch = &m_WMOBatchIndexes[b];
@@ -380,12 +380,12 @@ void WMOGroup::initLighting()
 		int lmin;
 
 #ifdef DOODADS_INCL
-		for (uint32_t i = 0; i < nDoodads; i++)
+		for (uint32 i = 0; i < nDoodads; i++)
 		{
 			lenmin = 999999.0f * 999999.0f;
 			lmin = 0;
 			DoodadInstance* mi = m_ParentWMO->m_MDXInstances[m_DoodadsIndexes[i]];
-			for (uint32_t j = 0; j < m_ParentWMO->header.nLights; j++)
+			for (uint32 j = 0; j < m_ParentWMO->header.nLights; j++)
 			{
 				WMOLight* l = m_ParentWMO->m_Lights[j];
 				vec3 dir = l->lightDef.pos - mi->placementInfo->position;
@@ -420,7 +420,7 @@ void WMOGroup::initLighting()
 	rotate(ofs.x, ofs.z, &pos.x, &pos.z, roll * PI / 180.0f);
 
 	float dist = glm::length(pos - _Camera->Position) - bounds.GetRadius();
-	if (dist > _Settings->culldistance)
+	if (dist > Settings::culldistance)
 	{
 		return false;
 	}
@@ -439,7 +439,7 @@ void WMOGroup::initLighting()
 	}
 	else
 	{
-		if (_Settings->lighting)
+		if (Settings::lighting)
 		{
 			if (_EnvironmentManager->skies->hasSkies())
 			{
@@ -467,9 +467,9 @@ void WMOGroup::initLighting()
 	//glCallList(dl);
 	glDisable(GL_BLEND);
 	glColor4f(1, 1, 1, 1);
-	for (uint32_t i = 0; i < nBatches; i++)
+	for (uint32 i = 0; i < nBatches; i++)
 	{
-		bool useshader = (supportShaders && _Settings->useshaders && lists[i].second);
+		bool useshader = (supportShaders && Settings::useshaders && lists[i].second);
 		if (useshader) wmoShader->bind();
 		glCallList(lists[i].first);
 		if (useshader) wmoShader->unbind();
@@ -480,7 +480,7 @@ void WMOGroup::initLighting()
 
 	if (m_HasVertexColors)
 	{
-		if (_Settings->lighting)
+		if (Settings::lighting)
 		{
 			glEnable(GL_LIGHTING);
 		}
@@ -495,11 +495,11 @@ bool WMOGroup::draw2()
 
 	vec3 pos = vec3(_Pipeline->GetWorld() * vec4(bounds.GetCenter(), 1.0f));
 
-	float dist = glm::length(pos - _Camera->Position);
-	if (dist > _Settings->culldistance + bounds.GetRadius())
+	/*float dist = glm::length(pos - _Camera->Position);
+	if (dist > Settings::culldistance + bounds.GetRadius())
 	{
 		return false;
-	}
+	}*/
 
 	if (!_Render->frustum.intersectsSphere(pos, bounds.GetRadius()))
 	{
@@ -522,7 +522,7 @@ bool WMOGroup::draw2()
 	}
 	else
 	{
-		if (_Settings->lighting)
+		if (Settings::lighting)
 		{
 			if (_EnvironmentManager->skies->hasSkies())
 			{
@@ -549,7 +549,7 @@ bool WMOGroup::draw2()
 	_TechniquesMgr->m_WMO_GeometryPass->Bind();
 	_TechniquesMgr->m_WMO_GeometryPass->SetPVW();
 
-	for (uint32_t i = 0; i < nBatches; i++)
+	for (uint32 i = 0; i < nBatches; i++)
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, globalBuffer);
 
@@ -603,7 +603,7 @@ bool WMOGroup::draw2()
 	/*
 	if (m_HasVertexColors)
 	{
-		if (_Settings->lighting)
+		if (Settings::lighting)
 		{
 			glEnable(GL_LIGHTING);
 		}
@@ -612,7 +612,7 @@ bool WMOGroup::draw2()
 	return true;
 }
 
-bool WMOGroup::drawDoodads(uint32_t _doodadSet)
+bool WMOGroup::drawDoodads(uint32 _doodadSet)
 {
 	if (!visible)
 	{
@@ -629,9 +629,9 @@ bool WMOGroup::drawDoodads(uint32_t _doodadSet)
 
 	// draw doodads
 	//**********glColor4f(1, 1, 1, 1);
-	for (uint32_t i = 0; i < nDoodads; i++)
+	for (uint32 i = 0; i < nDoodads; i++)
 	{
-		uint16_t doodadIndex = m_DoodadsIndexes[i];
+		uint16 doodadIndex = m_DoodadsIndexes[i];
 
 #ifdef DOODADS_INCL
 		if (m_ParentWMO->doodadsets[_doodadSet]->InSet(doodadIndex) || m_ParentWMO->doodadsets[0]->InSet(doodadIndex))
@@ -656,6 +656,8 @@ bool WMOGroup::drawDoodads(uint32_t _doodadSet)
 
 bool WMOGroup::drawLiquid()
 {
+	return false;
+
 	if (!visible)
 	{
 		return false;
@@ -682,15 +684,13 @@ bool WMOGroup::drawLiquid()
 		glLightfv(GL_LIGHT2, GL_POSITION, glm::value_ptr(vec4(0, 1, 0, 0)));
 	}
 
-	glDisable(GL_BLEND);
+	//glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
 	glDepthMask(GL_TRUE);
 	glColor4f(1, 1, 1, 1);
 
 	lq->draw();
 	PERF_INC(PERF_MAP_MODELS_WMOs_LIQUIDS);
-
-	glDisable(GL_LIGHT2);
 
 	return true;
 }

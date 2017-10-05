@@ -5,59 +5,71 @@ unsigned long Random::rStateVector[Random::N];
 unsigned long Random::rStateVectorIndex;
 
 // Set random seed
-void Random::SetSeed(unsigned long TSeed) {
+void Random::SetSeed(unsigned long TSeed)
+{
 	rStateVector[0] = TSeed & 0xffffffffUL;
-	for (rStateVectorIndex = 1; rStateVectorIndex < N; ++rStateVectorIndex) {
+	for (rStateVectorIndex = 1; rStateVectorIndex < N; ++rStateVectorIndex)
+	{
 		rStateVector[rStateVectorIndex] = (1812433253UL * (rStateVector[rStateVectorIndex - 1] ^ (rStateVector[rStateVectorIndex - 1] >> 30)) + rStateVectorIndex);
 		rStateVector[rStateVectorIndex] &= 0xffffffffUL;
 	}
 }
 
 // Generates a random number [0, 1)
-float Random::Generate() {
+float Random::Generate()
+{
 	return GenerateRange(0.0f, 0.999999f);
 }
 
 // Generates a random number [0, TMax]
-int Random::GenerateMax(int TMax) {
+int Random::GenerateMax(int TMax)
+{
 	return GenerateRandomInteger() % TMax;
 }
 
 // Generates a random number [0, TMax]
-uint32_t Random::GenerateMax(uint32_t TMax) {
+uint32 Random::GenerateMax(uint32 TMax)
+{
 	return GenerateRandomInteger() % TMax;
 }
 
 // Generates a random number [TMin, TMax]
-int Random::GenerateRange(int TMin, int TMax) {
+int Random::GenerateRange(int TMin, int TMax)
+{
 	return GenerateRandomInteger() % (TMax - TMin + 1) + TMin;
 }
 
 // Generates a random number [TMin, TMax]
-uint32_t Random::GenerateRange(uint32_t TMin, uint32_t TMax) {
+uint32 Random::GenerateRange(uint32 TMin, uint32 TMax)
+{
 	return GenerateRandomInteger() % (TMax - TMin + 1) + TMin;
 }
 
 // Generates a random number [TMin, TMax]
-float Random::GenerateRange(float TMin, float TMax) {
+float Random::GenerateRange(float TMin, float TMax)
+{
 	return GenerateRandomInteger() * (1.0f / 4294967295.0f) * (TMax - TMin) + TMin;
 }
 
 //
 
-unsigned long Random::GenerateRandomInteger() {
-	static unsigned long mag01[2] = { 0x0UL, MATRIX_A };
+unsigned long Random::GenerateRandomInteger()
+{
+	static unsigned long mag01[2] = {0x0UL, MATRIX_A};
 	unsigned long y;
 
-	if (rStateVectorIndex >= N) {
-		uint32_t kk;
+	if (rStateVectorIndex >= N)
+	{
+		uint32 kk;
 
-		for (kk = 0; kk < N - M; ++kk) {
+		for (kk = 0; kk < N - M; ++kk)
+		{
 			y = (rStateVector[kk] & UPPER_MASK) | (rStateVector[kk + 1] & LOWER_MASK);
 			rStateVector[kk] = rStateVector[kk + M] ^ (y >> 1) ^ mag01[y & 0x1UL];
 		}
 
-		for (;kk < N - 1; ++kk) {
+		for (; kk < N - 1; ++kk)
+		{
 			y = (rStateVector[kk] & UPPER_MASK) | (rStateVector[kk + 1] & LOWER_MASK);
 			rStateVector[kk] = rStateVector[kk + (M - N)] ^ (y >> 1) ^ mag01[y & 0x1UL];
 		}

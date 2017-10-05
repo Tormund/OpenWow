@@ -53,7 +53,7 @@ public:
 	ParticleSystem();
 	~ParticleSystem();
 
-	void init(File& f, M2Particle& mta, uint32_t * globals);
+	void init(File& f, M2Particle& mta, uint32 * globals);
 	void update(float dt);
 	void setup(int anim, int time);
 	void draw();
@@ -67,7 +67,7 @@ private:
 
 private:
 	Animated<float> speed, variation, spread, lat, gravity, lifespan, rate, areal, areaw, deacceleration;
-	Animated<uint8_t> enabled;
+	Animated<uint8> enabled;
 	vec4 colors[3];
 	float sizes[3];
 	float mid, slowdown, rotation;
@@ -86,8 +86,8 @@ private:
 	//bool transform;
 
 	// unknown parameters omitted for now ...
-	int32_t flags;
-	int16_t pType;
+	int32 flags;
+	int16 pType;
 
 	MDX_Part_Bone* parent;
 

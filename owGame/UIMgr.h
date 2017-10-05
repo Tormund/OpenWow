@@ -9,7 +9,7 @@ class UIMgr : public Module, public InputListener {
 	friend UIElement;
 	friend UIWindow;
 public:
-	DEF_MODULE_API(UIMgr, );
+	DEF_MODULE(UIMgr);
 
 	//
 

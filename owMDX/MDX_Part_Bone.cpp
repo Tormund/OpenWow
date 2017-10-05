@@ -3,7 +3,7 @@
 // General
 #include "MDX_Part_Bone.h"
 
-void MDX_Part_Bone::init(File& f, M2CompBone& b, uint32_t* global, File* animfiles)
+void MDX_Part_Bone::init(File& f, M2CompBone& b, uint32* global, File* animfiles)
 {
 	parent = b.parent_bone;
 	pivot = From_XYZ_To_XZminusY_RET(b.pivot);
@@ -53,7 +53,7 @@ void MDX_Part_Bone::calcMatrix(MDX_Part_Bone* allbones, int anim, int time)
 	}
 
 	Matrix m;
-	Quaternion q;
+	quat q;
 
 	bool tr = roll.uses(anim) || scale.uses(anim) || trans.uses(anim) || billboard;
 	if (tr)

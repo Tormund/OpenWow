@@ -3,62 +3,6 @@
 // General
 #include "Utils.h"
 
-// PARSING
-
-int Utils::ParseDuration(string& s)
-{
-	int val = 0;
-	string suffix = "";
-	stringstream ss;
-	ss.str(s);
-	ss >> val;
-	ss >> suffix;
-
-	if (val == 0)
-		return val;
-	else if (suffix == "s")
-		val *= MAX_FRAMES_PER_SEC;
-	else if (suffix == "ms")
-		val = static_cast<int>(round((static_cast<double>(val * MAX_FRAMES_PER_SEC) / 1000.0)));
-
-	if (val < 1) val = 1;
-
-	return val;
-}
-
-int Utils::ParseDirection(string& s)
-{
-	int dir;
-
-	if (s == "N")
-		dir = 3;
-	else if (s == "NE")
-		dir = 4;
-	else if (s == "E")
-		dir = 5;
-	else if (s == "SE")
-		dir = 6;
-	else if (s == "S")
-		dir = 7;
-	else if (s == "SW")
-		dir = 0;
-	else if (s == "W")
-		dir = 1;
-	else if (s == "NW")
-		dir = 2;
-	else
-	{
-		dir = Utils::ToInt(s);
-		if (dir < 0 || dir > 7)
-		{
-			//printf("UtilsParsing: Direction '%d' is not within range 0-7.");
-			dir = 0;
-		}
-	}
-
-	return dir;
-}
-
 string Utils::ParseSectionName(string& s)
 {
 	size_t bracket = s.find_first_of(']');

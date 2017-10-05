@@ -65,7 +65,7 @@ void MPQFile::AddArchive(string filename)
 	}
 
 
-	/*uint32_t filenum;
+	/*uint32 filenum;
 	if (libmpq__file_number(mpq_a, "(listfile)", &filenum)) return;
 
 	libmpq__off_t size, transferred;
@@ -80,7 +80,7 @@ void MPQFile::AddArchive(string filename)
 	char *token;
 
 	strtok_s(buffer, seps, &token);
-	uint32_t counter = 0;
+	uint32 counter = 0;
 	while ((token != NULL) && (counter < size))
 	{
 		//cout << token << endl;
@@ -108,7 +108,7 @@ MPQFileLocation MPQFile::GetFileLocation(cstring filename)
 	{
 		mpq_archive_s* mpq_a = *i;
 
-		uint32_t filenum;
+		uint32 filenum;
 		if (libmpq__file_number(mpq_a, filename.c_str(), &filenum) == LIBMPQ_ERROR_EXIST)
 		{
 			continue;

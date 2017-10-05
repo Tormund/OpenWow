@@ -1,28 +1,12 @@
 #pragma once
 
-#define ADD_SETTING(_type, name, _default) \
-public:\
- _type Get_##name##() const { \
-return m_##name; \
-}\
-\
- void Set_##name##(_type _value)\
-{\
-m_##name = _value;\
-}\
-private:\
-_type m_##name;\
-\
-const static _type Default_##name = _default;
-
-
 class Settings
 {
-	CLASS_INSTANCE(Settings);
+public:
+	static void Init();
 
-	Settings();
-
-	inline void CalculateSquareDistances()
+public:
+	static inline void CalculateSquareDistances()
 	{
 		highresdistance2 = highresdistance * highresdistance;
 		mapdrawdistance2 = mapdrawdistance * mapdrawdistance;
@@ -31,7 +15,7 @@ class Settings
 		culldistance2 = culldistance * culldistance;
 	}
 
-	inline void CalculateAspectFactor()
+	static inline void CalculateAspectFactor()
 	{
 		aspectFactor = 1.0f;
 		aspectRatio = windowSizeX / windowSizeY;
@@ -41,49 +25,59 @@ class Settings
 		}
 	}
 
-	inline void SetWindowSize(uint32_t _x, uint32_t _y) { windowSizeX = _x; windowSizeY = _y; CalculateAspectFactor(); }
-	inline vec2 GetWindowSize() const { return vec2(windowSizeX, windowSizeY); }
+	template<typename T>
+	static inline void SetWindowSize(T _x, T _y)
+	{
+		windowSizeX = static_cast<float>(_x);
+		windowSizeY = static_cast<float>(_y);
+		CalculateAspectFactor();
+	}
+
+	static inline vec2 GetWindowSize()
+	{
+		return vec2(windowSizeX, windowSizeY);
+	}
 
 	//
 
 public:
 	// Render settings
-	float windowSizeX;
-	float windowSizeY;
-	float aspectRatio, aspectFactor;
+	static float windowSizeX;
+	static float windowSizeY;
+	static float aspectRatio;
+	static float aspectFactor;
 
 	// Distances
-	float mapdrawdistance, modeldrawdistance, doodaddrawdistance, highresdistance, culldistance;
-	float mapdrawdistance2, modeldrawdistance2, doodaddrawdistance2, highresdistance2, culldistance2;
-	float fogdistance;
+	static float mapdrawdistance;
+	static float modeldrawdistance;
+	static float doodaddrawdistance;
+	static float highresdistance;
+	static float culldistance;
+
+	static float mapdrawdistance2;
+	static float modeldrawdistance2;
+	static float doodaddrawdistance2;
+	static float highresdistance2;
+	static float culldistance2;
+
+	static float fogdistance;
 
 	// Drawing
-	bool draw_map_chunk;
-	bool draw_map_wmo;
-	bool draw_map_wmo_doodads;
-	bool draw_map_mdx;
+	static bool draw_map_chunk;
+	static bool draw_map_wmo;
+	static bool draw_map_wmo_doodads;
+	static bool draw_map_mdx;
 
-	bool useOldMDXShader;
-	
-	bool lighting;
-
-	bool loading;
-	bool drawhighres;
-	bool drawfog;
-	bool drawColors;
+	static bool loading;
+	static bool drawhighres;
+	static bool drawfog;
+	static bool drawColors;
 
 	// Quality
-	bool uselowlod;
-	bool useshaders;
-
-
-	bool enableMCCV;
-	bool enableMCLV;
-
-
+	static bool uselowlod;
+	static bool enableMCCV;
+	static bool enableMCLV;
 
 	// Perfomance
-	bool disable_pipeline;
+	static bool disable_pipeline;
 };
-
-#define _Settings Settings::instance()

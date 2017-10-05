@@ -16,7 +16,7 @@ void Test1(int _argInt)
 	Debug::Print("11111111Arg = [%d]", _argInt);
 }
 
-void Test11(uint32_t _argInt)
+void Test11(uint32 _argInt)
 {
 	Debug::Print("11111111Arg = [%d]", _argInt);
 }
@@ -29,15 +29,17 @@ Console::ConsoleCommands Console::consoleCommands;
 
 void Console::AddCommonCommands()
 {
-	ADDCONSOLECOMMAND_WITHARGS("test1_with_1", Test1, int32_t);
-	ADDCONSOLECOMMAND_WITHARGS("test11_with_1", Test11, uint32_t);
-	ADDCONSOLECOMMAND("test2_with_0", Test2);
+	//ADDCONSOLECOMMAND_WITHARGS("test1_with_1", Test1, int32);
+	//ADDCONSOLECOMMAND_WITHARGS("test11_with_1", Test11, uint32);
+	//ADDCONSOLECOMMAND("test2_with_0", Test2);
 }
 
 bool Console::AddConsoleCommand(ConsoleCommandBase* _command)
 {
 	if (_command == nullptr)
+	{
 		return false;
+	}
 
 	// Name is empty
 	if (_command->GetName().empty())
@@ -48,11 +50,13 @@ bool Console::AddConsoleCommand(ConsoleCommandBase* _command)
 
 	// Already exists
 	for (auto it = consoleCommands.begin(); it != consoleCommands.end(); ++it)
+	{
 		if ((*it)->GetName() == _command->GetName())
 		{
 			Debug::Error("Command [%s] already exists.", _command->GetName().c_str());
 			return false;
 		}
+	}
 
 	consoleCommands.push_back(_command);
 	Debug::Print("Command [%s] added.", _command->GetName().c_str());
@@ -63,11 +67,17 @@ bool Console::AddConsoleCommand(ConsoleCommandBase* _command)
 ConsoleCommandBase* Console::GetConsoleCommandByName(cstring _commandName)
 {
 	if (_commandName.empty())
+	{
 		return nullptr;
+	}
 
 	for (auto it = consoleCommands.begin(); it != consoleCommands.end(); ++it)
+	{
 		if ((*it)->GetName() == _commandName)
+		{
 			return *it;
+		}
+	}
 
 	return nullptr;
 }
@@ -77,7 +87,9 @@ Console::ConsoleCommands Console::GetConsoleCommandHelp(string _input)
 	Utils::ToLower(_input);
 
 	if (_input.empty())
+	{
 		return Console::ConsoleCommands();
+	}
 
 	Console::ConsoleCommands commands;
 	for (auto it = consoleCommands.begin(); it != consoleCommands.end(); ++it)

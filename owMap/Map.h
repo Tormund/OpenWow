@@ -33,7 +33,7 @@ class Map
 	void enterTile(int x, int z);
 	MapTile* LoadTile(int x, int z);
 	void ClearCache();
-	uint32_t getAreaID();
+	uint32 getAreaID();
 
 public: // Getters
 	string GetPath() { return path; }
@@ -49,7 +49,7 @@ public: // Getters
 	bool MapHasTerrain() { return mapHasTerrain; }
 	bool MapHasGlobalWMO() { return globalWMOExists; }
 
-	uint32_t GetTilesCount() { return tilesCount; }
+	uint32 GetTilesCount() { return tilesCount; }
 	GLuint GetMinimap() { return minimap; }
 
 	int GetCurrentX() { return currentTileX; }
@@ -68,12 +68,12 @@ public: // Getters
 		return &dataAlpha[0];
 	}
 
-	int16_t* GetLowResolutionIndexes()
+	int16* GetLowResolutionIndexes()
 	{
 		return mapstrip;
 	}
 
-	int16_t* GetHighResolutionIndexes()
+	int16* GetHighResolutionIndexes()
 	{
 		return mapstrip2;
 	}
@@ -91,7 +91,7 @@ private:
 
 private:
 	bool mapHasTerrain;
-	uint32_t tilesCount;
+	uint32 tilesCount;
 	bool m_TileExists[C_TilesInMap][C_TilesInMap];
 	bool m_TileIsWater[C_TilesInMap][C_TilesInMap];
 	GLuint lowrestiles[C_TilesInMap][C_TilesInMap];
@@ -108,7 +108,7 @@ private: // Global wmo
 	WMOInstance* globalWMO;
 
 private: // Low-resolution WMOs
-	uint32_t lowResolutionWMOsCount;
+	uint32 lowResolutionWMOsCount;
 	vector<string> lowResolutionWMOsNames;
 	vector<WMOPlacementInfo*> lowResolutionWMOsplacementInfo;
 	vector<WMOInstance*> lowResolutionWMOs;
@@ -116,12 +116,12 @@ private: // Low-resolution WMOs
 private: // Index buffer
 	vec2 dataDetail[C_MapBufferSize];
 	vec2 dataAlpha[C_MapBufferSize];
-	int16_t* mapstrip;
-	int16_t* mapstrip2;
+	int16* mapstrip;
+	int16* mapstrip2;
 
 public: // Consts
-	const uint32_t stripsize = 8 * 18 + 7 * 2;
-	const uint32_t stripsize2 = 16 * 18 + 7 * 2 + 8 * 2;
+	const uint32 stripsize = 8 * 18 + 7 * 2;
+	const uint32 stripsize2 = 16 * 18 + 7 * 2 + 8 * 2;
 };
 
 #define _Map Map::instance()

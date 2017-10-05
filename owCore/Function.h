@@ -1,9 +1,5 @@
 #pragma once
 
-/*
-	Pointer to function, that take arg
-*/
-
 template<class ARGTYPE>
 class Function
 {

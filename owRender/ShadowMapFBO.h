@@ -6,7 +6,7 @@ public:
 
 	 ~ShadowMapFBO();
 
-	 bool Init(uint32_t WindowWidth, uint32_t WindowHeight);
+	 bool Init(uint32 WindowWidth, uint32 WindowHeight);
 
 	 void BindForWriting();
 

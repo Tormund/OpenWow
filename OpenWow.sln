@@ -91,6 +91,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "owEnvironment", "owEnvironm
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CascLib_dll", "Externals\CascLib\CascLib_vs17_dll.vcxproj", "{CB385198-50B1-4CF4-883B-11F042DED6AA}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "owRenderGL", "owRenderGL\owRenderGL.vcxproj", "{B3AC6819-5A31-4D39-A891-29191C644FA5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -211,6 +213,14 @@ Global
 		{CB385198-50B1-4CF4-883B-11F042DED6AA}.Release|x64.Build.0 = Release|x64
 		{CB385198-50B1-4CF4-883B-11F042DED6AA}.Release|x86.ActiveCfg = Release|Win32
 		{CB385198-50B1-4CF4-883B-11F042DED6AA}.Release|x86.Build.0 = Release|Win32
+		{B3AC6819-5A31-4D39-A891-29191C644FA5}.Debug|x64.ActiveCfg = Debug|x64
+		{B3AC6819-5A31-4D39-A891-29191C644FA5}.Debug|x64.Build.0 = Debug|x64
+		{B3AC6819-5A31-4D39-A891-29191C644FA5}.Debug|x86.ActiveCfg = Debug|Win32
+		{B3AC6819-5A31-4D39-A891-29191C644FA5}.Debug|x86.Build.0 = Debug|Win32
+		{B3AC6819-5A31-4D39-A891-29191C644FA5}.Release|x64.ActiveCfg = Release|x64
+		{B3AC6819-5A31-4D39-A891-29191C644FA5}.Release|x64.Build.0 = Release|x64
+		{B3AC6819-5A31-4D39-A891-29191C644FA5}.Release|x86.ActiveCfg = Release|Win32
+		{B3AC6819-5A31-4D39-A891-29191C644FA5}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

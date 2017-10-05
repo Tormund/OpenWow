@@ -10,7 +10,7 @@
 
 //
 
-Liquid::Liquid(uint32_t x, uint32_t y, vec3 base, float tilesize) : m_TilesX(x), m_TilesY(y), pos(base), tilesize(tilesize), shader(-1), ydir(1.0f)
+Liquid::Liquid(uint32 x, uint32 y, vec3 base, float tilesize) : m_TilesX(x), m_TilesY(y), pos(base), tilesize(tilesize), shader(-1), ydir(1.0f)
 {
 	m_TilesCount = (m_TilesX + 1) * (m_TilesY + 1);
 }
@@ -113,7 +113,7 @@ void Liquid::initGeometry(File& f)
 	{
 		for (int i = 0; i < m_TilesX + 1; i++)
 		{
-			uint32_t p = j*(m_TilesX + 1) + i;
+			uint32 p = j*(m_TilesX + 1) + i;
 			float h = map[p].magmaVert.height;
 			if (h > 100000)
 			{
@@ -142,7 +142,7 @@ void Liquid::initGeometry(File& f)
 				m_LastFlag = f;
 
 				// 15 seems to be "don't draw"
-				uint32_t p = j * (m_TilesX + 1) + i;
+				uint32 p = j * (m_TilesX + 1) + i;
 
 				glTexCoord3f(i / texRepeats, j / texRepeats, col[p]);
 				glVertex3fv(glm::value_ptr(verts[p]));
@@ -169,12 +169,12 @@ void Liquid::initGeometry(File& f)
 	glBegin(GL_TRIANGLES);
 	for (int j=0; j<ytiles+1; j++) {
 		for (int i=0; i<xtiles+1; i++) {
-			uint32_t p = j*(xtiles+1)+i;
+			uint32 p = j*(xtiles+1)+i;
 			vec3 v = verts[p];
 			//short s = *( (short*) (f.GetDataFromCurrent() + p*8) );
 			//float f = s / 255.0f;
 			//glColor4f(f,(1.0f-f),0,1);
-			uint8_t c[4];
+			uint8 c[4];
 			c[0] = 255-map[p].c[3];
 			c[1] = 255-map[p].c[2];
 			c[2] = 255-map[p].c[1];
@@ -229,7 +229,7 @@ void Liquid::draw()
 		glDepthMask(GL_FALSE);
 	}
 
-	if (_Settings->useshaders && (shader >= 0))
+	if (/*Settings::useshaders*/false && (shader >= 0))
 	{
 		// SHADER-BASED
 		vec3 col2;

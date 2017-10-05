@@ -5,14 +5,14 @@
 
 
 const float C_SkyRadius = 400.0f;
-const uint32_t C_SkySegmentsCount = 32;
+const uint32 C_SkySegmentsCount = 32;
 
 //............................top....med....medh........horiz..........bottom
 const float C_SkyAngles[] = {90.0f, 30.0f, 15.0f, 5.0f, 0.0f, -30.0f, -90.0f};
-const uint32_t C_Skycolors[] = {SKY_COLOR_0,      SKY_COLOR_1,      SKY_COLOR_2,    SKY_COLOR_3,    SKY_COLOR_4,    FOG_COLOR,     FOG_COLOR};
-const uint32_t C_SkycolorsCount = 7;
+const uint32 C_Skycolors[] = {SKY_COLOR_0,      SKY_COLOR_1,      SKY_COLOR_2,    SKY_COLOR_3,    SKY_COLOR_4,    FOG_COLOR,     FOG_COLOR};
+const uint32 C_SkycolorsCount = 7;
 
-MapSkies::MapSkies(uint32_t mapid)
+MapSkies::MapSkies(uint32 mapid)
 {
 	for (auto it = DBC_Light.Records()->begin(); it != DBC_Light.Records()->end(); ++it)
 	{
@@ -53,16 +53,16 @@ void MapSkies::InitBuffer()
 
 	vector<vec3> vertices;
 
-	for (uint32_t h = 0; h < C_SkySegmentsCount; h++)
+	for (uint32 h = 0; h < C_SkySegmentsCount; h++)
 	{
-		for (uint32_t i = 0; i < C_SkycolorsCount; i++)
+		for (uint32 i = 0; i < C_SkycolorsCount; i++)
 		{
 			basepos1[i] = basepos2[i] = vec3(cosf(C_SkyAngles[i] * DEG_TO_RAD) * C_SkyRadius, sinf(C_SkyAngles[i] * DEG_TO_RAD) * C_SkyRadius, 0);
 			rotate(0, 0, &basepos1[i].x, &basepos1[i].z, M_2_PI / C_SkySegmentsCount * (h + 0));
 			rotate(0, 0, &basepos2[i].x, &basepos2[i].z, M_2_PI / C_SkySegmentsCount * (h + 1));
 		}
 
-		for (uint32_t v = 0; v < C_SkycolorsCount - 1; v++)
+		for (uint32 v = 0; v < C_SkycolorsCount - 1; v++)
 		{
 			//glColor3fv(glm::value_ptr(colorSet[skycolors[v]]));
 			//glVertex3fv(glm::value_ptr(basepos2[v]));
@@ -89,7 +89,7 @@ void MapSkies::InitBuffer()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void MapSkies::initSky(cvec3 _cameraPosition, uint32_t _time)
+void MapSkies::initSky(cvec3 _cameraPosition, uint32 _time)
 {
 	if (skies.empty())
 	{
@@ -108,7 +108,7 @@ void MapSkies::initSky(cvec3 _cameraPosition, uint32_t _time)
 	{
 		if (skies[j]->weight > 0)
 		{
-			for (uint32_t i = 0; i < SKY_COLORSCOUNT; i++)
+			for (uint32 i = 0; i < SKY_COLORSCOUNT; i++)
 			{
 				if ((skies[j]->colorFor(i, _time).x > 1.0f) || (skies[j]->colorFor(i, _time).y > 1.0f) || (skies[j]->colorFor(i, _time).z > 1.0f))
 				{
@@ -120,7 +120,7 @@ void MapSkies::initSky(cvec3 _cameraPosition, uint32_t _time)
 		}
 	}
 
-	for (uint32_t i = 0; i < SKY_COLORSCOUNT; i++)
+	for (uint32 i = 0; i < SKY_COLORSCOUNT; i++)
 	{
 		colorSet[i] -= vec3(1, 1, 1);
 	}
@@ -129,9 +129,9 @@ void MapSkies::initSky(cvec3 _cameraPosition, uint32_t _time)
 	colors.clear();
 
 
-	for (uint32_t h = 0; h < C_SkySegmentsCount; h++)
+	for (uint32 h = 0; h < C_SkySegmentsCount; h++)
 	{
-		for (uint32_t v = 0; v < C_SkycolorsCount - 1; v++)
+		for (uint32 v = 0; v < C_SkycolorsCount - 1; v++)
 		{
 			colors.push_back(colorSet[C_Skycolors[v]]);
 			colors.push_back(colorSet[C_Skycolors[v]]);
