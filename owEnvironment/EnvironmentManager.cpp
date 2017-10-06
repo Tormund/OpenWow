@@ -59,7 +59,7 @@ void EnvironmentManager::SetAmbientLights(bool on)
 	if (on)
 	{
 		vec4 ambient(skies->colorSet[LIGHT_GLOBAL_AMBIENT], 1);
-		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, glm::value_ptr(ambient));
+		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
 
 		if (dayNightPhase.dayIntensity > 0)
 		{
@@ -82,7 +82,7 @@ void EnvironmentManager::SetAmbientLights(bool on)
 	else
 	{
 		vec4 ambient(0, 0, 0, 1);
-		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, glm::value_ptr(ambient));
+		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
 		glDisable(GL_LIGHT0);
 		glDisable(GL_LIGHT1);
 	}
@@ -98,7 +98,7 @@ void EnvironmentManager::SetFog()
 		Settings::culldistance = fogdist;
 
 		vec4 fogcolor(skies->colorSet[FOG_COLOR], 1);
-		glFogfv(GL_FOG_COLOR, glm::value_ptr(fogcolor)); // TODO: retreive fogstart and fogend from lights.lit somehow
+		glFogfv(GL_FOG_COLOR, fogcolor); // TODO: retreive fogstart and fogend from lights.lit somehow
 		glFogf(GL_FOG_START, fogdist * fogstart);
 		glFogf(GL_FOG_END, fogdist);
 		glEnable(GL_FOG);

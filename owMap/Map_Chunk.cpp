@@ -165,7 +165,7 @@ void MapChunk::init(File& f, load_phases phase)
 			vmin.z = m_GamePositionZ;
 			vmax.x = m_GamePositionX + 8 * C_UnitSize;
 			vmax.z = m_GamePositionZ + 8 * C_UnitSize;
-			r = glm::length(vmax - vmin) * 0.5f;
+			r = (vmax - vmin).length() * 0.5f;
 
 			vcenter = (vmin + vmax) * 0.5f;
 		}
@@ -593,7 +593,7 @@ void MapChunk::draw2()
 	}
 
 	// Draw chunk before fog
-	float mydist = glm::length(_Camera->Position - vcenter) - r;
+	float mydist = (_Camera->Position - vcenter).length() - r;
 	if (mydist > Settings::culldistance)
 	{
 		if (Settings::uselowlod)

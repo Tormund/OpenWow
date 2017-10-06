@@ -141,7 +141,7 @@ void GameState_Menu::Render(double t, double dt)
 	if (backgroundModel != nullptr)
 	{
 		vec4 la(0.1f, 0.1f, 0.1f, 1);
-		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, glm::value_ptr(la));
+		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, la);
 
 		//***glEnable(GL_COLOR_MATERIAL);
 		//***glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
@@ -211,7 +211,7 @@ void GameState_Menu::RenderUI(double t, double dt)
 			fz = basey + _World->mainCamera->Position.z / C_TileSize * 12.0f;
 			glVertex2f(fx, fz);
 			glColor4f(1, 1, 1, 0);
-			glVertex2f(fx + 10.0f * cosf(glm::radians(_World->mainCamera->Yaw)), fz + 10.0f * sinf(glm::radians(_World->mainCamera->Yaw)));
+			glVertex2f(fx + 10.0f * cosf(degToRad(_World->mainCamera->Roll)), fz + 10.0f * sinf(degToRad(_World->mainCamera->Roll)));
 			glEnd();
 		}
 	}

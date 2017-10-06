@@ -18,7 +18,6 @@
 #endif
 #include <windows.h>
 
-
 class Timer
 {
 public:

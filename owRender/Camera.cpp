@@ -3,29 +3,29 @@
 // General
 #include "Camera.h"
 
-Camera::Camera(vec3 position, vec3 up, float yaw, float pitch) :
+Camera::Camera(vec3 position, vec3 up, float roll, float pitch) :
 	Direction(vec3(0.0f, 0.0f, -1.0f)),
 	MovementSpeed(SPEED),
 	MouseSensitivity(SENSITIVTY)
 {
 
 	Position = position;
-	WorldUp = up;
-	Yaw = yaw;
+	//WorldUp = up;
+	Roll = roll;
 	Pitch = pitch;
 
 	updateCameraVectors();
 }
 
-Camera::Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch) :
+Camera::Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float roll, float pitch) :
 	Direction(vec3(0.0f, 0.0f, -1.0f)),
 	MovementSpeed(SPEED),
 	MouseSensitivity(SENSITIVTY)
 {
 
 	Position = vec3(posX, posY, posZ);
-	WorldUp = vec3(upX, upY, upZ);
-	Yaw = yaw;
+
+	Roll = roll;
 	Pitch = pitch;
 
 	updateCameraVectors();
@@ -69,7 +69,7 @@ void Camera::ProcessMouseMovement(float xoffset, float yoffset, bool constrainPi
 	xoffset *= MouseSensitivity;
 	yoffset *= MouseSensitivity;
 
-	Yaw += xoffset;
+	Roll -= xoffset;
 	Pitch += yoffset;
 
 	// Make sure that when pitch is out of bounds, screen doesn't get flipped
@@ -89,19 +89,78 @@ void Camera::ProcessMouseMovement(float xoffset, float yoffset, bool constrainPi
 	updateCameraVectors();
 }
 
+//
+
+void Camera::setupViewParams(float fov, float aspect, float nearPlane, float farPlane)
+{
+	float ymax = nearPlane * tanf(degToRad(fov / 2.0f));
+	float xmax = ymax * aspect;
+
+	_frustLeft = -xmax;
+	_frustRight = xmax;
+	_frustBottom = -ymax;
+	_frustTop = ymax;
+	_frustNear = nearPlane;
+	_frustFar = farPlane;
+
+	// setting view params implicitly disables the manual projection matrix 
+	_manualProjMat = false;
+
+	_orthographic = false;
+
+	//markDirty();
+}
+
+void Camera::setProjectionMatrix(float* projMat)
+{
+	memcpy(_projMat.x, projMat, 16 * sizeof(float));
+	_manualProjMat = true;
+
+	//markDirty();
+}
+
+void Camera::onPostUpdate()
+{
+	// Get position
+	_absPos = Vec3f(_absTrans.c[3][0], _absTrans.c[3][1], _absTrans.c[3][2]);
+
+	// Calculate view matrix
+	_viewMat = _absTrans.inverted();
+
+	// Calculate projection matrix if not using a manually set one
+	if (!_manualProjMat)
+	{
+		if (!_orthographic)
+		{
+			_projMat = Matrix4f::PerspectiveMat(_frustLeft, _frustRight, _frustBottom, _frustTop, _frustNear, _frustFar);
+		}
+		else
+		{
+			_projMat = Matrix4f::OrthoMat(_frustLeft, _frustRight, _frustBottom, _frustTop, _frustNear, _frustFar);
+		}
+	}
+
+	// Update frustum
+	_frustum.buildViewFrustum(_viewMat, _projMat);
+}
+
+//
+
 void Camera::updateCameraVectors()
 {
 	// Calculate the new Front vector
 	vec3 front;
-	front.x = cos(glm::radians(Yaw)) * cos(glm::radians(Pitch));
-	front.y = sin(glm::radians(Pitch));
-	front.z = sin(glm::radians(Yaw)) * cos(glm::radians(Pitch));
-	Direction = glm::normalize(front);
+	front.x = -(sinf(degToRad(Roll)) * cos(degToRad(Pitch)));
+	front.y = sin(degToRad(Pitch));
+	front.z = -(cosf(degToRad(Roll)) * cos(degToRad(Pitch)));
+	Direction = front.normalized();
 
 	// Also re-calculate the Right and Up vector
-	CameraRight = glm::normalize(glm::cross(Direction, WorldUp));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
-	CameraUp = glm::normalize(glm::cross(CameraRight, Direction));
+	CameraRight = Direction.cross(Vec3f(0.0f, 1.0f, 0.0f)).normalized();  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
+	CameraUp = CameraRight.cross(Direction);
 
 	// View matrix
-	viewMatrix = glm::lookAt(Position, Position + Direction, CameraUp);
+	setTransform(Position, vec3(Pitch, Roll, 0.0), vec3(1.0f, 1.0f, 1.0f));
+
+	onPostUpdate();
 }

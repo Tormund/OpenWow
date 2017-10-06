@@ -171,10 +171,10 @@ void MDX::initCommon(File& f)
 		//{
 		m_Vertices[i] = m_OriginalVertexes[i].pos;
 		m_Texcoords[i] = m_OriginalVertexes[i].tex_coords[0];
-		m_Normals[i] = glm::normalize(m_OriginalVertexes[i].normal);
+		m_Normals[i] = m_OriginalVertexes[i].normal.normalized();
 		//}
 
-		float lengthToVertex = glm::length(m_Vertices[i]);
+		float lengthToVertex = m_Vertices[i].length();
 		if (lengthToVertex > m_Radius)
 		{
 			m_Radius = lengthToVertex;

@@ -29,9 +29,9 @@ protected:
 	inline void setVec4(const char* name, const vec4& value) const;
 	inline void setVec4(const char* name, GLfloat x, GLfloat y, GLfloat z, GLfloat w) const;
 
-	inline void setMat2(const char* name, const glm::mat2& mat) const;
-	inline void setMat3(const char* name, const glm::mat3& mat) const;
-	inline void setMat4(const char* name, const glm::mat4& mat) const;
+	//inline void setMat2(const char* name, const mat2& mat) const;
+	//inline void setMat3(const char* name, const mat3& mat) const;
+	inline void setMat4(const char* name, const mat4& mat) const;
 
 public:
 	inline void SetPVW();

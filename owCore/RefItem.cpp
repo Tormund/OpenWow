@@ -3,12 +3,10 @@
 // General
 #include "RefItem.h"
 
-RefItem::RefItem() : refcount(0)
-{}
 
 void RefItem::AddRef()
 {
-	refcount += 1;
+	m_RefsCount += 1;
 }
 
 void RefItem::DelRef()
@@ -19,5 +17,5 @@ void RefItem::DelRef()
 		return;
 	}
 
-	refcount -= 1;
+	m_RefsCount -= 1;
 }

@@ -52,7 +52,7 @@ void BoundingBox2::SetBounds(cvec3 _min, cvec3 _max, bool _needConvert)
 void BoundingBox2::CalculateInternal()
 {
 	m_Center = (m_BoundsMin + m_BoundsMax) * 0.5f;
-	m_Radius = glm::length(m_BoundsMax - m_Center);
+	m_Radius = (m_BoundsMax - m_Center).length();
 
 	assert1(m_Radius > 0);
 }

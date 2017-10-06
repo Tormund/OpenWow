@@ -99,7 +99,7 @@ bool RenderGL::Init()
 
 	glHint(GL_FOG_HINT, GL_FASTEST);
 	glHint(GL_GENERATE_MIPMAP_HINT, GL_FASTEST);
-	
+
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 
 	glHint(GL_POINT_SMOOTH_HINT, GL_FASTEST);
@@ -138,7 +138,7 @@ bool RenderGL::Init()
 	// Viewport
 	glViewport(0, 0, Settings::windowSizeX, Settings::windowSizeY);
 
-	m_OrhoMatrix = glm::ortho(0.0f, Settings::windowSizeX, Settings::windowSizeY, 0.0f);
+	m_OrhoMatrix = Matrix4f::OrthoMat(0.0f, Settings::windowSizeX, Settings::windowSizeY, 0.0f, -1.0f, 1.0f);
 
 	return true;
 }
@@ -210,7 +210,7 @@ void RenderGL::Set2D()
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	glMultMatrixf(glm::value_ptr(m_OrhoMatrix));
+	glMultMatrixf(m_OrhoMatrix);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -375,5 +375,5 @@ void RenderGL::OnWindowResized(uint32 _width, uint32 _height)
 	glViewport(0, 0, Settings::windowSizeX, Settings::windowSizeY);
 
 	// Projection matix
-	m_OrhoMatrix = glm::ortho(0.0f, Settings::windowSizeX, Settings::windowSizeY, 0.0f);
+	m_OrhoMatrix = Matrix4f::OrthoMat(0.0f, Settings::windowSizeX, Settings::windowSizeY, 0.0f, -1.0f, 1.0f);
 }

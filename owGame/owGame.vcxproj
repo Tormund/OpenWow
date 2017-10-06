@@ -36,6 +36,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\shared\owGame.h" />
+    <ClInclude Include="common.h" />
     <ClInclude Include="ConsoleOpenGL.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="GameState.h" />

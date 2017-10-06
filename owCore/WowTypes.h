@@ -2,29 +2,6 @@
 
 #include "../shared/pack_begin.h"
 
-struct C3iVector
-{
-	int x;
-	int y;
-	int z;
-};
-
-struct C4Vector
-{
-	float x;
-	float y;
-	float z;
-	float w;
-};
-
-struct C4iVector
-{
-	int x;
-	int y;
-	int z;
-	int w;
-};
-
 struct C33Matrix
 {
 	vec3 columns[3];
@@ -32,21 +9,13 @@ struct C33Matrix
 
 struct C44Matrix // todo: row or column?
 {
-	C4Vector columns[4];
+	Vec4f columns[4];
 };
 
 struct C4Plane
 {
 	vec3 normal;
 	float distance;
-};
-
-struct C4Quaternion
-{
-	float x;
-	float y;
-	float z;
-	float w; // Unlike Quaternions elsewhere, the scalar part ('w') is the last element in the struct instead of the first
 };
 
 struct C4ImQuaternion

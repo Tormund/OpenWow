@@ -44,7 +44,6 @@ bool Engine::Init(vector<string>& _argumentQueue)
 
 	// Load modules
 	_ModulesMgr->LoadModule(_Render);
-	//_ModulesMgr->LoadModule(_FileSystem);
 	_ModulesMgr->LoadModule(_TexturesMgr);
 	_ModulesMgr->LoadModule(_FontsMgr);
 	_ModulesMgr->LoadModule(_Input);

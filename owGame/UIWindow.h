@@ -2,15 +2,14 @@
 
 #include "UIElement.h"
 
-class UIWindow : public UIElement {
-	friend UIElement;
-	friend UIMgr;
+class UIWindow : public UIElement
+{
 	typedef UIElement base;
 
 public:
-	 UIWindow();
+	UIWindow();
 
-	 void Init(cvec2 _position, cvec2 _size, Image* _image, Color _color = COLOR_EMPTY);
+	void Init(cvec2 _position, cvec2 _size, Image* _image, Color _color = COLOR_EMPTY);
 
 	// Parent & childs functional
 
@@ -34,4 +33,8 @@ private:
 
 private:
 	vector<UIElement*> childs;
+
+	//
+	friend UIElement;
+	friend UIMgr;
 };

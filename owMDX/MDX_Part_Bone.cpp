@@ -14,122 +14,84 @@ void MDX_Part_Bone::init(File& f, M2CompBone& b, uint32* global, File* animfiles
 	scale.init(b.scale, f, global, animfiles);
 
 	trans.fix(From_XYZ_To_XZminusY_RET);
-	roll.fix(fixCoordSystemQuat);
-	scale.fix(fixCoordSystem2);
-
-	/*if (b.flags.spherical_billboard)
-		Debug::Error("SPHERE!!!!!!");
-
-	if (b.flags.cylindrical_billboard_lock_x)
-	{
-		Debug::Error("b.flags.cylindrical_billboard_lock_x");
-
-		if (b.flags.spherical_billboard)
-			Debug::Error("SHEEETT!!!!");
-	}
-
-	if (b.flags.cylindrical_billboard_lock_y)
-	{
-		Debug::Error("b.flags.cylindrical_billboard_lock_y");
-
-		if (b.flags.spherical_billboard)
-			Debug::Error("SHEEETT!!!!");
-	}
-
-	if (b.flags.cylindrical_billboard_lock_z)
-	{
-		Debug::Error("b.flags.cylindrical_billboard_lock_z");
-
-		if (b.flags.spherical_billboard)
-			Debug::Error("SHEEETT!!!!");
-	}*/
+	roll.fix(From_XYZW_To_XZminusYW_RET);
+	scale.fix(From_XYZ_To_XZY_RET);
 }
 
 void MDX_Part_Bone::calcMatrix(MDX_Part_Bone* allbones, int anim, int time)
 {
-	if (calc)
+	if (m_IsCalculated)
 	{
 		return;
 	}
 
-	Matrix m;
-	quat q;
+	mat4 m;
 
 	bool tr = roll.uses(anim) || scale.uses(anim) || trans.uses(anim) || billboard;
 	if (tr)
 	{
-		m.translation(pivot);
+		m.translate(pivot);
 
 		if (trans.uses(anim))
 		{
 			vec3 tr = trans.getValue(anim, time);
-			m *= Matrix::newTranslation(tr);
+			m.translate(tr);
 		}
 
 		if (roll.uses(anim))
 		{
-			q = roll.getValue(anim, time);
-			m *= Matrix::newQuatRotate(q);
+			quat q = roll.getValue(anim, time);
+			m.rotate(q);
+
+			if (parent >= 0)
+			{
+				m_RotationMatrix = allbones[parent].m_RotationMatrix * mat4::RotMat(q);
+			}
+			else
+			{
+				m_RotationMatrix = mat4::RotMat(q);
+			}
 		}
 
 		if (scale.uses(anim))
 		{
 			vec3 sc = scale.getValue(anim, time);
-			m *= Matrix::newScale(sc);
+			m.scale(sc);
 		}
 
-		if (billboard)
+		if (billboard) // TODO
 		{
-			mat4 res = (_PipelineGlobal->GetVW());
+			//float modelview[16];
+			//memcpy(&modelview, &_PipelineGlobal->GetVW().x[0], 16 * sizeof(float));
 
-			vec3 vRight = vec3(res[0][0], res[1][0], res[2][0]);
-			vec3 vUp = vec3(res[0][1], res[1][1], res[2][1]);
-			vec3 vForward = vec3(res[0][2], res[1][2], res[2][2]);
-			
+			vec3 vRight = vec3(_PipelineGlobal->GetVW().x[0], _PipelineGlobal->GetVW().x[4], _PipelineGlobal->GetVW().x[8]);
+			vec3 vUp = vec3(_PipelineGlobal->GetVW().x[1], _PipelineGlobal->GetVW().x[5], _PipelineGlobal->GetVW().x[9]);
+																	   //vec3 vUp = vec3(0,1,0); // Cylindrical billboarding
 			vRight = vRight * -1.0f;
 
-			m.m[0][1] = vUp.x;
-			m.m[1][1] = vUp.y;
-			m.m[2][1] = vUp.z;
+			m.c[1][0] = vUp.x;
+			m.c[1][1] = vUp.y;
+			m.c[1][2] = vUp.z;
 
-
-			m.m[0][2] = vRight.x;
-			m.m[1][2] = vRight.y;
-			m.m[2][2] = vRight.z;
+			m.c[2][0] = vRight.x;
+			m.c[2][1] = vRight.y;
+			m.c[2][2] = vRight.z;
 		}
 
-		m *= Matrix::newTranslation(pivot * -1.0f);
-	}
-	else
-	{
-		m.unit();
+		m.translate(pivot * -1.0f);
 	}
 
-	if (parent >= 0)
-	{
-		allbones[parent].calcMatrix(allbones, anim, time);
-		mat = allbones[parent].mat * m;
-	}
-	else
-	{
-		mat = m;
-	}
+	//if (parent >= 0)
+	//{
+	//	allbones[parent].calcMatrix(allbones, anim, time);
+	//	m_TransformMatrix = allbones[parent].m_TransformMatrix * m;
+	//}
+	//else
+	//{
+		m_TransformMatrix = m;
+	//}
 
-	// transform matrix for normal vectors ... ??
-	if (roll.uses(anim))
-	{
-		if (parent >= 0)
-		{
-			mrot = allbones[parent].mrot * Matrix::newQuatRotate(q);
-		}
-		else mrot = Matrix::newQuatRotate(q);
-	}
-	else
-	{
-		mrot.unit();
-	}
+	transPivot = m_TransformMatrix * pivot;
 
-	transPivot = mat * pivot;
-
-	calc = true;
+	m_IsCalculated = true;
 }

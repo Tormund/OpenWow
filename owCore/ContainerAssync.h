@@ -4,14 +4,21 @@ template <typename T, typename P>
 class ContainerAssync : public map<T, P>
 {
 public:
+	ContainerAssync()
+	{
+		m_IsCriticalSectionInited = false;
+	}
+
 	void Init()
 	{
 		InitializeCriticalSection(&cs);
+		m_IsCriticalSectionInited = true;
 	}
 
 	void Destroy()
 	{
 		DeleteCriticalSection(&cs);
+		m_IsCriticalSectionInited = false;
 	}
 
 	void add(T element, P object)
@@ -73,4 +80,5 @@ public:
 
 private:
 	CRITICAL_SECTION cs;
+	bool m_IsCriticalSectionInited;
 };

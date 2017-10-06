@@ -1,7 +1,5 @@
 #pragma once
 
-#include <glm/glm.hpp>
-
 struct BaseLight
 {
 	vec3 ambient;

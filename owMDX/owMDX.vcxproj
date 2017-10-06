@@ -168,10 +168,6 @@
     <ClCompile Include="MDX_Headers.cpp" />
     <ClCompile Include="ModelsManager.cpp" />
     <ClCompile Include="MDX_Animated.cpp" />
-    <ClCompile Include="MDX_Part_Bone_new.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="MDX_Part_Camera.cpp" />
     <ClCompile Include="MDX_Part_Color.cpp" />
     <ClCompile Include="MDX_Part_Light.cpp" />
@@ -194,10 +190,6 @@
     <ClInclude Include="MDX.h" />
     <ClInclude Include="MDX_Headers.h" />
     <ClInclude Include="ModelsManager.h" />
-    <ClInclude Include="MDX_Part_Bone_new.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="MDX_Part_Camera.h" />
     <ClInclude Include="MDX_Part_Color.h" />
     <ClInclude Include="MDX_Part_Light.h" />

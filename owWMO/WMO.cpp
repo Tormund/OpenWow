@@ -150,7 +150,7 @@ bool WMO::Init()
 		}
 		else if (strcmp(fourcc, "MOPV") == 0)
 		{
-			assert((size % sizeof(vec3)) == 0);
+			assert1((size % sizeof(vec3)) == 0);
 
 			m_PortalVertices = new vec3[size / sizeof(vec3)];
 			for (uint32 i = 0; i < size / sizeof(vec3); i++)
@@ -183,7 +183,7 @@ bool WMO::Init()
 		}
 		else if (strcmp(fourcc, "MOVV") == 0)
 		{
-			assert((size % sizeof(vec3)) == 0);
+			assert1((size % sizeof(vec3)) == 0);
 
 			m_VisibleBlockVertices = new vec3[size / sizeof(vec3)];
 			for (uint32 i = 0; i < size / sizeof(vec3); i++)
@@ -300,46 +300,54 @@ bool WMO::draw(uint32 _doodadSet)
 	// TODO: Calculate bounding box for all group !!!
 
 	// WMO groups
-	PERF_START(PERF_MAP_MODELS_WMOs_GEOMETRY);
-	for (auto it = m_Groups.begin(); it != m_Groups.end(); ++it)
 	{
-		(*it)->draw2();
-	}
-	PERF_STOP(PERF_MAP_MODELS_WMOs_GEOMETRY);
-
-	// WMO doodads
-
-	PERF_START(PERF_MAP_MODELS_WMOs_DOODADS);
-	if (Settings::draw_map_wmo_doodads)
-	{
+		PERF_START(PERF_MAP_MODELS_WMOs_GEOMETRY);
 		for (auto it = m_Groups.begin(); it != m_Groups.end(); ++it)
 		{
-			(*it)->drawDoodads(_doodadSet);
+			(*it)->draw2();
 		}
+		PERF_STOP(PERF_MAP_MODELS_WMOs_GEOMETRY);
 	}
-	PERF_STOP(PERF_MAP_MODELS_WMOs_DOODADS);
+
+	// WMO doodads
+	{
+		PERF_START(PERF_MAP_MODELS_WMOs_DOODADS);
+		if (Settings::draw_map_wmo_doodads)
+		{
+			for (auto it = m_Groups.begin(); it != m_Groups.end(); ++it)
+			{
+				(*it)->drawDoodads(_doodadSet);
+			}
+		}
+		PERF_STOP(PERF_MAP_MODELS_WMOs_DOODADS);
+	}
 
 	// WMO liquids
-
-	PERF_START(PERF_MAP_MODELS_WMOs_LIQUIDS);
-	for (auto it = m_Groups.begin(); it != m_Groups.end(); ++it)
 	{
-		(*it)->drawLiquid();
+		PERF_START(PERF_MAP_MODELS_WMOs_LIQUIDS);
+		for (auto it = m_Groups.begin(); it != m_Groups.end(); ++it)
+		{
+			(*it)->drawLiquid();
+		}
+		PERF_STOP(PERF_MAP_MODELS_WMOs_LIQUIDS);
 	}
-	PERF_STOP(PERF_MAP_MODELS_WMOs_LIQUIDS);
 
-	_TechniquesMgr->m_Debug_GeometryPass->Bind();
-	_TechniquesMgr->m_Debug_GeometryPass->SetPVW();
+	// Debug geometry
+	{
 
-	//#ifdef _DEBUG
+		_TechniquesMgr->m_Debug_GeometryPass->Bind();
+		_TechniquesMgr->m_Debug_GeometryPass->SetPVW();
+
+		//#ifdef _DEBUG
 		//DEBUG_DrawLightPlaceHolders();
 		//DEBUG_DrawFogPositions();
-	DEBUG_DrawBoundingBoxes();
-	//DEBUG_DrawPortalsRelations();
-	//DEBUG_DrawPortals();
-	//#endif
+		DEBUG_DrawBoundingBoxes();
+		//DEBUG_DrawPortalsRelations();
+		//DEBUG_DrawPortals();
+		//#endif
 
-	_TechniquesMgr->m_Debug_GeometryPass->Unbind();
+		_TechniquesMgr->m_Debug_GeometryPass->Unbind();
+	}
 
 	return true;
 }
@@ -385,11 +393,11 @@ void WMO::DEBUG_DrawLightPlaceHolders()
 	glBegin(GL_TRIANGLES);
 	for (int i = 0; i < m_Lights.size(); i++)
 	{
-		glColor4fv(glm::value_ptr(m_Lights[i]->fcolor));
+		glColor4fv(m_Lights[i]->fcolor);
 
-		glVertex3fv(glm::value_ptr(m_Lights[i]->lightDef.pos));
-		glVertex3fv(glm::value_ptr(m_Lights[i]->lightDef.pos + vec3(-0.5f, 1, 0)));
-		glVertex3fv(glm::value_ptr(m_Lights[i]->lightDef.pos + vec3(0.5f, 1, 0)));
+		glVertex3fv(m_Lights[i]->lightDef.pos);
+		glVertex3fv(m_Lights[i]->lightDef.pos + vec3(-0.5f, 1, 0));
+		glVertex3fv(m_Lights[i]->lightDef.pos + vec3(0.5f, 1, 0));
 	}
 	glEnd();
 
@@ -407,11 +415,11 @@ void WMO::DEBUG_DrawFogPositions()
 		WMOFog* fog = m_Fogs[i];
 
 		glBegin(GL_LINE_LOOP);
-		glVertex3fv(glm::value_ptr(fog->fogDef.position));
-		glVertex3fv(glm::value_ptr(fog->fogDef.position + vec3(fog->fogDef.smallerRadius, 5, -fog->fogDef.largerRadius)));
-		glVertex3fv(glm::value_ptr(fog->fogDef.position + vec3(fog->fogDef.smallerRadius, 5, fog->fogDef.largerRadius)));
-		glVertex3fv(glm::value_ptr(fog->fogDef.position + vec3(-fog->fogDef.smallerRadius, 5, fog->fogDef.largerRadius)));
-		glVertex3fv(glm::value_ptr(fog->fogDef.position + vec3(-fog->fogDef.smallerRadius, 5, -fog->fogDef.largerRadius)));
+		glVertex3fv(fog->fogDef.position);
+		glVertex3fv(fog->fogDef.position + vec3(fog->fogDef.smallerRadius, 5, -fog->fogDef.largerRadius));
+		glVertex3fv(fog->fogDef.position + vec3(fog->fogDef.smallerRadius, 5, fog->fogDef.largerRadius));
+		glVertex3fv(fog->fogDef.position + vec3(-fog->fogDef.smallerRadius, 5, fog->fogDef.largerRadius));
+		glVertex3fv(fog->fogDef.position + vec3(-fog->fogDef.smallerRadius, 5, -fog->fogDef.largerRadius));
 		glEnd();
 	}
 
@@ -543,7 +551,7 @@ void WMO::DEBUG_DrawPortals()
 	for (uint32 i = 0; i < header.nPortals; i++)
 	{
 		WMO_PortalInformation* portalInformation = m_PortalInformation[i];
-		
+
 		vector<vec3> verts;
 		for (uint32 j = portalInformation->startVertex; j < portalInformation->count; j++)
 		{

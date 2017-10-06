@@ -246,5 +246,50 @@
     <None Include="PipelineWorldTransformation.inl">
       <Filter>Pipeline</Filter>
     </None>
+    <None Include="..\_gamedata\shaders\Billboard.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\_gamedata\shaders\commonGeometry.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\_gamedata\shaders\commonPostprocess.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\_gamedata\shaders\Debug_GeometryPass.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\_gamedata\shaders\light_pass.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\_gamedata\shaders\MapChunk_GeometryPass.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\_gamedata\shaders\MapTileLowRes_GeometryPass.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\_gamedata\shaders\MDX_GeometryPass.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\_gamedata\shaders\null_technique.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\_gamedata\shaders\SimpleColor.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\_gamedata\shaders\simpleRender.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\_gamedata\shaders\Sky_GeometryPass.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\_gamedata\shaders\UI_Font.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\_gamedata\shaders\WMO_GeomertyPass.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\_gamedata\shaders\WMO_MH2O_GeometryPass.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

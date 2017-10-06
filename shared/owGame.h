@@ -1,5 +1,8 @@
 #pragma once
 
+//-- Common --//
+#include "../owGame/common.h"
+
 // Game
 #include "../owGame/ConsoleOpenGL.h"
 #include "../owGame/GameState.h"

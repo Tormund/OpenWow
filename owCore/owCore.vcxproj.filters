@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Types">
-      <UniqueIdentifier>{de8a75b4-8f47-4cf8-90f6-6e82895a1cb0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Debug">
       <UniqueIdentifier>{deebd8da-8980-4331-b271-45cc65f99fd1}</UniqueIdentifier>
     </Filter>
@@ -64,6 +61,12 @@
     <Filter Include="Files\CASCFile">
       <UniqueIdentifier>{488ed99e-97e9-4c74-ac04-8bcc02832f34}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Common">
+      <UniqueIdentifier>{d3676bbf-d093-460e-875e-6d61fb171ed1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Types">
+      <UniqueIdentifier>{de8a75b4-8f47-4cf8-90f6-6e82895a1cb0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModulesMgr.cpp">
@@ -113,9 +116,6 @@
     <ClCompile Include="Random.cpp">
       <Filter>Utils &amp; Helpers</Filter>
     </ClCompile>
-    <ClCompile Include="MathUtils.cpp">
-      <Filter>Utils &amp; Helpers</Filter>
-    </ClCompile>
     <ClCompile Include="File.cpp">
       <Filter>Files</Filter>
     </ClCompile>
@@ -156,7 +156,7 @@
       <Filter>Animation</Filter>
     </ClCompile>
     <ClCompile Include="BoundingBox.cpp">
-      <Filter>Types</Filter>
+      <Filter>Common\Types</Filter>
     </ClCompile>
     <ClCompile Include="TimeManager.cpp">
       <Filter>World</Filter>
@@ -168,15 +168,15 @@
       <Filter>Files\CASCFile</Filter>
     </ClCompile>
     <ClCompile Include="Primitives.cpp">
-      <Filter>Types</Filter>
+      <Filter>Common\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="SmartItemPtr.cpp">
+      <Filter>RefManager\Items</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Function.h">
-      <Filter>Types</Filter>
-    </ClInclude>
     <ClInclude Include="Rect.h">
-      <Filter>Types</Filter>
+      <Filter>Common\Types</Filter>
     </ClInclude>
     <ClInclude Include="Module.h">
       <Filter>Module</Filter>
@@ -185,7 +185,7 @@
       <Filter>Module</Filter>
     </ClInclude>
     <ClInclude Include="Color.h">
-      <Filter>Types</Filter>
+      <Filter>Common\Types</Filter>
     </ClInclude>
     <ClInclude Include="Debug.h">
       <Filter>Debug</Filter>
@@ -216,7 +216,7 @@
     </ClInclude>
     <ClInclude Include="FileSystem.h" />
     <ClInclude Include="Types.h">
-      <Filter>Types</Filter>
+      <Filter>Common\Types</Filter>
     </ClInclude>
     <ClInclude Include="common.h" />
     <ClInclude Include="..\shared\owCore.h" />
@@ -237,9 +237,6 @@
       <Filter>Utils &amp; Helpers</Filter>
     </ClInclude>
     <ClInclude Include="Random.h">
-      <Filter>Utils &amp; Helpers</Filter>
-    </ClInclude>
-    <ClInclude Include="MathUtils.h">
       <Filter>Utils &amp; Helpers</Filter>
     </ClInclude>
     <ClInclude Include="File.h">
@@ -263,9 +260,6 @@
     <ClInclude Include="GameModule.h">
       <Filter>Module</Filter>
     </ClInclude>
-    <ClInclude Include="Matrix.h">
-      <Filter>Types</Filter>
-    </ClInclude>
     <ClInclude Include="RefManager2Dim.h">
       <Filter>RefManager\2 Dim</Filter>
     </ClInclude>
@@ -288,28 +282,19 @@
       <Filter>Animation</Filter>
     </ClInclude>
     <ClInclude Include="BoundingBox.h">
-      <Filter>Types</Filter>
-    </ClInclude>
-    <ClInclude Include="WowConsts.h">
-      <Filter>Types</Filter>
+      <Filter>Common\Types</Filter>
     </ClInclude>
     <ClInclude Include="WowTypes.h">
-      <Filter>Types</Filter>
+      <Filter>Common\Types</Filter>
     </ClInclude>
     <ClInclude Include="TimeManager.h">
       <Filter>World</Filter>
-    </ClInclude>
-    <ClInclude Include="Consts.h">
-      <Filter>Types</Filter>
-    </ClInclude>
-    <ClInclude Include="Macros.h">
-      <Filter>Types</Filter>
     </ClInclude>
     <ClInclude Include="AnimationTypes.h">
       <Filter>Animation</Filter>
     </ClInclude>
     <ClInclude Include="WowTime.h">
-      <Filter>Types</Filter>
+      <Filter>Common\Types</Filter>
     </ClInclude>
     <ClInclude Include="CASCFile.h">
       <Filter>Files\CASCFile</Filter>
@@ -317,17 +302,32 @@
     <ClInclude Include="CASCFolder.h">
       <Filter>Files\CASCFile</Filter>
     </ClInclude>
-    <ClInclude Include="Platform.h">
-      <Filter>Types</Filter>
-    </ClInclude>
-    <ClInclude Include="Math.h">
-      <Filter>Types</Filter>
-    </ClInclude>
     <ClInclude Include="Primitives.h">
-      <Filter>Types</Filter>
+      <Filter>Common\Types</Filter>
     </ClInclude>
     <ClInclude Include="Timer.h">
-      <Filter>Types</Filter>
+      <Filter>Common\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="SmartItemPtr.h">
+      <Filter>RefManager\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Function.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Macros.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Math.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Consts.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="WowConsts.h">
+      <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

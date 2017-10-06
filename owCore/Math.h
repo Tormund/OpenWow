@@ -26,7 +26,6 @@
 
 #include <cmath>
 
-// Constants
 namespace Math
 {
 	const unsigned int MaxUInt32 = 0xFFFFFFFF;
@@ -48,7 +47,6 @@ namespace Math
 		NO_INIT
 	};
 };
-
 
 // -------------------------------------------------------------------------------------------------
 // General
@@ -88,10 +86,13 @@ static inline float fsel(float test, float a, float b)
 	return test >= 0 ? a : b;
 }
 
-
-// -------------------------------------------------------------------------------------------------
-// Conversion
-// -------------------------------------------------------------------------------------------------
+static inline void rotate(float x0, float y0, float *x, float *y, float angle)
+{
+	float xa = *x - x0;
+	float ya = *y - y0;
+	*x = xa * cosf(angle) - ya * sinf(angle) + x0;
+	*y = xa * sinf(angle) + ya * cosf(angle) + y0;
+}
 
 static inline int ftoi_t(double val)
 {
@@ -117,7 +118,7 @@ static inline int ftoi_r(double val)
 
 
 // -------------------------------------------------------------------------------------------------
-// Vector
+// Vector2
 // -------------------------------------------------------------------------------------------------
 
 class Vec2f
@@ -174,10 +175,13 @@ public:
 	// ---------------------
 	// Arithmetic operations
 	// ---------------------
+
 	Vec2f operator-() const
 	{
 		return Vec2f(-x, -y);
 	}
+
+	// Vector
 
 	Vec2f operator+(const Vec2f &v) const
 	{
@@ -199,6 +203,48 @@ public:
 		return *this = *this - v;
 	}
 
+	Vec2f operator*(const Vec2f &v) const
+	{
+		Vec2f(x * v.x, y * v.y);
+	}
+
+	Vec2f &operator*=(const Vec2f &v)
+	{
+		return *this = *this * v;
+	}
+
+	Vec2f operator/(const Vec2f &v) const
+	{
+		return Vec2f(x / v.x, y / v.y);
+	}
+
+	Vec2f& operator/=(const Vec2f &v)
+	{
+		return *this = *this / v;
+	}
+
+	// Float
+
+	Vec2f operator+(const float f) const
+	{
+		return Vec2f(x + f, y + f);
+	}
+
+	Vec2f &operator+=(const float f)
+	{
+		return *this = *this + f;
+	}
+
+	Vec2f operator-(const float f) const
+	{
+		return Vec2f(x - f, y - f);
+	}
+
+	Vec2f &operator-=(const float f)
+	{
+		return *this = *this - f;
+	}
+
 	Vec2f operator*(const float f) const
 	{
 		Vec2f(x * f, y * f);
@@ -214,7 +260,7 @@ public:
 		return Vec2f(x / f, y / f);
 	}
 
-	Vec2f &operator/=(const float f)
+	Vec2f& operator/=(const float f)
 	{
 		return *this = *this / f;
 	}
@@ -235,6 +281,11 @@ public:
 		return sqrtf(x * x + y * y);
 	}
 
+	float length2() const
+	{
+		return x * x + y * y;
+	}
+
 	Vec2f normalized() const
 	{
 		float invLen = 1.0f / length();
@@ -252,14 +303,25 @@ public:
 	{
 		return Vec2f(x + (v.x - x) * f, y + (v.y - y) * f);
 	}
+
+	//
+
+	operator float*()
+	{
+		return (float*)this;
+	}
 };
 
+// -------------------------------------------------------------------------------------------------
+// Vector3
+// -------------------------------------------------------------------------------------------------
 
 class Vec3f
 {
 public:
 	float x, y, z;
 
+	//
 
 	// ------------
 	// Constructors
@@ -316,6 +378,8 @@ public:
 		return Vec3f(-x, -y, -z);
 	}
 
+	// Vector
+
 	Vec3f operator+(const Vec3f &v) const
 	{
 		return Vec3f(x + v.x, y + v.y, z + v.z);
@@ -335,6 +399,28 @@ public:
 	{
 		return *this = *this - v;
 	}
+
+	Vec3f operator*(const Vec3f &v) const
+	{
+		Vec3f(x * v.x, y * v.y, z / v.z);
+	}
+
+	Vec3f &operator*=(const Vec3f &v)
+	{
+		return *this = *this * v;
+	}
+
+	Vec3f operator/(const Vec3f &v) const
+	{
+		return Vec3f(x / v.x, y / v.y, z / v.z);
+	}
+
+	Vec3f& operator/=(const Vec3f &v)
+	{
+		return *this = *this / v;
+	}
+
+	// Float
 
 	Vec3f operator*(const float f) const
 	{
@@ -377,6 +463,11 @@ public:
 		return sqrtf(x * x + y * y + z * z);
 	}
 
+	float length2() const
+	{
+		return x * x + y * y + z * z;
+	}
+
 	Vec3f normalized() const
 	{
 		float invLen = 1.0f / length();
@@ -391,20 +482,16 @@ public:
 		z *= invLen;
 	}
 
-	/*void fromRotation( float angleX, float angleY )
-	{
-		x = cosf( angleX ) * sinf( angleY );
-		y = -sinf( angleX );
-		z = cosf( angleX ) * cosf( angleY );
-	}*/
-
 	Vec3f toRotation() const
 	{
 		// Assumes that the unrotated view vector is (0, 0, -1)
 		Vec3f v;
 
-		if (y != 0) v.x = atan2f(y, sqrtf(x*x + z*z));
-		if (x != 0 || z != 0) v.y = atan2f(-x, -z);
+		if (y != 0) 
+			v.x = atan2f(y, sqrtf(x*x + z*z));
+
+		if (x != 0 || z != 0) 
+			v.y = atan2f(-x, -z);
 
 		return v;
 	}
@@ -413,8 +500,38 @@ public:
 	{
 		return Vec3f(x + (v.x - x) * f, y + (v.y - y) * f, z + (v.z - z) * f);
 	}
+
+	//
+
+	operator float*()
+	{
+		return (float*)this;
+	}
 };
 
+static inline Vec3f From_XYZ_To_XZY_RET(const Vec3f& _vec)
+{
+	return Vec3f(_vec.x, _vec.z, _vec.y);
+}
+
+static inline void From_XYZ_To_XZY(Vec3f& _vec)
+{
+	float temp = _vec.y;
+	_vec.y = _vec.z;
+	_vec.z = temp;
+}
+
+static inline Vec3f From_XYZ_To_XZminusY_RET(const Vec3f& _vec)
+{
+	return Vec3f(_vec.x, _vec.z, -_vec.y);
+}
+
+static inline void From_XYZ_To_XZminusY(Vec3f& _vec)
+{
+	float temp = -_vec.y;
+	_vec.y = _vec.z;
+	_vec.z = temp;
+}
 
 class Vec4f
 {
@@ -422,32 +539,100 @@ public:
 
 	float x, y, z, w;
 
+	//
 
 	Vec4f() : x(0), y(0), z(0), w(0)
 	{}
 
-	explicit Vec4f(const float x, const float y, const float z, const float w) :
-		x(x), y(y), z(z), w(w)
+	explicit Vec4f(const float x, const float y, const float z, const float w) : x(x), y(y), z(z), w(w)
 	{}
 
 	explicit Vec4f(Vec3f v) : x(v.x), y(v.y), z(v.z), w(1.0f)
 	{}
 
-	Vec4f operator+(const Vec4f &v) const
-	{
-		return Vec4f(x + v.x, y + v.y, z + v.z, w + v.w);
-	}
+	explicit Vec4f(Vec3f v, float w) : x(v.x), y(v.y), z(v.z), w(w)
+	{}
 
+	// ---------------------
+	// Arithmetic operations
+	// ---------------------
 	Vec4f operator-() const
 	{
 		return Vec4f(-x, -y, -z, -w);
 	}
 
+	// Vector
+
+	Vec4f operator+(const Vec4f &v) const
+	{
+		return Vec4f(x + v.x, y + v.y, z + v.z, w + v.w);
+	}
+	
+	Vec4f &operator+=(const Vec4f &v)
+	{
+		return *this = *this + v;
+	}
+
+	Vec4f operator-(const Vec4f &v) const
+	{
+		return Vec4f(x - v.x, y - v.y, z - v.z, w - v.w);
+	}
+
+	Vec4f &operator-=(const Vec4f &v)
+	{
+		return *this = *this - v;
+	}
+
+	// Float
+
 	Vec4f operator*(const float f) const
 	{
 		return Vec4f(x * f, y * f, z * f, w * f);
 	}
+
+	Vec4f &operator*=(const float f)
+	{
+		return *this = *this * f;
+	}
+
+	Vec4f operator/(const float f) const
+	{
+		return Vec4f(x / f, y / f, z / f, w / f);
+	}
+
+	Vec4f &operator/=(const float f)
+	{
+		return *this = *this / f;
+	}
+
+	//
+
+	operator Vec3f()
+	{
+		return Vec3f(x, y, z);
+	}
+
+	operator float*()
+	{
+		return (float*)this;
+	}
 };
+
+static inline Vec2f degToRad(const Vec2f& _v)
+{
+	return Vec2f(degToRad(_v.x), degToRad(_v.y));
+}
+
+static inline Vec3f degToRad(const Vec3f& _v)
+{
+	return Vec3f(degToRad(_v.x), degToRad(_v.y), degToRad(_v.z));
+}
+
+static inline Vec4f degToRad(const Vec4f& _v)
+{
+	return Vec4f(degToRad(_v.x), degToRad(_v.y), degToRad(_v.z), degToRad(_v.w));
+}
+
 
 
 // -------------------------------------------------------------------------------------------------
@@ -462,11 +647,11 @@ public:
 	// ------------
 	// Constructors
 	// ------------
+
 	Quaternion() : x(0.0f), y(0.0f), z(0.0f), w(0.0f)
 	{}
 
-	explicit Quaternion(const float x, const float y, const float z, const float w) :
-		x(x), y(y), z(z), w(w)
+	explicit Quaternion(const float x, const float y, const float z, const float w) : x(x), y(y), z(z), w(w)
 	{}
 
 	Quaternion(const float eulerX, const float eulerY, const float eulerZ)
@@ -482,6 +667,29 @@ public:
 	// ---------------------
 	// Arithmetic operations
 	// ---------------------
+
+	// Quaternion
+
+	Quaternion operator+(const Quaternion &v) const
+	{
+		return Quaternion(x + v.x, y + v.y, z + v.z, w + v.w);
+	}
+
+	Quaternion &operator+=(const Quaternion &v)
+	{
+		return *this = *this + v;
+	}
+
+	Quaternion operator-(const Quaternion &v) const
+	{
+		return Quaternion(x - v.x, y - v.y, z - v.z, w - v.w);
+	}
+
+	Quaternion &operator-=(const Quaternion &v)
+	{
+		return *this = *this - v;
+	}
+
 	Quaternion operator*(const Quaternion &q) const
 	{
 		return Quaternion(
@@ -491,9 +699,22 @@ public:
 			w * q.w - (x * q.x + y * q.y + z * q.z));
 	}
 
-	Quaternion &operator*=(const Quaternion &q)
+	Quaternion& operator*=(const Quaternion &q)
 	{
 		return *this = *this * q;
+	}
+
+	// Float
+
+	const Quaternion operator* (float d) const
+	{
+		Quaternion r(x*d, y*d, z*d, w*d);
+		return r;
+	}
+
+	friend Quaternion operator* (float d, const Quaternion& v)
+	{
+		return v * d;
 	}
 
 	// ----------------
@@ -569,6 +790,19 @@ public:
 	}
 };
 
+static inline Quaternion From_XYZW_To_XZminusYW_RET(const Quaternion& _quat)
+{
+	return Quaternion(_quat.x, _quat.z, -_quat.y, _quat.w);
+}
+
+static inline void From_XYZW_To_XZminusYW(Quaternion& _quat)
+{
+	float temp = -_quat.y;
+	_quat.y = _quat.z;
+	_quat.z = temp;
+}
+
+
 
 // -------------------------------------------------------------------------------------------------
 // Matrix
@@ -577,7 +811,6 @@ public:
 class Matrix4f
 {
 public:
-
 	union
 	{
 		float c[4][4];	// Column major order for OpenGL: c[column][row]
@@ -598,6 +831,13 @@ public:
 		return m;
 	}
 
+	static Matrix4f TransMat(const Vec3f& _v)
+	{
+		return TransMat(_v.x, _v.y, _v.z);
+	}
+
+	//
+
 	static Matrix4f ScaleMat(float x, float y, float z)
 	{
 		Matrix4f m;
@@ -609,10 +849,22 @@ public:
 		return m;
 	}
 
+	static Matrix4f ScaleMat(const Vec3f& _v)
+	{
+		return ScaleMat(_v.x, _v.y, _v.z);
+	}
+
+	//
+
 	static Matrix4f RotMat(float x, float y, float z)
 	{
 		// Rotation order: YXZ [* Vector]
 		return Matrix4f(Quaternion(x, y, z));
+	}
+
+	static Matrix4f RotMat(const Vec3f& _v)
+	{
+		return RotMat(_v.x, _v.y, _v.z);
 	}
 
 	static Matrix4f RotMat(Vec3f axis, float angle)
@@ -620,6 +872,13 @@ public:
 		axis = axis * sinf(angle * 0.5f);
 		return Matrix4f(Quaternion(axis.x, axis.y, axis.z, cosf(angle * 0.5f)));
 	}
+
+	static Matrix4f RotMat(const Quaternion& _q)
+	{
+		return Matrix4f(Quaternion(_q.x, _q.y, _q.z, _q.w));
+	}
+
+	//
 
 	static Matrix4f PerspectiveMat(float l, float r, float b, float t, float n, float f)
 	{
@@ -680,6 +939,7 @@ public:
 		dstx[15] = 1.0f;
 	}
 
+
 	// ------------
 	// Constructors
 	// ------------
@@ -696,7 +956,7 @@ public:
 		// Constructor without default initialization
 	}
 
-	Matrix4f(const float *floatArray16)
+	Matrix4f(const float* floatArray16)
 	{
 		for (unsigned int i = 0; i < 4; ++i)
 		{
@@ -710,23 +970,37 @@ public:
 	Matrix4f(const Quaternion &q)
 	{
 		// Calculate coefficients
-		float x2 = q.x + q.x, y2 = q.y + q.y, z2 = q.z + q.z;
+		float x2 = q.x + q.x;
+		float y2 = q.y + q.y;
+		float z2 = q.z + q.z;
+
 		float xx = q.x * x2, xy = q.x * y2, xz = q.x * z2;
 		float yy = q.y * y2, yz = q.y * z2, zz = q.z * z2;
 		float wx = q.w * x2, wy = q.w * y2, wz = q.w * z2;
 
-		c[0][0] = 1 - (yy + zz);  c[1][0] = xy - wz;
-		c[2][0] = xz + wy;        c[3][0] = 0;
-		c[0][1] = xy + wz;        c[1][1] = 1 - (xx + zz);
-		c[2][1] = yz - wx;        c[3][1] = 0;
-		c[0][2] = xz - wy;        c[1][2] = yz + wx;
-		c[2][2] = 1 - (xx + yy);  c[3][2] = 0;
-		c[0][3] = 0;              c[1][3] = 0;
-		c[2][3] = 0;              c[3][3] = 1;
+		c[0][0] = 1 - (yy + zz);  
+		c[1][0] = xy - wz;
+		c[2][0] = xz + wy;      
+		c[3][0] = 0;
+
+		c[0][1] = xy + wz;        
+		c[1][1] = 1 - (xx + zz);
+		c[2][1] = yz - wx;        
+		c[3][1] = 0;
+
+		c[0][2] = xz - wy;        
+		c[1][2] = yz + wx;
+		c[2][2] = 1 - (xx + yy);  
+		c[3][2] = 0;
+
+		c[0][3] = 0;              
+		c[1][3] = 0;
+		c[2][3] = 0;              
+		c[3][3] = 1;
 	}
 
 	// ----------
-	// Matrix sum
+	// mat4 sum
 	// ----------
 	Matrix4f operator+(const Matrix4f &m) const
 	{
@@ -752,13 +1026,13 @@ public:
 		return mf;
 	}
 
-	Matrix4f &operator+=(const Matrix4f &m)
+	Matrix4f& operator+=(const Matrix4f &m)
 	{
 		return *this = *this + m;
 	}
 
 	// ---------------------
-	// Matrix multiplication
+	// mat4 multiplication
 	// ---------------------
 	Matrix4f operator*(const Matrix4f &m) const
 	{
@@ -787,6 +1061,11 @@ public:
 		return mf;
 	}
 
+	Matrix4f& operator*= (const Matrix4f& p)
+	{
+		return *this = this->operator*(p);
+	}
+
 	Matrix4f operator*(const float f) const
 	{
 		Matrix4f m(*this);
@@ -799,8 +1078,10 @@ public:
 		return m;
 	}
 
+	
+
 	// ----------------------------
-	// Vector-Matrix multiplication
+	// Vector-mat4 multiplication
 	// ----------------------------
 	Vec3f operator*(const Vec3f &v) const
 	{
@@ -829,19 +1110,48 @@ public:
 	// ---------------
 	void translate(const float x, const float y, const float z)
 	{
-		*this = TransMat(x, y, z) * *this;
+		*this = *this * TransMat(x, y, z);
 	}
 
-	void scale(const float x, const float y, const float z)
+	void translate(const Vec3f& _v)
 	{
-		*this = ScaleMat(x, y, z) * *this;
+		*this = *this * TransMat(_v.x, _v.y, _v.z);
 	}
+
+	//
 
 	void rotate(const float x, const float y, const float z)
 	{
-		*this = RotMat(x, y, z) * *this;
+		*this = *this * RotMat(x, y, z);
 	}
 
+	void rotate(const Vec3f& _v)
+	{
+		*this = *this * RotMat(_v.x, _v.y, _v.z);
+	}
+
+	void rotate(Vec3f axis, float angle)
+	{
+		*this = *this * RotMat(axis, angle);
+	}
+
+	void rotate(const Quaternion& _q)
+	{
+		*this = *this * RotMat(_q);
+	}
+	//
+
+	void scale(const float x, const float y, const float z)
+	{
+		*this = *this * ScaleMat(x, y, z);
+	}
+
+	void scale(const Vec3f& _v)
+	{
+		*this = *this * ScaleMat(_v.x, _v.y, _v.z);
+	}
+
+	
 	// ---------------
 	// Other
 	// ---------------
@@ -978,7 +1288,28 @@ public:
 		scale.z = sqrtf(c[2][0] * c[2][0] + c[2][1] * c[2][1] + c[2][2] * c[2][2]);
 		return scale;
 	}
+
+	void unit()
+	{
+		for (uint8 j = 0; j < 4; j++)
+		{
+			for (uint8 i = 0; i < 4; i++)
+			{
+				c[j][i] = 0;
+			}
+		}
+
+		c[0][0] = c[1][1] = c[2][2] = c[3][3] = 1.0f;
+	}
+
+	//
+
+	operator float*()
+	{
+		return (float*)this;
+	}
 };
+
 
 
 // -------------------------------------------------------------------------------------------------

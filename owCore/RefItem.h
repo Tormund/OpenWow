@@ -3,15 +3,15 @@
 class RefItem
 {
 public:
-	RefItem();
-	inline virtual ~RefItem() {}
+	RefItem() : m_RefsCount(0)	{}
+	virtual ~RefItem() {}
 
-	virtual void AddRef();
-	virtual void DelRef();
+	void AddRef();
+	void DelRef();
 
-	inline uint32 GetRefsCount() const { return refcount; }
-	inline bool NeedDelete() const { return (GetRefsCount() <= 0); }
+	uint32 GetRefsCount() const { return m_RefsCount; }
+	bool NeedDelete() const { return (m_RefsCount <= 0); }
 
-private:
-	uint32 refcount;
+protected:
+	uint32 m_RefsCount;
 };

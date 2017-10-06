@@ -48,9 +48,6 @@
       <Filter>MDX\Parts</Filter>
     </ClCompile>
     <ClCompile Include="ModelsManager.cpp" />
-    <ClCompile Include="MDX_Part_Bone_new.cpp">
-      <Filter>MDX\Parts</Filter>
-    </ClCompile>
     <ClCompile Include="MDX_Part_Bone.cpp">
       <Filter>MDX\Parts</Filter>
     </ClCompile>
@@ -99,9 +96,6 @@
       <Filter>MDX\Parts</Filter>
     </ClInclude>
     <ClInclude Include="ModelsManager.h" />
-    <ClInclude Include="MDX_Part_Bone_new.h">
-      <Filter>MDX\Parts</Filter>
-    </ClInclude>
     <ClInclude Include="MDX_Part_Bone.h">
       <Filter>MDX\Parts</Filter>
     </ClInclude>

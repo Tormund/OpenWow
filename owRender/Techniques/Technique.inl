@@ -47,7 +47,7 @@ inline void Technique::setFloat(const char* name, GLfloat value) const
 
 inline void Technique::setVec2(const char* name, cvec2 value) const
 {
-	glUniform2fv(glGetUniformLocation(programOglObj, name), 1, &value[0]);
+	glUniform2fv(glGetUniformLocation(programOglObj, name), 1, &value.x);
 }
 inline void Technique::setVec2(const char* name, GLfloat x, GLfloat y) const
 {
@@ -58,7 +58,7 @@ inline void Technique::setVec2(const char* name, GLfloat x, GLfloat y) const
 
 inline void Technique::setVec3(const char* name, const vec3& value) const
 {
-	glUniform3fv(glGetUniformLocation(programOglObj, name), 1, &value[0]);
+	glUniform3fv(glGetUniformLocation(programOglObj, name), 1, &value.x);
 }
 inline void Technique::setVec3(const char* name, GLfloat x, GLfloat y, GLfloat z) const
 {
@@ -69,7 +69,7 @@ inline void Technique::setVec3(const char* name, GLfloat x, GLfloat y, GLfloat z
 
 inline void Technique::setVec4(const char* name, const vec4& value) const
 {
-	glUniform4fv(glGetUniformLocation(programOglObj, name), 1, &value[0]);
+	glUniform4fv(glGetUniformLocation(programOglObj, name), 1, &value.x);
 }
 inline void Technique::setVec4(const char* name, GLfloat x, GLfloat y, GLfloat z, GLfloat w) const
 {
@@ -78,19 +78,19 @@ inline void Technique::setVec4(const char* name, GLfloat x, GLfloat y, GLfloat z
 
 //
 
-inline void Technique::setMat2(const char* name, const glm::mat2& mat) const
+/*inline void Technique::setMat2(const char* name, const mat2& mat) const
 {
 	glUniformMatrix2fv(glGetUniformLocation(programOglObj, name), 1, GL_FALSE, &mat[0][0]);
 }
 
-inline void Technique::setMat3(const char* name, const glm::mat3& mat) const
+inline void Technique::setMat3(const char* name, const mat3& mat) const
 {
 	glUniformMatrix3fv(glGetUniformLocation(programOglObj, name), 1, GL_FALSE, &mat[0][0]);
-}
+}*/
 
-inline void Technique::setMat4(const char* name, const glm::mat4& mat) const
+inline void Technique::setMat4(const char* name, const mat4& mat) const
 {
-	glUniformMatrix4fv(glGetUniformLocation(programOglObj, name), 1, GL_FALSE, &mat[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(programOglObj, name), 1, GL_FALSE, &mat.x[0]);
 }
 
 //

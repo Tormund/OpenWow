@@ -61,8 +61,10 @@ struct BoundingBox
 	{
 		// Efficient algorithm for transforming an AABB, taken from Graphics Gems
 
-		float minA[3] = {min.x, min.y, min.z}, minB[3];
-		float maxA[3] = {max.x, max.y, max.z}, maxB[3];
+		float minA[3] = {min.x, min.y, min.z};
+		float minB[3];
+		float maxA[3] = {max.x, max.y, max.z};
+		float maxB[3];
 
 		for (uint32 i = 0; i < 3; ++i)
 		{

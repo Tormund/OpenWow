@@ -23,17 +23,32 @@ public:
 
 	void Update();
 
-	// Returns the view matrix calculated using Eular Angles and the LookAt Matrix
-	inline const glm::mat4* GetViewMatrix()
-	{
-		return &viewMatrix;
-	}
-
 	// Processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
 	void ProcessKeyboard(Camera_Movement direction, float deltaTime);
 
 	// Processes input received from a mouse input system. Expects the offset value in both the x and y direction.
 	void ProcessMouseMovement(float xoffset, float yoffset, bool constrainPitch = true);
+
+	void setupViewParams(float fov, float aspect, float nearPlane, float farPlane);
+	void setProjectionMatrix(float* projMat);
+	void onPostUpdate();
+
+	const Frustum& getFrustum() const { return _frustum; }
+	const Matrix4f& getViewMat() const { return _viewMat; }
+	const Matrix4f& getProjMat() const { return _projMat; }
+	const Vec3f& getAbsPos() const { return _absPos; }
+
+	// DELETE ME
+	void setTransform(Vec3f trans, Vec3f rot, Vec3f scale)
+	{
+		//_absTrans = _absTrans.TransMat(trans); 
+		//_absTrans.rotate(degToRad(rot));
+		//_absTrans.scale(scale);
+	
+		_absTrans = _absTrans.TransMat(trans);
+		_absTrans.rotate(degToRad(rot));
+		_absTrans.scale(scale);
+	}
 
 private:
 	void updateCameraVectors();
@@ -46,10 +61,8 @@ public:
 	vec3 CameraUp;
 	vec3 CameraRight;
 
-	vec3 WorldUp;
-
 	// Eular Angles
-	float Yaw;
+	float Roll;
 	float Pitch;
 
 	// Camera options
@@ -57,5 +70,15 @@ public:
 	float MouseSensitivity;
 
 private:
-	mat4 viewMatrix;
+	Matrix4f            _absTrans;
+	Matrix4f            _viewMat, _projMat;
+	Frustum             _frustum;
+	Vec3f               _absPos;
+	int					_vpX, _vpY, _vpWidth, _vpHeight;
+	float               _frustLeft, _frustRight, _frustBottom, _frustTop;
+	float               _frustNear, _frustFar;
+	int                 _outputBufferIndex;
+	int                 _occSet;
+	bool                _orthographic;  // Perspective or orthographic frustum?
+	bool                _manualProjMat; // Projection matrix manually set?
 };

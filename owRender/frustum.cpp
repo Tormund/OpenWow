@@ -23,7 +23,7 @@ void Frustum2::retrieve()
 	_Perfomance->Start(PERF_FRUSTRUM);
 
 	float mat[16];
-	memcpy(&mat, glm::value_ptr(_PipelineGlobal->GetPV()), 16 * sizeof(float));
+	memcpy(&mat, _PipelineGlobal->GetPV(), 16 * sizeof(float));
 
 	planes[FRIGHT].a = mat[3] - mat[0];
 	planes[FRIGHT].b = mat[7] - mat[4];

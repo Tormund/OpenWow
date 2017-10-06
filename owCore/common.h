@@ -34,5 +34,4 @@ using namespace std;
 
 // Utils
 #include "Utils.h"
-#include "MathUtils.h"
 #include "WowChunkUtils.h"

@@ -153,7 +153,7 @@ void MapSkies::CalculateSkiesWeights(cvec3 pos)
 	for (int i = skies.size() - 2; i >= 0; i--)
 	{
 		Sky* s = skies[i];
-		const float dist = glm::length(pos - s->position);
+		const float dist = (pos - s->position).length();
 
 		if (dist < s->radiusInner)
 		{

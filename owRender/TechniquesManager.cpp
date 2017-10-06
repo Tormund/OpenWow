@@ -101,9 +101,9 @@ void TechniquesMgr::Init()
 	m_DSDirLightPassTech->Init();
 	m_DSDirLightPassTech->Bind();
 
-	m_DSDirLightPassTech->SetProjectionMatrix(glm::mat4());
-	m_DSDirLightPassTech->SetViewMatrix(glm::mat4());
-	m_DSDirLightPassTech->SetWorldMatrix(glm::mat4());
+	m_DSDirLightPassTech->SetProjectionMatrix(mat4());
+	m_DSDirLightPassTech->SetViewMatrix(mat4());
+	m_DSDirLightPassTech->SetWorldMatrix(mat4());
 
 	m_DSDirLightPassTech->BindToPostprocess();
 

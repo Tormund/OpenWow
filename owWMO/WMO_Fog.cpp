@@ -15,7 +15,7 @@ void WMOFog::setup()
 {
 	if (Settings::drawfog)
 	{
-		glFogfv(GL_FOG_COLOR, glm::value_ptr(color));
+		glFogfv(GL_FOG_COLOR, color);
 		glFogf(GL_FOG_START, fogDef.fog.startScalar);
 		glFogf(GL_FOG_END, fogDef.fog.end);
 

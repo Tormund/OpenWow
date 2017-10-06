@@ -37,11 +37,11 @@ void RibbonEmitter::init(File& f, M2Ribbon& mta, uint32 * globals)
 
 void RibbonEmitter::setup(int anim, int time)
 {
-	vec3 ntpos = parent->mat * pos;
-	vec3 ntup = parent->mat * (pos + vec3(0, 0, 1));
+	vec3 ntpos = parent->m_TransformMatrix * pos;
+	vec3 ntup = parent->m_TransformMatrix * (pos + vec3(0, 0, 1));
 	ntup -= ntpos;
-	ntup = glm::normalize(ntup);
-	float dlen = glm::length(ntpos - tpos);
+	ntup = ntup.normalized();
+	float dlen = (ntpos - tpos).length();
 
 	manim = anim;
 	mtime = time;
@@ -51,7 +51,7 @@ void RibbonEmitter::setup(int anim, int time)
 	if (first.len > seglen)
 	{
 		// add new segment
-		first.back = glm::normalize(tpos - ntpos);
+		first.back = (tpos - ntpos).normalized();
 		first.len0 = first.len;
 		RibbonSegment newseg;
 		newseg.pos = ntpos;
@@ -119,7 +119,7 @@ void RibbonEmitter::draw()
 	glDisable(GL_CULL_FACE);
 	glDepthMask(GL_FALSE);
 	
-	glColor4fv(glm::value_ptr(tcolor));
+	glColor4fv(tcolor);
 
 	glBegin(GL_QUAD_STRIP);
 	{
@@ -130,9 +130,9 @@ void RibbonEmitter::draw()
 			float u = l / length;
 
 			glTexCoord2f(u, 0);
-			glVertex3fv(glm::value_ptr(it->pos + it->up * tabove));
+			glVertex3fv(it->pos + it->up * tabove);
 			glTexCoord2f(u, 1);
-			glVertex3fv(glm::value_ptr(it->pos - it->up * tbelow));
+			glVertex3fv(it->pos - it->up * tbelow);
 
 			l += it->len;
 		}
@@ -142,9 +142,9 @@ void RibbonEmitter::draw()
 			// last segment...?
 			--it;
 			glTexCoord2f(1, 0);
-			glVertex3fv(glm::value_ptr(it->pos + it->up*tabove + it->back*(it->len / it->len0)));
+			glVertex3fv(it->pos + it->up*tabove + it->back*(it->len / it->len0));
 			glTexCoord2f(1, 1);
-			glVertex3fv(glm::value_ptr(it->pos - it->up*tbelow + it->back*(it->len / it->len0)));
+			glVertex3fv(it->pos - it->up*tbelow + it->back*(it->len / it->len0));
 		}
 	}
 	glEnd();

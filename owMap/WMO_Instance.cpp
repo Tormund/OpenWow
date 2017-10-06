@@ -9,7 +9,7 @@ WMOInstance::WMOInstance(WMO* _wmoObject, File& f) : wmoObject(_wmoObject)
 	f.ReadBytes(placementInfo, WMOPlacementInfo::__size);
 
 	// Convert rotation
-	placementInfo->rotation = glm::radians(placementInfo->rotation);
+	placementInfo->rotation = degToRad(placementInfo->rotation);
 	placementInfo->rotation.x = -placementInfo->rotation.x;
 	placementInfo->rotation.y = placementInfo->rotation.y - PI / 2.0;
 }
@@ -35,16 +35,16 @@ void WMOInstance::draw()
 	//
 	
 	_Pipeline->Clear();
+	{
+		_Pipeline->Translate(placementInfo->position);
 
-	_Pipeline->Translate(placementInfo->position);
+		_Pipeline->RotateX(placementInfo->rotation.z);
+		_Pipeline->RotateY(placementInfo->rotation.y);
+		_Pipeline->RotateZ(placementInfo->rotation.x);
 
-	_Pipeline->RotateX(placementInfo->rotation.z);
-	_Pipeline->RotateY(placementInfo->rotation.y);
-	_Pipeline->RotateZ(placementInfo->rotation.x);
-		
-	wmoObject->draw(placementInfo->doodadSetIndex);
-
-	PERF_INC(PERF_MAP_MODELS_WMOs);
+		wmoObject->draw(placementInfo->doodadSetIndex);
+		PERF_INC(PERF_MAP_MODELS_WMOs);
+	}
 }
 
 void WMOInstance::reset()

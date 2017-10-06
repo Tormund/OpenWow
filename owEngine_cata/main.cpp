@@ -54,7 +54,7 @@ int main(int argumentCount, char* arguments[])
 		_Engine->Destroy(2);
 	}
 
-	/*Matrix m = glQuaternionRotate(vec3(-0.501694f, 0.510347f, 0.483113f), 0.504432f);
+	/*mat4 m = glQuaternionRotate(vec3(-0.501694f, 0.510347f, 0.483113f), 0.504432f);
 	Debug::Info("m [%f][%f][%f][%f]", m.m[0][0], m.m[0][1], m.m[0][2], m.m[0][3]);
 	Debug::Info("m [%f][%f][%f][%f]", m.m[1][0], m.m[1][1], m.m[1][2], m.m[1][3]);
 	Debug::Info("m [%f][%f][%f][%f]", m.m[2][0], m.m[2][1], m.m[2][2], m.m[2][3]);

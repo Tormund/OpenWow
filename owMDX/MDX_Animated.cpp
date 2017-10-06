@@ -200,7 +200,7 @@ void MDX::calcBones(uint32 _animationIndex, int time)
 {
 	for (uint32 i = 0; i < header.bones.size; i++)
 	{
-		m_Part_Bones[i].calc = false;
+		m_Part_Bones[i].m_IsCalculated = false;
 	}
 
 	for (uint32 i = 0; i < header.bones.size; i++)
@@ -233,8 +233,8 @@ void MDX::animate(uint32 _animationIndex)
 			{
 				if (ov->bone_weights[b] > 0)
 				{
-					vec3 tv = m_Part_Bones[ov->bone_indices[b]].mat * ov->pos;
-					vec3 tn = m_Part_Bones[ov->bone_indices[b]].mrot * ov->normal;
+					vec3 tv = m_Part_Bones[ov->bone_indices[b]].m_TransformMatrix * ov->pos;
+					vec3 tn = m_Part_Bones[ov->bone_indices[b]].m_RotationMatrix * ov->normal;
 
 					vertex += tv * ((float)ov->bone_weights[b] / 255.0f);
 					normal += tn * ((float)ov->bone_weights[b] / 255.0f);
@@ -242,7 +242,7 @@ void MDX::animate(uint32 _animationIndex)
 			}
 
 			m_Vertices[i] = vertex;
-			m_Normals[i] = glm::normalize(normal); // shouldn't these be normal by default?
+			m_Normals[i] = normal.normalized(); // shouldn't these be normal by default?
 		}
 
 		// Add sub-data
@@ -260,8 +260,8 @@ void MDX::animate(uint32 _animationIndex)
 	{
 		if (m_Lights[i].parent >= 0)
 		{
-			m_Lights[i].tpos = m_Part_Bones[m_Lights[i].parent].mat * m_Lights[i].pos;
-			m_Lights[i].tdir = m_Part_Bones[m_Lights[i].parent].mrot * m_Lights[i].dir;
+			m_Lights[i].tpos = m_Part_Bones[m_Lights[i].parent].m_TransformMatrix * m_Lights[i].pos;
+			m_Lights[i].tdir = m_Part_Bones[m_Lights[i].parent].m_RotationMatrix * m_Lights[i].dir;
 		}
 	}
 

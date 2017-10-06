@@ -8,9 +8,10 @@ World::World()
 {
 	// SHADERS
 	mainCamera = new Camera;
+	mainCamera->setupViewParams(45.0f, Settings::aspectRatio, 2.0f, 15000.0f);
 	testCamera = new Camera;
+	testCamera->setupViewParams(45.0f, Settings::aspectRatio, 2.0f, 15000.0f);
 	_PipelineGlobal->SetCamera(mainCamera);
-	_PipelineGlobal->SetProjection(45.0f, Settings::aspectRatio, 1.0f, 10000.0f);
 
 	_EnvironmentManager->Init();
 
@@ -205,8 +206,8 @@ void World::RenderGeom()
 
 	//
 
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//glEnable(GL_BLEND);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//------------------------------------------------------------------------------
 	// Map water

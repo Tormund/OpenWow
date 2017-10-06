@@ -7,12 +7,12 @@
 #include "ParticleSystem.h"
 
 //Generates the rotation matrix based on spread
-Matrix SpreadMat;
+mat4 SpreadMat;
 void CalcSpreadMatrix(float Spread1, float Spread2, float w, float l)
 {
 	int i, j;
 	float a[2], c[2], s[2];
-	Matrix	Temp;
+	mat4	Temp;
 
 	SpreadMat.unit();
 
@@ -29,25 +29,25 @@ void CalcSpreadMatrix(float Spread1, float Spread2, float w, float l)
 		s[i] = sin(a[i]);
 	}
 	Temp.unit();
-	Temp.m[1][1] = c[0];
-	Temp.m[2][1] = s[0];
-	Temp.m[2][2] = c[0];
-	Temp.m[1][2] = -s[0];
+	Temp.c[1][1] = c[0];
+	Temp.c[2][1] = s[0];
+	Temp.c[2][2] = c[0];
+	Temp.c[1][2] = -s[0];
 
 	SpreadMat = SpreadMat*Temp;
 
 	Temp.unit();
-	Temp.m[0][0] = c[1];
-	Temp.m[1][0] = s[1];
-	Temp.m[1][1] = c[1];
-	Temp.m[0][1] = -s[1];
+	Temp.c[0][0] = c[1];
+	Temp.c[1][0] = s[1];
+	Temp.c[1][1] = c[1];
+	Temp.c[0][1] = -s[1];
 
 	SpreadMat = SpreadMat*Temp;
 
 	float Size = abs(c[0])*l + abs(s[0])*w;
 	for (i = 0; i < 3; i++)
 		for (j = 0; j < 3; j++)
-			SpreadMat.m[i][j] *= Size;
+			SpreadMat.c[i][j] *= Size;
 }
 
 Particle PlaneParticleEmitter::newParticle(int anim, int time, float w, float l, float spd, float var, float spr, float spr2)
@@ -94,14 +94,14 @@ Particle PlaneParticleEmitter::newParticle(int anim, int time, float w, float l,
 	Particle p;
 
 	//Spread Calculation
-	Matrix mrot;
+	mat4 mrot;
 
 	CalcSpreadMatrix(spr, spr, 1.0f, 1.0f);
-	mrot = sys->parent->mrot * SpreadMat;
+	mrot = sys->parent->m_RotationMatrix * SpreadMat;
 
 	if (sys->flags == 1041)
 	{ // Trans Halo
-		p.pos = sys->parent->mat * (sys->pos + vec3(Random::GenerateRange(-l, l), 0, Random::GenerateRange(-w, w)));
+		p.pos = sys->parent->m_TransformMatrix * (sys->pos + vec3(Random::GenerateRange(-l, l), 0, Random::GenerateRange(-w, w)));
 
 		const float t = Random::GenerateRange(0.0f, float(2 * PI));
 
@@ -113,42 +113,42 @@ Particle PlaneParticleEmitter::newParticle(int anim, int time, float w, float l,
 		vec3 dir(0.0f, 1.0f, 0.0f);
 		p.dir = dir;
 
-		p.speed = glm::normalize(dir) * spd * Random::GenerateRange(0.0f, var);
+		p.speed = dir.normalized() * spd * Random::GenerateRange(0.0f, var);
 	}
 	else if (sys->flags == 25 && sys->parent->parent < 1)
 	{ // Weapon Flame
 		p.pos = sys->parent->pivot * (sys->pos + vec3(Random::GenerateRange(-l, l), Random::GenerateRange(-l, l), Random::GenerateRange(-w, w)));
 		vec3 dir = mrot * vec3(0.0f, 1.0f, 0.0f);
-		p.dir = glm::normalize(dir);
+		p.dir = dir.normalized();
 		//vec3 dir = sys->model->bones[sys->parent->parent].mrot * sys->parent->mrot * vec3(0.0f, 1.0f, 0.0f);
 		//p.speed = dir.Normalize() * spd;
 
 	}
 	else if (sys->flags == 25 && sys->parent->parent > 0)
 	{ // Weapon with built-in Flame (Avenger lightsaber!)
-		p.pos = sys->parent->mat * (sys->pos + vec3(Random::GenerateRange(-l, l), Random::GenerateRange(-l, l), Random::GenerateRange(-w, w)));
-		vec3 dir = vec3(sys->parent->mat.m[1][0], sys->parent->mat.m[1][1], sys->parent->mat.m[1][2]) * vec3(0.0f, 1.0f, 0.0f);
-		p.speed = glm::normalize(dir) * spd * Random::GenerateRange(0.0f, var * 2);
+		p.pos = sys->parent->m_TransformMatrix * (sys->pos + vec3(Random::GenerateRange(-l, l), Random::GenerateRange(-l, l), Random::GenerateRange(-w, w)));
+		vec3 dir = vec3(sys->parent->m_TransformMatrix.c[1][0], sys->parent->m_TransformMatrix.c[1][1], sys->parent->m_TransformMatrix.c[1][2]) * vec3(0.0f, 1.0f, 0.0f);
+		p.speed = dir.normalized() * spd * Random::GenerateRange(0.0f, var * 2);
 
 	}
 	else if (sys->flags == 17 && sys->parent->parent < 1)
 	{ // Weapon Glow
 		p.pos = sys->parent->pivot * (sys->pos + vec3(Random::GenerateRange(-l, l), Random::GenerateRange(-l, l), Random::GenerateRange(-w, w)));
 		vec3 dir = mrot * vec3(0, 1, 0);
-		p.dir = glm::normalize(dir);
+		p.dir = dir.normalized();
 
 	}
 	else
 	{
 		p.pos = sys->pos + vec3(Random::GenerateRange(-l, l), 0, Random::GenerateRange(-w, w));
-		p.pos = sys->parent->mat * p.pos;
+		p.pos = sys->parent->m_TransformMatrix * p.pos;
 
 		//vec3 dir = mrot * vec3(0,1,0);
-		vec3 dir = sys->parent->mrot * vec3(0, 1, 0);
+		vec3 dir = sys->parent->m_RotationMatrix * vec3(0, 1, 0);
 
 		p.dir = dir;//.Normalize();
 		p.down = vec3(0, -1.0f, 0); // dir * -1.0f;
-		p.speed = glm::normalize(dir) * spd * (1.0f + Random::GenerateRange(-var, var));
+		p.speed = dir.normalized() * spd * (1.0f + Random::GenerateRange(-var, var));
 	}
 
 	if (!sys->billboard)
@@ -188,10 +188,10 @@ Particle SphereParticleEmitter::newParticle(int anim, int time, float w, float l
 		t = Random::GenerateRange(-spr, spr);
 
 	//Spread Calculation
-	Matrix mrot;
+	mat4 mrot;
 
 	CalcSpreadMatrix(spr * 2, spr2 * 2, w, l);
-	mrot = sys->parent->mrot*SpreadMat;
+	mrot = sys->parent->m_RotationMatrix*SpreadMat;
 
 	// New
 	// Length should never technically be zero ?
@@ -222,14 +222,14 @@ Particle SphereParticleEmitter::newParticle(int anim, int time, float w, float l
 		vec3 bdir(w*cosf(t)*1.6, 0.0f, l*sinf(t)*1.6);
 
 		p.pos = sys->pos + bdir;
-		p.pos = sys->parent->mat * p.pos;
+		p.pos = sys->parent->m_TransformMatrix * p.pos;
 
-		if (glm::length2(bdir) == 0)
+		if (bdir.length2() == 0)
 			p.speed = vec3(0, 0, 0);
 		else
 		{
-			dir = sys->parent->mrot * (glm::normalize(bdir));//mrot * vec3(0, 1.0f,0);
-			p.speed = glm::normalize(dir) * spd * (1.0f + Random::GenerateRange(-var, var));   // ?
+			dir = sys->parent->m_RotationMatrix * (bdir.normalized());//mrot * vec3(0, 1.0f,0);
+			p.speed = dir.normalized() * spd * (1.0f + Random::GenerateRange(-var, var));   // ?
 		}
 
 	}
@@ -243,30 +243,30 @@ Particle SphereParticleEmitter::newParticle(int anim, int time, float w, float l
 		bdir.z = bdir.y;
 		bdir.y = temp;
 
-		p.pos = sys->parent->mat * sys->pos + bdir;
+		p.pos = sys->parent->m_TransformMatrix * sys->pos + bdir;
 
 
 		//p.pos = sys->pos + bdir;
 		//p.pos = sys->parent->mat * p.pos;
 
 
-		if ((glm::length2(bdir) == 0) && ((sys->flags & 0x100) != 0x100))
+		if ((bdir.length2() == 0) && ((sys->flags & 0x100) != 0x100))
 		{
 			p.speed = vec3(0, 0, 0);
-			dir = sys->parent->mrot * vec3(0, 1, 0);
+			dir = sys->parent->m_RotationMatrix * vec3(0, 1, 0);
 		}
 		else
 		{
 			if (sys->flags & 0x100)
-				dir = sys->parent->mrot * vec3(0, 1, 0);
+				dir = sys->parent->m_RotationMatrix * vec3(0, 1, 0);
 			else
-				dir = glm::normalize(bdir);
+				dir = bdir.normalized();
 
-			p.speed = glm::normalize(dir) * spd * (1.0f + Random::GenerateRange(-var, var));   // ?
+			p.speed = dir.normalized() * spd * (1.0f + Random::GenerateRange(-var, var));   // ?
 		}
 	}
 
-	p.dir = glm::normalize(dir);//mrot * vec3(0, 1.0f,0);
+	p.dir = dir.normalized();//mrot * vec3(0, 1.0f,0);
 	p.down = vec3(0, -1.0f, 0);
 
 	p.life = 0;

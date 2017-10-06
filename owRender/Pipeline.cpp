@@ -4,29 +4,6 @@
 #include "Pipeline.h"
 #include "TechniquesManager.h"
 
-void Pipeline::SetProjection(float _fov, float _aspectRatio, float _near, float _far)
-{
-	projection = glm::perspective(_fov, _aspectRatio, _near, _far);
-
-	float tang = tanf(DEG_TO_RAD * _fov * 0.5f);
-
-	nh = _near * tang;
-	nw = nh * _aspectRatio;
-
-	fh = _far  * tang;
-	fw = fh * _aspectRatio;
-
-	nearDist = _near;
-	farDist = _far;
-}
-
-void Pipeline::SetProjection(cmat4 _projectionMatrix)
-{
-	projection = _projectionMatrix;
-}
-
-//
-
 void Pipeline::SetCamera(Camera* _camera)
 {
 	assert1(_camera != nullptr);
@@ -35,14 +12,14 @@ void Pipeline::SetCamera(Camera* _camera)
 	camera = _camera;
 }
 
-void Pipeline::SetCamera(const vec3& _position, const vec3& _rotation, const vec3& _up)
+/*void Pipeline::SetCamera(const vec3& _position, const vec3& _rotation, const vec3& _up)
 {
 	vec3 CameraRight = glm::normalize(glm::cross(_rotation, _up));
 	vec3 CameraUp = glm::normalize(glm::cross(CameraRight, _rotation));
 
 	view = glm::lookAt(_position, _position + _rotation, CameraUp);
 	camera = nullptr;
-}
+}*/
 
 void Pipeline::RenderCamera(Camera* _camera)
 {

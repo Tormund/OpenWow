@@ -197,7 +197,7 @@ void ParticleSystem::setup(int anim, int time)
 	/*
 	if (transform) {
 	// transform every particle by the parent trans matrix   - apparently this isn't needed
-	Matrix m = parent->mat;
+	mat4 m = parent->mat;
 	for (ParticleList::iterator it = particles.begin(); it != particles.end(); ++it) {
 	it->tpos = m * it->pos;
 	}
@@ -286,19 +286,19 @@ void ParticleSystem::draw()
 				if (tiles.size() - 1 < it->m_TileExists) break;
 
 				const float size = it->size;
-				glColor4fv(glm::value_ptr(it->color));
+				glColor4fv(it->color);
 
-				glTexCoord2fv(glm::value_ptr(tiles[it->m_TileExists].tc[0]));
-				glVertex3fv(glm::value_ptr(it->pos - (vRight + vUp) * size));
+				glTexCoord2fv(tiles[it->m_TileExists].tc[0]);
+				glVertex3fv(it->pos - (vRight + vUp) * size);
 
-				glTexCoord2fv(glm::value_ptr(tiles[it->m_TileExists].tc[1]));
-				glVertex3fv(glm::value_ptr(it->pos + (vRight - vUp) * size));
+				glTexCoord2fv(tiles[it->m_TileExists].tc[1]);
+				glVertex3fv(it->pos + (vRight - vUp) * size);
 
-				glTexCoord2fv(glm::value_ptr(tiles[it->m_TileExists].tc[2]));
-				glVertex3fv(glm::value_ptr(it->pos + (vRight + vUp) * size));
+				glTexCoord2fv(tiles[it->m_TileExists].tc[2]);
+				glVertex3fv(it->pos + (vRight + vUp) * size);
 
-				glTexCoord2fv(glm::value_ptr(tiles[it->m_TileExists].tc[3]));
-				glVertex3fv(glm::value_ptr(it->pos - (vRight - vUp) * size));
+				glTexCoord2fv(tiles[it->m_TileExists].tc[3]);
+				glVertex3fv(it->pos - (vRight - vUp) * size);
 			}
 			glEnd();
 
@@ -310,19 +310,19 @@ void ParticleSystem::draw()
 			{
 				if (tiles.size() - 1 < it->m_TileExists) break;
 
-				glColor4fv(glm::value_ptr(it->color));
+				glColor4fv(it->color);
 
-				glTexCoord2fv(glm::value_ptr(tiles[it->m_TileExists].tc[0]));
-				glVertex3fv(glm::value_ptr(it->pos + it->corners[0] * it->size));
+				glTexCoord2fv(tiles[it->m_TileExists].tc[0]);
+				glVertex3fv(it->pos + it->corners[0] * it->size);
 
-				glTexCoord2fv(glm::value_ptr(tiles[it->m_TileExists].tc[1]));
-				glVertex3fv(glm::value_ptr(it->pos + it->corners[1] * it->size));
+				glTexCoord2fv(tiles[it->m_TileExists].tc[1]);
+				glVertex3fv(it->pos + it->corners[1] * it->size);
 
-				glTexCoord2fv(glm::value_ptr(tiles[it->m_TileExists].tc[2]));
-				glVertex3fv(glm::value_ptr(it->pos + it->corners[2] * it->size));
+				glTexCoord2fv(tiles[it->m_TileExists].tc[2]);
+				glVertex3fv(it->pos + it->corners[2] * it->size);
 
-				glTexCoord2fv(glm::value_ptr(tiles[it->m_TileExists].tc[3]));
-				glVertex3fv(glm::value_ptr(it->pos + it->corners[3] * it->size));
+				glTexCoord2fv(tiles[it->m_TileExists].tc[3]);
+				glVertex3fv(it->pos + it->corners[3] * it->size);
 			}
 			glEnd();
 		}
@@ -345,19 +345,19 @@ void ParticleSystem::draw()
 			if (tiles.size() - 1 < it->m_TileExists) break;
 
 
-			glColor4fv(glm::value_ptr(it->color));
+			glColor4fv(it->color);
 
-			glTexCoord2fv(glm::value_ptr(tiles[it->m_TileExists].tc[0]));
-			glVertex3fv(glm::value_ptr(it->pos + bv0 * it->size));
+			glTexCoord2fv(tiles[it->m_TileExists].tc[0]);
+			glVertex3fv(it->pos + bv0 * it->size);
 
-			glTexCoord2fv(glm::value_ptr(tiles[it->m_TileExists].tc[1]));
-			glVertex3fv(glm::value_ptr(it->pos + bv1 * it->size));
+			glTexCoord2fv(tiles[it->m_TileExists].tc[1]);
+			glVertex3fv(it->pos + bv1 * it->size);
 
-			glTexCoord2fv(glm::value_ptr(tiles[it->m_TileExists].tc[2]));
-			glVertex3fv(glm::value_ptr(it->origin + bv1 * it->size));
+			glTexCoord2fv(tiles[it->m_TileExists].tc[2]);
+			glVertex3fv(it->origin + bv1 * it->size);
 
-			glTexCoord2fv(glm::value_ptr(tiles[it->m_TileExists].tc[3]));
-			glVertex3fv(glm::value_ptr(it->origin + bv0 * it->size));
+			glTexCoord2fv(tiles[it->m_TileExists].tc[3]);
+			glVertex3fv(it->origin + bv0 * it->size);
 		}
 		glEnd();
 

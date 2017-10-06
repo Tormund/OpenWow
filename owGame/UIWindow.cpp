@@ -6,28 +6,36 @@
 // Additional
 #include "UIMgr.h"
 
-UIWindow::UIWindow() : base() {
+UIWindow::UIWindow() : base()
+{
 	//color = COLOR_RED.Alpha(0.2);
 }
 
-void UIWindow::Init(cvec2 _position, cvec2 _size, Image* _image, Color _color) {
+void UIWindow::Init(cvec2 _position, cvec2 _size, Image* _image, Color _color)
+{
 	textEnable = false;
 
 	base::Init(_position, _size, _image, _color);
 }
 
-void UIWindow::Render() {
+void UIWindow::Render()
+{
 	// Render me
 	base::Render();
 
 	// Render childs
 	for (auto it = childs.begin(); it != childs.end(); ++it)
+	{
 		(*it)->Render();
+	}
 }
 
-MOUSE_MOVED_(UIWindow) {
-	for (auto it = childs.begin(); it != childs.end(); ++it) {
-		if ((*it)->CheckMouseHover()) {
+MOUSE_MOVED_(UIWindow)
+{
+	for (auto it = childs.begin(); it != childs.end(); ++it)
+	{
+		if ((*it)->CheckMouseHover())
+		{
 			if (!(*it)->IsDisabled())
 				(*it)->OnMouseMoved(_mousePos - (*it)->GetPosition());
 		}
@@ -36,7 +44,8 @@ MOUSE_MOVED_(UIWindow) {
 	}
 }
 
-MOUSE_PRESSED(UIWindow) {
+MOUSE_PRESSED(UIWindow)
+{
 	bool result = false;
 	for (auto it = childs.begin(); it != childs.end(); ++it)
 		if (!(*it)->IsDisabled())
@@ -47,7 +56,8 @@ MOUSE_PRESSED(UIWindow) {
 	return result;
 }
 
-MOUSE_RELEASE(UIWindow) {
+MOUSE_RELEASE(UIWindow)
+{
 	bool result = false;
 	for (auto it = childs.begin(); it != childs.end(); ++it)
 		if (!(*it)->IsDisabled())
@@ -57,7 +67,8 @@ MOUSE_RELEASE(UIWindow) {
 	return result;
 }
 
-MOUSE_WHEEL(UIWindow) {
+MOUSE_WHEEL(UIWindow)
+{
 	bool result = false;
 	for (auto it = childs.begin(); it != childs.end(); ++it)
 		if (!(*it)->IsDisabled())
@@ -68,7 +79,8 @@ MOUSE_WHEEL(UIWindow) {
 	return result;
 }
 
-KEYBD_PRESSED(UIWindow) {
+KEYBD_PRESSED(UIWindow)
+{
 	bool result = false;
 	for (auto it = childs.begin(); it != childs.end(); ++it)
 		if (!(*it)->IsDisabled())
@@ -78,7 +90,8 @@ KEYBD_PRESSED(UIWindow) {
 	return result;
 }
 
-KEYBD_RELEASE(UIWindow) {
+KEYBD_RELEASE(UIWindow)
+{
 	bool result = false;
 	for (auto it = childs.begin(); it != childs.end(); ++it)
 		if (!(*it)->IsDisabled())
@@ -88,15 +101,18 @@ KEYBD_RELEASE(UIWindow) {
 	return result;
 }
 
-void UIWindow::OnMouseLeaved() {
+void UIWindow::OnMouseLeaved()
+{
 	for (auto it = childs.begin(); it != childs.end(); ++it)
 		(*it)->OnMouseLeaved();
 }
 
 //
 
-void UIWindow::DeleteChilds() {
-	for (auto chIt = childs.begin(); chIt != childs.end(); ) {
+void UIWindow::DeleteChilds()
+{
+	for (auto chIt = childs.begin(); chIt != childs.end(); )
+	{
 		// If child elem is UIWindow then delete childs
 		if (auto childAsUIWindow = dynamic_cast<UIWindow*>(*chIt))
 			childAsUIWindow->DeleteChilds();

@@ -6,8 +6,6 @@
 // General
 #include "liquid.h"
 
-
-
 //
 
 Liquid::Liquid(uint32 x, uint32 y, vec3 base, float tilesize) : m_TilesX(x), m_TilesY(y), pos(base), tilesize(tilesize), shader(-1), ydir(1.0f)
@@ -22,6 +20,8 @@ Liquid::~Liquid()
 		_TexturesMgr->Delete(textures[i]);
 	}
 }
+
+//
 
 void Liquid::initFromTerrain(File& f, int flags)
 {
@@ -99,6 +99,7 @@ void Liquid::initFromWMO(File& f, WMOMaterial* mat, bool indoor)
 	}
 }
 
+//
 
 void Liquid::initGeometry(File& f)
 {
@@ -145,16 +146,16 @@ void Liquid::initGeometry(File& f)
 				uint32 p = j * (m_TilesX + 1) + i;
 
 				glTexCoord3f(i / texRepeats, j / texRepeats, col[p]);
-				glVertex3fv(glm::value_ptr(verts[p]));
+				glVertex3fv(verts[p]);
 
 				glTexCoord3f((i + 1) / texRepeats, j / texRepeats, col[p + 1]);
-				glVertex3fv(glm::value_ptr(verts[p + 1]));
+				glVertex3fv(verts[p + 1]);
 
 				glTexCoord3f((i + 1) / texRepeats, (j + 1) / texRepeats, col[p + m_TilesX + 1 + 1]);
-				glVertex3fv(glm::value_ptr(verts[p + m_TilesX + 1 + 1]));
+				glVertex3fv(verts[p + m_TilesX + 1 + 1]);
 
 				glTexCoord3f(i / texRepeats, (j + 1) / texRepeats, col[p + m_TilesX + 1]);
-				glVertex3fv(glm::value_ptr(verts[p + m_TilesX + 1]));
+				glVertex3fv(verts[p + m_TilesX + 1]);
 
 			}
 		}

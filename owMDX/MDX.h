@@ -32,7 +32,7 @@ public:
 	~MDX();
 
 	void Init(bool forceAnim = false);
-	inline bool IsLoaded() { return m_Loaded; }
+	bool IsLoaded() { return m_Loaded; }
 
 	void draw();
 	void updateEmitters(float dt);
@@ -102,11 +102,6 @@ public:
 	void lightsOff(GLuint lbase);
 
 public:
-	
-
-	// ===============================
-	// Texture data
-	// ===============================
 	Texture** textures;
 	int specialTextures[TEXTURE_MAX];
 	Texture* replaceTextures[TEXTURE_MAX];

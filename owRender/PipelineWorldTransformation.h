@@ -10,7 +10,7 @@ public:
 	}
 	inline void Clear()
 	{
-		worldTransformation = glm::mat4(1.0f);
+		worldTransformation = mat4();
 	}
 
 	inline void Translate(float x, float y, float z);

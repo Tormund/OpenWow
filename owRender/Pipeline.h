@@ -10,36 +10,33 @@ class Pipeline
 
 	Pipeline() : camera(nullptr), cameraTest(nullptr), useMainCamera(true) {}
 
-	void SetProjection(float _fov, float _aspectRatio, float _near, float _far);
-	void SetProjection(cmat4 _projectionMatrix);
-
 	void SetCamera(Camera* _camera);
-	void SetCamera(const vec3& _position, const vec3& _rotation, const vec3& _up = vec3(0.0f, 1.0f, 0.0f));
+//	void SetCamera(const vec3& _position, const vec3& _rotation, const vec3& _up = vec3(0.0f, 1.0f, 0.0f));
 	
 	//
 
 	inline const mat4& GetProjection() 
 	{ 
-		return projection; 
+		return camera->getProjMat();
 	}
 	inline const mat4& GetView()
 	{
-		return *camera->GetViewMatrix(); 
+		return camera->getViewMat(); 
 	}
 	inline const mat4& GetWorld()
 	{ 
 		return worldTransformation.GetWorld();
 	}
 
-	inline const mat4 GetPVM()
+	inline mat4 GetPVM()
 	{
 		return GetProjection() * GetView() * GetWorld();
 	}
-	inline const mat4 GetVW()
+	inline mat4 GetVW()
 	{
 		return GetView() * GetWorld();
 	}
-	inline const mat4 GetPV()
+	inline mat4 GetPV()
 	{
 		return GetProjection()  * GetView();
 	}
@@ -61,7 +58,6 @@ class Pipeline
 	void RenderCamera(Camera* _camera = nullptr);
 
 private: // Matrices
-	mat4 projection;
 	mat4 view;
 	PipelineWorldTransformation worldTransformation;
 	PipelineWorldTransformation worldTransformationTest;

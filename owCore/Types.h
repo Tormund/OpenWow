@@ -1,56 +1,29 @@
 #pragma once
 
 #include "Platform.h"
+#include "Math.h"
 
-// GLM Types
-#include <glm/glm.hpp>
-#include <glm/gtx/norm.hpp>
-#include <glm/gtx/rotate_vector.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/matrix_decompose.hpp>
-#include <glm/gtc/type_ptr.hpp>
+typedef Vec2f vec2;
+typedef const Vec2f& cvec2;
 
-typedef glm::vec2 vec2;
-typedef const glm::vec2& cvec2;
+typedef Vec3f vec3;
+typedef const Vec3f& cvec3;
 
-typedef glm::vec3 vec3;
-typedef const glm::vec3& cvec3;
+typedef Vec4f vec4;
+typedef const Vec4f& cvec4;
 
-typedef glm::vec4 vec4;
-typedef const glm::vec4& cvec4;
+typedef Matrix4f mat4;
+typedef const Matrix4f& cmat4;
 
-typedef glm::mat4x4 mat4;
-typedef const glm::mat4x4& cmat4;
-
-typedef glm::quat quat;
-typedef const glm::quat& cquat;
-
-#include "Matrix.h"
-typedef const Matrix& cMatrix;
-
-inline glm::vec3 operator*(cvec3 v, const glm::mat4x4& mat)
-{
-	vec3 o;
-	o.x = mat[0][0] * v.x + mat[0][1] * v.y + mat[0][2] * v.z + mat[0][3];
-	o.y = mat[1][0] * v.x + mat[1][1] * v.y + mat[1][2] * v.z + mat[1][3];
-	o.z = mat[2][0] * v.x + mat[2][1] * v.y + mat[2][2] * v.z + mat[2][3];
-	return o;
-}
-
-inline glm::vec3 operator*(const glm::mat4x4& mat, cvec3 v)
-{
-	vec3 o;
-	o.x = mat[0][0] * v.x + mat[0][1] * v.y + mat[0][2] * v.z + mat[0][3];
-	o.y = mat[1][0] * v.x + mat[1][1] * v.y + mat[1][2] * v.z + mat[1][3];
-	o.z = mat[2][0] * v.x + mat[2][1] * v.y + mat[2][2] * v.z + mat[2][3];
-	return o;
-}
+typedef Quaternion quat;
+typedef const Quaternion& cquat;
 
 // Own types
 #include "BoundingBox.h"
 #include "Color.h"
-#include "Rect.h"
 #include "Primitives.h"
+#include "Rect.h"
+#include "Timer.h"
 
 // STL Types
 #include <map>

@@ -227,7 +227,7 @@ void WMOGroup::initDisplayList()
 
 			if (m_ParentWMO->header.flags.FLAG_lighten_interiors)
 			{
-				vertexColors[i].a = groupInfo.flags.FLAG_IS_OUTDOOR ? 1.0f : 0.0f;
+				vertexColors[i].w = groupInfo.flags.FLAG_IS_OUTDOOR ? 1.0f : 0.0f;
 			}
 			else
 			{
@@ -247,11 +247,11 @@ void WMOGroup::initDisplayList()
 				vertexColors[i].z = v14 / 2;
 
 
-				vertexColors[i].x = Clamp(vertexColors[i].x, 0.0f, 1.0f);
-				vertexColors[i].y = Clamp(vertexColors[i].y, 0.0f, 1.0f);
-				vertexColors[i].z = Clamp(vertexColors[i].z, 0.0f, 1.0f);
+				vertexColors[i].x = clamp(vertexColors[i].x, 0.0f, 1.0f);
+				vertexColors[i].y = clamp(vertexColors[i].y, 0.0f, 1.0f);
+				vertexColors[i].z = clamp(vertexColors[i].z, 0.0f, 1.0f);
 
-				vertexColors[i].a = groupInfo.flags.FLAG_IS_OUTDOOR ? 1.0f : 0.0f;
+				vertexColors[i].w = groupInfo.flags.FLAG_IS_OUTDOOR ? 1.0f : 0.0f;
 			}
 		}
 		//else
@@ -389,7 +389,7 @@ void WMOGroup::initLighting()
 			{
 				WMOLight* l = m_ParentWMO->m_Lights[j];
 				vec3 dir = l->lightDef.pos - mi->placementInfo->position;
-				float ll = glm::length2(dir);
+				float ll = dir.length2();
 				if (ll < lenmin)
 				{
 					lenmin = ll;
@@ -679,9 +679,9 @@ bool WMOGroup::drawLiquid()
 		// TODO: setup some kind of indoor lighting... ?
 		_EnvironmentManager->SetAmbientLights(false);
 		glEnable(GL_LIGHT2);
-		glLightfv(GL_LIGHT2, GL_AMBIENT, glm::value_ptr(vec4(0.1f, 0.1f, 0.1f, 1)));
-		glLightfv(GL_LIGHT2, GL_DIFFUSE, glm::value_ptr(vec4(0.8f, 0.8f, 0.8f, 1)));
-		glLightfv(GL_LIGHT2, GL_POSITION, glm::value_ptr(vec4(0, 1, 0, 0)));
+		glLightfv(GL_LIGHT2, GL_AMBIENT, vec4(0.1f, 0.1f, 0.1f, 1));
+		glLightfv(GL_LIGHT2, GL_DIFFUSE, vec4(0.8f, 0.8f, 0.8f, 1));
+		glLightfv(GL_LIGHT2, GL_POSITION, vec4(0, 1, 0, 0));
 	}
 
 	//glDisable(GL_BLEND);

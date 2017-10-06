@@ -8,3 +8,5 @@
 
 #include <owRender.h>
 #pragma comment(lib, "owRender.lib")
+
+#include "common.h"

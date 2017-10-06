@@ -1,21 +1,5 @@
 #pragma once
 
-// Fix coords WoW
-
-inline vec3 From_XYZ_To_XZminusY_RET(cvec3 v)
-{
-	return vec3(v.x, v.z, -v.y);
-}
-
-inline void From_XYZ_To_XZminusY(vec3& v)
-{
-	float temp = -v.y;
-	v.y = v.z;
-	v.z = temp;
-}
-
-
-
 inline void flipcc(char* fcc)
 {
 	std::swap(fcc[0], fcc[3]);

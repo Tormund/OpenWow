@@ -27,6 +27,6 @@ void DSDirLightPassTech::SetDirectionalLight(const DirectionalLight& Light)
 	setVec3("gDirectionalLight.Base.specular", Light.specular);
 
 	vec3 Direction = Light.Direction;
-	Direction = glm::normalize(Direction);
+	Direction = Direction.normalized();
 	setVec3("gDirectionalLight.Direction", Direction);
 }

@@ -33,7 +33,6 @@
     <ClCompile Include="ContainerAssync.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="InfoPortions.cpp" />
-    <ClCompile Include="MathUtils.cpp" />
     <ClCompile Include="MPQFile.cpp" />
     <ClCompile Include="Primitives.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -57,6 +56,7 @@
     <ClCompile Include="RefManager2Dim.cpp" />
     <ClCompile Include="RefSimpleManagers.cpp" />
     <ClCompile Include="Settings.cpp" />
+    <ClCompile Include="SmartItemPtr.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="TimeManager.cpp" />
     <ClCompile Include="Utils.cpp" />
@@ -84,8 +84,6 @@
     <ClInclude Include="InfoPortions.h" />
     <ClInclude Include="Macros.h" />
     <ClInclude Include="Math.h" />
-    <ClInclude Include="MathUtils.h" />
-    <ClInclude Include="Matrix.h" />
     <ClInclude Include="MPQFile.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="Primitives.h">
@@ -118,6 +116,7 @@
     <ClInclude Include="Rect.h" />
     <ClInclude Include="RefManager2Dim.h" />
     <ClInclude Include="Settings.h" />
+    <ClInclude Include="SmartItemPtr.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TimeManager.h" />
     <ClInclude Include="Timer.h" />

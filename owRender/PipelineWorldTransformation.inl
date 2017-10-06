@@ -4,69 +4,71 @@
 
 inline void PipelineWorldTransformation::Translate(float x, float y, float z)
 {
-	worldTransformation *= glm::translate(vec3(x, y, z));
+	worldTransformation.translate(x, y, z);
 }
 inline void PipelineWorldTransformation::Translate(cvec3 _translate)
 {
-	worldTransformation *= glm::translate(_translate);
+	worldTransformation.translate(_translate.x, _translate.y, _translate.z);
 }
 
 // Set Rotation
 
 inline void PipelineWorldTransformation::RotateX(float _yaw)
 {
-	worldTransformation *= glm::rotate(_yaw, vec3(1.0f, 0.0f, 0.0f));
+	worldTransformation.rotate(_yaw, 0.0f, 0.0f);// = worldTransformation * Matrix4f::RotMat(vec3(1.0f, 0.0f, 0.0f), _yaw);
 }
 inline void PipelineWorldTransformation::RotateY(float _pitch)
 {
-	worldTransformation *= glm::rotate(_pitch, vec3(0.0f, 1.0f, 0.0f));
+	worldTransformation.rotate(0.0f, _pitch, 0.0f); //= worldTransformation * Matrix4f::RotMat(vec3(0.0f, 1.0f, 0.0f), _pitch);
 }
 inline void PipelineWorldTransformation::RotateZ(float _roll)
 {
-	worldTransformation *= glm::rotate(_roll, vec3(0.0f, 0.0f, 1.0f));
+	worldTransformation.rotate(0.0f, 0.0f, _roll); //= worldTransformation * Matrix4f::RotMat(vec3(0.0f, 0.0f, 1.0f), _roll);
 }
 inline void PipelineWorldTransformation::Rotate(float _yaw, float _pitch, float _roll)
 {
-	worldTransformation *= glm::rotate(_yaw, vec3(1.0f, 0.0f, 0.0f));
-	worldTransformation *= glm::rotate(_pitch, vec3(0.0f, 1.0f, 0.0f));
-	worldTransformation *= glm::rotate(_roll, vec3(0.0f, 0.0f, 1.0f));
+	//worldTransformation = worldTransformation * Matrix4f::RotMat(vec3(1.0f, 0.0f, 0.0f), _yaw);
+	//worldTransformation = worldTransformation * Matrix4f::RotMat(vec3(0.0f, 1.0f, 0.0f), _pitch);
+	//worldTransformation = worldTransformation * Matrix4f::RotMat(vec3(0.0f, 0.0f, 1.0f), _roll);
+	worldTransformation.rotate(_yaw, _pitch, _roll);
 }
 inline void PipelineWorldTransformation::Rotate(cvec3 _rotation)
 {
-	worldTransformation *= glm::rotate(_rotation.x, vec3(1.0f, 0.0f, 0.0f));
-	worldTransformation *= glm::rotate(_rotation.y, vec3(0.0f, 1.0f, 0.0f));
-	worldTransformation *= glm::rotate(_rotation.z, vec3(0.0f, 0.0f, 1.0f));
+	//worldTransformation = worldTransformation * Matrix4f::RotMat(vec3(1.0f, 0.0f, 0.0f), _rotation.x);
+	//worldTransformation = worldTransformation * Matrix4f::RotMat(vec3(0.0f, 1.0f, 0.0f), _rotation.y);
+	//worldTransformation = worldTransformation * Matrix4f::RotMat(vec3(0.0f, 0.0f, 1.0f), _rotation.z);
+	worldTransformation.rotate(_rotation);
 }
 
 // Set Scale
 
 inline void PipelineWorldTransformation::Scale(float _scale)
 {
-	worldTransformation *= glm::scale(vec3(_scale, _scale, _scale));
+	worldTransformation.scale(_scale, _scale, _scale);
 }
 inline void PipelineWorldTransformation::Scale(float _scaleX, float _scaleY, float _scaleZ)
 {
-	worldTransformation *= glm::scale(vec3(_scaleX, _scaleY, _scaleZ));
+	worldTransformation.scale(_scaleX, _scaleY, _scaleZ);
 }
 inline void PipelineWorldTransformation::Scale(cvec3 _scale)
 {
-	worldTransformation *= glm::scale(_scale);
+	worldTransformation.scale(_scale.x, _scale.y, _scale.z);
 }
 
 // Pure
 
 inline void PipelineWorldTransformation::Quat(cquat _quat)
 {
-	worldTransformation *= glm::toMat4(_quat);
+	worldTransformation = worldTransformation * _quat;
 }
 inline void PipelineWorldTransformation::Quat(float w, float x, float y, float z)
 {
-	worldTransformation *= glm::toMat4(glm::quat(w, x, y, z));
+	worldTransformation = worldTransformation * (Quaternion(x, y, z, w));
 }
 
 inline void PipelineWorldTransformation::Mult(cmat4 mat)
 {
-	worldTransformation *= mat;
+	worldTransformation = worldTransformation * mat;
 }
 
 // Push / Pop

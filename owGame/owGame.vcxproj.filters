@@ -95,5 +95,6 @@
     <ClInclude Include="UIMgr.h">
       <Filter>GUI</Filter>
     </ClInclude>
+    <ClInclude Include="common.h" />
   </ItemGroup>
 </Project>

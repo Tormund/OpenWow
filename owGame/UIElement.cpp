@@ -38,7 +38,9 @@ UIElement::UIElement()
 UIElement::~UIElement()
 {
 	if (image != nullptr)
+	{
 		delete image;
+	}
 
 	Debug::Info("UI: [%s] destroyed.", name.c_str());
 }

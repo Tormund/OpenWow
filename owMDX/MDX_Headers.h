@@ -147,7 +147,7 @@ struct M2TextureWeight
 struct M2TextureTransform
 {
 	M2Track<vec3> translation;
-	// FIXME M2Track<C4Quaternion> rotation;    // rotation center is texture center (0.5, 0.5)
+	// FIXME M2Track<Quaternion> rotation;    // rotation center is texture center (0.5, 0.5)
 	M2Track<vec3> rotation;    // rotation center is texture center (0.5, 0.5)
 	M2Track<vec3> scaling;
 };

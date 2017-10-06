@@ -45,7 +45,9 @@ void ConsoleOpenGL::RenderUI()
 	{
 		auto _message = messages[i];
 		if (curLine == linesInConsole)
+		{
 			break;
+		}
 		_Render->RenderText(textOffset + vec2(0, consoleHeight - (curLine * fontHeight)), _message->text, consoleFont, _message->color);
 		curLine++;
 	}
@@ -79,7 +81,9 @@ void ConsoleOpenGL::RenderUI()
 			// Text
 			string line = commandName;
 			if (command->HasArgs() > 0)
+			{
 				line += " [args]";
+			}
 			_Render->RenderText(helperOffset + vec2(0, consoleHeight + i * fontHeight), line, COLOR_WHITE);
 
 			i++;
@@ -96,7 +100,7 @@ MOUSE_WHEEL(ConsoleOpenGL)
 		return true;
 
 	lineOffset += _yoffset;
-	lineOffset = Clamp(lineOffset, 0, (int)messages.size() - (int)linesInConsole - 1);
+	lineOffset = clamp(lineOffset, 0, (int)messages.size() - (int)linesInConsole - 1);
 
 	return true;
 }
@@ -131,13 +135,13 @@ KEYBD_PRESSED(ConsoleOpenGL)
 	if (_key == GLFW_KEY_DOWN)
 	{
 		helperSelected++;
-		helperSelected = Min(helperSelected, (int)commandsHelper.size());
+		helperSelected = minf(helperSelected, (int)commandsHelper.size());
 	}
 
 	if (_key == GLFW_KEY_UP)
 	{
 		helperSelected--;
-		helperSelected = Max(helperSelected, 0);
+		helperSelected = maxf(helperSelected, 0);
 	}
 
 	if (_key == GLFW_KEY_ENTER && !inputString.empty())

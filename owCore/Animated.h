@@ -43,7 +43,7 @@ inline T interpolateBezier(const float r, const T &v1, const T &v2, const T &in,
 template<>
 inline quat interpolate<quat>(const float r, const quat& v1, const quat& v2)
 {
-	return glm::slerp(v1, v2, r); //Quaternion::slerp(r, v1, v2);
+	return  v1.slerp(v2, r); //Quaternion::slerp(r, v1, v2);
 }
 
 //
@@ -78,10 +78,10 @@ public:
 	static const quat conv(const M2CompQuat t)
 	{
 		return quat(
-			float(t.w > 0 ? t.w - 32767 : t.w + 32767) / 32767.0f,
 			float(t.x > 0 ? t.x - 32767 : t.x + 32767) / 32767.0f,
 			float(t.y > 0 ? t.y - 32767 : t.y + 32767) / 32767.0f,
-			float(t.z > 0 ? t.z - 32767 : t.z + 32767) / 32767.0f);
+			float(t.z > 0 ? t.z - 32767 : t.z + 32767) / 32767.0f,
+			float(t.w > 0 ? t.w - 32767 : t.w + 32767) / 32767.0f);
 	}
 };
 
