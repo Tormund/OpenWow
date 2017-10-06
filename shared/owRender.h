@@ -6,7 +6,6 @@
 // Render
 #include "../owRender/Camera.h"
 #include "../owRender/FontsMgr.h"
-#include "../owRender/GLFWBackend.h"
 #include "../owRender/Pipeline.h"
 #include "../owRender/Render.h"
 #include "../owRender/TexturesMgr.h"
@@ -23,5 +22,4 @@
 #include "../owRender/Techniques/SimpleColorTechnique.h"
 
 //
-#include "../owRender/frustum.h"
 #include "../owRender/Gbuffer.h"

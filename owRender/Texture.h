@@ -14,10 +14,8 @@ public:
 
 	~Texture()
 	{
-		if (glIsTexture(oglObj))
-		{
-			glDeleteTextures(1, &oglObj);
-		}
+		assert1(glIsTexture(oglObj));
+		glDeleteTextures(1, &oglObj);
 	}
 
 	//

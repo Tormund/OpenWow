@@ -20,37 +20,126 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConsoleOpenGL.cpp" />
-    <ClCompile Include="Engine.cpp" />
+    <ClCompile Include="DBC__Storage.cpp" />
+    <ClCompile Include="Environment\DayNightCycle.cpp" />
+    <ClCompile Include="Environment\DayNightPhase.cpp" />
+    <ClCompile Include="Environment\EnvironmentManager.cpp" />
+    <ClCompile Include="Environment\MapSkies.cpp" />
+    <ClCompile Include="Environment\Sky.cpp" />
     <ClCompile Include="GameState.cpp" />
-    <ClCompile Include="GameState_Empty.cpp" />
+    <ClCompile Include="GUI\UIButton.cpp" />
+    <ClCompile Include="GUI\UIButton3t.cpp" />
+    <ClCompile Include="GUI\UICheckBox.cpp" />
+    <ClCompile Include="GUI\UIElement.cpp" />
+    <ClCompile Include="GUI\UIFile.cpp" />
+    <ClCompile Include="GUI\UIInput.cpp" />
+    <ClCompile Include="GUI\UIMgr.cpp" />
+    <ClCompile Include="GUI\UIScrollBar.cpp" />
+    <ClCompile Include="GUI\UIWindow.cpp" />
+    <ClCompile Include="Map\Map.cpp" />
+    <ClCompile Include="Map\Map_Chunk.cpp" />
+    <ClCompile Include="Map\Map_Chunk_MH2O.cpp" />
+    <ClCompile Include="Map\Map_Tile.cpp" />
+    <ClCompile Include="Map\Model_Instance.cpp" />
+    <ClCompile Include="Map\WMO_Instance.cpp" />
+    <ClCompile Include="MDX\Animated.cpp" />
+    <ClCompile Include="MDX\MDX.cpp" />
+    <ClCompile Include="MDX\MDX_Animated.cpp" />
+    <ClCompile Include="MDX\MDX_Part_Bone.cpp" />
+    <ClCompile Include="MDX\MDX_Part_Camera.cpp" />
+    <ClCompile Include="MDX\MDX_Part_Color.cpp" />
+    <ClCompile Include="MDX\MDX_Part_Light.cpp" />
+    <ClCompile Include="MDX\MDX_Part_TextureAnim.cpp" />
+    <ClCompile Include="MDX\MDX_Part_Transparency.cpp" />
+    <ClCompile Include="MDX\ModelsManager.cpp" />
+    <ClCompile Include="MDX\Model_RenderPass.cpp" />
+    <ClCompile Include="MDX\Model_Skin.cpp" />
+    <ClCompile Include="MDX\Model_Static.cpp" />
+    <ClCompile Include="MDX\Particle.cpp" />
+    <ClCompile Include="MDX\ParticleEmitters.cpp" />
+    <ClCompile Include="MDX\ParticleSystem.cpp" />
+    <ClCompile Include="MDX\RibbonEmitter.cpp" />
+    <ClCompile Include="MDX\Sky_Model.cpp" />
+    <ClCompile Include="SceneNode.cpp" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="UIButton.cpp" />
-    <ClCompile Include="UIButton3t.cpp" />
-    <ClCompile Include="UICheckBox.cpp" />
-    <ClCompile Include="UIElement.cpp" />
-    <ClCompile Include="UIFile.cpp" />
-    <ClCompile Include="UIInput.cpp" />
-    <ClCompile Include="UIMgr.cpp" />
-    <ClCompile Include="UIScrollBar.cpp" />
-    <ClCompile Include="UIWindow.cpp" />
+    <ClCompile Include="WMO\DoodadInstance.cpp" />
+    <ClCompile Include="WMO\liquid.cpp" />
+    <ClCompile Include="WMO\WMO.cpp" />
+    <ClCompile Include="WMO\WMO_Fog.cpp" />
+    <ClCompile Include="WMO\WMO_Group.cpp" />
+    <ClCompile Include="WMO\WMO_Light.cpp" />
+    <ClCompile Include="WMO\WMO_Manager.cpp" />
+    <ClCompile Include="WMO\WMO_Material.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\shared\owGame.h" />
     <ClInclude Include="common.h" />
     <ClInclude Include="ConsoleOpenGL.h" />
-    <ClInclude Include="Engine.h" />
+    <ClInclude Include="DBC_AreaTable.h" />
+    <ClInclude Include="DBC_Light.h" />
+    <ClInclude Include="DBC_LightFloatBand.h" />
+    <ClInclude Include="DBC_LightIntBand.h" />
+    <ClInclude Include="DBC_LightParams.h" />
+    <ClInclude Include="DBC_LightSkyBox.h" />
+    <ClInclude Include="DBC_LiquidMaterial.h" />
+    <ClInclude Include="DBC_LiquidObject.h" />
+    <ClInclude Include="DBC_LiquidType.h" />
+    <ClInclude Include="DBC_LoadingScreen.h" />
+    <ClInclude Include="DBC_Map.h" />
+    <ClInclude Include="DBC__File.h" />
+    <ClInclude Include="DBC__Storage.h" />
+    <ClInclude Include="Environment\DayNightCycle.h" />
+    <ClInclude Include="Environment\DayNightPhase.h" />
+    <ClInclude Include="Environment\EnvironmentManager.h" />
+    <ClInclude Include="Environment\MapSkies.h" />
+    <ClInclude Include="Environment\Sky.h" />
     <ClInclude Include="GameState.h" />
-    <ClInclude Include="GameState_Empty.h" />
+    <ClInclude Include="GUI\UIButton.h" />
+    <ClInclude Include="GUI\UIButton3t.h" />
+    <ClInclude Include="GUI\UICheckBox.h" />
+    <ClInclude Include="GUI\UIElement.h" />
+    <ClInclude Include="GUI\UIFile.h" />
+    <ClInclude Include="GUI\UIInput.h" />
+    <ClInclude Include="GUI\UIMgr.h" />
+    <ClInclude Include="GUI\UIScrollBar.h" />
+    <ClInclude Include="GUI\UIWindow.h" />
+    <ClInclude Include="Map\Map.h" />
+    <ClInclude Include="Map\Map_Chunk.h" />
+    <ClInclude Include="Map\Map_Chunk_Types.h" />
+    <ClInclude Include="Map\Map_Tile.h" />
+    <ClInclude Include="Map\Model_Instance.h" />
+    <ClInclude Include="Map\WMO_Instance.h" />
+    <ClInclude Include="MDX\Animated.h" />
+    <ClInclude Include="MDX\Animated_Types.h" />
+    <ClInclude Include="MDX\MDX.h" />
+    <ClInclude Include="MDX\MDX_Headers.h" />
+    <ClInclude Include="MDX\MDX_Part_Bone.h" />
+    <ClInclude Include="MDX\MDX_Part_Camera.h" />
+    <ClInclude Include="MDX\MDX_Part_Color.h" />
+    <ClInclude Include="MDX\MDX_Part_Light.h" />
+    <ClInclude Include="MDX\MDX_Part_TextureAnim.h" />
+    <ClInclude Include="MDX\MDX_Part_Transparency.h" />
+    <ClInclude Include="MDX\ModelsManager.h" />
+    <ClInclude Include="MDX\Model_RenderPass.h" />
+    <ClInclude Include="MDX\Model_Skin.h" />
+    <ClInclude Include="MDX\Particle.h" />
+    <ClInclude Include="MDX\ParticleSystem.h" />
+    <ClInclude Include="MDX\RibbonEmitter.h" />
+    <ClInclude Include="MDX\Sky_Model.h" />
+    <ClInclude Include="SceneNode.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="UIButton.h" />
-    <ClInclude Include="UIButton3t.h" />
-    <ClInclude Include="UICheckBox.h" />
-    <ClInclude Include="UIElement.h" />
-    <ClInclude Include="UIFile.h" />
-    <ClInclude Include="UIInput.h" />
-    <ClInclude Include="UIMgr.h" />
-    <ClInclude Include="UIScrollBar.h" />
-    <ClInclude Include="UIWindow.h" />
+    <ClInclude Include="WMO\DoodadInstance.h" />
+    <ClInclude Include="WMO\liquid.h" />
+    <ClInclude Include="WMO\WMO.h" />
+    <ClInclude Include="WMO\WMO_Fog.h" />
+    <ClInclude Include="WMO\WMO_Group.h" />
+    <ClInclude Include="WMO\WMO_Light.h" />
+    <ClInclude Include="WMO\WMO_Manager.h" />
+    <ClInclude Include="WMO\WMO_Material.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DBC__File.inl" />
+    <None Include="Map\Map.inl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{25E4827B-D0DD-4758-B70F-DEA7217E7E70}</ProjectGuid>
@@ -128,7 +217,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;OW_GAME_DLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Externals\glew-2.1.0\include;..\Externals\glfw-3.2.1.bin.WIN32\include;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Externals\glew-2.1.0\include;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <SDLCheck>false</SDLCheck>
     </ClCompile>
     <Link>
@@ -145,7 +234,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;OW_GAME_DLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>..\Externals\glew-2.1.0\include;..\Externals\glfw-3.2.1.bin.WIN64\include;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Externals\glew-2.1.0\include;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -162,7 +251,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;OW_GAME_DLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Externals\glew-2.1.0\include;..\Externals\glfw-3.2.1.bin.WIN32\include;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Externals\glew-2.1.0\include;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <SDLCheck>false</SDLCheck>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -185,7 +274,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;OW_GAME_DLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>..\Externals\glew-2.1.0\include;..\Externals\glfw-3.2.1.bin.WIN64\include;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Externals\glew-2.1.0\include;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>

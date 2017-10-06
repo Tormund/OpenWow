@@ -17,8 +17,6 @@
 
 // Debug outputs
 
-#include "../owCore/DebugOutput_ConsoleWindows.h"
-#include "../owCore/DebugOutput_Log.h"
 #include "../owCore/Console.h"
 
 // Files
@@ -35,8 +33,6 @@
 #include "../owCore/Input.h"
 
 // Game
-
-#include "../owCore/Animated.h"
 #include "../owCore/InfoPortions.h"
 #include "../owCore/Settings.h"
 #include "../owCore/ModulesMgr.h"

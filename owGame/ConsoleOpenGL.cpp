@@ -10,14 +10,14 @@ bool ConsoleOpenGL::Init()
 	consoleFont = _FontsMgr->GetMainFont();
 	assert1(consoleFont != nullptr);
 	fontHeight = consoleFont->GetHeight();
-	consoleHeight = windowSize.y / 2;
+	consoleHeight = windowSize.y / 2.0f;
 	linesInConsole = consoleHeight / fontHeight;
-	textOffset = vec2(5, -(fontHeight + 3));
+	textOffset = vec2(5.0f, -(fontHeight + 3.0f));
 	lineOffset = 0;
 	inputString = "";
 
 	helperSelected = 0;
-	helperOffset = vec2(consoleFont->GetStringWidth(">"), 0);
+	helperOffset = vec2(consoleFont->GetStringWidth(">"), 0.0f);
 
 	AddCommonCommands();
 
@@ -56,7 +56,7 @@ void ConsoleOpenGL::RenderUI()
 	_Render->RenderRectangle(vec2(0, consoleHeight), vec2(windowSize.x, fontHeight), true, COLOR_DARKGRAY);
 
 	// Input string
-	_Render->RenderText(vec2(0, consoleHeight), ">" + inputString, COLOR_WHITE);
+	_Render->RenderText(vec2(0.0f, consoleHeight), ">" + inputString, COLOR_WHITE);
 
 	// Helper
 	if (!commandsHelper.empty())
@@ -69,13 +69,13 @@ void ConsoleOpenGL::RenderUI()
 			auto commandNameWidth = consoleFont->GetStringWidth(commandName);
 
 			// Rectangle
-			_Render->RenderRectangle(vec2(0, consoleHeight + i * fontHeight), helperOffset + vec2(commandNameWidth, fontHeight), true, COLOR_GRAY);
+			_Render->RenderRectangle(vec2(0.0f, consoleHeight + i * fontHeight), helperOffset + vec2(commandNameWidth, fontHeight), true, COLOR_GRAY);
 
 			// Selected
 			if (helperSelected == i)
 			{
-				_Render->RenderText(vec2(0, consoleHeight + i * fontHeight), ">", COLOR_WHITE);
-				_Render->RenderRectangle(vec2(0, consoleHeight + i * fontHeight), helperOffset + vec2(commandNameWidth, fontHeight), false, COLOR_BLUE);
+				_Render->RenderText(vec2(0.0f, consoleHeight + i * fontHeight), ">", COLOR_WHITE);
+				_Render->RenderRectangle(vec2(0.0f, consoleHeight + i * fontHeight), helperOffset + vec2(commandNameWidth, fontHeight), false, COLOR_BLUE);
 			}
 
 			// Text
@@ -84,12 +84,14 @@ void ConsoleOpenGL::RenderUI()
 			{
 				line += " [args]";
 			}
-			_Render->RenderText(helperOffset + vec2(0, consoleHeight + i * fontHeight), line, COLOR_WHITE);
+			_Render->RenderText(helperOffset + vec2(0.0f, consoleHeight + i * fontHeight), line, COLOR_WHITE);
 
 			i++;
 		}
 	}
 }
+
+//
 
 MOUSE_WHEEL(ConsoleOpenGL)
 {
@@ -107,7 +109,7 @@ MOUSE_WHEEL(ConsoleOpenGL)
 
 KEYBD_PRESSED(ConsoleOpenGL)
 {
-	if (_key == GLFW_KEY_GRAVE_ACCENT)
+	if (_key == OW_KEY_GRAVE_ACCENT)
 	{
 		opened = !opened;
 		inputString = "";
@@ -116,7 +118,7 @@ KEYBD_PRESSED(ConsoleOpenGL)
 		return true;
 	}
 
-	if (_key == GLFW_KEY_BACKSPACE && !inputString.empty())
+	if (_key == OW_KEY_BACKSPACE && !inputString.empty())
 	{
 		inputString.pop_back();
 
@@ -132,19 +134,19 @@ KEYBD_PRESSED(ConsoleOpenGL)
 		return true;
 	}
 
-	if (_key == GLFW_KEY_DOWN)
+	if (_key == OW_KEY_DOWN)
 	{
 		helperSelected++;
 		helperSelected = minf(helperSelected, (int)commandsHelper.size());
 	}
 
-	if (_key == GLFW_KEY_UP)
+	if (_key == OW_KEY_UP)
 	{
 		helperSelected--;
 		helperSelected = maxf(helperSelected, 0);
 	}
 
-	if (_key == GLFW_KEY_ENTER && !inputString.empty())
+	if (_key == OW_KEY_ENTER && !inputString.empty())
 	{
 		int helperSelectedIndex = helperSelected - 1;
 		if (helperSelectedIndex != -1 && helperSelectedIndex < commandsHelper.size())

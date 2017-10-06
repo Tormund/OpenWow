@@ -28,8 +28,6 @@ protected:
 public:
 	bool LoadSoilTexture(File& _file, Texture* _texture);
 	bool LoadBLPTexture(File& _file, Texture* _texture);
-	bool loadBLP(File& _file, Texture* _texture);
-	void decompressDXTC(GLint format, int w, int h, size_t size, unsigned char* src, unsigned char* dest);
 
 private:
 	Texture* black;

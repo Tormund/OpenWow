@@ -13,9 +13,6 @@
     <Filter Include="Module">
       <UniqueIdentifier>{0aac1f61-7524-4d73-a6d5-ac5839c221d8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Debug\Debug Outputs">
-      <UniqueIdentifier>{ee96e328-f0ef-46a7-8da9-95f0400b912b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="RefManager">
       <UniqueIdentifier>{1e0aa16e-9a5d-41ce-ba51-305029359e7a}</UniqueIdentifier>
     </Filter>
@@ -52,12 +49,6 @@
     <Filter Include="Settings &amp; Info">
       <UniqueIdentifier>{9b973700-569a-4aed-adb3-f162d9996dd4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Animation">
-      <UniqueIdentifier>{7c7e29e8-2c64-42d0-8a50-68d565baf680}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="World">
-      <UniqueIdentifier>{69181e93-284e-45a2-b3a5-9601cc083f43}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Files\CASCFile">
       <UniqueIdentifier>{488ed99e-97e9-4c74-ac04-8bcc02832f34}</UniqueIdentifier>
     </Filter>
@@ -80,15 +71,6 @@
     </ClCompile>
     <ClCompile Include="Console.cpp">
       <Filter>Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="DebugOutput_ConsoleWindows.cpp">
-      <Filter>Debug\Debug Outputs</Filter>
-    </ClCompile>
-    <ClCompile Include="DebugOutput_Log.cpp">
-      <Filter>Debug\Debug Outputs</Filter>
-    </ClCompile>
-    <ClCompile Include="DebugOutput.cpp">
-      <Filter>Debug\Debug Outputs</Filter>
     </ClCompile>
     <ClCompile Include="ByteBuffer.cpp">
       <Filter>Files</Filter>
@@ -152,15 +134,6 @@
     <ClCompile Include="Settings.cpp">
       <Filter>Settings &amp; Info</Filter>
     </ClCompile>
-    <ClCompile Include="Animated.cpp">
-      <Filter>Animation</Filter>
-    </ClCompile>
-    <ClCompile Include="BoundingBox.cpp">
-      <Filter>Common\Types</Filter>
-    </ClCompile>
-    <ClCompile Include="TimeManager.cpp">
-      <Filter>World</Filter>
-    </ClCompile>
     <ClCompile Include="CASCFile.cpp">
       <Filter>Files\CASCFile</Filter>
     </ClCompile>
@@ -172,6 +145,9 @@
     </ClCompile>
     <ClCompile Include="SmartItemPtr.cpp">
       <Filter>RefManager\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugOutput.cpp">
+      <Filter>Debug</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -201,15 +177,6 @@
     </ClInclude>
     <ClInclude Include="Console.h">
       <Filter>Debug</Filter>
-    </ClInclude>
-    <ClInclude Include="DebugOutput_ConsoleWindows.h">
-      <Filter>Debug\Debug Outputs</Filter>
-    </ClInclude>
-    <ClInclude Include="DebugOutput_Log.h">
-      <Filter>Debug\Debug Outputs</Filter>
-    </ClInclude>
-    <ClInclude Include="DebugOutput.h">
-      <Filter>Debug\Debug Outputs</Filter>
     </ClInclude>
     <ClInclude Include="ByteBuffer.h">
       <Filter>Files</Filter>
@@ -278,20 +245,8 @@
     <ClInclude Include="Settings.h">
       <Filter>Settings &amp; Info</Filter>
     </ClInclude>
-    <ClInclude Include="Animated.h">
-      <Filter>Animation</Filter>
-    </ClInclude>
-    <ClInclude Include="BoundingBox.h">
-      <Filter>Common\Types</Filter>
-    </ClInclude>
     <ClInclude Include="WowTypes.h">
       <Filter>Common\Types</Filter>
-    </ClInclude>
-    <ClInclude Include="TimeManager.h">
-      <Filter>World</Filter>
-    </ClInclude>
-    <ClInclude Include="AnimationTypes.h">
-      <Filter>Animation</Filter>
     </ClInclude>
     <ClInclude Include="WowTime.h">
       <Filter>Common\Types</Filter>
@@ -328,6 +283,12 @@
     </ClInclude>
     <ClInclude Include="WowConsts.h">
       <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="InputKeys.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugOutput.h">
+      <Filter>Debug</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

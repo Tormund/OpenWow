@@ -3,27 +3,18 @@
 // General
 #include "Input.h"
 
-// FIXME !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-#define GLFW_RELEASE                0
-#define GLFW_PRESS                  1
-#define GLFW_REPEAT                 2
-// FIXME !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-#define KEYSCOUNT 349
-#define MOUSEBUTTONSCOUNT 8
-
 bool Input::Init()
 {
 	// Inits keystates
-	keyState = new bool[KEYSCOUNT];
-	for (int i = 0; i < KEYSCOUNT; i++)
+	keyState = new bool[OW_KEYSCOUNT];
+	for (int i = 0; i < OW_KEYSCOUNT; i++)
 	{
 		keyState[i] = false;
 	}
 
 	// Inits mousebuttons states
-	mouseButtonState = new bool[MOUSEBUTTONSCOUNT];
-	for (int i = 0; i < MOUSEBUTTONSCOUNT; i++)
+	mouseButtonState = new bool[OW_MOUSEBUTTONSCOUNT];
+	for (int i = 0; i < OW_MOUSEBUTTONSCOUNT; i++)
 	{
 		mouseButtonState[i] = false;
 	}
@@ -64,14 +55,14 @@ void Input::MousePositionCallback(cvec2 _mousePos)
 
 void Input::MouseCallback(int button, int action, int mods)
 {
-	if (action == GLFW_PRESS)
+	if (action == OW_PRESS)
 	{
 		mouseButtonState[button] = true;
 		for (auto it = inputListeners.begin(); it != inputListeners.end(); ++it)
 			if ((*it)->OnMouseButtonPressed(button, action, mousePos))
 				break;
 	}
-	else if (action == GLFW_RELEASE)
+	else if (action == OW_RELEASE)
 	{
 		mouseButtonState[button] = false;
 
@@ -90,7 +81,7 @@ void Input::MouseScrollCallback(int yoffset)
 
 void Input::KeyboardCallback(int key, int scancode, int action, int mods)
 {
-	if (action == GLFW_PRESS || action == GLFW_REPEAT)
+	if (action == OW_PRESS || action == OW_REPEAT)
 	{
 		keyState[key] = true;
 
@@ -98,7 +89,7 @@ void Input::KeyboardCallback(int key, int scancode, int action, int mods)
 			if ((*it)->OnKeyboardPressed(key, scancode, mods))
 				break;
 	}
-	else if (action == GLFW_RELEASE)
+	else if (action == OW_RELEASE)
 	{
 		keyState[key] = false;
 

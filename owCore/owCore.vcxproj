@@ -19,9 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Animated.cpp" />
     <ClCompile Include="BaseFile.cpp" />
-    <ClCompile Include="BoundingBox.cpp" />
     <ClCompile Include="CASCFile.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -40,14 +38,12 @@
     <ClCompile Include="RefManager1Dim.cpp" />
     <ClCompile Include="ByteBuffer.cpp" />
     <ClCompile Include="Console.cpp" />
-    <ClCompile Include="DebugOutput_ConsoleWindows.cpp" />
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="LocalFile.cpp" />
     <ClCompile Include="FileSystem.cpp" />
     <ClCompile Include="DebugOutput.cpp" />
     <ClCompile Include="INIFile.cpp" />
     <ClCompile Include="Input.cpp" />
-    <ClCompile Include="DebugOutput_Log.cpp" />
     <ClCompile Include="RefItem.cpp" />
     <ClCompile Include="ModulesMgr.cpp" />
     <ClCompile Include="Random.cpp" />
@@ -58,7 +54,6 @@
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="SmartItemPtr.cpp" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="TimeManager.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="UtilsConvert.cpp" />
     <ClCompile Include="WowChunkUtils.cpp" />
@@ -66,10 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\shared\owCore.h" />
-    <ClInclude Include="Animated.h" />
-    <ClInclude Include="AnimationTypes.h" />
     <ClInclude Include="BaseFile.h" />
-    <ClInclude Include="BoundingBox.h" />
     <ClInclude Include="CASCFile.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -82,6 +74,7 @@
     <ClInclude Include="File.h" />
     <ClInclude Include="GameModule.h" />
     <ClInclude Include="InfoPortions.h" />
+    <ClInclude Include="InputKeys.h" />
     <ClInclude Include="Macros.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="MPQFile.h" />
@@ -94,7 +87,6 @@
     <ClInclude Include="Color.h" />
     <ClInclude Include="common.h" />
     <ClInclude Include="Console.h" />
-    <ClInclude Include="DebugOutput_ConsoleWindows.h" />
     <ClInclude Include="Consts.h" />
     <ClInclude Include="Debug.h" />
     <ClInclude Include="DebugMacros.h" />
@@ -105,7 +97,6 @@
     <ClInclude Include="INIFile.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="InputListener.h" />
-    <ClInclude Include="DebugOutput_Log.h" />
     <ClInclude Include="RefItemNamed.h" />
     <ClInclude Include="RefManager1DimAssync.h" />
     <ClInclude Include="RefSimpleManagers.h" />
@@ -118,7 +109,6 @@
     <ClInclude Include="Settings.h" />
     <ClInclude Include="SmartItemPtr.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="TimeManager.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="Utils.h" />

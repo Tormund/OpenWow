@@ -94,7 +94,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;OW_RENDER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Externals\glfw-3.2.1.bin.WIN32\include;..\Externals\glew-2.1.0\include;..\Externals\glfx\glfx\include;..\Externals\soil;..\Externals\freetype\include;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Externals\glew-2.1.0\include;..\Externals\glfx\glfx\include;..\Externals\soil;..\Externals\freetype\include;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <SDLCheck>false</SDLCheck>
     </ClCompile>
     <Link>
@@ -112,7 +112,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;OW_RENDER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>..\Externals\glfw-3.2.1.bin.WIN64\include;..\Externals\glew-2.1.0\include;..\Externals\glfx\glfx\include;..\Externals\soil;..\Externals\freetype\include;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Externals\glew-2.1.0\include;..\Externals\glfx\glfx\include;..\Externals\soil;..\Externals\freetype\include;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -130,7 +130,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;OW_RENDER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Externals\glfw-3.2.1.bin.WIN32\include;..\Externals\glew-2.1.0\include;..\Externals\glfx\glfx\include;..\Externals\soil;..\Externals\freetype\include;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Externals\glew-2.1.0\include;..\Externals\glfx\glfx\include;..\Externals\soil;..\Externals\freetype\include;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <SDLCheck>false</SDLCheck>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -154,7 +154,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;OW_RENDER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>..\Externals\glfw-3.2.1.bin.WIN64\include;..\Externals\glew-2.1.0\include;..\Externals\glfx\glfx\include;..\Externals\soil;..\Externals\freetype\include;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Externals\glew-2.1.0\include;..\Externals\glfx\glfx\include;..\Externals\soil;..\Externals\freetype\include;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -169,15 +169,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="ddslib.cpp" />
     <ClCompile Include="Perfomance.cpp" />
     <ClCompile Include="PipelineWorldTransformation.cpp" />
     <ClCompile Include="TechniquesManager.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FontsMgr.cpp" />
-    <ClCompile Include="Frustum.cpp" />
     <ClCompile Include="Gbuffer.cpp" />
-    <ClCompile Include="GLFWBackend.cpp" />
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="Pipeline.cpp" />
     <ClCompile Include="Render.cpp" />
@@ -210,15 +207,12 @@
     <ClInclude Include="..\shared\owRender.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="common.h" />
-    <ClInclude Include="ddslib.h" />
     <ClInclude Include="Perfomance.h" />
     <ClInclude Include="PipelineWorldTransformation.h" />
     <ClInclude Include="TechniquesManager.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="FontsMgr.h" />
-    <ClInclude Include="Frustum.h" />
     <ClInclude Include="Gbuffer.h" />
-    <ClInclude Include="GLFWBackend.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="lights_common.h" />
     <ClInclude Include="Pipeline.h" />

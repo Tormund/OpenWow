@@ -1,10 +1,9 @@
 #pragma once
 
-#include "Frustum.h"
-
 class GLFWBackend;
 
-class RenderGL : public Module {
+class RenderGL : public Module
+{
 	friend GLFWBackend;
 public:
 	DEF_MODULE(RenderGL);
@@ -22,18 +21,18 @@ public:
 	void RenderText(cvec2 _pos, cstring _string, TextAlignW _alignW, TextAlignH _alignH, const Color& _color = COLOR_WHITE) const;
 	void RenderText(cvec2 _pos, cstring _string, TextAlignW _alignW, TextAlignH _alignH, Font* _font, const Color& _color = COLOR_WHITE) const;
 
-/*public:
-	HDC dc;
-	HGLRC glrc1;
-	HGLRC glrc2;
-	HGLRC glrc3;
-	HGLRC glrc4;*/
+	/*public:
+		HDC dc;
+		HGLRC glrc1;
+		HGLRC glrc2;
+		HGLRC glrc3;
+		HGLRC glrc4;*/
 
 private:
 	void OnWindowResized(uint32 _width, uint32 _height);
 
 public:
-	Frustum2 frustum;
+	Frustum frustum;
 
 private:
 	mat4 m_OrhoMatrix;

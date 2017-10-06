@@ -69,7 +69,7 @@ public:
 	float MovementSpeed;
 	float MouseSensitivity;
 
-private:
+public:
 	Matrix4f            _absTrans;
 	Matrix4f            _viewMat, _projMat;
 	Frustum             _frustum;
@@ -77,8 +77,6 @@ private:
 	int					_vpX, _vpY, _vpWidth, _vpHeight;
 	float               _frustLeft, _frustRight, _frustBottom, _frustTop;
 	float               _frustNear, _frustFar;
-	int                 _outputBufferIndex;
-	int                 _occSet;
 	bool                _orthographic;  // Perspective or orthographic frustum?
 	bool                _manualProjMat; // Projection matrix manually set?
 };

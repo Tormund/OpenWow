@@ -1,7 +1,6 @@
 #include "stdafx.h"
 
 // Include
-#include "GLFWBackend.h"
 #include "FontsMgr.h"
 #include "TexturesMgr.h"
 

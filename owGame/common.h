@@ -1,3 +1,3 @@
 #pragma once
 
-typedef uint32 NodeHandle;
+#include "MDX/MDX_Headers.h"

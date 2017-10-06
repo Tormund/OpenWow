@@ -54,12 +54,12 @@ class Perfomance
 
 	inline void Start(PerfomanceTimer _timer)
 	{
-		m_TimerCurrent[_timer] = glfwGetTime();
+		m_TimerCurrent[_timer] = 0/*glfwGetTime()*/;
 	}
 
 	inline void Stop(PerfomanceTimer _timer)
 	{
-		m_TimerCurrent[_timer] =  glfwGetTime() - m_TimerCurrent[_timer];
+		m_TimerCurrent[_timer] =  0/*glfwGetTime()*/ - m_TimerCurrent[_timer];
 
 		m_Timer[_timer] += m_TimerCurrent[_timer];
 	}

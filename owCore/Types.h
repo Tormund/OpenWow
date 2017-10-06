@@ -19,7 +19,6 @@ typedef Quaternion quat;
 typedef const Quaternion& cquat;
 
 // Own types
-#include "BoundingBox.h"
 #include "Color.h"
 #include "Primitives.h"
 #include "Rect.h"

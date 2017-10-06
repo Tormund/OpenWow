@@ -918,8 +918,8 @@ Matrix4f Renderer::calcCropMatrix( const Frustum &frustSlice, const Vec3f lightP
 		const BoundingBox &aabb = renderQueue[i].node->getBBox();
 		
 		// Check if light is inside AABB
-		if( lightPos.x >= aabb.min.x && lightPos.y >= aabb.min.y && lightPos.z >= aabb.min.z &&
-			lightPos.x <= aabb.max.x && lightPos.y <= aabb.max.y && lightPos.z <= aabb.max.z )
+		if( lightPos.x >= aabb.Min.x && lightPos.y >= aabb.Min.y && lightPos.z >= aabb.Min.z &&
+			lightPos.x <= aabb.Max.x && lightPos.y <= aabb.Max.y && lightPos.z <= aabb.Max.z )
 		{
 			bbMinX = bbMinY = bbMinZ = -1;
 			bbMaxX = bbMaxY = bbMaxZ = 1;

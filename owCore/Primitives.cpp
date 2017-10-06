@@ -150,17 +150,17 @@ bool Frustum::cullSphere(Vec3f pos, float rad) const
 	return false;
 }
 
-bool Frustum::cullBox(BoundingBox &b) const
+bool Frustum::cullBox(BoundingBox& b) const
 {
 	// Idea for optimized AABB testing from www.lighthouse3d.com
 	for (uint32 i = 0; i < 6; ++i)
 	{
 		const Vec3f &n = _planes[i].normal;
 
-		Vec3f positive = b.min;
-		if (n.x <= 0) positive.x = b.max.x;
-		if (n.y <= 0) positive.y = b.max.y;
-		if (n.z <= 0) positive.z = b.max.z;
+		Vec3f positive = b.Min;
+		if (n.x <= 0) positive.x = b.Max.x;
+		if (n.y <= 0) positive.y = b.Max.y;
+		if (n.z <= 0) positive.z = b.Max.z;
 
 		if (_planes[i].distToPoint(positive) > 0) return true;
 	}
@@ -168,7 +168,7 @@ bool Frustum::cullBox(BoundingBox &b) const
 	return false;
 }
 
-bool Frustum::cullFrustum(const Frustum &frust) const
+bool Frustum::cullFrustum(const Frustum& frust) const
 {
 	for (uint32 i = 0; i < 6; ++i)
 	{
@@ -191,7 +191,7 @@ bool Frustum::cullFrustum(const Frustum &frust) const
 
 //
 
-void Frustum::calcAABB(Vec3f &mins, Vec3f &maxs) const
+void Frustum::calcAABB(Vec3f& mins, Vec3f& maxs) const
 {
 	mins.x = Math::MaxFloat; mins.y = Math::MaxFloat; mins.z = Math::MaxFloat;
 	maxs.x = -Math::MaxFloat; maxs.y = -Math::MaxFloat; maxs.z = -Math::MaxFloat;

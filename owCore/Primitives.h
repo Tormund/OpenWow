@@ -21,49 +21,96 @@
 
 struct BoundingBox
 {
-	Vec3f  min, max;
+	Vec3f Min;
+	Vec3f Max;
+	Vec3f Center;
+	float Radius;
 
 	//
 
+	void set(cvec3 _min, cvec3 _max, bool _needConvert = false)
+	{
+		Min = _min;
+		Max = _max;
+
+		// Fix bounding box
+		if (_needConvert)
+		{
+			From_XYZ_To_XZminusY(Min);
+			From_XYZ_To_XZminusY(Max);
+			std::swap(Min.z, Max.z);
+		}
+
+		//assert1(min.x < max.x && min.y < max.y && min.z < max.z);
+
+		calculateInternal();
+	}
+
+	void calculate(const vec3* _verts, uint32 _count, bool _needConvert = false)
+	{
+			for (uint32 i = 0; i < _count; i++)
+			{
+				vec3 v = (_needConvert) ? From_XYZ_To_XZminusY_RET(_verts[i]) : _verts[i];
+
+				if (v.x < Min.x) Min.x = v.x;
+				if (v.y < Min.y) Min.y = v.y;
+				if (v.z < Min.z) Min.z = v.z;
+				if (v.x > Max.x) Max.x = v.x;
+				if (v.y > Max.y) Max.y = v.y;
+				if (v.z > Max.z) Max.z = v.z;
+			}
+
+			calculateInternal();
+	}
+
+	void calculateInternal()
+	{
+		Center = (Min + Max) * 0.5f;
+		Radius = (Max - Center).length();
+	}
+
 	void clear()
 	{
-		min = Vec3f(0, 0, 0);
-		max = Vec3f(0, 0, 0);
+		Min = Vec3f(0, 0, 0);
+		Max = Vec3f(0, 0, 0);
+		Center = Vec3f(0, 0, 0);
+		Radius = 0.0f;
 	}
+
+	//
 
 	Vec3f getCorner(uint32 index) const
 	{
 		switch (index)
 		{
 			case 0:
-			return Vec3f(min.x, min.y, max.z);
+			return Vec3f(Min.x, Min.y, Max.z);
 			case 1:
-			return Vec3f(max.x, min.y, max.z);
+			return Vec3f(Max.x, Min.y, Max.z);
 			case 2:
-			return Vec3f(max.x, max.y, max.z);
+			return Vec3f(Max.x, Max.y, Max.z);
 			case 3:
-			return Vec3f(min.x, max.y, max.z);
+			return Vec3f(Min.x, Max.y, Max.z);
 			case 4:
-			return Vec3f(min.x, min.y, min.z);
+			return Vec3f(Min.x, Min.y, Min.z);
 			case 5:
-			return Vec3f(max.x, min.y, min.z);
+			return Vec3f(Max.x, Min.y, Min.z);
 			case 6:
-			return Vec3f(max.x, max.y, min.z);
+			return Vec3f(Max.x, Max.y, Min.z);
 			case 7:
-			return Vec3f(min.x, max.y, min.z);
+			return Vec3f(Min.x, Max.y, Min.z);
 			default:
 			return Vec3f();
 		}
 	}
 
-
-	void transform(const Matrix4f &m)
+	void transform(const Matrix4f& m)
 	{
 		// Efficient algorithm for transforming an AABB, taken from Graphics Gems
 
-		float minA[3] = {min.x, min.y, min.z};
+		float minA[3] = {Min.x, Min.y, Min.z};
 		float minB[3];
-		float maxA[3] = {max.x, max.y, max.z};
+		float maxA[3] = {Max.x, Max.y, Max.z};
 		float maxB[3];
 
 		for (uint32 i = 0; i < 3; ++i)
@@ -80,36 +127,38 @@ struct BoundingBox
 			}
 		}
 
-		min = Vec3f(minB[0], minB[1], minB[2]);
-		max = Vec3f(maxB[0], maxB[1], maxB[2]);
+		Min = Vec3f(minB[0], minB[1], minB[2]);
+		Max = Vec3f(maxB[0], maxB[1], maxB[2]);
+
+		Center = m * Center;
 	}
 
-
-	bool makeUnion(BoundingBox &b)
+	bool makeUnion(const BoundingBox& b)
 	{
 		bool changed = false;
 
 		// Ignore zero-size boxes
-		if (min == max)
+		if (Min == Max)
 		{
 			changed = true;
-			min = b.min;
-			max = b.max;
+			Min = b.Min;
+			Max = b.Max;
 		}
-		else if (b.min != b.max)
+		else if (b.Min != b.Max)
 		{
-			if (b.min.x < min.x) { changed = true; min.x = b.min.x; }
-			if (b.min.y < min.y) { changed = true; min.y = b.min.y; }
-			if (b.min.z < min.z) { changed = true; min.z = b.min.z; }
+			if (b.Min.x < Min.x) { changed = true; Min.x = b.Min.x; }
+			if (b.Min.y < Min.y) { changed = true; Min.y = b.Min.y; }
+			if (b.Min.z < Min.z) { changed = true; Min.z = b.Min.z; }
 
-			if (b.max.x > max.x) { changed = true; max.x = b.max.x; }
-			if (b.max.y > max.y) { changed = true; max.y = b.max.y; }
-			if (b.max.z > max.z) { changed = true; max.z = b.max.z; }
+			if (b.Max.x > Max.x) { changed = true; Max.x = b.Max.x; }
+			if (b.Max.y > Max.y) { changed = true; Max.y = b.Max.y; }
+			if (b.Max.z > Max.z) { changed = true; Max.z = b.Max.z; }
 		}
 
 		return changed;
 	}
 };
+
 
 
 // =================================================================================================
@@ -128,8 +177,8 @@ public:
 	void buildBoxFrustum(const Matrix4f &transMat, float left, float right, float bottom, float top, float front, float back);
 
 	bool cullSphere(Vec3f pos, float rad) const;
-	bool cullBox(BoundingBox &b) const;
-	bool cullFrustum(const Frustum &frust) const;
+	bool cullBox(BoundingBox& b) const;
+	bool cullFrustum(const Frustum& frust) const;
 
 	void calcAABB(Vec3f &mins, Vec3f &maxs) const;
 

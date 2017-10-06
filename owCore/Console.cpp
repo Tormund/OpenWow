@@ -104,7 +104,9 @@ Console::ConsoleCommands Console::GetConsoleCommandHelp(string _input)
 		}
 
 		if (commands.size() == consoleCommandHelpMaxSize)
+		{
 			break;
+		}
 	}
 
 	return commands;
@@ -115,7 +117,9 @@ bool Console::ProcessConsoleCommand(string _line)
 	Utils::ToLower(_line);
 
 	if (_line.empty())
+	{
 		return false;
+	}
 
 	string command;
 	string args;
@@ -144,9 +148,13 @@ bool Console::ProcessConsoleCommand(string _line)
 
 	// Execute
 	if (consoleCommand->HasArgs())
+	{
 		consoleCommand->Execute(args);
+	}
 	else
+	{
 		consoleCommand->Execute();
+	}
 
 	return true;
 }

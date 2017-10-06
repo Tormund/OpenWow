@@ -2,6 +2,7 @@
 
 // Includes
 #include "InputListener.h"
+#include "InputKeys.h"
 
 class Input : public Module
 {

@@ -4,63 +4,198 @@
     <Filter Include="General">
       <UniqueIdentifier>{24c337e0-a2b6-44f6-8f76-c24a9b084161}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GUI">
-      <UniqueIdentifier>{fb6b7202-03c0-4e45-8231-887b57cbc267}</UniqueIdentifier>
+    <Filter Include="WMO">
+      <UniqueIdentifier>{b1cac847-eaba-48be-aa67-fe553c0c414b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GUI\Elements">
-      <UniqueIdentifier>{e219c3ba-a36c-49ac-a078-f0c01fc1d5d2}</UniqueIdentifier>
+    <Filter Include="MDX">
+      <UniqueIdentifier>{307e0a03-1e9b-4b36-a242-07d86a127b60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Map">
+      <UniqueIdentifier>{a36b5e59-c60a-4f44-b7b3-9977636ed0d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Environment">
+      <UniqueIdentifier>{5855bdd1-81fa-42f5-a488-036763f96299}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MDX\Parts">
+      <UniqueIdentifier>{42a5139b-a07d-4ff0-a59e-cebbb8457673}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MDX\Particles">
+      <UniqueIdentifier>{f41af646-31b1-4540-87df-3fc70ba95292}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Map\Instances">
+      <UniqueIdentifier>{aa7fbffb-1487-4cbf-9eba-5f2d6c4ca15f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WMO\Instances">
+      <UniqueIdentifier>{4cacdc22-0be2-480f-91e2-b7ef974ad3e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GUI">
+      <UniqueIdentifier>{06f89fe1-a51e-46c1-a215-a45bb5e706f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DBC">
+      <UniqueIdentifier>{cf549537-a757-477f-ac0c-e984aef2e058}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{1d5a6f0a-304b-4a06-b799-c1ee3e3099c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MDX\Animated">
+      <UniqueIdentifier>{eec8ec3d-42e8-40b1-ab10-8f0117192ba7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Engine.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
     <ClCompile Include="GameState.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="GameState_Empty.cpp">
       <Filter>General</Filter>
     </ClCompile>
     <ClCompile Include="ConsoleOpenGL.cpp">
       <Filter>General</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="UIButton.cpp">
-      <Filter>GUI\Elements</Filter>
+    <ClCompile Include="MDX\MDX.cpp">
+      <Filter>MDX</Filter>
     </ClCompile>
-    <ClCompile Include="UIButton3t.cpp">
-      <Filter>GUI\Elements</Filter>
+    <ClCompile Include="MDX\MDX_Animated.cpp">
+      <Filter>MDX</Filter>
     </ClCompile>
-    <ClCompile Include="UICheckBox.cpp">
-      <Filter>GUI\Elements</Filter>
+    <ClCompile Include="MDX\Model_RenderPass.cpp">
+      <Filter>MDX</Filter>
     </ClCompile>
-    <ClCompile Include="UIElement.cpp">
-      <Filter>GUI\Elements</Filter>
+    <ClCompile Include="MDX\Model_Skin.cpp">
+      <Filter>MDX</Filter>
     </ClCompile>
-    <ClCompile Include="UIInput.cpp">
-      <Filter>GUI\Elements</Filter>
+    <ClCompile Include="MDX\Model_Static.cpp">
+      <Filter>MDX</Filter>
     </ClCompile>
-    <ClCompile Include="UIScrollBar.cpp">
-      <Filter>GUI\Elements</Filter>
+    <ClCompile Include="MDX\ModelsManager.cpp">
+      <Filter>MDX</Filter>
     </ClCompile>
-    <ClCompile Include="UIWindow.cpp">
-      <Filter>GUI\Elements</Filter>
+    <ClCompile Include="MDX\Sky_Model.cpp">
+      <Filter>MDX</Filter>
     </ClCompile>
-    <ClCompile Include="UIFile.cpp">
+    <ClCompile Include="MDX\MDX_Part_Bone.cpp">
+      <Filter>MDX\Parts</Filter>
+    </ClCompile>
+    <ClCompile Include="MDX\MDX_Part_Camera.cpp">
+      <Filter>MDX\Parts</Filter>
+    </ClCompile>
+    <ClCompile Include="MDX\MDX_Part_Color.cpp">
+      <Filter>MDX\Parts</Filter>
+    </ClCompile>
+    <ClCompile Include="MDX\MDX_Part_Light.cpp">
+      <Filter>MDX\Parts</Filter>
+    </ClCompile>
+    <ClCompile Include="MDX\MDX_Part_TextureAnim.cpp">
+      <Filter>MDX\Parts</Filter>
+    </ClCompile>
+    <ClCompile Include="MDX\MDX_Part_Transparency.cpp">
+      <Filter>MDX\Parts</Filter>
+    </ClCompile>
+    <ClCompile Include="MDX\Particle.cpp">
+      <Filter>MDX\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="MDX\ParticleEmitters.cpp">
+      <Filter>MDX\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="MDX\ParticleSystem.cpp">
+      <Filter>MDX\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="MDX\RibbonEmitter.cpp">
+      <Filter>MDX\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="Map\Map.cpp">
+      <Filter>Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Map\Map_Chunk.cpp">
+      <Filter>Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Map\Map_Chunk_MH2O.cpp">
+      <Filter>Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Map\Map_Tile.cpp">
+      <Filter>Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Map\WMO_Instance.cpp">
+      <Filter>Map\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="Map\Model_Instance.cpp">
+      <Filter>Map\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="WMO\liquid.cpp">
+      <Filter>WMO</Filter>
+    </ClCompile>
+    <ClCompile Include="WMO\WMO.cpp">
+      <Filter>WMO</Filter>
+    </ClCompile>
+    <ClCompile Include="WMO\WMO_Fog.cpp">
+      <Filter>WMO</Filter>
+    </ClCompile>
+    <ClCompile Include="WMO\WMO_Group.cpp">
+      <Filter>WMO</Filter>
+    </ClCompile>
+    <ClCompile Include="WMO\WMO_Light.cpp">
+      <Filter>WMO</Filter>
+    </ClCompile>
+    <ClCompile Include="WMO\WMO_Manager.cpp">
+      <Filter>WMO</Filter>
+    </ClCompile>
+    <ClCompile Include="WMO\WMO_Material.cpp">
+      <Filter>WMO</Filter>
+    </ClCompile>
+    <ClCompile Include="WMO\DoodadInstance.cpp">
+      <Filter>WMO\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="Environment\DayNightCycle.cpp">
+      <Filter>Environment</Filter>
+    </ClCompile>
+    <ClCompile Include="Environment\DayNightPhase.cpp">
+      <Filter>Environment</Filter>
+    </ClCompile>
+    <ClCompile Include="Environment\EnvironmentManager.cpp">
+      <Filter>Environment</Filter>
+    </ClCompile>
+    <ClCompile Include="Environment\MapSkies.cpp">
+      <Filter>Environment</Filter>
+    </ClCompile>
+    <ClCompile Include="Environment\Sky.cpp">
+      <Filter>Environment</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\UIButton.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
-    <ClCompile Include="UIMgr.cpp">
+    <ClCompile Include="GUI\UIButton3t.cpp">
       <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\UICheckBox.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\UIElement.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\UIFile.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\UIInput.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\UIMgr.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\UIScrollBar.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\UIWindow.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneNode.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="MDX\Animated.cpp">
+      <Filter>MDX\Animated</Filter>
+    </ClCompile>
+    <ClCompile Include="DBC__Storage.cpp">
+      <Filter>DBC</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Engine.h">
-      <Filter>General</Filter>
-    </ClInclude>
     <ClInclude Include="GameState.h">
-      <Filter>General</Filter>
-    </ClInclude>
-    <ClInclude Include="GameState_Empty.h">
       <Filter>General</Filter>
     </ClInclude>
     <ClInclude Include="ConsoleOpenGL.h">
@@ -68,33 +203,191 @@
     </ClInclude>
     <ClInclude Include="..\shared\owGame.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="UIButton.h">
-      <Filter>GUI\Elements</Filter>
+    <ClInclude Include="MDX\MDX.h">
+      <Filter>MDX</Filter>
     </ClInclude>
-    <ClInclude Include="UIButton3t.h">
-      <Filter>GUI\Elements</Filter>
+    <ClInclude Include="MDX\MDX_Headers.h">
+      <Filter>MDX</Filter>
     </ClInclude>
-    <ClInclude Include="UICheckBox.h">
-      <Filter>GUI\Elements</Filter>
+    <ClInclude Include="MDX\Model_RenderPass.h">
+      <Filter>MDX</Filter>
     </ClInclude>
-    <ClInclude Include="UIElement.h">
-      <Filter>GUI\Elements</Filter>
+    <ClInclude Include="MDX\Model_Skin.h">
+      <Filter>MDX</Filter>
     </ClInclude>
-    <ClInclude Include="UIInput.h">
-      <Filter>GUI\Elements</Filter>
+    <ClInclude Include="MDX\ModelsManager.h">
+      <Filter>MDX</Filter>
     </ClInclude>
-    <ClInclude Include="UIScrollBar.h">
-      <Filter>GUI\Elements</Filter>
+    <ClInclude Include="MDX\Sky_Model.h">
+      <Filter>MDX</Filter>
     </ClInclude>
-    <ClInclude Include="UIWindow.h">
-      <Filter>GUI\Elements</Filter>
+    <ClInclude Include="MDX\MDX_Part_Bone.h">
+      <Filter>MDX\Parts</Filter>
     </ClInclude>
-    <ClInclude Include="UIFile.h">
-      <Filter>GUI</Filter>
+    <ClInclude Include="MDX\MDX_Part_Camera.h">
+      <Filter>MDX\Parts</Filter>
     </ClInclude>
-    <ClInclude Include="UIMgr.h">
-      <Filter>GUI</Filter>
+    <ClInclude Include="MDX\MDX_Part_Color.h">
+      <Filter>MDX\Parts</Filter>
+    </ClInclude>
+    <ClInclude Include="MDX\MDX_Part_Light.h">
+      <Filter>MDX\Parts</Filter>
+    </ClInclude>
+    <ClInclude Include="MDX\MDX_Part_TextureAnim.h">
+      <Filter>MDX\Parts</Filter>
+    </ClInclude>
+    <ClInclude Include="MDX\MDX_Part_Transparency.h">
+      <Filter>MDX\Parts</Filter>
+    </ClInclude>
+    <ClInclude Include="MDX\Particle.h">
+      <Filter>MDX\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="MDX\ParticleSystem.h">
+      <Filter>MDX\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="MDX\RibbonEmitter.h">
+      <Filter>MDX\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="Map\Map.h">
+      <Filter>Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Map\Map_Chunk.h">
+      <Filter>Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Map\Map_Chunk_Types.h">
+      <Filter>Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Map\Map_Tile.h">
+      <Filter>Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Map\WMO_Instance.h">
+      <Filter>Map\Instances</Filter>
+    </ClInclude>
+    <ClInclude Include="Map\Model_Instance.h">
+      <Filter>Map\Instances</Filter>
+    </ClInclude>
+    <ClInclude Include="WMO\liquid.h">
+      <Filter>WMO</Filter>
+    </ClInclude>
+    <ClInclude Include="WMO\WMO.h">
+      <Filter>WMO</Filter>
+    </ClInclude>
+    <ClInclude Include="WMO\WMO_Fog.h">
+      <Filter>WMO</Filter>
+    </ClInclude>
+    <ClInclude Include="WMO\WMO_Group.h">
+      <Filter>WMO</Filter>
+    </ClInclude>
+    <ClInclude Include="WMO\WMO_Light.h">
+      <Filter>WMO</Filter>
+    </ClInclude>
+    <ClInclude Include="WMO\WMO_Manager.h">
+      <Filter>WMO</Filter>
+    </ClInclude>
+    <ClInclude Include="WMO\WMO_Material.h">
+      <Filter>WMO</Filter>
+    </ClInclude>
+    <ClInclude Include="WMO\DoodadInstance.h">
+      <Filter>WMO\Instances</Filter>
+    </ClInclude>
+    <ClInclude Include="Environment\DayNightCycle.h">
+      <Filter>Environment</Filter>
+    </ClInclude>
+    <ClInclude Include="Environment\DayNightPhase.h">
+      <Filter>Environment</Filter>
+    </ClInclude>
+    <ClInclude Include="Environment\EnvironmentManager.h">
+      <Filter>Environment</Filter>
+    </ClInclude>
+    <ClInclude Include="Environment\MapSkies.h">
+      <Filter>Environment</Filter>
+    </ClInclude>
+    <ClInclude Include="Environment\Sky.h">
+      <Filter>Environment</Filter>
     </ClInclude>
     <ClInclude Include="common.h" />
+    <ClInclude Include="GUI\UIButton.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\UIButton3t.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\UICheckBox.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\UIElement.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\UIFile.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\UIInput.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\UIMgr.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\UIScrollBar.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\UIWindow.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneNode.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="MDX\Animated.h">
+      <Filter>MDX\Animated</Filter>
+    </ClInclude>
+    <ClInclude Include="MDX\Animated_Types.h">
+      <Filter>MDX\Animated</Filter>
+    </ClInclude>
+    <ClInclude Include="DBC__File.h">
+      <Filter>DBC</Filter>
+    </ClInclude>
+    <ClInclude Include="DBC__Storage.h">
+      <Filter>DBC</Filter>
+    </ClInclude>
+    <ClInclude Include="DBC_AreaTable.h">
+      <Filter>DBC</Filter>
+    </ClInclude>
+    <ClInclude Include="DBC_Light.h">
+      <Filter>DBC</Filter>
+    </ClInclude>
+    <ClInclude Include="DBC_LightFloatBand.h">
+      <Filter>DBC</Filter>
+    </ClInclude>
+    <ClInclude Include="DBC_LightIntBand.h">
+      <Filter>DBC</Filter>
+    </ClInclude>
+    <ClInclude Include="DBC_LightParams.h">
+      <Filter>DBC</Filter>
+    </ClInclude>
+    <ClInclude Include="DBC_LightSkyBox.h">
+      <Filter>DBC</Filter>
+    </ClInclude>
+    <ClInclude Include="DBC_LiquidMaterial.h">
+      <Filter>DBC</Filter>
+    </ClInclude>
+    <ClInclude Include="DBC_LiquidObject.h">
+      <Filter>DBC</Filter>
+    </ClInclude>
+    <ClInclude Include="DBC_LiquidType.h">
+      <Filter>DBC</Filter>
+    </ClInclude>
+    <ClInclude Include="DBC_LoadingScreen.h">
+      <Filter>DBC</Filter>
+    </ClInclude>
+    <ClInclude Include="DBC_Map.h">
+      <Filter>DBC</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Map\Map.inl">
+      <Filter>Map</Filter>
+    </None>
+    <None Include="DBC__File.inl">
+      <Filter>DBC</Filter>
+    </None>
   </ItemGroup>
 </Project>
