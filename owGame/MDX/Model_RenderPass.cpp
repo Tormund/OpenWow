@@ -115,11 +115,11 @@ bool ModelRenderPass::init(MDX* m)
 		glEnable(GL_CULL_FACE);
 
 	// Texture wrapping around the geometry
-	if (swrap)
+	/*if (swrap)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 
 	if (twrap)
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);*/
 
 	// no writing to the depth buffer.
 	if (noZWrite)

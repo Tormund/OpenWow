@@ -14,8 +14,5 @@ const float C_ZeroPoint = 32.0f * C_TileSize;
 const uint32 C_ChunksInTile = 16;
 const uint32 C_MapBufferSize = 9 * 9 + 8 * 8;
 
-// Liquid
-const float LQ_DEFAULT_TILESIZE = (C_ChunkSize / 8.0f);
-
 // World
-const float detail_size = 8.0f;
+const float C_DetailSize = 8.0f;

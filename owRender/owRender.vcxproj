@@ -243,10 +243,6 @@
     <ClInclude Include="TexturesMgr.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\_gamedata\shaders\Billboard.glsl">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
-      <FileType>Document</FileType>
-    </None>
     <None Include="..\_gamedata\shaders\commonGeometry.glsl">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
       <FileType>Document</FileType>

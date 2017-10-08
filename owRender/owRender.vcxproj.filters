@@ -229,9 +229,6 @@
     <None Include="PipelineWorldTransformation.inl">
       <Filter>Pipeline</Filter>
     </None>
-    <None Include="..\_gamedata\shaders\Billboard.glsl">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="..\_gamedata\shaders\commonGeometry.glsl">
       <Filter>Shaders</Filter>
     </None>

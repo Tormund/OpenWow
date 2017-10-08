@@ -1,7 +1,6 @@
 #include "../stdafx.h"
 
 // Includes
-#include "liquid.h"
 #include "Wmo.h"
 
 // General
@@ -13,10 +12,26 @@
 #include "Wmo_Light.h"
 #include "Wmo_Material.h"
 
+struct WMO_Group_MLIQ
+{
+	uint32 X;
+	uint32 Y;
+
+	uint32 A;
+	uint32 B;
+
+	vec3 pos;
+
+	uint16 type;
+
+	//
+	static const uint32 __size = 30;
+};
+
 WMOGroup::WMOGroup(const WMO* _parentWMO, const uint32 _groupIndex, File& f) : m_ParentWMO(_parentWMO), m_GroupIndex(_groupIndex)
 {
-	nTriangles = 0;
-	materials = nullptr;
+	m_MaterialsInfoCount = 0;
+	m_MaterialsInfo = nullptr;
 
 	indices = nullptr;
 
@@ -43,8 +58,8 @@ WMOGroup::WMOGroup(const WMO* _parentWMO, const uint32 _groupIndex, File& f) : m
 
 	lq = nullptr;
 
+	// Read hgroup info for bounding box and name
 	f.ReadBytes(&groupInfo, WMOGroupInfoDef::__size);
-
 
 	if (groupInfo.nameoffset > 0)
 	{
@@ -115,8 +130,8 @@ void WMOGroup::initDisplayList()
 
 		if (strcmp(fourcc, "MOPY") == 0) // Material info for triangles
 		{
-			nTriangles = size / WMOGroup_MaterialInfo::__size;
-			materials = (WMOGroup_MaterialInfo*)f.GetDataFromCurrent();
+			m_MaterialsInfoCount = size / WMOGroup_MaterialInfo::__size;
+			m_MaterialsInfo = (WMOGroup_MaterialInfo*)f.GetDataFromCurrent();
 		}
 		else if (strcmp(fourcc, "MOVI") == 0) // Vertex indices for triangles
 		{
@@ -163,13 +178,16 @@ void WMOGroup::initDisplayList()
 		}
 		else if (strcmp(fourcc, "MLIQ") == 0) // Liquid
 		{
-			WMOLiquidHeader hlq;
-			f.ReadBytes(&hlq, WMOLiquidHeader::__size);
+			WMO_Group_MLIQ liquidHeader;
+			f.ReadBytes(&liquidHeader, WMO_Group_MLIQ::__size);
 
-			Debug::Green("WMO[%s]: Contain liquid!!!!", m_ParentWMO->GetName().c_str());
+			if (m_Header.liquidType > 0)
+			{
+				Debug::Green("WMO[%s]: Contain liquid! [%s]", m_ParentWMO->GetName().c_str(), DBC_LiquidType[m_Header.liquidType]->Get_Name());
 
-			//lq = new Liquid(hlq.A, hlq.B, From_XYZ_To_XZminusY_RET(hlq.pos));
-			//lq->initFromWMO(f, m_ParentWMO->m_Materials[hlq.type], groupInfo.flags.FLAG_IS_INDOOR);
+				lq = new Liquid(liquidHeader.A, liquidHeader.B, From_XYZ_To_XZminusY_RET(liquidHeader.pos));
+				lq->initFromWMO2(f, m_ParentWMO->m_Materials[liquidHeader.type], DBC_LiquidType[m_Header.liquidType], groupInfo.flags.FLAG_IS_INDOOR);
+			}
 		}
 		else if (strcmp(fourcc, "MORI") == 0)
 		{
@@ -410,7 +428,7 @@ void WMOGroup::initLighting()
 
 //
 
-bool WMOGroup::draw2()
+bool WMOGroup::Render()
 {
 	visible = false;
 
@@ -554,8 +572,6 @@ bool WMOGroup::drawDoodads(uint32 _doodadSet)
 
 bool WMOGroup::drawLiquid()
 {
-	return false;
-
 	if (!visible)
 	{
 		return false;
@@ -566,26 +582,26 @@ bool WMOGroup::drawLiquid()
 		return false;
 	}
 
-	setupFog();
+	//setupFog();
 
 	if (m_EnableOutdoorLights)
 	{
-		_EnvironmentManager->SetAmbientLights(true);
+		//_EnvironmentManager->SetAmbientLights(true);
 	}
 	else
 	{
 		// TODO: setup some kind of indoor lighting... ?
-		_EnvironmentManager->SetAmbientLights(false);
+		/*_EnvironmentManager->SetAmbientLights(false);
 		glEnable(GL_LIGHT2);
 		glLightfv(GL_LIGHT2, GL_AMBIENT, vec4(0.1f, 0.1f, 0.1f, 1));
 		glLightfv(GL_LIGHT2, GL_DIFFUSE, vec4(0.8f, 0.8f, 0.8f, 1));
-		glLightfv(GL_LIGHT2, GL_POSITION, vec4(0, 1, 0, 0));
+		glLightfv(GL_LIGHT2, GL_POSITION, vec4(0, 1, 0, 0));*/
 	}
 
 	//glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
-	glDepthMask(GL_TRUE);
-	glColor4f(1, 1, 1, 1);
+	//glDisable(GL_ALPHA_TEST);
+	//glDepthMask(GL_TRUE);
+	//glColor4f(1, 1, 1, 1);
 
 	lq->draw();
 	PERF_INC(PERF_MAP_MODELS_WMOs_LIQUIDS);

@@ -19,6 +19,7 @@ DoodadInstance::~DoodadInstance()
 void DoodadInstance::SetModel(MDX* _model)
 {
 	assert1(_model != nullptr);
+
 	modelObject = _model;
 	m_Bounds = modelObject->m_Bounds;
 	m_Bounds.transform(m_AbsTransform);
@@ -26,9 +27,12 @@ void DoodadInstance::SetModel(MDX* _model)
 
 void DoodadInstance::Draw()
 {
+	BoundingBox aabb = m_Bounds;
+	aabb.transform(_Pipeline->GetWorld());
+
 	_Pipeline->Push(); // Save world matrix
 	{
-		_Pipeline->SetWorld(m_RelTransform);
+		_Pipeline->Mult(m_RelTransform);
 
 		// Get actual position
 		//vec3 pos = _Pipeline->GetWorld() * vec3(1.0f, 1.0f, 1.0f);
@@ -42,7 +46,7 @@ void DoodadInstance::Draw()
 		//}
 
 		// Frustrum test
-		if (_Render->frustum.cullBox(m_Bounds))
+		if (_Render->frustum.cullBox(aabb))
 		{
 			_Pipeline->Pop(); // restore matrix
 			return;

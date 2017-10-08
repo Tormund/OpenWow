@@ -3,9 +3,7 @@
 template <class RECORD_T>
 bool DBCFile<RECORD_T>::Open()
 {
-	int db_type = 0;
-
-	// Tty open file
+	// Try open file
 	if (!File::Open())
 	{
 		Debug::Error("DBCFile[%s]: Can't open file.", Path_Name().c_str());
@@ -16,6 +14,7 @@ bool DBCFile<RECORD_T>::Open()
 	ReadBytes(header, 4);
 	header[4] = 0;
 
+	int db_type = 0;
 	if (strncmp(header, "WDBC", 4) == 0)
 	{
 		db_type = 1;
@@ -37,18 +36,6 @@ bool DBCFile<RECORD_T>::Open()
 	ByteBuffer::ReadBytes(&recordSize, 4); // Size of a record
 	ByteBuffer::ReadBytes(&stringSize, 4); // String size
 
-										   // WDB2
-										   //ReadBytes(&tableHash, 4);
-										   //ReadBytes(&build, 4);
-										   //ReadBytes(&timestampLastWritten, 4);
-										   //ReadBytes(&minId, 4);
-										   //ReadBytes(&maxId, 4);
-										   //ReadBytes(&locale, 4);
-										   //ReadBytes(&copyTableSize, 4);
-
-										   //Debug::Info("DBCFile[%s]: TableHash [%d], build [%d], TimestampLastWritten [%d]", Path_Name().c_str(), tableHash, build, timestampLastWritten);
-										   //Debug::Info("DBCFile[%s]: MinId [%d], MaxId [%d] Locale [%d], CopyTableSize [%d]", Path_Name().c_str(), minId, maxId, locale, copyTableSize);
-
 	if (db_type == 2)
 	{
 		SeekRelative(28);
@@ -65,23 +52,23 @@ bool DBCFile<RECORD_T>::Open()
 		}
 	}
 
-	assert1(fieldCount * 4 >= recordSize); // not always true, but it works fine till now //assert1(fieldCount*4 == recordSize);
+	assert1(fieldCount * 4 >= recordSize); // not always true, but it works fine till now
 
-										   // Pointer to data
+
 	stringTable = GetPos() + data + recordSize * recordCount;
 
 	// Fill record table
 	for (auto _offset = data + GetPos(); _offset != stringTable; _offset += recordSize)
 	{
 		RECORD_T* record = new RECORD_T(this, _offset);
-		records.insert(make_pair(record->getUInt(0), record));
+		records.insert(make_pair(record->Get_ID(), record));
 	}
 
 	return true;
 }
 
 template <class RECORD_T>
-RECORD_T* DBCFile<RECORD_T>::getByID(uint32 _id)
+RECORD_T* DBCFile<RECORD_T>::operator[](uint32 _id)
 {
 	auto recordIt = records.find(_id);
 	if (recordIt != records.end())
@@ -89,5 +76,5 @@ RECORD_T* DBCFile<RECORD_T>::getByID(uint32 _id)
 		return recordIt->second;
 	}
 
-	throw DBCNotFound(_id);
+	return nullptr;
 }

@@ -94,14 +94,13 @@ void World::drawShader(GLint _color)
 	// Final pass
 	m_gbuffer->BindForFinalPass(_color);
 
-
-#ifdef WMO_INCL
-	WMOInstance::reset();
-#endif
-
 	//
 	// SECONDS PASS
 	//
+	/*
+#ifdef WMO_INCL
+	WMOInstance::reset();
+#endif
 	
 	// Conf test camera
 	testCamera->Position = mainCamera->Position + vec3(0, 1, 0) * 1000.0f;
@@ -118,7 +117,7 @@ void World::drawShader(GLint _color)
 	m_gbuffer->BindForGeomPass();
 	m_gbuffer->Clear();
 	RenderGeom();
-	_PipelineGlobal->RenderCamera(mainCamera);
+	_PipelineGlobal->RenderCamera(mainCamera);*/
 	
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 }
@@ -214,16 +213,9 @@ void World::RenderGeom()
 	//------------------------------------------------------------------------------
 	glDisable(GL_CULL_FACE);
 
-	//if (Settings::draw_map_chunk)
+	if (Settings::draw_map_chunk)
 	{
-		_TechniquesMgr->m_WMO_MH2O_GeometryPass->Bind();
-		_Pipeline->Clear();
-		_TechniquesMgr->m_WMO_MH2O_GeometryPass->SetPVW();
-		_TechniquesMgr->m_WMO_MH2O_GeometryPass->SetWorldMatrix(_Pipeline->GetWorld());
-
 		_Map->RenderWater();
-
-		_TechniquesMgr->m_WMO_MH2O_GeometryPass->Unbind();
 	}
 
 	//

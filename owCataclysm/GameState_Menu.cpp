@@ -32,17 +32,25 @@ bool GameState_Menu::Init()
 	//randBackground();
 	currentColor = GL_COLOR_ATTACHMENT6;
 
-	/*_Map->PreloadMap(gMapDB.getByID(1));
+	/*_Map->PreloadMap(DBC_Map[1]);
 	LoadWorld(vec3(17644, 68, 17823));
 	return true;*/
 
 	const unsigned mapsXStart = 10;
 	const unsigned mapsYStart = 10;
 
-	unsigned mapsX = mapsXStart;
-	unsigned mapsY = mapsYStart;
-	const unsigned mapsXdelta = 200;
-	const unsigned mapsYdelta = 25;
+	unsigned mapsY[4];
+	for (uint32 i = 0; i < 4; i++)
+		mapsY[i] = mapsYStart;
+
+
+
+	const unsigned mapsYdelta = 17;
+
+	const uint32 mapsXClassic = 0;
+	const uint32 mapsXBurning = 200;
+	const uint32 mapsXWrathOf = 400;
+	const uint32 mapsXCataclm = 800;
 
 	int y = 0;
 
@@ -50,24 +58,26 @@ bool GameState_Menu::Init()
 	{
 		auto record = (i->second);
 
-		// Check
-		if (mapsY + mapsYdelta > Settings::windowSizeY)
+		if (!MPQFile::IsFileExists("World\\Maps\\" + string(record->Get_Directory()) + "\\" + string(record->Get_Directory()) + ".wdt"))
 		{
-			mapsX += mapsXdelta;
-			mapsY = mapsYStart;
+			continue;
 		}
 
 		auto image = new Image(_TexturesMgr->Add("Interface\\Buttons\\UI-DialogBox-Button-Up.blp"), VECTOR_ZERO, vec2(128, 22));
 
 		// Add btn
 		auto btn = new UIButton();
-		btn->Init(vec2(mapsX, mapsY), image);
+
+
+		btn->Init(vec2(100 + 200 * record->Get_ExpansionID(), mapsY[record->Get_ExpansionID()]), image);
+
+
 		btn->Attach(window);
 		btn->ShowText();
 		btn->SetText(record->Get_Name());
 		SETBUTTONACTION_ARG(btn, GameState_Menu, this, OnBtn, DBC_MapRecord*, record);
 
-		mapsY += mapsYdelta;
+		mapsY[record->Get_ExpansionID()] += mapsYdelta;
 	}
 
 	return true;
@@ -137,7 +147,7 @@ void GameState_Menu::Render(double t, double dt)
 
 	if (cmd == CMD_IN_WORLD2 && !minimapActive)
 	{
-		
+
 		_World->drawShader(currentColor);
 	}
 
@@ -245,29 +255,28 @@ void GameState_Menu::RenderUI(double t, double dt)
 // Area and region
 
 		// Area
-		const DBÑ_AreaTableRecord* areaRecord = nullptr;
+		DBÑ_AreaTableRecord* areaRecord = nullptr;
 		string areaName = "<unknown>";
-		try
+
+		areaRecord = DBÑ_AreaTable[_Map->getAreaID()];
+		if (areaRecord != nullptr)
 		{
-			areaRecord = DBÑ_AreaTable.getByID(_Map->getAreaID());
 			areaName = areaRecord->Get_Name();
 		}
-		catch (DBCNotFound)
-		{}
 
 		// Region
-		const DBÑ_AreaTableRecord* regionRecord = nullptr;
+		DBÑ_AreaTableRecord* regionRecord = nullptr;
 		string regionName = "<unknown>";
-		try
+
+		if (areaRecord != nullptr)
 		{
-			if (areaRecord != nullptr)
+			regionRecord = areaRecord->Get_ParentAreaID();
+			if (regionRecord != nullptr)
 			{
-				regionRecord = areaRecord->Get_ParentAreaID();
 				regionName = regionRecord->Get_Name();
 			}
 		}
-		catch (DBCNotFound)
-		{}
+
 
 		_Render->RenderText(vec2(5, 20), "Area: [" + areaName + "] [Area id = " + std::to_string(_Map->getAreaID()) + "]");
 		_Render->RenderText(vec2(5, 40), "Region: [" + regionName + "]");
@@ -285,24 +294,24 @@ void GameState_Menu::RenderUI(double t, double dt)
 		// Time
 		_Render->RenderText(vec2(Settings::windowSizeX - 150, 0), "TIME [" + to_string(_EnvironmentManager->m_GameTime.GetHour()) + "." + to_string(_EnvironmentManager->m_GameTime.GetMinute()) + "]");
 		char buff[256];
-		
+
 		// Ambient
 
-		sprintf(buff, "Amb[c=[%0.2f %0.2f %0.2f] i=[%f]]", 
+		sprintf(buff, "Amb[c=[%0.2f %0.2f %0.2f] i=[%f]]",
 				_EnvironmentManager->dayNightPhase.ambientColor.x, _EnvironmentManager->dayNightPhase.ambientColor.y, _EnvironmentManager->dayNightPhase.ambientColor.z,
 				_EnvironmentManager->dayNightPhase.ambientIntensity
 		);
 		_Render->RenderText(vec2(Settings::windowSizeX - 400, 20), buff);
-		
+
 		// Day
 
-		sprintf(buff, "Day[c=[%0.2f %0.2f %0.2f] i=[%f] d=[%0.2f %0.2f %0.2f]]", 
+		sprintf(buff, "Day[c=[%0.2f %0.2f %0.2f] i=[%f] d=[%0.2f %0.2f %0.2f]]",
 				_EnvironmentManager->dayNightPhase.dayColor.x, _EnvironmentManager->dayNightPhase.dayColor.y, _EnvironmentManager->dayNightPhase.dayColor.z,
 				_EnvironmentManager->dayNightPhase.dayIntensity,
 				_EnvironmentManager->dayNightPhase.dayDir.x, _EnvironmentManager->dayNightPhase.dayDir.y, _EnvironmentManager->dayNightPhase.dayDir.z
 		);
 		_Render->RenderText(vec2(Settings::windowSizeX - 400, 40), buff);
-		
+
 		// Night
 
 		sprintf(buff, "Nig[c=[%0.2f %0.2f %0.2f] i=[%f] d=[%0.2f %0.2f %0.2f]]",

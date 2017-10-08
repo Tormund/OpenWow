@@ -28,17 +28,20 @@
     <Filter Include="WMO\Instances">
       <UniqueIdentifier>{4cacdc22-0be2-480f-91e2-b7ef974ad3e9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GUI">
-      <UniqueIdentifier>{06f89fe1-a51e-46c1-a215-a45bb5e706f8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="DBC">
       <UniqueIdentifier>{cf549537-a757-477f-ac0c-e984aef2e058}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scene">
-      <UniqueIdentifier>{1d5a6f0a-304b-4a06-b799-c1ee3e3099c9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="MDX\Animated">
       <UniqueIdentifier>{eec8ec3d-42e8-40b1-ab10-8f0117192ba7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="General\Scene">
+      <UniqueIdentifier>{1d5a6f0a-304b-4a06-b799-c1ee3e3099c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="General\GUI">
+      <UniqueIdentifier>{06f89fe1-a51e-46c1-a215-a45bb5e706f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Liquid">
+      <UniqueIdentifier>{6f7eba9b-6a7f-4263-83fd-d00c9258fd96}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -106,9 +109,6 @@
     <ClCompile Include="Map\Map_Chunk.cpp">
       <Filter>Map</Filter>
     </ClCompile>
-    <ClCompile Include="Map\Map_Chunk_MH2O.cpp">
-      <Filter>Map</Filter>
-    </ClCompile>
     <ClCompile Include="Map\Map_Tile.cpp">
       <Filter>Map</Filter>
     </ClCompile>
@@ -117,9 +117,6 @@
     </ClCompile>
     <ClCompile Include="Map\Model_Instance.cpp">
       <Filter>Map\Instances</Filter>
-    </ClCompile>
-    <ClCompile Include="WMO\liquid.cpp">
-      <Filter>WMO</Filter>
     </ClCompile>
     <ClCompile Include="WMO\WMO.cpp">
       <Filter>WMO</Filter>
@@ -158,40 +155,43 @@
       <Filter>Environment</Filter>
     </ClCompile>
     <ClCompile Include="GUI\UIButton.cpp">
-      <Filter>GUI</Filter>
+      <Filter>General\GUI</Filter>
     </ClCompile>
     <ClCompile Include="GUI\UIButton3t.cpp">
-      <Filter>GUI</Filter>
+      <Filter>General\GUI</Filter>
     </ClCompile>
     <ClCompile Include="GUI\UICheckBox.cpp">
-      <Filter>GUI</Filter>
+      <Filter>General\GUI</Filter>
     </ClCompile>
     <ClCompile Include="GUI\UIElement.cpp">
-      <Filter>GUI</Filter>
+      <Filter>General\GUI</Filter>
     </ClCompile>
     <ClCompile Include="GUI\UIFile.cpp">
-      <Filter>GUI</Filter>
+      <Filter>General\GUI</Filter>
     </ClCompile>
     <ClCompile Include="GUI\UIInput.cpp">
-      <Filter>GUI</Filter>
+      <Filter>General\GUI</Filter>
     </ClCompile>
     <ClCompile Include="GUI\UIMgr.cpp">
-      <Filter>GUI</Filter>
+      <Filter>General\GUI</Filter>
     </ClCompile>
     <ClCompile Include="GUI\UIScrollBar.cpp">
-      <Filter>GUI</Filter>
+      <Filter>General\GUI</Filter>
     </ClCompile>
     <ClCompile Include="GUI\UIWindow.cpp">
-      <Filter>GUI</Filter>
+      <Filter>General\GUI</Filter>
     </ClCompile>
     <ClCompile Include="SceneNode.cpp">
-      <Filter>Scene</Filter>
+      <Filter>General\Scene</Filter>
     </ClCompile>
     <ClCompile Include="MDX\Animated.cpp">
       <Filter>MDX\Animated</Filter>
     </ClCompile>
     <ClCompile Include="DBC__Storage.cpp">
       <Filter>DBC</Filter>
+    </ClCompile>
+    <ClCompile Include="Liquid.cpp">
+      <Filter>Liquid</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -266,9 +266,6 @@
     <ClInclude Include="Map\Model_Instance.h">
       <Filter>Map\Instances</Filter>
     </ClInclude>
-    <ClInclude Include="WMO\liquid.h">
-      <Filter>WMO</Filter>
-    </ClInclude>
     <ClInclude Include="WMO\WMO.h">
       <Filter>WMO</Filter>
     </ClInclude>
@@ -307,34 +304,34 @@
     </ClInclude>
     <ClInclude Include="common.h" />
     <ClInclude Include="GUI\UIButton.h">
-      <Filter>GUI</Filter>
+      <Filter>General\GUI</Filter>
     </ClInclude>
     <ClInclude Include="GUI\UIButton3t.h">
-      <Filter>GUI</Filter>
+      <Filter>General\GUI</Filter>
     </ClInclude>
     <ClInclude Include="GUI\UICheckBox.h">
-      <Filter>GUI</Filter>
+      <Filter>General\GUI</Filter>
     </ClInclude>
     <ClInclude Include="GUI\UIElement.h">
-      <Filter>GUI</Filter>
+      <Filter>General\GUI</Filter>
     </ClInclude>
     <ClInclude Include="GUI\UIFile.h">
-      <Filter>GUI</Filter>
+      <Filter>General\GUI</Filter>
     </ClInclude>
     <ClInclude Include="GUI\UIInput.h">
-      <Filter>GUI</Filter>
+      <Filter>General\GUI</Filter>
     </ClInclude>
     <ClInclude Include="GUI\UIMgr.h">
-      <Filter>GUI</Filter>
+      <Filter>General\GUI</Filter>
     </ClInclude>
     <ClInclude Include="GUI\UIScrollBar.h">
-      <Filter>GUI</Filter>
+      <Filter>General\GUI</Filter>
     </ClInclude>
     <ClInclude Include="GUI\UIWindow.h">
-      <Filter>GUI</Filter>
+      <Filter>General\GUI</Filter>
     </ClInclude>
     <ClInclude Include="SceneNode.h">
-      <Filter>Scene</Filter>
+      <Filter>General\Scene</Filter>
     </ClInclude>
     <ClInclude Include="MDX\Animated.h">
       <Filter>MDX\Animated</Filter>
@@ -380,6 +377,9 @@
     </ClInclude>
     <ClInclude Include="DBC_Map.h">
       <Filter>DBC</Filter>
+    </ClInclude>
+    <ClInclude Include="Liquid.h">
+      <Filter>Liquid</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

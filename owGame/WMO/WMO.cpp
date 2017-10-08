@@ -12,7 +12,6 @@
 #include "../Environment/EnvironmentManager.h"
 #include "../MDX/ModelsManager.h"
 #include "Wmo_Group.h"
-#include "liquid.h"
 
 WMO::WMO(cstring name) : RefItemNamed(name), m_Loaded(false)
 {
@@ -312,7 +311,7 @@ bool WMO::draw(uint32 _doodadSet)
 		PERF_START(PERF_MAP_MODELS_WMOs_GEOMETRY);
 		for (auto it = m_Groups.begin(); it != m_Groups.end(); ++it)
 		{
-			(*it)->draw2();
+			(*it)->Render();
 		}
 		PERF_STOP(PERF_MAP_MODELS_WMOs_GEOMETRY);
 	}

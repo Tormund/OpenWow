@@ -13,8 +13,9 @@ __DBC_TVALUE(uint32, Type, 4);			// 0: Water, 1: Ocean, 2: Magma, 3: Slime
 
 __DBC_REF_ID(DBC_LiquidMaterial, LiquidMaterialID, 15);
 
-__DBC_STRING(Texture_FileName_Pattern, 16);
-__DBC_STRING(Texture_ProceduralName, 17);
-__DBC_STRING(Bump_FileName, 18);
+__DBC_STRING(TextureName, 16);
+__DBC_STRING(TextureProceduralName, 17);
+__DBC_STRING(TextureBump, 18);
+__DBC_STRING(TextureUnknown, 19);
 
 DBC_DEF_END

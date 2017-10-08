@@ -82,7 +82,6 @@ public:
 			}
 			else
 			{
-				//fail1();
 				time = _EnvironmentManager->globalTime % globals[global_sequence];
 			}
 			anim = 0;

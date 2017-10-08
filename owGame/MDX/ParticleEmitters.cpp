@@ -136,7 +136,6 @@ Particle PlaneParticleEmitter::newParticle(int anim, int time, float w, float l,
 		p.pos = sys->parent->pivot * (sys->pos + vec3(Random::GenerateRange(-l, l), Random::GenerateRange(-l, l), Random::GenerateRange(-w, w)));
 		vec3 dir = mrot * vec3(0, 1, 0);
 		p.dir = dir.normalized();
-
 	}
 	else
 	{

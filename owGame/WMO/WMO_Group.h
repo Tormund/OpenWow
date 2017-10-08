@@ -1,7 +1,8 @@
 ﻿#pragma once
 
+#include "../Liquid.h"
+
 class WMO;
-class Liquid;
 
 struct WMOGroupInfoDef
 {
@@ -130,19 +131,6 @@ struct WMOBatch
 	static const uint32 __size = 24;
 };
 
-struct WMOLiquidHeader
-{
-	uint32 X;
-	uint32 Y;
-	uint32 A;
-	uint32 B;
-	vec3 pos;
-	uint16 type;
-
-	//
-	static const uint32 __size = 30;
-};
-
 //---
 
 class WMOGroup
@@ -154,7 +142,7 @@ public:
 	void initDisplayList();
 	void initLighting();
 
-	bool draw2();
+	bool Render();
 	bool drawDoodads(uint32 _doodadSet);
 	bool drawLiquid();
 
@@ -179,8 +167,8 @@ public:
 
 public:
 	//-- Triangles --//
-	uint32 nTriangles;
-	WMOGroup_MaterialInfo* materials; // MOPY chunk
+	uint32 m_MaterialsInfoCount;
+	WMOGroup_MaterialInfo* m_MaterialsInfo; // MOPY chunk
 
 	unsigned short* indices;          // MOVI chunk
 

@@ -25,13 +25,12 @@ MapChunk::MapChunk(MapTile* _parentTile) :
 	m_GamePositionY(0),
 	m_GamePositionZ(0),
 	areaID(-1),
-	haswater(false),
 	visible(false),
 	hasholes(false),
 	blend(0),
 	strip(0),
 	striplen(0),
-	lq(0)
+	lq(nullptr)
 {
 
 	waterlevel[0] = 0;
@@ -42,10 +41,6 @@ MapChunk::MapChunk(MapTile* _parentTile) :
 
 	colorBufferEnable = false;
 
-
-
-	initTextures("XTextures\\river\\lake_a", 1, 30);
-	globalBufferWater = 0;
 }
 
 MapChunk::~MapChunk()
@@ -61,7 +56,7 @@ MapChunk::~MapChunk()
 		delete[] strip;
 	}
 
-	if (haswater)
+	if (lq != nullptr)
 	{
 		delete lq;
 	}
@@ -76,8 +71,6 @@ void MapChunk::init(File& f, load_phases phase)
 	// Root file. All offsets are correct
 	if (phase == main_file)
 	{
-		// First read
-
 		// Read header
 		header = new MCNK_Header;
 		f.ReadBytes(header, 0x80);
@@ -91,9 +84,13 @@ void MapChunk::init(File& f, load_phases phase)
 		// correct the x and z values
 		m_GamePositionX = m_GamePositionX * (-1.0f) + C_ZeroPoint;
 		m_GamePositionZ = m_GamePositionZ * (-1.0f) + C_ZeroPoint;
-		
 
 		hasholes = (header->holes != 0);
+
+		if (lq != nullptr)
+		{
+			lq->createBuffer(vec3(m_GamePositionX, 0.0f, m_GamePositionZ));
+		}
 
 		//
 
@@ -103,7 +100,7 @@ void MapChunk::init(File& f, load_phases phase)
 		vec3 tempNormals[C_MapBufferSize];
 		vec3 mccvColors[C_MapBufferSize];
 		vec4 mclvColors[C_MapBufferSize];
-		
+
 		for (int i = 0; i < C_MapBufferSize; i++)
 		{
 			mccvColors[i] = vec3(0.0f, 0.0f, 0.0f);
@@ -153,19 +150,26 @@ void MapChunk::init(File& f, load_phases phase)
 					{
 						xpos += C_UnitSize * 0.5f;
 					}
+
 					vec3 v = vec3(m_GamePositionX + xpos, m_GamePositionY + h, m_GamePositionZ + zpos);
 					*ttv++ = v;
+
 					if (v.y < vmin.y)
+					{
 						vmin.y = v.y;
+					}
+
 					if (v.y > vmax.y)
+					{
 						vmax.y = v.y;
+					}
 				}
 			}
 
 			vmin.x = m_GamePositionX;
 			vmin.z = m_GamePositionZ;
-			vmax.x = m_GamePositionX + 8 * C_UnitSize;
-			vmax.z = m_GamePositionZ + 8 * C_UnitSize;
+			vmax.x = m_GamePositionX + C_ChunkSize;
+			vmax.z = m_GamePositionZ + C_ChunkSize;
 
 			m_Bounds.set(vmin, vmax, false);
 
@@ -182,6 +186,7 @@ void MapChunk::init(File& f, load_phases phase)
 				{
 					int8 nor[3];
 					f.ReadBytes(nor, 3);
+
 					*ttn++ = vec3(-(float)nor[1] / 127.0f, (float)nor[2] / 127.0f, -(float)nor[0] / 127.0f);
 				}
 			}
@@ -191,27 +196,24 @@ void MapChunk::init(File& f, load_phases phase)
 		f.Seek(startPosition + header->ofsSndEmitters);
 
 		// MCLQ sub-chunk (liquids)
-		f.Seek(startPosition + header->ofsLiquid);
+		f.Seek(startPosition + header->ofsLiquid); // DEPRECATED
 		{
-			//haswater = true;
-			//f.ReadBytes(&waterlevel, 8); // 2 values - Lowest water Level, Highest Water Level
-
-			//if(waterlevel[1] > vmax.y) vmax.y = waterlevel[1];
-			//if (waterlevel < vmin.y) haswater = false;
-
-			//lq = new Liquid(8, 8, vec3(xbase, waterlevel[1], zbase));
-			//lq->init(f);
-			//lq->initFromTerrain(f, header->flags);
-
 			if (header->sizeLiquid)
 			{
 				Debug::Green("MapChunk[%d, %d]: Contain liquid!!!!", m_ParentTile->m_IndexX, m_ParentTile->m_IndexZ);
+				fail1();
+
+				CRange height;
+				f.ReadBytes(&height, 8);
+
+				lq = new Liquid(8, 8, vec3(m_GamePositionX, height.min, m_GamePositionZ));
+				lq->initFromTerrainMCLQ(f, GetLiquidType());
 			}
 		}
 
 		// MCCV sub-chunk (vertex shading)
 		f.Seek(startPosition + header->ofsMCCV);
-		{	
+		{
 			vec3* ttn = mccvColors;
 			for (int j = 0; j < 17; j++)
 			{
@@ -236,7 +238,7 @@ void MapChunk::init(File& f, load_phases phase)
 
 			uint32 _ssize;
 			f.ReadBytes(&_ssize, 4);
-			
+
 			MCLV_exists = strncmp(blockName, "MCLV", 4) == 0;
 
 			CArgb color;
@@ -255,25 +257,23 @@ void MapChunk::init(File& f, load_phases phase)
 		////////////////////////////
 
 		// Buffers
+		glGenBuffers(1, &globalBuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, globalBuffer);
+
+		glBufferData(GL_ARRAY_BUFFER, C_MapBufferSize * (17 * sizeof(float)), NULL, GL_STATIC_DRAW);
+
+		glBufferSubData(GL_ARRAY_BUFFER, C_MapBufferSize * 0 * sizeof(float), C_MapBufferSize * 3 * sizeof(float), tempVertexes);
+		glBufferSubData(GL_ARRAY_BUFFER, C_MapBufferSize * 3 * sizeof(float), C_MapBufferSize * 2 * sizeof(float), _Map->GetTextureCoordDetail());
+		glBufferSubData(GL_ARRAY_BUFFER, C_MapBufferSize * 5 * sizeof(float), C_MapBufferSize * 2 * sizeof(float), _Map->GetTextureCoordAlpha());
+		glBufferSubData(GL_ARRAY_BUFFER, C_MapBufferSize * 7 * sizeof(float), C_MapBufferSize * 3 * sizeof(float), tempNormals);
+		glBufferSubData(GL_ARRAY_BUFFER, C_MapBufferSize * 10 * sizeof(float), C_MapBufferSize * 3 * sizeof(float), mccvColors);
+		glBufferSubData(GL_ARRAY_BUFFER, C_MapBufferSize * 13 * sizeof(float), C_MapBufferSize * 4 * sizeof(float), mclvColors);
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		if (hasholes)
 		{
-			glGenBuffers(1, &globalBuffer);
-			glBindBuffer(GL_ARRAY_BUFFER, globalBuffer);
-
-			glBufferData(GL_ARRAY_BUFFER, C_MapBufferSize * (17 * sizeof(float)), NULL, GL_STATIC_DRAW);
-
-			glBufferSubData(GL_ARRAY_BUFFER, C_MapBufferSize * 0 * sizeof(float), C_MapBufferSize * 3 * sizeof(float), tempVertexes);
-			glBufferSubData(GL_ARRAY_BUFFER, C_MapBufferSize * 3 * sizeof(float), C_MapBufferSize * 2 * sizeof(float), _Map->GetTextureCoordDetail());
-			glBufferSubData(GL_ARRAY_BUFFER, C_MapBufferSize * 5 * sizeof(float), C_MapBufferSize * 2 * sizeof(float), _Map->GetTextureCoordAlpha());
-			glBufferSubData(GL_ARRAY_BUFFER, C_MapBufferSize * 7 * sizeof(float), C_MapBufferSize * 3 * sizeof(float), tempNormals);
-			glBufferSubData(GL_ARRAY_BUFFER, C_MapBufferSize * 10 * sizeof(float), C_MapBufferSize * 3 * sizeof(float), mccvColors);
-			glBufferSubData(GL_ARRAY_BUFFER, C_MapBufferSize * 13 * sizeof(float), C_MapBufferSize * 4 * sizeof(float), mclvColors);
-
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-			if (hasholes)
-			{
-				initStrip(header->holes);
-			}
+			initStrip(header->holes);
 		}
 	}
 
@@ -297,7 +297,6 @@ void MapChunk::init(File& f, load_phases phase)
 				f.ReadBytes(fcc, 4);
 				f.ReadBytes(&size, 4);
 				flipcc(fcc);
-
 
 				size_t nextpos = f.GetPos() + size;
 
@@ -564,7 +563,7 @@ void MapChunk::drawPass(int anim)
 		const float texanimytab[8] = {1, 1, 0, -1, -1, -1, 0, 1};
 		float fdx = -texanimxtab[dir], fdy = texanimytab[dir];
 
-		int animspd = (int)(200.0f * detail_size);
+		int animspd = (int)(200.0f * C_DetailSize);
 		float f = (((int)(_TimeManager->animtime * (spd / 15.0f))) % animspd) / (float)animspd;
 		glTranslatef(f * fdx, f * fdy, 0);
 	}*/
@@ -579,7 +578,8 @@ void MapChunk::drawPass(int anim)
 	}*/
 }
 
-void MapChunk::draw2()
+
+void MapChunk::Render()
 {
 	visible = false;
 
@@ -621,8 +621,8 @@ void MapChunk::draw2()
 		//}
 		//else
 		//{
-			strip = _Map->GetLowResolutionIndexes();
-			striplen = _Map->stripsize;
+		strip = _Map->GetLowResolutionIndexes();
+		striplen = _Map->stripsize;
 		//}
 	}
 
@@ -720,5 +720,30 @@ void MapChunk::drawNoDetail()
 
 	glActiveTexture(GL_TEXTURE0);
 	glEnable(GL_TEXTURE_2D);*/
+}
+
+//
+
+void MapChunk::CreateMH2OLiquid(File& f, MH2O_Header* _liquidHeader)
+{
+	assert1(_liquidHeader != nullptr);
+	assert1(lq == nullptr);
+
+	lq = new Liquid(8, 8, vec3());
+	lq->initFromTerrainMH2O(f, _liquidHeader);
+}
+
+MCNK_MCLQ_LiquidType MapChunk::GetLiquidType()
+{
+	assert1(header != nullptr);
+
+	if (header->flags.lq_river)
+		return MCNK_MCLQ_LiquidType::lq_river;
+	else if (header->flags.lq_ocean)
+		return MCNK_MCLQ_LiquidType::lq_ocean;
+	else if (header->flags.lq_magma)
+		return MCNK_MCLQ_LiquidType::lq_magma;
+	else if (header->flags.lq_slime)
+		return MCNK_MCLQ_LiquidType::lq_slime;
 }
 

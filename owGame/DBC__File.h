@@ -21,9 +21,9 @@ const char* Get_##_name(int8 _locale = -1) const \
 }
 
 #define __DBC_REF_ID(_dbc, _name, _field) \
-const _dbc##Record* Get_##_name() const \
+_dbc##Record* Get_##_name() const \
 { \
-	return _dbc.getByID(static_cast<uint32>(getValue<uint32>(static_cast<uint32>(_field - 1)))); \
+	return _dbc[static_cast<uint32>(getValue<uint32>(static_cast<uint32>(_field - 1)))]; \
 }
 
 #define __DBC_TARRAY(_type, _name, _field, _size) \
@@ -66,7 +66,6 @@ extern DBCFile<CONCAT_CLASS(accessName)> accessName;
 class Record;
 class DBCStats
 {
-	friend Record;
 public:
 	size_t getRecordSize() const { return recordSize; }
 	size_t getRecordCount() const { return recordCount; }
@@ -79,17 +78,12 @@ protected:
 	size_t fieldCount;
 	size_t stringSize;
 
-	// WDB2
-	uint32 tableHash;
-	uint32 build;
-	uint32 timestampLastWritten;
-	uint32 minId;
-	uint32 maxId;
-	uint32 locale;
-	uint32 copyTableSize;
-
 	// Strings
 	uint8* stringTable;
+
+	//
+
+	friend Record;
 };
 
 
@@ -100,6 +94,7 @@ protected:
 class Record
 {
 public:
+	Record() = delete;
 	Record(const Record& _record) = delete;
 	Record(DBCStats* _dbcStats, uint8* offset) : dbcStats(_dbcStats), offset(offset) {}
 
@@ -108,6 +103,7 @@ public:
 	// All data has ID
 	__DBC_TVALUE(uint32, ID, 1);
 
+protected:
 	// Get value with common type
 	template<typename T>
 	T getValue(uint32 field) const
@@ -178,25 +174,6 @@ public:
 };
 
 
-// Exceptions
-class DBCException
-{
-public:
-	DBCException(const string &message) : message(message) {}
-	~DBCException() {}
-
-	cstring getMessage() { return message; }
-
-private:
-	string message;
-};
-
-class DBCNotFound : public DBCException
-{
-public:
-	DBCNotFound(uint32 _id) : DBCException("Key was not found [" + to_string(_id) + "]") {}
-};
-
 
 ///////////////////////////////////
 // DBC File
@@ -208,20 +185,28 @@ class DBCFile : public File, public DBCStats
 	friend RECORD_T;
 
 public:
-	DBCFile(cstring _file) : File(string("DBFilesClient\\") + string(_file)) 
+	DBCFile(cstring _file) : File(string("DBFilesClient\\") + string(_file)) {}
+	~DBCFile() 
 	{
-		//Open();
+		for (auto it = records.begin(); it != records.end();)
+		{
+			auto obj = it->second;
+			it = records.erase(it);
+			delete obj;
+		}
 	}
 
 	// Open file and fill data
 	bool Open();
+
+	// Get data by id
+	RECORD_T* operator[](uint32 _id);
 
 	///////////////////////////////////
 	// Iterator that iterates over records
 	///////////////////////////////////
 	class Iterator
 	{
-		friend RECORD_T;
 	public:
 		Iterator(DBCFile* file, uint8* offset) : record(file, offset) {}
 
@@ -253,6 +238,9 @@ public:
 
 	private:
 		RECORD_T record;
+
+		//
+		friend RECORD_T;
 	};
 
 	// Iterators
@@ -272,9 +260,6 @@ public:
 	{
 		return &records;
 	}
-
-	// Get data by ID
-	RECORD_T* getByID(uint32 _id);
 
 protected:
 	map<uint32, RECORD_T*> records;

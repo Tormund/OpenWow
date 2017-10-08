@@ -27,9 +27,10 @@ __DBC_REF_ID(DBC_Map, ParentMapID, 13);				// int
 __DBC_TVALUE(float_t, CoordinateX, 14);				// float
 __DBC_TVALUE(float_t, CoordinateY, 15);				// float
 
-__DBC_TVALUE(int32, TimeOfDayOverride, 16);			// int
-__DBC_TVALUE(float_t, ExpansionID, 17);				// float
-__DBC_TVALUE(uint32, MaxPlayers, 19);				// uint
+__DBC_TVALUE(int32, TimeOfDayOverride, 16);	
+__DBC_TVALUE(uint32, ExpansionID, 17);			
+//__DBC_TVALUE(uint32, SomeTime, 17);		
+__DBC_TVALUE(uint32, MaxPlayers, 19);		
 
 __DBC_TVALUE(int32, PhaseParentMapID, 20);			// int
 

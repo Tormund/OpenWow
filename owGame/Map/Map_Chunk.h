@@ -1,13 +1,12 @@
 #pragma once
 
+// Includes and uses
+#include "../Liquid.h"
 #include "Map_Chunk_Types.h"
-
-class Liquid;
 class MapTile;
 
 class MapChunk
 {
-
 public:
 	MapChunk(MapTile* _parentTile);
 	~MapChunk();
@@ -16,12 +15,14 @@ public:
 
 	void initStrip(int holes);
 
-	void draw2();
-
-
+	void Render();
 	void drawNoDetail();
 	void drawPass(int anim);
-	//void drawWater();
+
+	//
+
+	void CreateMH2OLiquid(File& f, MH2O_Header* _liquidHeader);
+	MCNK_MCLQ_LiquidType GetLiquidType();
 
 public:
 	MapTile* m_ParentTile;
@@ -29,17 +30,12 @@ public:
 
 	int areaID;
 
-	bool haswater;
-
 	bool visible;
 	bool hasholes;
 	float waterlevel[2];
 
 	Texture* textures[4];
 	Texture* SpecularTextures[4];
-	//Texture* alphamaps[3];
-	//Texture* shadow;
-
 	Texture* blend;
 
 	int animated[4];
@@ -53,33 +49,10 @@ public:
 
 	Liquid* lq;
 
-	//vec3 vmin, vmax, vcenter;
 	BoundingBox m_Bounds;
 
 private:
 	MCNK_Header* header;
 	bool MCLV_exists;
 	bool colorBufferEnable;
-
-
-	//
-	// MH2O Functional
-	//
-
-
-public:
-	void TryInitMH2O(MH2O_Header* _header, File& f);
-	void createBuffer();
-
-	void initTextures(const char *basename, int first, int last);
-	void drawWater();
-
-	vector<MH2O_WaterLayer> m_WaterLayers;
-
-private:
-	GLuint globalBufferWater;
-	uint32 globalBufferSize;	
-
-	vector<Texture*> wTextures;
-	
 };

@@ -46,17 +46,22 @@ void Map::CreateMapArrays()
 	// default strip indices
 	short *defstrip = new short[stripsize];
 	for (int i = 0; i < stripsize; i++)
+	{
 		defstrip[i] = i; // note: this is ugly and should be handled in stripify
+	}
 
 	mapstrip = new short[stripsize];
 	stripify<short>(defstrip, mapstrip);
 	delete[] defstrip;
 
-	//
+	// hifg-resolution
 
 	defstrip = new short[stripsize2];
 	for (int i = 0; i < stripsize2; i++)
-		defstrip[i] = i; // note: this is ugly and should be handled in stripify
+	{
+		defstrip[i] = i;
+	}
+
 	mapstrip2 = new short[stripsize2];
 	stripify2<short>(defstrip, mapstrip2);
 	delete[] defstrip;
@@ -68,13 +73,13 @@ void Map::CreateMapArrays()
 
 	// init texture coordinates for detail map:
 	vt = dataDetail;
-	const float detail_half = 0.5f * detail_size / 8.0f;
+	const float detail_half = 0.5f * C_DetailSize / 8.0f;
 	for (int j = 0; j < 17; j++)
 	{
 		for (int i = 0; i < ((j % 2) ? 8 : 9); i++)
 		{
-			tx = detail_size / 8.0f * i;
-			ty = detail_size / 8.0f * j * 0.5f;
+			tx = C_DetailSize / 8.0f * i;
+			ty = C_DetailSize / 8.0f * j * 0.5f;
 			if (j % 2)
 			{
 				// offset by half
@@ -112,6 +117,7 @@ void Map::CreateMapArrays()
 void Map::InitGlobalsWMOs()
 {
 	// Load global WMO
+
 	Debug::Info("Map_GlobalWMOs[]: Global WMO exists [%s].", globalWMOExists ? "true" : "false");
 	if (globalWMOExists)
 	{
@@ -119,7 +125,10 @@ void Map::InitGlobalsWMOs()
 		globalWMO = new WMOInstance(wmo, globalWMOplacementInfo);
 	}
 
+
+
 	// Load low-resolution WMOs
+
 	Debug::Info("Map_GlobalWMOs[]: Low WMOs count [%d].", lowResolutionWMOsCount);
 	for (uint32 i = 0; i < lowResolutionWMOsCount; i++)
 	{
@@ -312,10 +321,8 @@ void Map::LoadLowTerrain()
 		}
 		else if (strncmp(fourcc, "MODF", 4) == 0) // Placement information for the WMO. Appears to be the same 64 byte structure used in the WDT and ADT MODF chunks.
 		{
-			uint32 count = size / WMOPlacementInfo::__size;
-
 #ifdef WMO_INCL
-			for (uint32 i = 0; i < count; i++)
+			for (uint32 i = 0; i < size / WMOPlacementInfo::__size; i++)
 			{
 				WMOPlacementInfo* placement = new WMOPlacementInfo;
 				f.ReadBytes(placement, WMOPlacementInfo::__size);
@@ -653,6 +660,7 @@ void Map::RenderLowResTiles()
 
 void Map::RenderTiles()
 {
+	// Draw cache
 	for (int i = 0; i < C_TilesCacheSize; i++)
 	{
 		if (maptilecache[i] != nullptr)
@@ -661,6 +669,7 @@ void Map::RenderTiles()
 		}
 	}
 
+	// Draw current
 	/*for (int i = 0; i < C_RenderedTiles; i++)
 		for (int j = 0; j < C_RenderedTiles; j++)
 			if (current[i][j] != nullptr)
@@ -822,7 +831,7 @@ uint32 Map::getAreaID()
 	return curChunk->areaID;
 }
 
-bool Map::IsTileInCurrent(MapTile * _mapTile)
+bool Map::IsTileInCurrent(MapTile* _mapTile)
 {
 	for (int i = 0; i < C_RenderedTiles; i++)
 		for (int j = 0; j < C_RenderedTiles; j++)

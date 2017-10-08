@@ -68,6 +68,8 @@ void WMOInstance::CalculateMatrix()
 	}
 }
 
+//
+
 void WMOInstance::reset()
 {
 	alreadyDraw.clear();

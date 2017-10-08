@@ -29,10 +29,8 @@ struct MapTileHeader
 	uint32 unused[3];
 };
 
-MapTile::MapTile(int x0, int z0)
+MapTile::MapTile(int x0, int z0) : m_IndexX(x0), m_IndexZ(z0)
 {
-	m_IndexX = x0;
-	m_IndexZ = z0;
 
 #ifdef WMO_INCL
 	wmoCount = 0;
@@ -280,7 +278,7 @@ bool MapTile::parse_adt(cstring _filename, load_phases _phase)
 			{
 				MH2O_Header* mh2o_Header = (MH2O_Header*)abuf;
 
-				chunks[i / C_ChunksInTile][i % C_ChunksInTile]->TryInitMH2O(mh2o_Header, f);
+				chunks[i / C_ChunksInTile][i % C_ChunksInTile]->CreateMH2OLiquid(f, mh2o_Header);
 
 				abuf += sizeof(MH2O_Header);
 			}
@@ -288,7 +286,6 @@ bool MapTile::parse_adt(cstring _filename, load_phases _phase)
 		else if (strncmp(fourcc, "MCNK", 4) == 0)
 		{
 			chunks[chunkI][chunkJ]->init(f, _phase);
-			chunks[chunkI][chunkJ]->createBuffer();
 			chunkJ++;
 			if (chunkJ == 16)
 			{
@@ -340,29 +337,18 @@ bool MapTile::parse_adt(cstring _filename, load_phases _phase)
 void MapTile::draw()
 {
 	for (uint32 i = 0; i < C_ChunksInTile; i++)
-	{
 		for (uint32 j = 0; j < C_ChunksInTile; j++)
-		{
 			if (chunks[i][j] != nullptr)
-			{
-				chunks[i][j]->draw2();
-			}
-		}
-	}
+				chunks[i][j]->Render();
 }
 
 void MapTile::drawWater()
 {
 	for (uint32 i = 0; i < C_ChunksInTile; i++)
-	{
 		for (uint32 j = 0; j < C_ChunksInTile; j++)
-		{
 			if (chunks[i][j] != nullptr)
-			{
-				chunks[i][j]->drawWater();
-			}
-		}
-	}
+				if(chunks[i][j]->lq != nullptr)
+					chunks[i][j]->lq->draw();
 }
 
 void MapTile::drawObjects()

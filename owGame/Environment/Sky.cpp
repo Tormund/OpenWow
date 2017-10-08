@@ -28,28 +28,27 @@ Sky::Sky(DBC_LightRecord* data)
 
 	for (uint32 i = 0; i < 18; i++)
 	{
-		try
-		{
-			auto rec = DBC_LightIntBand.getByID(ParamsClear + i);
-			uint32 entries = rec->Get_Count();
 
-			if (entries == 0)
-			{
-				mmin[i] = -1;
-			}
-			else
-			{
-				mmin[i] = rec->Get_Times(0);
-				for (int l = 0; l < entries; l++)
-				{
-					SkyColor sc(rec->Get_Times(l), rec->Get_Values(l));
-					colorRows[i].push_back(sc);
-				}
-			}
-		}
-		catch (DBCNotFound)
+		auto rec = DBC_LightIntBand[ParamsClear + i];
+		if (rec == nullptr)
 		{
 			Debug::Error("Sky NOT FOUND!!!!!!");
+		}
+
+		uint32 entries = rec->Get_Count();
+
+		if (entries == 0)
+		{
+			mmin[i] = -1;
+		}
+		else
+		{
+			mmin[i] = rec->Get_Times(0);
+			for (int l = 0; l < entries; l++)
+			{
+				SkyColor sc(rec->Get_Times(l), rec->Get_Values(l));
+				colorRows[i].push_back(sc);
+			}
 		}
 	}
 }
