@@ -58,7 +58,6 @@ class Pipeline
 	void RenderCamera(Camera* _camera = nullptr);
 
 private: // Matrices
-	mat4 view;
 	PipelineWorldTransformation worldTransformation;
 	PipelineWorldTransformation worldTransformationTest;
 

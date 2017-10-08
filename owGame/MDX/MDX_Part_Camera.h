@@ -8,6 +8,8 @@ public:
 	void init(File& f, M2Camera& mcd, uint32* global);
 	void setup(int time = 0);
 
+	Camera* GetCamera() { return camera; }
+
 private:
 	float farclip;
 	float nearclip;

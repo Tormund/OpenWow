@@ -441,7 +441,7 @@ bool WMOGroup::Render()
 		return false;
 	}*/
 
-	if (_Render->frustum.cullBox(aabb))
+	if (_Camera->_frustum.cullBox(aabb))
 	{
 		return false;
 	}

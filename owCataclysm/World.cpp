@@ -9,9 +9,10 @@ World::World()
 	// SHADERS
 	mainCamera = new Camera;
 	mainCamera->setupViewParams(45.0f, Settings::aspectRatio, 2.0f, 15000.0f);
+	_PipelineGlobal->SetCamera(mainCamera);
+
 	testCamera = new Camera;
 	testCamera->setupViewParams(45.0f, Settings::aspectRatio, 2.0f, 15000.0f);
-	_PipelineGlobal->SetCamera(mainCamera);
 
 	_EnvironmentManager->Init();
 
@@ -71,7 +72,6 @@ void World::drawShader(GLint _color)
 	_PipelineGlobal->SetCamera(mainCamera);
 	_Perfomance->FrameBegin();
 	_EnvironmentManager->BeforeDraw();
-	_Render->frustum.buildViewFrustum(mainCamera->getViewMat(), mainCamera->getProjMat());
 		
 	// Main frame
 	m_gbuffer->StartFrame(finalTexture1);

@@ -172,6 +172,7 @@
     <ClCompile Include="egRendererBase.cpp" />
     <ClCompile Include="egRendererBaseGL2.cpp" />
     <ClCompile Include="egRendererBaseGL4.cpp" />
+    <ClCompile Include="OpenGL.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -181,6 +182,7 @@
     <ClInclude Include="egRendererBase.h" />
     <ClInclude Include="egRendererBaseGL2.h" />
     <ClInclude Include="egRendererBaseGL4.h" />
+    <ClInclude Include="OpenGL.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

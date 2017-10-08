@@ -19,24 +19,23 @@ void MDX_Part_Camera::init(File& f, M2Camera& mcd, uint32* global)
 
 	tRoll.init(mcd.roll, f, global);
 	tFov.init(mcd.FoV, f, global);
+
+	camera = new Camera();
 }
 
 void MDX_Part_Camera::setup(int time)
 {
 	fov = tFov.getValue(0, time) * 34.5f;
 
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(fov, Settings::aspectRatio, nearclip, farclip);
-
 	vec3 p = pos + tPos.getValue(0, time);
 	vec3 t = target + tTarget.getValue(0, time);
 	vec3 u(0, 1, 0);
 
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	gluLookAt(p.x, p.y, p.z, t.x, t.y, t.z, u.x, u.y, u.z);
-
 	roll = tRoll.getValue(0, time) / PI * 180.0f;
-	glRotatef(roll, 0, 0, 1);
+
+	camera->setupViewParams(fov, Settings::aspectRatio, nearclip, farclip);
+	camera->Position = p;
+	camera->Direction = t;
+	camera->CameraUp = u;
+	camera->onPostUpdate();
 }

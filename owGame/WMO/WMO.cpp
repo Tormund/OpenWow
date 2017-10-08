@@ -303,7 +303,7 @@ bool WMO::draw(uint32 _doodadSet)
 	BoundingBox aabb = m_Bounds;
 	aabb.transform(_Pipeline->GetWorld());
 
-	if (_Render->frustum.cullBox(aabb))
+	if (_Camera->_frustum.cullBox(aabb))
 	{
 		return false;
 	}

@@ -27,7 +27,7 @@
 // This corresponding macro is used to check the existence of the
 // interface function in the derived class.
 #define CheckMemberFunction( FNNAME, FNPROTOTYPE ) {                     \
-              assert( has_member_##FNNAME<FNPROTOTYPE>::value ); }
+              assert1( has_member_##FNNAME<FNPROTOTYPE>::value ); }
 
 //
 // Current RenderDeviceInterface and GPUTimer implementation is based on Simulated C++ Interface Template Pattern from
@@ -181,8 +181,8 @@ public:
 
 	void remove(uint32 handle)
 	{
-		ASSERT(handle > 0 && handle <= _objects.size());
-		ASSERT(std::find(_freeList.begin(), _freeList.end(), handle - 1) == _freeList.end());
+		assert1(handle > 0 && handle <= _objects.size());
+		assert1(std::find(_freeList.begin(), _freeList.end(), handle - 1) == _freeList.end());
 
 		_objects[handle - 1] = T();  // Destruct and replace with default object
 		_freeList.push_back(handle - 1);
@@ -190,7 +190,7 @@ public:
 
 	T &getRef(uint32 handle)
 	{
-		ASSERT(handle > 0 && handle <= _objects.size());
+		assert1(handle > 0 && handle <= _objects.size());
 
 		return _objects[handle - 1];
 	}
@@ -489,13 +489,8 @@ enum RDIDrawBarriers
 
 class RenderDeviceInterface
 {
-	// -----------------------------------------------------------------------------
-	// Template functions
-	// -----------------------------------------------------------------------------
 private:
-	//---------------------------------------------------------------------------------------------------------------------------------------//
-	// Function checking
-	//---------------------------------------------------------------------------------------------------------------------------------------//
+#pragma region Functions checking
 
 	CreateMemberFunctionChecker(init);
 	CreateMemberFunctionChecker(initStates);
@@ -559,11 +554,9 @@ private:
 
 	CreateMemberFunctionChecker(setStorageBuffer);
 
+#pragma endregion
 
-	//---------------------------------------------------------------------------------------------------------------------------------------//
-	// Typedefs
-	//---------------------------------------------------------------------------------------------------------------------------------------//
-
+#pragma region Typedefs
 
 	typedef bool(*PFN_INIT)(void* const);
 	typedef void(*PFN_INITSTATES)(void* const);
@@ -630,11 +623,9 @@ private:
 
 	typedef bool(*PFN_SETSTORAGEBUFFER)(void* const, uint8 slot, uint32 bufObj);
 
+#pragma endregion
 
-	//---------------------------------------------------------------------------------------------------------------------------------------//
-	// pointers to functions
-	//---------------------------------------------------------------------------------------------------------------------------------------//
-
+#pragma region Pointers to functions
 
 	// general
 	PFN_INIT					_pfnInit;
@@ -709,11 +700,9 @@ private:
 	// commands
 	PFN_SETSTORAGEBUFFER		_pfnSetStorageBuffer;
 
+#pragma endregion
 
-	//---------------------------------------------------------------------------------------------------------------------------------------//
-	// invoker functions
-	//---------------------------------------------------------------------------------------------------------------------------------------//
-
+#pragma region Functions invokers
 
 	// main funcs
 	template<typename T>
@@ -961,7 +950,7 @@ private:
 	{
 		return static_cast<T*>(pObj)->getQueryResult(queryObj);
 	}
-	
+
 	// Timer
 	template<typename T>
 	static GPUTimer *		 createGPUTimer_Invoker(void* const pObj)
@@ -1001,10 +990,11 @@ private:
 		static_cast<T*>(pObj)->setStorageBuffer(slot, bufObj);
 	}
 
+#pragma endregion
+
 protected:
 	template<typename T> void initRDIFunctions()
 	{
-		// check for implementation
 		CheckMemberFunction(initStates, void(T::*)());
 		CheckMemberFunction(init, bool(T::*)());
 		CheckMemberFunction(registerVertexLayout, uint32(T::*)(uint32, VertexLayoutAttrib *));
@@ -1137,42 +1127,32 @@ protected:
 		_pfnSetStorageBuffer = (PFN_SETSTORAGEBUFFER)&setStorageBuffer_Invoker< T >;
 	}
 
-	// -----------------------------------------------------------------------------
-	// Main interface
-	// -----------------------------------------------------------------------------
 public:
 	RenderDeviceInterface()
 	{}
 	virtual ~RenderDeviceInterface()
 	{}
 
-	void initStates()
-	{
-		(*_pfnInitStates)(this);
-	}
+#pragma region Main interface
+
 	bool init()
 	{
 		return (*_pfnInit)(this);
 	}
-
-
-	// -----------------------------------------------------------------------------
-	// Resources
-	// -----------------------------------------------------------------------------
-
-	// Vertex layouts
+	void initStates()
+	{
+		(*_pfnInitStates)(this);
+	}
 	uint32 registerVertexLayout(uint32 numAttribs, VertexLayoutAttrib *attribs)
 	{
 		return (*_pfnRegisterVertexLayout)(this, numAttribs, attribs);
 	}
-
-	//
-
-	// Buffers
 	void beginRendering()
 	{
 		(*_pfnBeginRendering)(this);
 	}
+
+	// Buffers
 	uint32 beginCreatingGeometry(uint32 vlObj)
 	{
 		return (*_pfnBeginCreatingGeometry) (this, vlObj);
@@ -1384,6 +1364,8 @@ public:
 		return (*_pfnCreateGPUTimer)(this);
 	}
 
+#pragma endregion
+
 	// -----------------------------------------------------------------------------
 	// Commands
 	// -----------------------------------------------------------------------------
@@ -1414,7 +1396,7 @@ public:
 	}
 	void setTexture(uint32 slot, uint32 texObj, uint16 samplerState, uint16 usage)
 	{
-		assert1(slot < 16/*_maxTexSlots*/);
+		assert1(slot < 16);
 		_texSlots[slot] = RDITexSlot(texObj, samplerState, usage);
 		//
 		_pendingMask |= PM_TEXTURES;
@@ -1441,7 +1423,7 @@ public:
 	{
 		enabled = _newRasterState.renderTargetWriteMask;
 	}
-	
+
 	void setFillMode(RDIFillMode fillMode)
 	{
 		_newRasterState.fillMode = fillMode; _pendingMask |= PM_RENDERSTATES;
@@ -1450,7 +1432,7 @@ public:
 	{
 		fillMode = (RDIFillMode)_newRasterState.fillMode;
 	}
-	
+
 	void setCullMode(RDICullMode cullMode)
 	{
 		_newRasterState.cullMode = cullMode; _pendingMask |= PM_RENDERSTATES;
@@ -1459,7 +1441,7 @@ public:
 	{
 		cullMode = (RDICullMode)_newRasterState.cullMode;
 	}
-	
+
 	void setScissorTest(bool enabled)
 	{
 		_newRasterState.scissorEnable = enabled; _pendingMask |= PM_RENDERSTATES;
@@ -1468,7 +1450,7 @@ public:
 	{
 		enabled = _newRasterState.scissorEnable;
 	}
-	
+
 	void setMulisampling(bool enabled)
 	{
 		_newRasterState.multisampleEnable = enabled; _pendingMask |= PM_RENDERSTATES;
@@ -1477,7 +1459,7 @@ public:
 	{
 		enabled = _newRasterState.multisampleEnable;
 	}
-	
+
 	void setAlphaToCoverage(bool enabled)
 	{
 		_newBlendState.alphaToCoverageEnable = enabled; _pendingMask |= PM_RENDERSTATES;
@@ -1486,7 +1468,7 @@ public:
 	{
 		enabled = _newBlendState.alphaToCoverageEnable;
 	}
-	
+
 	void setBlendMode(bool enabled, RDIBlendFunc srcBlendFunc = BS_BLEND_ZERO, RDIBlendFunc destBlendFunc = BS_BLEND_ZERO)
 	{
 		_newBlendState.blendEnable = enabled; _newBlendState.srcBlendFunc = srcBlendFunc;
@@ -1497,7 +1479,7 @@ public:
 		enabled = _newBlendState.blendEnable; srcBlendFunc = (RDIBlendFunc)_newBlendState.srcBlendFunc;
 		destBlendFunc = (RDIBlendFunc)_newBlendState.destBlendFunc;
 	}
-	
+
 	void setDepthMask(bool enabled)
 	{
 		_newDepthStencilState.depthWriteMask = enabled; _pendingMask |= PM_RENDERSTATES;
@@ -1506,7 +1488,7 @@ public:
 	{
 		enabled = _newDepthStencilState.depthWriteMask;
 	}
-	
+
 	void setDepthTest(bool enabled)
 	{
 		_newDepthStencilState.depthEnable = enabled; _pendingMask |= PM_RENDERSTATES;
@@ -1515,19 +1497,23 @@ public:
 	{
 		enabled = _newDepthStencilState.depthEnable;
 	}
-	
+
 	void setDepthFunc(RDIDepthFunc depthFunc)
 	{
-		_newDepthStencilState.depthFunc = depthFunc; _pendingMask |= PM_RENDERSTATES;
+		_newDepthStencilState.depthFunc = depthFunc; 
+		//
+		_pendingMask |= PM_RENDERSTATES;
 	}
 	void getDepthFunc(RDIDepthFunc &depthFunc) const
 	{
 		depthFunc = (RDIDepthFunc)_newDepthStencilState.depthFunc;
 	}
-	
+
 	void setTessPatchVertices(uint16 verts)
 	{
-		_tessPatchVerts = verts; _pendingMask |= PM_RENDERSTATES;
+		_tessPatchVerts = verts; 
+		//
+		_pendingMask |= PM_RENDERSTATES;
 	}
 
 	bool commitStates(uint32 filter = 0xFFFFFFFF)

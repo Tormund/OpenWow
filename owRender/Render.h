@@ -31,9 +31,6 @@ public:
 private:
 	void OnWindowResized(uint32 _width, uint32 _height);
 
-public:
-	Frustum frustum;
-
 private:
 	mat4 m_OrhoMatrix;
 };

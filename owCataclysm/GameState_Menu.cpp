@@ -29,7 +29,7 @@ bool GameState_Menu::Init()
 
 	cmd = CMD_NONE2;
 	backgroundModel = 0;
-	//randBackground();
+	randBackground();
 	currentColor = GL_COLOR_ATTACHMENT6;
 
 	/*_Map->PreloadMap(DBC_Map[1]);
@@ -94,43 +94,30 @@ void GameState_Menu::Destroy()
 
 void GameState_Menu::InputPhase(double t, double dt)
 {
-	float delta = PI / 60.0f;
 	float speed = 4.5f;
 
 	if (cameraSlow)
-	{
 		speed *= 0.2f;
-	}
 
 	if (cameraSprint)
-	{
 		speed *= 3.0f;
-	}
 
 	if (_Input->IsKeyPressed(GLFW_KEY_W))
-	{
 		_World->mainCamera->ProcessKeyboard(FORWARD, speed);
-	}
 
 	if (_Input->IsKeyPressed(GLFW_KEY_S))
-	{
 		_World->mainCamera->ProcessKeyboard(BACKWARD, speed);
-	}
 
 	if (_Input->IsKeyPressed(GLFW_KEY_A))
-	{
 		_World->mainCamera->ProcessKeyboard(LEFT, speed);
-	}
 
 	if (_Input->IsKeyPressed(GLFW_KEY_D))
-	{
 		_World->mainCamera->ProcessKeyboard(RIGHT, speed);
-	}
 }
 
 void GameState_Menu::UpdatePhase(double t, double dt)
 {
-	_EnvironmentManager->animtime += dt * 1000.0f;
+	_EnvironmentManager->animtime += (dt * 1000.0f);
 	_EnvironmentManager->globalTime = (int)_EnvironmentManager->animtime;
 
 	_World->tick(dt);
@@ -143,44 +130,15 @@ void GameState_Menu::UpdatePhase(double t, double dt)
 
 void GameState_Menu::Render(double t, double dt)
 {
-	glDisable(GL_FOG);
-
 	if (cmd == CMD_IN_WORLD2 && !minimapActive)
 	{
-
 		_World->drawShader(currentColor);
 	}
 
 	if (backgroundModel != nullptr)
 	{
-		vec4 la(0.1f, 0.1f, 0.1f, 1);
-		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, la);
-
-		//***glEnable(GL_COLOR_MATERIAL);
-		//***glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-
-		/****glColor4f(1, 1, 1, 1);
-		for (int i = 0; i < 8; i++)
-		{
-			GLuint light = GL_LIGHT0 + i;
-			glLightf(light, GL_CONSTANT_ATTENUATION, 0);
-			glLightf(light, GL_LINEAR_ATTENUATION, 0.7f);
-			glLightf(light, GL_QUADRATIC_ATTENUATION, 0.03f);
-			glDisable(light);
-		}****/
-
-		/****glEnableClientState(GL_VERTEX_ARRAY);
-		glEnableClientState(GL_NORMAL_ARRAY);
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);***/
-
-		glEnable(GL_TEXTURE_2D);
-
-		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LEQUAL);
-
-		//****glEnable(GL_LIGHTING);
-
 		backgroundModel->m_Cameras[0].setup(_EnvironmentManager->globalTime);
+		_PipelineGlobal->SetCamera(backgroundModel->m_Cameras[0].GetCamera());
 		backgroundModel->draw();
 	}
 }

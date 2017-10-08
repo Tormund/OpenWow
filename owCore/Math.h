@@ -910,6 +910,32 @@ public:
 		return m;
 	}
 
+	static Matrix4f lookAtRH(const Vec3f& eye, const Vec3f& center, const Vec3f& up)
+	{
+		const Vec3f f = (center - eye).normalized();
+		const Vec3f s = (f.cross(up)).normalized();
+		const Vec3f u = s.cross(f);
+
+		Matrix4f Result;
+		Result.c[0][0] = s.x;
+		Result.c[1][0] = s.y;
+		Result.c[2][0] = s.z;
+
+		Result.c[0][1] = u.x;
+		Result.c[1][1] = u.y;
+		Result.c[2][1] = u.z;
+
+		Result.c[0][2] = -f.x;
+		Result.c[1][2] = -f.y;
+		Result.c[2][2] = -f.z;
+
+		Result.c[3][0] = -(s.dot(eye));
+		Result.c[3][1] = -(u.dot(eye));
+		Result.c[3][2] = f.dot(eye);
+
+		return Result;
+	}
+
 	static void fastMult43(Matrix4f &dst, const Matrix4f &m1, const Matrix4f &m2)
 	{
 		// Note: dst may not be the same as m1 or m2
@@ -1105,6 +1131,8 @@ public:
 					 v.x * c[0][2] + v.y * c[1][2] + v.z * c[2][2]);
 	}
 
+
+
 	// ---------------
 	// Transformations
 	// ---------------
@@ -1152,6 +1180,7 @@ public:
 	}
 
 	
+
 	// ---------------
 	// Other
 	// ---------------

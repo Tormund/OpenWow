@@ -126,11 +126,6 @@ Model_Skin::~Model_Skin()
 
 void Model_Skin::Draw()
 {
-	//if (m_ModelObject->m_IsBillboard)
-	//{
-	//	return;
-	//}
-
 	_TechniquesMgr->m_MDX_GeometryPass->Bind();
 	_TechniquesMgr->m_MDX_GeometryPass->SetPVW();
 

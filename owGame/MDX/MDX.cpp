@@ -268,12 +268,6 @@ void MDX::drawModel()
 	{
 		(*it)->Draw();
 	}
-	// done with all render ops
-
-	//--------------GLfloat czero[4] = {0,0,0,1};
-	//--------------glMaterialfv(GL_FRONT, GL_EMISSION, czero);
-	//--------------glColor4f(1, 1, 1, 1);
-	//--------------glDepthMask(GL_TRUE);
 }
 
 void MDX::draw()
@@ -302,12 +296,7 @@ void MDX::draw()
 			}
 		}
 
-		//--------------lightsOn(GL_LIGHT4);
 		drawModel();
-		//--------------lightsOff(GL_LIGHT4);
-
-		// effects are unfogged..?
-		//--------------glDisable(GL_FOG);
 
 		// draw particle systems
 #ifdef MDX_PARTICLES_ENABLE
@@ -322,11 +311,6 @@ void MDX::draw()
 			ribbons[i].draw();
 		}
 #endif
-
-		//--------------if (Settings::drawfog)
-		//--------------{
-		//--------------	glEnable(GL_FOG);
-		//--------------}
 	}
 }
 

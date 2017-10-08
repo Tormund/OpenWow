@@ -42,7 +42,7 @@ void ModelInstance::draw()
 		//	return;
 		//}
 
-		if (_Render->frustum.cullBox(aabb))
+		if (_Camera->_frustum.cullBox(aabb))
 		{
 			return;
 		}

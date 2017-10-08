@@ -46,7 +46,7 @@ void DoodadInstance::Draw()
 		//}
 
 		// Frustrum test
-		if (_Render->frustum.cullBox(aabb))
+		if (_Camera->_frustum.cullBox(aabb))
 		{
 			_Pipeline->Pop(); // restore matrix
 			return;

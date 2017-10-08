@@ -588,7 +588,7 @@ void MapChunk::Render()
 		return;
 	}
 
-	if (_Render->frustum.cullBox(m_Bounds))
+	if (_Camera->_frustum.cullBox(m_Bounds))
 	{
 		return;
 	}

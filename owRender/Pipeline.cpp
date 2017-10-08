@@ -8,7 +8,6 @@ void Pipeline::SetCamera(Camera* _camera)
 {
 	assert1(_camera != nullptr);
 
-	view = mat4();
 	camera = _camera;
 }
 

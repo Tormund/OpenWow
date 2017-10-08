@@ -13,20 +13,17 @@
 #include "stdafx.h"
 
 #include "egRenderer.h"
-#include "egParticle.h"
-#include "egLight.h"
-#include "egCamera.h"
-#include "egModules.h"
+//#include "egParticle.h"
+//#include "egLight.h"
+//#include "egCamera.h"
+//#include "egModules.h"
 #include "egRendererBaseGL2.h"
 #include "egRendererBaseGL4.h"
-#include "egCom.h"
-#include "egComputeNode.h"
+//#include "egCom.h"
+//#include "egComputeNode.h"
 #include <cstring>
 
-#include "utDebug.h"
-
-
-namespace Horde3D {
+//#include "utDebug.h"
 
 using namespace std;
 
@@ -155,11 +152,11 @@ bool Renderer::init( RenderBackendType::List type )
 
 	// Check capabilities
 	if( !_renderDevice->getCaps().texFloat )
-		Modules::log().writeWarning( "Renderer: No floating point texture support available" );
+		Debug::Warn( "Renderer: No floating point texture support available" );
 	if( !_renderDevice->getCaps().texNPOT )
-		Modules::log().writeWarning( "Renderer: No non-Power-of-two texture support available" );
+		Debug::Warn( "Renderer: No non-Power-of-two texture support available" );
 	if( !_renderDevice->getCaps().rtMultisampling )
-		Modules::log().writeWarning( "Renderer: No multisampling for render targets available" );
+		Debug::Warn( "Renderer: No multisampling for render targets available" );
 	
 	// Create vertex layouts
 	VertexLayoutAttrib attribsPosOnly[1] = {
@@ -267,7 +264,7 @@ bool Renderer::init( RenderBackendType::List type )
 
 	// Start frame timer
 	Timer *timer = Modules::stats().getTimer( EngineStats::FrameTime );
-	ASSERT( timer != 0x0 );
+	assert1( timer != 0x0 );
 	timer->setEnabled( true );
 	
 	// Save render device type for later use, particularly by shaders
@@ -440,7 +437,7 @@ void Renderer::createPrimitives()
 
 void Renderer::drawAABB( const Vec3f &bbMin, const Vec3f &bbMax )
 {
-	ASSERT( _curShader != 0x0 );
+	assert1( _curShader != 0x0 );
 	
 	Matrix4f mat = Matrix4f::TransMat( bbMin.x, bbMin.y, bbMin.z ) *
 		Matrix4f::ScaleMat( bbMax.x - bbMin.x, bbMax.y - bbMin.y, bbMax.z - bbMin.z );
@@ -457,16 +454,13 @@ void Renderer::drawAABB( const Vec3f &bbMin, const Vec3f &bbMax )
 
 void Renderer::drawSphere( const Vec3f &pos, float radius )
 {
-	ASSERT( _curShader != 0x0 );
+	assert1( _curShader != 0x0 );
 
 	Matrix4f mat = Matrix4f::TransMat( pos.x, pos.y, pos.z ) *
 	               Matrix4f::ScaleMat( radius, radius, radius );
 	_renderDevice->setShaderConst( _curShader->uni_worldMat, CONST_FLOAT44, &mat.x[ 0 ] );
 
 	_renderDevice->setGeometry( _sphereGeo );
-// 	_renderDevice->setVertexBuffer( 0, _vbSphere, 0, 12 );
-// 	_renderDevice->setIndexBuffer( _ibSphere, IDXFMT_16 );
-// 	_renderDevice->setVertexLayout( _vlPosOnly );
 
 	_renderDevice->drawIndexed( PRIM_TRILIST, 0, 128 * 3, 0, 126 );
 }
@@ -474,15 +468,12 @@ void Renderer::drawSphere( const Vec3f &pos, float radius )
 
 void Renderer::drawCone( float height, float radius, const Matrix4f &transMat )
 {
-	ASSERT( _curShader != 0x0 );
+	assert1( _curShader != 0x0 );
 
 	Matrix4f mat = transMat * Matrix4f::ScaleMat( radius, radius, height );
 	_renderDevice->setShaderConst( _curShader->uni_worldMat, CONST_FLOAT44, &mat.x[ 0 ] );
 
 	_renderDevice->setGeometry( _coneGeo );
-// 	_renderDevice->setVertexBuffer( 0, _vbCone, 0, 12 );
-// 	_renderDevice->setIndexBuffer( _ibCone, IDXFMT_16 );
-// 	_renderDevice->setVertexLayout( _vlPosOnly );
 
 	_renderDevice->drawIndexed( PRIM_TRILIST, 0, 22 * 3, 0, 13 );
 }
@@ -492,8 +483,7 @@ void Renderer::drawCone( float height, float radius, const Matrix4f &transMat )
 // Material System
 // =================================================================================================
 
-bool Renderer::createShaderComb( ShaderCombination &sc, const char *vertexShader, const char *fragmentShader, const char *geometryShader,
-								 const char *tessControlShader, const char *tessEvaluationShader, const char *computeShader )
+bool Renderer::createShaderComb( ShaderCombination &sc, const char *vertexShader, const char *fragmentShader, const char *geometryShader, const char *tessControlShader, const char *tessEvaluationShader, const char *computeShader )
 {
 	// Create shader program
 	uint32 shdObj = _renderDevice->createShader( vertexShader, fragmentShader, geometryShader, tessControlShader, tessEvaluationShader, computeShader );
@@ -565,7 +555,7 @@ void Renderer::setShaderComb( ShaderCombination *sc )
 
 void Renderer::commitGeneralUniforms()
 {
-	ASSERT( _curShader != 0x0 );
+	assert1( _curShader != 0x0 );
 
 	// Note: Make sure that all functions which modify one of the following params increase the stamp
 	if( _curShader->lastUpdateStamp != _curShaderUpdateStamp )
@@ -636,8 +626,7 @@ void Renderer::commitGeneralUniforms()
 }
 
 
-bool Renderer::setMaterialRec( MaterialResource *materialRes, const string &shaderContext,
-                               ShaderResource *shaderRes )
+bool Renderer::setMaterialRec( MaterialResource *materialRes, const string &shaderContext, ShaderResource *shaderRes )
 {
 	if( materialRes == 0x0 ) return false;
 	
@@ -918,8 +907,8 @@ Matrix4f Renderer::calcCropMatrix( const Frustum &frustSlice, const Vec3f lightP
 		const BoundingBox &aabb = renderQueue[i].node->getBBox();
 		
 		// Check if light is inside AABB
-		if( lightPos.x >= aabb.Min.x && lightPos.y >= aabb.Min.y && lightPos.z >= aabb.Min.z &&
-			lightPos.x <= aabb.Max.x && lightPos.y <= aabb.Max.y && lightPos.z <= aabb.Max.z )
+		if( lightPos.x >= aabb.min.x && lightPos.y >= aabb.min.y && lightPos.z >= aabb.min.z &&
+			lightPos.x <= aabb.max.x && lightPos.y <= aabb.max.y && lightPos.z <= aabb.max.z )
 		{
 			bbMinX = bbMinY = bbMinZ = -1;
 			bbMaxX = bbMaxY = bbMaxZ = 1;
@@ -1163,7 +1152,7 @@ void Renderer::unregisterOccSet( int occSet )
 
 void Renderer::drawOccProxies( uint32 list )
 {
-	ASSERT( list < 2 );
+	assert1( list < 2 );
 
 	bool prevColorMask, prevDepthMask;
 	_renderDevice->getColorWriteMask( prevColorMask );
@@ -1257,7 +1246,7 @@ void Renderer::drawOverlays( const string &shaderContext )
 // 	_renderDevice->setVertexBuffer( 0, _overlayVB, 0, sizeof( OverlayVert ) );
 // 	_renderDevice->setIndexBuffer( _quadIdxBuf, IDXFMT_16 );
 	_renderDevice->setGeometry( _overlayGeo );
-	ASSERT( QuadIndexBufCount >= MaxNumOverlayVerts * 6 );
+	assert1( QuadIndexBufCount >= MaxNumOverlayVerts * 6 );
 
 	float aspect = (float)_curCamera->_vpWidth / (float)_curCamera->_vpHeight;
 	setupViewMatrices( Matrix4f(), Matrix4f::OrthoMat( 0, aspect, 1, 0, -1, 1 ) );
@@ -1332,8 +1321,7 @@ void Renderer::bindPipeBuffer( uint32 rbObj, const string &sampler, uint32 bufIn
 }
 
 
-void Renderer::clear( bool depth, bool buf0, bool buf1, bool buf2, bool buf3,
-                      float r, float g, float b, float a )
+void Renderer::clear( bool depth, bool buf0, bool buf1, bool buf2, bool buf3, float r, float g, float b, float a )
 {
 	float clrColor[] = { r, g, b, a };
 
@@ -1639,7 +1627,7 @@ void Renderer::drawRenderables( const string &shaderContext, const string &theCl
                                 const Frustum *frust1, const Frustum *frust2, RenderingOrder::List order,
                                 int occSet )
 {
-	ASSERT( _curCamera != 0x0 );
+	assert1( _curCamera != 0x0 );
 	
 	const RenderQueue &renderQueue = Modules::sceneMan().getRenderQueue();
 	uint32 queueSize = (uint32)renderQueue.size();
@@ -1751,7 +1739,7 @@ void Renderer::drawMeshes( uint32 firstItem, uint32 lastItem, const string &shad
 		if( curGeoRes != modelNode->getGeometryResource() )
 		{
 			curGeoRes = modelNode->getGeometryResource();
-			ASSERT( curGeoRes != 0x0 );
+			assert1( curGeoRes != 0x0 );
 		
 			rdi->setGeometry( curGeoRes->getGeometryInfo() );
 
@@ -1895,7 +1883,7 @@ void Renderer::drawParticles( uint32 firstItem, uint32 lastItem, const string &s
 // 	rdi->setVertexBuffer( 0, Modules::renderer().getParticleVBO(), 0, sizeof( ParticleVert ) );
 // 	rdi->setIndexBuffer( Modules::renderer().getQuadIdxBuf(), IDXFMT_16 );
 	rdi->setGeometry( Modules::renderer().getParticleGeometry() );
-	ASSERT( QuadIndexBufCount >= ParticlesPerBatch * 6 );
+	assert1( QuadIndexBufCount >= ParticlesPerBatch * 6 );
 
 	// Loop through emitter queue
 	for( uint32 i = firstItem; i <= lastItem; ++i )
@@ -2267,7 +2255,7 @@ void Renderer::finalizeFrame()
 	
 	// Reset frame timer
 	Timer *timer = Modules::stats().getTimer( EngineStats::FrameTime );
-	ASSERT( timer != 0x0 );
+	assert1( timer != 0x0 );
 	Modules::stats().getStat( EngineStats::FrameTime, true );  // Reset
 	Modules::stats().incStat( EngineStats::FrameTime, timer->getElapsedTimeMS() );
 	timer->reset();
@@ -2342,6 +2330,3 @@ void Renderer::finishRendering()
 	setMaterial( 0x0, "" );
 	_renderDevice->resetStates();
 }
-
-
-}  // namespace

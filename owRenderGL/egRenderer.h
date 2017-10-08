@@ -13,15 +13,9 @@
 #ifndef _egRenderer_H_
 #define _egRenderer_H_
 
-#include "egPrerequisites.h"
 #include "egRendererBase.h"
-#include "egPrimitives.h"
-#include "egModel.h"
 #include <vector>
 #include <algorithm>
-
-
-namespace Horde3D {
 
 class MaterialResource;
 class LightNode;
@@ -152,8 +146,7 @@ public:
 	void drawSphere( const Vec3f &pos, float radius );
 	void drawCone( float height, float fov, const Matrix4f &transMat );
 	
-	bool createShaderComb( ShaderCombination &sc, const char *vertexShader, const char *fragmentShader, const char *geometryShader,
-						   const char *tessControlShader, const char *tessEvaluationShader, const char *computeShader );
+	bool createShaderComb( ShaderCombination &sc, const char *vertexShader, const char *fragmentShader, const char *geometryShader, const char *tessControlShader, const char *tessEvaluationShader, const char *computeShader );
 	void releaseShaderComb( ShaderCombination &sc );
 	void setShaderComb( ShaderCombination *sc );
 	void commitGeneralUniforms();
@@ -168,16 +161,12 @@ public:
 	void pushOccProxy( uint32 list, const Vec3f &bbMin, const Vec3f &bbMax, uint32 queryObj )
 		{ _occProxies[list].push_back( OccProxy( bbMin, bbMax, queryObj ) ); }
 	
-	void showOverlays( const float *verts, uint32 vertCount, float *colRGBA,
-	                   MaterialResource *matRes, int flags );
+	void showOverlays( const float *verts, uint32 vertCount, float *colRGBA, MaterialResource *matRes, int flags );
 	void clearOverlays();
 	
-	static void drawMeshes( uint32 firstItem, uint32 lastItem, const std::string &shaderContext, const std::string &theClass,
-		bool debugView, const Frustum *frust1, const Frustum *frust2, RenderingOrder::List order, int occSet );
-	static void drawParticles( uint32 firstItem, uint32 lastItem, const std::string &shaderContext, const std::string &theClass,
-		bool debugView, const Frustum *frust1, const Frustum *frust2, RenderingOrder::List order, int occSet );
-	static void drawComputeResults( uint32 firstItem, uint32 lastItem, const std::string &shaderContext, const std::string &theClass, 
-									bool debugView, const Frustum *frust1, const Frustum *frust2, RenderingOrder::List order, int occSet );
+	static void drawMeshes( uint32 firstItem, uint32 lastItem, const std::string &shaderContext, const std::string &theClass, bool debugView, const Frustum *frust1, const Frustum *frust2, RenderingOrder::List order, int occSet );
+	static void drawParticles( uint32 firstItem, uint32 lastItem, const std::string &shaderContext, const std::string &theClass, bool debugView, const Frustum *frust1, const Frustum *frust2, RenderingOrder::List order, int occSet );
+	static void drawComputeResults( uint32 firstItem, uint32 lastItem, const std::string &shaderContext, const std::string &theClass, bool debugView, const Frustum *frust1, const Frustum *frust2, RenderingOrder::List order, int occSet );
 
 	void render( CameraNode *camNode );
 	void finalizeFrame();
@@ -210,23 +199,19 @@ protected:
 	void bindPipeBuffer( uint32 rbObj, const std::string &sampler, uint32 bufIndex );
 	void clear( bool depth, bool buf0, bool buf1, bool buf2, bool buf3, float r, float g, float b, float a );
 	void drawFSQuad( Resource *matRes, const std::string &shaderContext );
-	void drawGeometry( const std::string &shaderContext, const std::string &theClass,
-	                   RenderingOrder::List order, int occSet );
-	void drawLightGeometry( const std::string &shaderContext, const std::string &theClass,
-	                        bool noShadows, RenderingOrder::List order, int occSet );
+	void drawGeometry( const std::string &shaderContext, const std::string &theClass, RenderingOrder::List order, int occSet );
+	void drawLightGeometry( const std::string &shaderContext, const std::string &theClass, bool noShadows, RenderingOrder::List order, int occSet );
 	void drawLightShapes( const std::string &shaderContext, bool noShadows, int occSet );
 	
-	void drawRenderables( const std::string &shaderContext, const std::string &theClass, bool debugView,
-		const Frustum *frust1, const Frustum *frust2, RenderingOrder::List order, int occSet );
+	void drawRenderables( const std::string &shaderContext, const std::string &theClass, bool debugView, const Frustum *frust1, const Frustum *frust2, RenderingOrder::List order, int occSet );
 	
 	void renderDebugView();
 	void finishRendering();
 
 	RenderDeviceInterface *createRenderDevice( int type );
+	void releaseRenderDevice();
 
-	void		  releaseRenderDevice();
 protected:
-	
 	RenderDeviceInterface		       *_renderDevice;
 
 	std::vector< RenderFuncListItem >  _renderFuncRegistry;
@@ -280,5 +265,4 @@ protected:
 	
 };
 
-}
 #endif // _egRenderer_H_
