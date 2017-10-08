@@ -64,9 +64,24 @@ void MapChunk_GeometryPass::SetShadowColor(vec3 _shadowColor)
 
 // ----------------------------------------------------
 
-void MapChunk_GeometryPass::SetSpecularTextureUnit(int TextureUnit)
+void MapChunk_GeometryPass::SetSpecularTextureUnit0(int TextureUnit)
 {
-	setInt("gSpecularMap", TextureUnit);
+	setInt("gSpecularMap0", TextureUnit);
+}
+
+void MapChunk_GeometryPass::SetSpecularTextureUnit1(int TextureUnit)
+{
+	setInt("gSpecularMap1", TextureUnit);
+}
+
+void MapChunk_GeometryPass::SetSpecularTextureUnit2(int TextureUnit)
+{
+	setInt("gSpecularMap2", TextureUnit);
+}
+
+void MapChunk_GeometryPass::SetSpecularTextureUnit3(int TextureUnit)
+{
+	setInt("gSpecularMap3", TextureUnit);
 }
 
 void MapChunk_GeometryPass::SetMCCVExists(bool _exists)

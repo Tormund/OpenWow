@@ -2,10 +2,10 @@
 
 #include "technique.h"
 
-class WMO_MH2O_GeometryPass : public Technique
+class Water_Pass : public Technique
 {
 public:
-	WMO_MH2O_GeometryPass();
+	Water_Pass();
 	virtual bool Init();
 
 	inline void SetColorTextureUnit(int TextureUnit)
@@ -18,8 +18,13 @@ public:
 		setInt("gSpecularMap", TextureUnit);
 	}
 
-	void SetWaterColor(vec3 _Color)
+	void SetWaterColorLight(vec3 _Color)
 	{
-		setVec3("gColor", _Color);
+		setVec3("gColorLight", _Color);
+	}
+
+	void SetWaterColorDark(vec3 _Color)
+	{
+		setVec3("gColorDark", _Color);
 	}
 };

@@ -199,7 +199,7 @@
     <ClCompile Include="Techniques\Technique.cpp" />
     <ClCompile Include="Techniques\UI_Font.cpp" />
     <ClCompile Include="Techniques\WMO_GeomertyPass.cpp" />
-    <ClCompile Include="Techniques\WMO_MH2O_GeometryPass.cpp" />
+    <ClCompile Include="Techniques\Water_Pass.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TexturesMgr.cpp" />
   </ItemGroup>
@@ -238,7 +238,7 @@
     <ClInclude Include="Techniques\Technique.h" />
     <ClInclude Include="Techniques\UI_Font.h" />
     <ClInclude Include="Techniques\WMO_GeomertyPass.h" />
-    <ClInclude Include="Techniques\WMO_MH2O_GeometryPass.h" />
+    <ClInclude Include="Techniques\Water_Pass.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TexturesMgr.h" />
   </ItemGroup>
@@ -295,7 +295,7 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
       <FileType>Document</FileType>
     </None>
-    <None Include="..\_gamedata\shaders\WMO_MH2O_GeometryPass.glsl">
+    <None Include="..\_gamedata\shaders\Water_Pass.glsl">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
       <FileType>Document</FileType>
     </None>

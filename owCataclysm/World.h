@@ -8,8 +8,6 @@ public:
 	World();
 	~World();
 
-	void initDisplay();
-
 	void tick(float dt);
 	void drawShader(GLint _color);
 	void RenderGeom();

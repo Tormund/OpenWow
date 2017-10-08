@@ -291,6 +291,8 @@ bool WMO::Init()
 	return true;
 }
 
+//
+
 bool WMO::draw(uint32 _doodadSet)
 {
 	if (!m_Loaded)
@@ -340,6 +342,7 @@ bool WMO::draw(uint32 _doodadSet)
 	}
 
 	// Debug geometry
+
 	{
 
 		_TechniquesMgr->m_Debug_GeometryPass->Bind();
@@ -390,8 +393,7 @@ bool WMO::drawSkybox()
 	return true;
 }
 
-
-
+//
 
 void WMO::DEBUG_DrawLightPlaceHolders()
 {

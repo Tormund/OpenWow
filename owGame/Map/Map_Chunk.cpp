@@ -662,7 +662,7 @@ void MapChunk::Render()
 	for (uint32 i = 0; i < header->nLayers; i++)
 	{
 		textures[i]->Bind(i);
-		SpecularTextures[i]->Bind(5);
+		SpecularTextures[i]->Bind(5 + i);
 	}
 
 	// Bind blend

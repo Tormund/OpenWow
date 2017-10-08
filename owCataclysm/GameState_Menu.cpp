@@ -339,8 +339,6 @@ void GameState_Menu::RenderUI(double t, double dt)
 bool GameState_Menu::LoadWorld(cvec3 _pos)
 {
 	_Map->enterTile(_pos.x / C_TileSize, _pos.z / C_TileSize);
-	_World->initDisplay();
-
 
 	_World->mainCamera->Position = _pos;
 	_World->mainCamera->Update();

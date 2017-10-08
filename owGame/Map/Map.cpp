@@ -158,6 +158,9 @@ void Map::PreloadMap(DBC_MapRecord* _map)
 		return;
 	}
 
+	// Load sky
+	_EnvironmentManager->InitSkies(templateMap->Get_ID());
+
 	char fourcc[5];
 	uint32 size;
 

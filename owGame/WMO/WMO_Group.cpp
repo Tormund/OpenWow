@@ -598,12 +598,15 @@ bool WMOGroup::drawLiquid()
 		glLightfv(GL_LIGHT2, GL_POSITION, vec4(0, 1, 0, 0));*/
 	}
 
-	//glDisable(GL_BLEND);
-	//glDisable(GL_ALPHA_TEST);
-	//glDepthMask(GL_TRUE);
-	//glColor4f(1, 1, 1, 1);
+	glDisable(GL_CULL_FACE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	lq->draw();
+
+	glEnable(GL_CULL_FACE);
+	glDisable(GL_BLEND);
+
 	PERF_INC(PERF_MAP_MODELS_WMOs_LIQUIDS);
 
 	return true;

@@ -10,7 +10,7 @@
 #include "Techniques/MapChunk_GeometryPass.h"
 #include "Techniques/MDX_GeometryPass.h"
 #include "Techniques/WMO_GeomertyPass.h"
-#include "Techniques/WMO_MH2O_GeometryPass.h"
+#include "Techniques/Water_Pass.h"
 
 // After
 #include "Techniques/ds_dir_light_pass_tech.h"
@@ -37,7 +37,7 @@ class TechniquesMgr
 	MapTileLowRes_GeometryPass* m_MapTileLowRes_GeometryPass;
 	MDX_GeometryPass* m_MDX_GeometryPass;
 	WMO_GeomertyPass* m_WMO_GeometryPass;
-	WMO_MH2O_GeometryPass* m_WMO_MH2O_GeometryPass;
+	Water_Pass* m_Water;
 
 	// Lights
 

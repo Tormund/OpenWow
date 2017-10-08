@@ -58,11 +58,6 @@ World::~World()
 	Debug::Info("World [%s] unloaded", _Map->GetPath().c_str());
 }
 
-void World::initDisplay()
-{
-	_EnvironmentManager->InitSkies(_Map->GetTemplate()->Get_ID());
-}
-
 void World::drawShader(GLint _color)
 {
 #ifdef WMO_INCL
@@ -195,7 +190,6 @@ void World::RenderGeom()
 		_TechniquesMgr->m_MapChunk_GeometryPass->Bind();
 		_Pipeline->Clear();
 		_TechniquesMgr->m_MapChunk_GeometryPass->SetPVW();
-		_TechniquesMgr->m_MapChunk_GeometryPass->SetWorldMatrix(_Pipeline->GetWorld());
 
 		_Map->RenderTiles();
 
@@ -205,19 +199,18 @@ void World::RenderGeom()
 
 	//
 
-	//glEnable(GL_BLEND);
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 	//------------------------------------------------------------------------------
 	// Map water
 	//------------------------------------------------------------------------------
 	glDisable(GL_CULL_FACE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	if (Settings::draw_map_chunk)
 	{
 		_Map->RenderWater();
 	}
-
+	
 	//
 
 	PERF_STOP(PERF_MAP);
@@ -227,7 +220,8 @@ void World::RenderGeom()
 	//------------------------------------------------------------------------------
 	// Global WMO
 	//------------------------------------------------------------------------------
-	glDisable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
+	glDisable(GL_BLEND);
 
 	PERF_START(PERF_MAP_MODELS_WMO_GLOBAL);
 	if (_Map->MapHasGlobalWMO())

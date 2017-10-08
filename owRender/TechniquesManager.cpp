@@ -60,7 +60,10 @@ void TechniquesMgr::Init()
 
 	m_MapChunk_GeometryPass->SetBlendBuffer(4);
 
-	m_MapChunk_GeometryPass->SetSpecularTextureUnit(SPECULAR_TEXTURE_UNIT_INDEX);
+	m_MapChunk_GeometryPass->SetSpecularTextureUnit0(5);
+	m_MapChunk_GeometryPass->SetSpecularTextureUnit1(6);
+	m_MapChunk_GeometryPass->SetSpecularTextureUnit2(7);
+	m_MapChunk_GeometryPass->SetSpecularTextureUnit3(8);
 	m_MapChunk_GeometryPass->Unbind();
 
 	//----------------------------------------------------------------//
@@ -78,12 +81,12 @@ void TechniquesMgr::Init()
 	m_MDX_GeometryPass->Unbind();
 
 	//
-	m_WMO_MH2O_GeometryPass = new WMO_MH2O_GeometryPass();
-	m_WMO_MH2O_GeometryPass->Init();
-	m_WMO_MH2O_GeometryPass->Bind();
-	m_WMO_MH2O_GeometryPass->SetColorTextureUnit(COLOR_TEXTURE_UNIT_INDEX);
-	m_WMO_MH2O_GeometryPass->SetSpecularTextureUnit(SPECULAR_TEXTURE_UNIT_INDEX);
-	m_WMO_MH2O_GeometryPass->Unbind();
+	m_Water = new Water_Pass();
+	m_Water->Init();
+	m_Water->Bind();
+	m_Water->SetColorTextureUnit(COLOR_TEXTURE_UNIT_INDEX);
+	m_Water->SetSpecularTextureUnit(SPECULAR_TEXTURE_UNIT_INDEX);
+	m_Water->Unbind();
 
 	//----------------------------------------------------------------//
 

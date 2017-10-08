@@ -19,7 +19,10 @@ public:
 	 void SetShadowMapExists(bool _exists);
 	 void SetShadowColor(vec3 _shadowColor);
 
-	 void SetSpecularTextureUnit(int TextureUnit);
+	 void SetSpecularTextureUnit0(int TextureUnit);
+	 void SetSpecularTextureUnit1(int TextureUnit);
+	 void SetSpecularTextureUnit2(int TextureUnit);
+	 void SetSpecularTextureUnit3(int TextureUnit);
 
 	 void SetMCCVExists(bool _exists);
 	 void SetMCLVExists(bool _exists);

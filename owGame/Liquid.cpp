@@ -95,7 +95,7 @@ struct MH2O_Instance
 struct MH2O_Vertex
 {
 	vec3 position;
-	vec2 textureCoord;
+	vec3 textureCoord;
 	vec3 normal;
 };
 
@@ -120,6 +120,11 @@ Liquid::~Liquid()
 
 void Liquid::initFromTerrainMH2O(File& f, MH2O_Header * _header)
 {
+	texRepeats = 0.5f;
+	ydir = 1.0f;
+
+	//
+
 	for (uint32 j = 0; j < _header->layersCount; j++)
 	{
 		MH2O_Instance* mh2o_instance = new MH2O_Instance;
@@ -138,17 +143,18 @@ void Liquid::initFromTerrainMH2O(File& f, MH2O_Header * _header)
 		assert1(liquidType != nullptr);
 		uint32 vertexFormat = liquidType->Get_LiquidMaterialID()->Get_LiquidVertexFormat();
 		InitTextures(liquidType);
+		Debug::Warn("Liquid is [%s]", liquidType->Get_Name());
 
 		// Fix ocean shit
 		if (mh2o_instance->liquidType == 2) 
 		{
 			if (mh2o_instance->offsetVertexData == 0)
 			{
-				// Is ocean and hasn't depths
+				vertexFormat = UINT32_MAX; // Is ocean and hasn't depths
 			}
 			else
 			{
-				vertexFormat = 2; // Is ocean and has depths
+				vertexFormat = 2;
 			}
 		}
 
@@ -247,15 +253,14 @@ void Liquid::initFromTerrainMH2O(File& f, MH2O_Header * _header)
 		m_WaterLayers.push_back(waterLayer);
 	}
 
-	m_WaterColorLight = vec3(0.4f, 0.4f, 0.4f);
-	m_WaterColorDark = vec3(0.7f, 0.7f, 0.7f);
+	m_WaterColorLight = _EnvironmentManager->GetSkyColor(RIVER_COLOR_LIGHT);
+	m_WaterColorDark = _EnvironmentManager->GetSkyColor(RIVER_COLOR_DARK);
 }
 
 void Liquid::initFromTerrainMCLQ(File& f, MCNK_MCLQ_LiquidType _liquidType)
 {
 	texRepeats = 4.0f;
 	ydir = 1.0f;
-	trans = false;
 
 	initGeometry(f);
 
@@ -301,8 +306,8 @@ void Liquid::initFromWMO2(File& f, WMOMaterial* _material, DBC_LiquidTypeRecord*
 	}
 	else
 	{
-		//m_WaterColorLight = _EnvironmentManager->GetSkyColor(RIVER_COLOR_LIGHT);  // FIXME!!!
-		//m_WaterColorDark = _EnvironmentManager->GetSkyColor(RIVER_COLOR_DARK);
+		m_WaterColorLight = _EnvironmentManager->GetSkyColor(RIVER_COLOR_LIGHT);
+		m_WaterColorDark = _EnvironmentManager->GetSkyColor(RIVER_COLOR_DARK);
 	}
 }
 
@@ -310,8 +315,6 @@ void Liquid::initFromWMO2(File& f, WMOMaterial* _material, DBC_LiquidTypeRecord*
 
 void Liquid::createBuffer(cvec3 _position)
 {
-	texRepeats = 1.0f;
-
 	vector<MH2O_Vertex> mh2oVertices;
 
 	for (unsigned l = 0; l < m_WaterLayers.size(); l++)
@@ -339,10 +342,10 @@ void Liquid::createBuffer(cvec3 _position)
 				a1 = a2 = a3 = a4 = 1.0f;
 				if (layer.depths.size() != 0)
 				{
-					a1 = (float)layer.depths[p1] / 255.f * 1.5f + 0.3f; // whats the magic formular here ???
-					a2 = (float)layer.depths[p2] / 255.f * 1.5f + 0.3f;
-					a3 = (float)layer.depths[p3] / 255.f * 1.5f + 0.3f;
-					a4 = (float)layer.depths[p4] / 255.f * 1.5f + 0.3f;
+					a1 = (float)layer.depths[p1] / 255.f * 4.0f + 0.0f; // whats the magic formular here ???
+					a2 = (float)layer.depths[p2] / 255.f * 4.0f + 0.0f;
+					a3 = (float)layer.depths[p3] / 255.f * 4.0f + 0.0f;
+					a4 = (float)layer.depths[p4] / 255.f * 4.0f + 0.0f;
 				}
 
 				// height values helper
@@ -369,29 +372,29 @@ void Liquid::createBuffer(cvec3 _position)
 
 				mh2oVertices.push_back
 				({
-					vec3(_position.x + C_UnitSize * static_cast<float>(x), h1, _position.z + C_UnitSize * static_cast<float>(y)),
-					vec2(0.0f, 0.0f),
+					vec3(_position.x + C_UnitSize * static_cast<float>(x), h1, _position.z + ydir * (C_UnitSize * static_cast<float>(y))),
+					vec3(0.0f, 0.0f, a1),
 					defaultNormal
 				});
 
 				mh2oVertices.push_back
 				({
-					vec3(_position.x + C_UnitSize * static_cast<float>(x), h2, _position.z + C_UnitSize + C_UnitSize * static_cast<float>(y)),
-					vec2(0.0f, texRepeats),
+					vec3(_position.x + C_UnitSize * static_cast<float>(x), h2, _position.z + ydir * (C_UnitSize +  C_UnitSize * static_cast<float>(y))),
+					vec3(0.0f, texRepeats, a2),
 					defaultNormal
 				});
 
 				mh2oVertices.push_back
 				({
-					vec3(_position.x + C_UnitSize + C_UnitSize * static_cast<float>(x), h3, _position.z + C_UnitSize + C_UnitSize * static_cast<float>(y)),
-					vec2(texRepeats, texRepeats),
+					vec3(_position.x + C_UnitSize + C_UnitSize * static_cast<float>(x), h3, _position.z + ydir * (C_UnitSize + C_UnitSize * static_cast<float>(y))),
+					vec3(texRepeats, texRepeats, a3),
 					defaultNormal
 				});
 
 				mh2oVertices.push_back
 				({
-					vec3(_position.x + C_UnitSize + C_UnitSize * static_cast<float>(x), h4, _position.z + C_UnitSize * static_cast<float>(y)),
-					vec2(texRepeats, 0.0f),
+					vec3(_position.x + C_UnitSize + C_UnitSize * static_cast<float>(x), h4, _position.z + ydir * (C_UnitSize * static_cast<float>(y))),
+					vec3(texRepeats, 0.0f, a4),
 					defaultNormal
 				});
 			}
@@ -420,8 +423,8 @@ void Liquid::draw()
 		return;
 	}
 
-	_TechniquesMgr->m_WMO_MH2O_GeometryPass->Bind();
-	_TechniquesMgr->m_WMO_MH2O_GeometryPass->SetPVW();
+	_TechniquesMgr->m_Water->Bind();
+	_TechniquesMgr->m_Water->SetPVW();
 
 	glBindBuffer(GL_ARRAY_BUFFER, globalBufferWater);
 
@@ -429,14 +432,15 @@ void Liquid::draw()
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (const GLvoid*)(0));
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (const GLvoid*)(3 * sizeof(float)));
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (const GLvoid*)(5 * sizeof(float)));
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (const GLvoid*)(0));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (const GLvoid*)(3 * sizeof(float)));
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (const GLvoid*)(6 * sizeof(float)));
 
 	size_t texidx = (size_t)(_EnvironmentManager->animtime / 60.0f) % textures.size();
 	textures[texidx]->Bind();
 
-	_TechniquesMgr->m_WMO_MH2O_GeometryPass->SetWaterColor(m_WaterColorLight);
+	_TechniquesMgr->m_Water->SetWaterColorLight(_EnvironmentManager->GetSkyColor(LIGHT_GLOBAL_DIFFUSE));
+	_TechniquesMgr->m_Water->SetWaterColorDark(_EnvironmentManager->GetSkyColor(LIGHT_GLOBAL_DIFFUSE));
 
 	glDrawArrays(GL_QUADS, 0, globalBufferSize);
 	PERF_INC(PERF_MAP_CHUNK_MH20);
@@ -447,7 +451,7 @@ void Liquid::draw()
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	_TechniquesMgr->m_WMO_MH2O_GeometryPass->Unbind();
+	_TechniquesMgr->m_Water->Unbind();
 
 	//const float tcol = trans ? 0.9f : 1.0f;
 	//if (trans)
@@ -518,26 +522,46 @@ void Liquid::initGeometry(File& f)
 	Liquid_Flag* flags = (Liquid_Flag*)(f.GetDataFromCurrent() + m_TilesCount * sizeof(Liquid_Vertex));
 
 	// generate vertices
-	vec3* verts = new vec3[m_TilesCount];
-	float* col = new float[m_TilesCount];
+	//vec3* verts = new vec3[m_TilesCount];
+	//float* col = new float[m_TilesCount];
 
-	for (int j = 0; j < m_TilesY + 1; j++)
+	MH2O_WaterLayer waterLayer;
+
+	waterLayer.x = 0;
+	waterLayer.y = 0;
+	waterLayer.Width = m_TilesX;
+	waterLayer.Height = m_TilesY;
+
+	waterLayer.LiquidType = 0;
+	waterLayer.MinHeightLevel = 0;
+	waterLayer.MaxHeightLevel = 0;
+	waterLayer.LiquidObjectOrLVF = 0; // FIXME Send format to create buffer
+
+	for (uint32 j = 0; j < m_TilesY + 1; j++)
 	{
-		for (int i = 0; i < m_TilesX + 1; i++)
+		for (uint32 i = 0; i < m_TilesX + 1; i++)
 		{
-			uint32 p = j*(m_TilesX + 1) + i;
-			float h = map[p].magmaVert.height;
-			if (h > 100000)
+			uint32 p = j * (m_TilesX + 1) + i;
+
+			if (flags[p].liquid & 0x08)
 			{
-				h = m_Position.y;
+				waterLayer.renderTiles.push_back(false);
+			}
+			else
+			{
+				waterLayer.renderTiles.push_back(true);
 			}
 
-			verts[p] = vec3(m_Position.x + tilesize * i, h, m_Position.z + ydir * tilesize * j);
-			col[p] = (map[p].magmaVert.s / 255.0f) * 0.5f + 0.5f;
+			waterLayer.heights.push_back(map[p].magmaVert.height);
+			//waterLayer.depths.push_back((map[p].magmaVert.s / 255.0f) * 0.5f + 0.5f);
 		}
 	}
 
-	vector<MH2O_Vertex> mh2oVertices;
+	m_WaterLayers.push_back(waterLayer);
+
+	createBuffer(m_Position);
+
+	/*vector<MH2O_Vertex> mh2oVertices;
 
 	// draw tiles
 	for (int j = 0; j < m_TilesY; j++)
@@ -555,25 +579,25 @@ void Liquid::initGeometry(File& f)
 
 			mh2oVertices.push_back({
 				verts[p],
-				vec2(i / texRepeats, j / texRepeats/*, col[p]*/),
+				vec3(i / texRepeats, j / texRepeats, col[p]),
 				defaultNormal
 			});
 
 			mh2oVertices.push_back({
 				verts[p + 1],
-				vec2((i + 1) / texRepeats, j / texRepeats/*, col[p + 1]*/),
+				vec3((i + 1) / texRepeats, j / texRepeats, col[p + 1]),
 				defaultNormal
 			});
 
 			mh2oVertices.push_back({
 				verts[p + m_TilesX + 1 + 1],
-				vec2((i + 1) / texRepeats, (j + 1) / texRepeats/*, col[p + m_TilesX + 1 + 1]*/),
+				vec3((i + 1) / texRepeats, (j + 1) / texRepeats, col[p + m_TilesX + 1 + 1]),
 				defaultNormal
 			});
 
 			mh2oVertices.push_back({
 				verts[p + m_TilesX + 1],
-				vec2(i / texRepeats, (j + 1) / texRepeats/*, col[p + m_TilesX + 1]*/),
+				vec3(i / texRepeats, (j + 1) / texRepeats, col[p + m_TilesX + 1]),
 				defaultNormal
 			});
 		}
@@ -594,7 +618,7 @@ void Liquid::initGeometry(File& f)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	delete[] verts;
-	delete[] col;
+	delete[] col;*/
 }
 
 void Liquid::InitTextures(DBC_LiquidTypeRecord * _liquidType)
