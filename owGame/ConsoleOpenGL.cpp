@@ -5,7 +5,7 @@
 
 bool ConsoleOpenGL::Init()
 {
-	windowSize = vec2(Settings::windowSizeX, Settings::windowSizeY);
+	windowSize = vec2(Modules::config().windowSizeX, Modules::config().windowSizeY);
 	opened = false;
 	consoleFont = _FontsMgr->GetMainFont();
 	assert1(consoleFont != nullptr);
@@ -157,7 +157,7 @@ KEYBD_PRESSED(ConsoleOpenGL)
 			return true;
 		}
 
-		Debug::Print(inputString.c_str());
+		Modules::log().Print(inputString.c_str());
 		Console::ProcessConsoleCommand(inputString);
 		inputString = "";
 		return true;

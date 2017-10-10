@@ -9,7 +9,7 @@
 
 bool UIMgr::Init()
 {
-	screenSize = Settings::GetWindowSize();
+	screenSize = Modules::config().GetWindowSize();
 	idCounter = 0;
 	baseWindow = new UIWindow();
 	baseWindow->Init(VECTOR_ZERO, screenSize, nullptr);
@@ -47,7 +47,7 @@ void UIMgr::Update()
 		if (auto thisAsUIWindow = dynamic_cast<UIWindow*>(*it))
 			thisAsUIWindow->DeleteChilds();
 
-		Debug::Info("UI: Element [%s] deleted", (*it)->GetName().c_str());
+		Modules::log().Info("UI: Element [%s] deleted", (*it)->GetName().c_str());
 		DeleteUIElement(*it);
 
 		it = objectsToDelete.erase(it);
@@ -72,7 +72,7 @@ void UIMgr::SetForDetach(UIElement* _element)
 {
 	if (find(objectsToDetach.begin(), objectsToDetach.end(), _element) != objectsToDetach.end())
 	{
-		Debug::Warn("UI: Element [%s] already set for detaching.", _element->GetName().c_str());
+		Modules::log().Warn("UI: Element [%s] already set for detaching.", _element->GetName().c_str());
 		return;
 	}
 
@@ -83,7 +83,7 @@ void UIMgr::SetForDelete(UIElement* _element)
 {
 	if (find(objectsToDelete.begin(), objectsToDelete.end(), _element) != objectsToDelete.end())
 	{
-		Debug::Warn("UI: Element [%s] already set for deletion.", _element->GetName().c_str());
+		Modules::log().Warn("UI: Element [%s] already set for deletion.", _element->GetName().c_str());
 		return;
 	}
 
@@ -96,7 +96,7 @@ void UIMgr::DetachFromParent(UIElement* _element)
 
 	if (parent == nullptr)
 	{
-		Debug::Error("UI: Element [%s] parent is nullptr.", _element->GetName().c_str());
+		Modules::log().Error("UI: Element [%s] parent is nullptr.", _element->GetName().c_str());
 		return;
 	}
 
@@ -104,12 +104,12 @@ void UIMgr::DetachFromParent(UIElement* _element)
 
 	if (*elementInParentChildsIt != _element)
 	{
-		Debug::Error("UI: Element [%s] not finded in parent [%s] childs.", _element->GetName().c_str(), parent->GetName().c_str());
+		Modules::log().Error("UI: Element [%s] not finded in parent [%s] childs.", _element->GetName().c_str(), parent->GetName().c_str());
 		return;
 	}
 
 	parent->childs.erase(elementInParentChildsIt);
-	Debug::Info("UI: Element [%s] detached from parent [%s].", _element->GetName().c_str(), parent->GetName().c_str());
+	Modules::log().Info("UI: Element [%s] detached from parent [%s].", _element->GetName().c_str(), parent->GetName().c_str());
 
 	parent = nullptr;
 }

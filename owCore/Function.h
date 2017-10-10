@@ -104,7 +104,7 @@ class ArgFunctionBase
 public:
 	virtual ~ArgFunctionBase()
 	{
-		//Debug::Error("Del base f");
+		//Modules::log().Error("Del base f");
 	}
 	virtual void operator()() = 0;
 };
@@ -120,7 +120,7 @@ public:
 	ArgFunction(procTypeArgs _procArgs, ARGTYPE& _arg) : procArgs(_procArgs), arg(_arg) {}
 	virtual ~ArgFunction() override
 	{
-		//Debug::Error("Del arg f");
+		//Modules::log().Error("Del arg f");
 	}
 	
 protected:
@@ -160,7 +160,7 @@ public:
 	ClassArgFunction(T* _instance, classProcTypeArgs _classProcArgs, ARGTYPE& _arg) : instance(_instance), classProcArgs(_classProcArgs), ArgFunction<ARGTYPE>(_arg) {}
 	~ClassArgFunction() override
 	{
-		//Debug::Error("Del cl f");
+		//Modules::log().Error("Del cl f");
 	}
 
 	virtual void operator()() override

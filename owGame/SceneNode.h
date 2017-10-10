@@ -5,8 +5,9 @@ struct SceneNodeTypes
 	enum List
 	{
 		Undefined = 0,
-		WMO_Object,
-		MDX_OBject
+		WMO,
+		WMO_Doodad,
+		MDX,
 	};
 };
 
@@ -20,14 +21,16 @@ public:
 	const Matrix4f& getAbsTrans() { return m_AbsTransform; }
 
 protected:
-	SceneNode*      m_Parent;
+	uint8               m_Type;
+	SceneNode*          m_Parent;
+	vector<SceneNode*>  m_Childs;
 
-	Vec3f           m_Translate;
-	Vec3f           m_Rotate;
-	Vec3f           m_Scale;
+	Vec3f               m_Translate;
+	Vec3f               m_Rotate;
+	Vec3f               m_Scale;
 
-	Matrix4f        m_RelTransform;
-	Matrix4f        m_AbsTransform;
+	Matrix4f            m_RelTransform;
+	Matrix4f            m_AbsTransform;
 
-	BoundingBox     m_Bounds;
+	BoundingBox         m_Bounds;
 };

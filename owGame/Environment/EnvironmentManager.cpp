@@ -90,12 +90,12 @@ void EnvironmentManager::SetAmbientLights(bool on)
 
 void EnvironmentManager::SetFog()
 {
-	if (Settings::drawfog)
+	if (Modules::config().drawfog)
 	{
-		float fogdist = Settings::fogdistance;
+		float fogdist = Modules::config().fogdistance;
 		float fogstart = 0.5f;
 
-		Settings::culldistance = fogdist;
+		Modules::config().culldistance = fogdist;
 
 		vec4 fogcolor(skies->colorSet[FOG_COLOR], 1);
 		glFogfv(GL_FOG_COLOR, fogcolor); // TODO: retreive fogstart and fogend from lights.lit somehow
@@ -106,7 +106,7 @@ void EnvironmentManager::SetFog()
 	else
 	{
 		glDisable(GL_FOG);
-		Settings::culldistance = Settings::mapdrawdistance;
+		Modules::config().culldistance = Modules::config().mapdrawdistance;
 	}
 }
 

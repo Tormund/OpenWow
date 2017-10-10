@@ -28,7 +28,7 @@ void FontsMgr::Destroy()
 {
 	DeleteAll();
 
-	Debug::Info("FontsMgr[]: All fonts destroyed.");
+	Modules::log().Info("FontsMgr[]: All fonts destroyed.");
 }
 
 Font* FontsMgr::Add(cstring _fontFileName, uint32 _fontSize)
@@ -48,7 +48,7 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize)
 	size_t _delimIndex = _nameAndSize.find_last_of("__");
 	if (_delimIndex == -1)
 	{
-		Debug::Error("FontsMgr[%s]: Incorrect font nameAndSize.", _nameAndSize.c_str());
+		Modules::log().Error("FontsMgr[%s]: Incorrect font nameAndSize.", _nameAndSize.c_str());
 		return nullptr;
 	}
 
@@ -58,7 +58,7 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize)
 	File f = fontFileName;
 	if (!f.Open())
 	{
-		Debug::Fatal("FontsMgr[%s]: Error while loading font.", f.Path_Name().c_str());
+		Modules::log().Fatal("FontsMgr[%s]: Error while loading font.", f.Path_Name().c_str());
 		return nullptr;
 	}
 
@@ -72,7 +72,7 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize)
 	FT_Face face;
 	if (FT_New_Memory_Face(ftLibrary, f.GetData(), f.GetSize(), 0, &face) != 0)
 	{
-		Debug::Error("FontsMgr[%s]: Error while loading font. Could not load font file.", f.Path_Name().c_str());
+		Modules::log().Error("FontsMgr[%s]: Error while loading font. Could not load font file.", f.Path_Name().c_str());
 
 		// Unload
 		FT_Done_Face(face);
@@ -82,7 +82,7 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize)
 
 	if (!(face->face_flags & FT_FACE_FLAG_SCALABLE) || !(face->face_flags & FT_FACE_FLAG_HORIZONTAL))
 	{
-		Debug::Error("FontsMgr[%s]: Error while loading font. Error setting font size.", f.Path_Name().c_str());
+		Modules::log().Error("FontsMgr[%s]: Error while loading font. Error setting font size.", f.Path_Name().c_str());
 		
 		// Unload
 		FT_Done_Face(face);
@@ -147,7 +147,7 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize)
 
 	for (uint32 ch = 0; ch < Font::NUM_CHARS; ++ch)
 	{
-		//Debug::Warn("Char [%c] %d", char(ch), ch);
+		//Modules::log().Warn("Char [%c] %d", char(ch), ch);
 		size_t charIndex = FT_Get_Char_Index(face, ch + Font::SPACE);
 
 		FT_Load_Glyph(face, charIndex, FT_LOAD_DEFAULT);
@@ -228,7 +228,7 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize)
 	Font* font = new Font(textureOpenglIndex, globalBuffer, charWidth, charHeight);
 	Fonts.insert(make_pair(_nameAndSize, font));
 
-	Debug::Info("FontsMgr[%s]: Font loaded. Size [%d].", f.Path_Name().c_str(), fontSize);
+	Modules::log().Info("FontsMgr[%s]: Font loaded. Size [%d].", f.Path_Name().c_str(), fontSize);
 
 	return font;
 }

@@ -18,6 +18,7 @@ using namespace std;
 #include <windows.h>
 
 // Macros
+#include "Debug.h"
 #include "Macros.h"
 
 // Common types
@@ -25,9 +26,9 @@ using namespace std;
 #include "Consts.h"
 
 // General
+#include "Modules.h"
 #include "Module.h"
 #include "DebugOutput.h"
-#include "Debug.h"
 #include "Random.h"
 
 // Wow types

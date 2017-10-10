@@ -19,7 +19,7 @@
 class InputListener
 {
 public:
-	V_MOUSE_MOVED{return; };
+	V_MOUSE_MOVED{};
 	V_MOUSE_PRESSED{return false; };
 	V_MOUSE_RELEASE{return false; };
 	V_MOUSE_WHEEL{return false;};

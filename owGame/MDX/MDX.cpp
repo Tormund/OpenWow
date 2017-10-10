@@ -8,7 +8,7 @@
 
 MDX::MDX(cstring name) : RefItemNamed(name), m_Loaded(false)
 {
-	//Debug::Info("MDX[%s]: Loading...", m_ModelFileName.c_str());
+	//Modules::log().Info("MDX[%s]: Loading...", m_ModelFileName.c_str());
 	
 	// Replace .MDX with .M2
 	m_ModelFileName = name;
@@ -50,7 +50,7 @@ MDX::~MDX()
 		return;
 	}
 
-	Debug::Info("MDX[%s]: Unloading...", m_ModelFileName.c_str());
+	Modules::log().Info("MDX[%s]: Unloading...", m_ModelFileName.c_str());
 
 	if (header.textures.size)
 	{
@@ -116,7 +116,7 @@ void MDX::Init(bool forceAnim)
 	File f = m_ModelFileName;
 	if (!f.Open())
 	{
-		Debug::Info("MDX[%s]: Unable to open file.", m_ModelFileName.c_str());
+		Modules::log().Info("MDX[%s]: Unable to open file.", m_ModelFileName.c_str());
 		return;
 	}
 
@@ -184,7 +184,7 @@ void MDX::initCommon(File& f)
 			// Error check
 			if (i > TEXTURE_MAX - 1)
 			{
-				Debug::Error("MDX[%s]: Model Texture [%d] over [%d]", m_ModelName, header.textures.size, TEXTURE_MAX);
+				Modules::log().Error("MDX[%s]: Model Texture [%d] over [%d]", m_ModelName, header.textures.size, TEXTURE_MAX);
 				break;
 			}
 

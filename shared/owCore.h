@@ -15,7 +15,7 @@
 #include "../owCore/ContainerAssync.h"
 #include "../owCore/RefManager1DimAssync.h"
 
-// Debug outputs
+// EngineLog outputs
 
 #include "../owCore/Console.h"
 
@@ -31,9 +31,3 @@
 // Input
 
 #include "../owCore/Input.h"
-
-// Game
-#include "../owCore/InfoPortions.h"
-#include "../owCore/Settings.h"
-#include "../owCore/ModulesMgr.h"
-#include "../owCore/GameModule.h"

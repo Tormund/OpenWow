@@ -14,11 +14,11 @@ class TexturesMgr : public Module, public RefManager1DimAssync<Texture>
 public:
 	DEF_MODULE(TexturesMgr);
 
-	 Texture* Add(cstring _textureFileName);
-	 Texture* Add(File& _textureFile);
+	Texture* Add(cstring _textureFileName);
+	Texture* Add(File& _textureFile);
 
-	inline Texture* Black() { return black; }
-	inline Texture* White() { return white; }
+	Texture* Black() { return black; }
+	Texture* White() { return white; }
 
 protected:
 	Texture* CreateAction(cstring name) override;
@@ -33,9 +33,6 @@ private:
 	Texture* black;
 	Texture* white;
 
-public:
-	HANDLE m_TextureLoader;
-	HANDLE m_TextureAddedEvent;
 	ContainerAssync<string, Texture*> textures;
 };
 

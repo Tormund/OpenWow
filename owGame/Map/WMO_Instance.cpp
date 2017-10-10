@@ -23,10 +23,7 @@ WMOInstance::~WMOInstance()
 	delete placementInfo;
 }
 
-void WMOInstance::SetWMO(WMO* _wmo)
-{
-	wmoObject = _wmo;
-}
+//
 
 void WMOInstance::draw()
 {

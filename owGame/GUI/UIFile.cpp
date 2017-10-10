@@ -22,7 +22,7 @@ bool UIFile::Load(cstring _filename)
 	XMLFile xmlFile;
 	if (!xmlFile.Open(_filename))
 	{
-		Debug::Error("UIFile[%s]: Loading file error.", filename.c_str());
+		Modules::log().Error("UIFile[%s]: Loading file error.", filename.c_str());
 		return false;
 	}
 
@@ -32,14 +32,14 @@ bool UIFile::Load(cstring _filename)
 
 	if (!ProcessXMLNode(rootXMLNode, nullptr))
 	{
-		Debug::Error("UIFile[%s]: Error while parsing data.", filename.c_str());
+		Modules::log().Error("UIFile[%s]: Error while parsing data.", filename.c_str());
 		xmlFile.Destroy();
 		return false;
 	}
 
 	if (rootXMLNode == nullptr)
 	{
-		Debug::Error("UIFile[%s]: Can't init root node.", filename.c_str());
+		Modules::log().Error("UIFile[%s]: Can't init root node.", filename.c_str());
 		xmlFile.Destroy();
 		return false;
 	}
@@ -113,7 +113,7 @@ bool UIFile::ProcessXMLNode(XMLNode* _node, UIElement* _parent)
 		UIWindow* parentAsUIWindow = dynamic_cast<UIWindow*>(_parent);
 		if (parentAsUIWindow == nullptr)
 		{
-			Debug::Error("UIFile[%s]: Can't attach node [%s] to parent node (is not UIWindow).", nodeClassType.c_str());
+			Modules::log().Error("UIFile[%s]: Can't attach node [%s] to parent node (is not UIWindow).", nodeClassType.c_str());
 			return false;
 		}
 		element->Attach(parentAsUIWindow);
@@ -124,7 +124,7 @@ bool UIFile::ProcessXMLNode(XMLNode* _node, UIElement* _parent)
 	// Set root window
 	if (elementAsUIWindow != nullptr && rootElement == nullptr)
 	{
-		Debug::Print("UIFile[%s]: Node [%s] is UIWindow and set as rootElement.", filename.c_str(), _node->GetName().c_str());
+		Modules::log().Print("UIFile[%s]: Node [%s] is UIWindow and set as rootElement.", filename.c_str(), _node->GetName().c_str());
 		rootElement = elementAsUIWindow;
 	}
 
@@ -148,14 +148,14 @@ UIElement* UIFile::LoadUIElement(XMLNode* _node)
 	// Try create UIElement by node name
 	if (!CreateUIElementByXMLNode(_element, _node))
 	{
-		Debug::Error("UIFile[%s]: Can't create node [%s].", filename.c_str(), _node->GetName().c_str());
+		Modules::log().Error("UIFile[%s]: Can't create node [%s].", filename.c_str(), _node->GetName().c_str());
 		return nullptr;
 	}
 
 	// Load common params
 	if (!LoadCommonParams(_element, _node))
 	{
-		Debug::Error("UIFile[%s]: Can't load common params to node [%s].", filename.c_str(), _element->GetName().c_str());
+		Modules::log().Error("UIFile[%s]: Can't load common params to node [%s].", filename.c_str(), _element->GetName().c_str());
 		return nullptr;
 	}
 
@@ -188,7 +188,7 @@ bool UIFile::CreateUIElementByXMLNode(UIElement*& _element, XMLNode* _node)
 	//
 	if (_element == nullptr)
 	{
-		Debug::Warn("UIFile[%s]: Unknown element class [%s].", filename.c_str(), elementClassName.c_str());
+		Modules::log().Warn("UIFile[%s]: Unknown element class [%s].", filename.c_str(), elementClassName.c_str());
 		return true;
 	}
 
@@ -206,7 +206,7 @@ bool UIFile::CreateUIElementByXMLNode(UIElement*& _element, XMLNode* _node)
 	// We have correct name
 	_element->SetName(resultElementName);
 	elements[_element->GetName()] = _element;
-	Debug::Info("UIFile[%s]: Element [%s] added to table.", filename.c_str(), resultElementName.c_str());
+	Modules::log().Info("UIFile[%s]: Element [%s] added to table.", filename.c_str(), resultElementName.c_str());
 
 	return true;
 }
@@ -284,7 +284,7 @@ Image* UIFile::GetImage(XMLNode* _node)
 		{
 			if (imageNode != nullptr)
 			{
-				Debug::Error("UIFile[%s]: Node[%s]: Image: Dublicate param.", filename.c_str(), _node->GetName().c_str());
+				Modules::log().Error("UIFile[%s]: Node[%s]: Image: Dublicate param.", filename.c_str(), _node->GetName().c_str());
 				return nullptr;
 			}
 			else
@@ -297,14 +297,14 @@ Image* UIFile::GetImage(XMLNode* _node)
 	string textureName = imageNode->GetKeyValue("textureName");
 	if (textureName.empty())
 	{
-		Debug::Error("UIFile[%s]: Node[%s]: Image: 'textureName' is empty.", filename.c_str(), _node->GetName().c_str());
+		Modules::log().Error("UIFile[%s]: Node[%s]: Image: 'textureName' is empty.", filename.c_str(), _node->GetName().c_str());
 		return nullptr;
 	}
 
 	auto texture = _TexturesMgr->Add(textureName);
 	if (texture == nullptr)
 	{
-		Debug::Error("UIFile[%s]: Node[%s]: Image: Can't find texture [%s].", filename.c_str(), _node->GetName().c_str(), textureName.c_str());
+		Modules::log().Error("UIFile[%s]: Node[%s]: Image: Can't find texture [%s].", filename.c_str(), _node->GetName().c_str(), textureName.c_str());
 		return nullptr;
 	}
 
@@ -315,7 +315,7 @@ Image* UIFile::GetImage(XMLNode* _node)
 	vec2 imageSize = Utils::ToPoint(buff);
 	if (imageSize == VECTOR_ZERO)
 	{
-		Debug::Warn("UIFile[%s]: Node[%s]: Image: Size is zero. Set as texture size.", filename.c_str(), _node->GetName().c_str());
+		Modules::log().Warn("UIFile[%s]: Node[%s]: Image: Size is zero. Set as texture size.", filename.c_str(), _node->GetName().c_str());
 		imageSize = texture->GetSize();
 	}
 

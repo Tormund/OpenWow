@@ -10,21 +10,23 @@
 // Header
 
 #include "../shared/pack_begin.h"
+
 struct BLPHeader
 {
 	uint8 magic[4];
-	uint32 formatVersion;
+	uint32 type;
 
-	uint8 compression;     // Compression: 1 for uncompressed, 2 for DXTC, 3 (cataclysm) for plain A8R8G8B8 textures
-	uint8 alphaBitDepth;   // Alpha channel bit depth: 0, 1, 4 or 8
-	uint8 preferredFormat; // (compressed, alpha:0 or 1): 0, (compressed, alpha:8): 1, uncompressed: 2,4 or 8 (mostly 8)
-	uint8 hasMips;
+	uint8 compression;  // Compression: 1 for uncompressed, 2 for DXTC, 3 (cataclysm) for plain A8R8G8B8 textures
+	uint8 alpha_depth;  // Alpha channel bit depth: 0, 1, 4 or 8
+	uint8 alpha_type;   // 0, 1, 7, or 8
+	uint8 has_mips;     // 0 = no mips, 1 = has mips
 
 	uint32 width;
 	uint32 height;
 	uint32 mipOffsets[16];
 	uint32 mipSizes[16];
 };
+
 #include "../shared/pack_end.h"
 
 //
@@ -38,12 +40,6 @@ bool TexturesMgr::Init()
 	black = CreateAction("black.png");
 	white = CreateAction("white.png");
 
-	bool supportCompression = glewIsSupported("GL_ARB_texture_compression GL_ARB_texture_cube_map GL_EXT_texture_compression_s3tc");
-	if (!supportCompression)
-	{
-		fail1();
-	}
-
 	return true;
 }
 
@@ -53,7 +49,7 @@ void TexturesMgr::Destroy()
 	
 	DeleteAll();
 
-	Debug::Info("TexturesMgr[]: All textures destroyed.");
+	Modules::log().Info("TexturesMgr[]: All textures destroyed.");
 }
 
 //
@@ -68,7 +64,7 @@ bool TexturesMgr::LoadSoilTexture(File& _file, Texture* _texture)
 
 	if (SOIL_last_result() != "Image loaded from memory")
 	{
-		Debug::Error("TexturesMgr[%s]: Error while loading texture. Error [%s].", _file.Path_Name(), SOIL_last_result());
+		Modules::log().Error("TexturesMgr[%s]: Error while loading texture. Error [%s].", _file.Path_Name(), SOIL_last_result());
 		SOIL_free_image_data(image);
 		return false;
 	}
@@ -101,63 +97,59 @@ bool TexturesMgr::LoadBLPTexture(File& _file, Texture* _texture)
 	BLPHeader header;
 	_file.ReadBytes(&header, 148);
 
-	//Debug::Print("Texture[]: compression=[%d], alphaBitDepth=[%d], preferredFormat=[%d], hasMips=[%d] [%s]", header.compression, header.alphaBitDepth, header.preferredFormat, header.hasMips, _file.Path_Name().c_str());
+	//Modules::log().Print("Texture[]: compression=[%d], alpha_depth=[%d], alpha_type=[%d], has_mips=[%d] [%s]", header.compression, header.alpha_depth, header.alpha_type, header.has_mips, _file.Path_Name().c_str());
 
 	assert1(header.magic[0] == 'B' && header.magic[1] == 'L' && header.magic[2] == 'P' && header.magic[3] == '2');
-	assert1(header.formatVersion == 1);
+	assert1(header.type == 1);
 
 	_texture->SetSize(vec2(header.width, header.height));
 
-	int mipmax = header.hasMips ? 16 : 1;
+	uint8 mipmax = header.has_mips ? 16 : 1;
 
 	if (header.compression == 2)
 	{
-		GLint format = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-		int blocksize = 8;
+		GLint format;
+		uint32 blocksize;
 
-		// guesswork here :(
-		if (header.alphaBitDepth == 8 || header.alphaBitDepth == 4)
+		if (header.alpha_type == 0)
+		{
+			format = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+			blocksize = 8u;
+		}
+		else if (header.alpha_type == 1)
 		{
 			format = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
-			blocksize = 16;
-
-			//_texture = _TexturesMgr->Black();
-			//return true;
+			blocksize = 16u;
 		}
-
-		if (header.alphaBitDepth == 8 && header.preferredFormat == 7)
+		else if(header.alpha_type == 7)
 		{
 			format = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
-			blocksize = 16;
-
+			blocksize = 16u;
+		}
+		else
+		{
+			fail1();
 		}
 
-		/*if (header.alphaBitDepth == 72)
-		{
-			format = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
-			blocksize = 16;
-		}*/
-
 		uint8* buf = new uint8[header.mipSizes[0]];
-		uint8* ucbuf = new uint8[header.height * header.width * 4];
+		//uint8* ucbuf = new uint8[header.height * header.width * 4];
 
 		// do every mipmap level
-		for (int i = 0; i < mipmax; i++)
+		for (uint8 i = 0; i < mipmax; i++)
 		{
 			if (header.width == 0) header.width = 1;
 			if (header.height == 0)	header.height = 1;
 
-			if (header.mipOffsets[i] && header.mipSizes[i])
+			if (header.mipOffsets[i])
 			{
+				assert1(header.mipSizes[i] > 0);
+
 				_file.Seek(header.mipOffsets[i]);
 				_file.ReadBytes(buf, header.mipSizes[i]);
 
 				uint32 size = ((header.width + 3) / 4) * ((header.height + 3) / 4) * blocksize;
 
 				glCompressedTexImage2DARB(GL_TEXTURE_2D, i, format, header.width, header.height, 0, size, buf);
-
-				//decompressDXTC(format, header.width, header.height, size, buf, ucbuf);
-				//glTexImage2D(GL_TEXTURE_2D, (GLint)i, GL_RGBA8, header.width, header.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, ucbuf);
 			}
 			else
 			{
@@ -170,7 +162,7 @@ bool TexturesMgr::LoadBLPTexture(File& _file, Texture* _texture)
 
 
 		delete[] buf;
-		delete[] ucbuf;
+		//delete[] ucbuf;
 	}
 	else if (header.compression == 1)
 	{
@@ -182,7 +174,7 @@ bool TexturesMgr::LoadBLPTexture(File& _file, Texture* _texture)
 		unsigned int* p;
 		unsigned char* c, *a;
 
-		bool hasalpha = (header.alphaBitDepth != 0);
+		bool hasalpha = (header.alpha_depth != 0);
 
 		for (int i = 0; i < mipmax; i++)
 		{
@@ -206,11 +198,11 @@ bool TexturesMgr::LoadBLPTexture(File& _file, Texture* _texture)
 						k = ((k & 0x00FF0000) >> 16) | ((k & 0x0000FF00)) | ((k & 0x000000FF) << 16);
 						int alpha;
 
-						if (header.alphaBitDepth == 8)
+						if (header.alpha_depth == 8)
 						{
 							alpha = (*a++);
 						}
-						else if (header.alphaBitDepth == 1)
+						else if (header.alpha_depth == 1)
 						{
 							alpha = (*a & (1 << cnt++)) ? 0xff : 0;
 							if (cnt == 8)
@@ -219,7 +211,7 @@ bool TexturesMgr::LoadBLPTexture(File& _file, Texture* _texture)
 								a++;
 							}
 						}
-						else if (header.alphaBitDepth == 0)
+						else if (header.alpha_depth == 0)
 						{
 							alpha = 0xff;
 						}
@@ -230,7 +222,6 @@ bool TexturesMgr::LoadBLPTexture(File& _file, Texture* _texture)
 					}
 				}
 
-				//memset(buf2, 0x00, header.width * header.height); // DELETE ME!
 				glTexImage2D(GL_TEXTURE_2D, i, GL_RGBA8, header.width, header.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buf2);
 			}
 			else
@@ -247,7 +238,8 @@ bool TexturesMgr::LoadBLPTexture(File& _file, Texture* _texture)
 	}
 	else
 	{
-		Debug::Warn("Texture[%s]: compression=[%d]", _file.Path_Name().c_str(), header.compression);
+		Modules::log().Warn("Texture[%s]: compression=[%d]", _file.Path_Name().c_str(), header.compression);
+		//fail1();
 	}
 
 	// Params
@@ -295,7 +287,7 @@ void TexturesMgr::LoadAction(string _name, Texture* _texture)
 
 	if (!f.Open())
 	{
-		Debug::Error("TexturesMgr[%s]: Error while open texture.", f.Path_Name().c_str());
+		Modules::log().Error("TexturesMgr[%s]: Error while open texture.", f.Path_Name().c_str());
 		_texture = _TexturesMgr->Black();
 		return;
 	}
@@ -314,13 +306,13 @@ void TexturesMgr::LoadAction(string _name, Texture* _texture)
 	// Check result
 	if (!result)
 	{
-		Debug::Error("TexturesMgr[%s]: Error while loading texture data.", f.Path_Name().c_str());
+		Modules::log().Error("TexturesMgr[%s]: Error while loading texture data.", f.Path_Name().c_str());
 		delete _texture;
 		_texture = _TexturesMgr->Black();
 		return;
 	}
 
-	//Debug::Info("TexturesMgr[%s]: Texture loaded. Size [%0.0fx%0.0f].", f.Path_Name().c_str(), _texture->GetSize().x, _texture->GetSize().y);
+	//Modules::log().Info("TexturesMgr[%s]: Texture loaded. Size [%0.0fx%0.0f].", f.Path_Name().c_str(), _texture->GetSize().x, _texture->GetSize().y);
 }
 
 bool TexturesMgr::DeleteAction(cstring name)

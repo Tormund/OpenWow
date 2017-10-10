@@ -48,7 +48,7 @@ bool GBuffer::Init()
 	{
 		glGenTextures(1, &textures[i]);
 		glBindTexture(GL_TEXTURE_2D, textures[i]);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, Settings::windowSizeX, Settings::windowSizeY, 0, GL_RGBA, GL_FLOAT, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, Modules::config().windowSizeX, Modules::config().windowSizeY, 0, GL_RGBA, GL_FLOAT, NULL);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, textures[i], 0);
@@ -59,7 +59,7 @@ bool GBuffer::Init()
 	{
 		glGenTextures(1, &textures[i]);
 		glBindTexture(GL_TEXTURE_2D, textures[i]);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, Settings::windowSizeX, Settings::windowSizeY, 0, GL_RGBA, GL_FLOAT, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, Modules::config().windowSizeX, Modules::config().windowSizeY, 0, GL_RGBA, GL_FLOAT, NULL);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, textures[i], 0);
@@ -68,7 +68,7 @@ bool GBuffer::Init()
 	// depth
 	glGenTextures(1, &depthTexture);
 	glBindTexture(GL_TEXTURE_2D, depthTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, Settings::windowSizeX, Settings::windowSizeY, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, Modules::config().windowSizeX, Modules::config().windowSizeY, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0);
 
 	// final
@@ -78,7 +78,7 @@ bool GBuffer::Init()
 
 	if (status != GL_FRAMEBUFFER_COMPLETE)
 	{
-		Debug::Error("Gbuffer[]: FB error, status: [0x%x]", status);
+		Modules::log().Error("Gbuffer[]: FB error, status: [0x%x]", status);
 		return false;
 	}
 
@@ -167,8 +167,8 @@ void GBuffer::BindForFinalPass(GLint _color)
 
 	glBlitNamedFramebuffer(
 		gBuffer, 0,
-		0, 0, Settings::windowSizeX, Settings::windowSizeY,
-		0, 0, Settings::windowSizeX, Settings::windowSizeY,
+		0, 0, Modules::config().windowSizeX, Modules::config().windowSizeY,
+		0, 0, Modules::config().windowSizeX, Modules::config().windowSizeY,
 		GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);

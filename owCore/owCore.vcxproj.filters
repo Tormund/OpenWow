@@ -1,14 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Debug">
-      <UniqueIdentifier>{deebd8da-8980-4331-b271-45cc65f99fd1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Files">
       <UniqueIdentifier>{51b84f54-cbb0-4a65-9203-96380aca6299}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Input">
-      <UniqueIdentifier>{99cc3793-975f-4c86-9eee-6ca69f13a6d3}</UniqueIdentifier>
     </Filter>
     <Filter Include="Module">
       <UniqueIdentifier>{0aac1f61-7524-4d73-a6d5-ac5839c221d8}</UniqueIdentifier>
@@ -46,9 +40,6 @@
     <Filter Include="RefManager\1 Dim Assync">
       <UniqueIdentifier>{5c44a7fc-a9a9-4eb0-91bf-99900a34046c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Settings &amp; Info">
-      <UniqueIdentifier>{9b973700-569a-4aed-adb3-f162d9996dd4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Files\CASCFile">
       <UniqueIdentifier>{488ed99e-97e9-4c74-ac04-8bcc02832f34}</UniqueIdentifier>
     </Filter>
@@ -58,19 +49,28 @@
     <Filter Include="Common\Types">
       <UniqueIdentifier>{de8a75b4-8f47-4cf8-90f6-6e82895a1cb0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Module\Modules">
+      <UniqueIdentifier>{4aa1f860-699a-4d6b-8666-bec8a72cc459}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Module\Modules\Engine Config">
+      <UniqueIdentifier>{35b2f0fd-f641-4615-afb4-a501e7934900}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Module\Modules\Engine Log">
+      <UniqueIdentifier>{ef746966-5439-4659-9eaa-b5406a1f5be7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Module\Modules\Engine Log\Common">
+      <UniqueIdentifier>{154efe91-d5a0-4a4d-9b1d-d053b1d5228b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Module\Modules\Resource Manager">
+      <UniqueIdentifier>{c7b2f916-0dad-48d0-b7f5-33e8dc424232}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Module\Modules\Input">
+      <UniqueIdentifier>{99cc3793-975f-4c86-9eee-6ca69f13a6d3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ModulesMgr.cpp">
-      <Filter>Module</Filter>
-    </ClCompile>
-    <ClCompile Include="Debug.cpp">
-      <Filter>Debug</Filter>
-    </ClCompile>
     <ClCompile Include="Input.cpp">
-      <Filter>Input</Filter>
-    </ClCompile>
-    <ClCompile Include="Console.cpp">
-      <Filter>Debug</Filter>
+      <Filter>Module\Modules\Input</Filter>
     </ClCompile>
     <ClCompile Include="ByteBuffer.cpp">
       <Filter>Files</Filter>
@@ -128,12 +128,6 @@
     <ClCompile Include="WowChunkUtils.cpp">
       <Filter>Utils &amp; Helpers</Filter>
     </ClCompile>
-    <ClCompile Include="InfoPortions.cpp">
-      <Filter>Settings &amp; Info</Filter>
-    </ClCompile>
-    <ClCompile Include="Settings.cpp">
-      <Filter>Settings &amp; Info</Filter>
-    </ClCompile>
     <ClCompile Include="CASCFile.cpp">
       <Filter>Files\CASCFile</Filter>
     </ClCompile>
@@ -146,8 +140,23 @@
     <ClCompile Include="SmartItemPtr.cpp">
       <Filter>RefManager\Items</Filter>
     </ClCompile>
+    <ClCompile Include="Modules.cpp">
+      <Filter>Module</Filter>
+    </ClCompile>
+    <ClCompile Include="EngineConfig.cpp">
+      <Filter>Module\Modules\Engine Config</Filter>
+    </ClCompile>
+    <ClCompile Include="EngineLog.cpp">
+      <Filter>Module\Modules\Engine Log</Filter>
+    </ClCompile>
+    <ClCompile Include="Console.cpp">
+      <Filter>Module\Modules\Engine Log\Common</Filter>
+    </ClCompile>
     <ClCompile Include="DebugOutput.cpp">
-      <Filter>Debug</Filter>
+      <Filter>Module\Modules\Engine Log\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourcesManager.cpp">
+      <Filter>Module\Modules\Resource Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -157,26 +166,14 @@
     <ClInclude Include="Module.h">
       <Filter>Module</Filter>
     </ClInclude>
-    <ClInclude Include="ModulesMgr.h">
-      <Filter>Module</Filter>
-    </ClInclude>
     <ClInclude Include="Color.h">
       <Filter>Common\Types</Filter>
     </ClInclude>
-    <ClInclude Include="Debug.h">
-      <Filter>Debug</Filter>
-    </ClInclude>
     <ClInclude Include="Input.h">
-      <Filter>Input</Filter>
+      <Filter>Module\Modules\Input</Filter>
     </ClInclude>
     <ClInclude Include="InputListener.h">
-      <Filter>Input</Filter>
-    </ClInclude>
-    <ClInclude Include="DebugMacros.h">
-      <Filter>Debug</Filter>
-    </ClInclude>
-    <ClInclude Include="Console.h">
-      <Filter>Debug</Filter>
+      <Filter>Module\Modules\Input</Filter>
     </ClInclude>
     <ClInclude Include="ByteBuffer.h">
       <Filter>Files</Filter>
@@ -224,9 +221,6 @@
     <ClInclude Include="INIFile.h">
       <Filter>Files\INIFile</Filter>
     </ClInclude>
-    <ClInclude Include="GameModule.h">
-      <Filter>Module</Filter>
-    </ClInclude>
     <ClInclude Include="RefManager2Dim.h">
       <Filter>RefManager\2 Dim</Filter>
     </ClInclude>
@@ -238,12 +232,6 @@
     </ClInclude>
     <ClInclude Include="WowChunkUtils.h">
       <Filter>Utils &amp; Helpers</Filter>
-    </ClInclude>
-    <ClInclude Include="InfoPortions.h">
-      <Filter>Settings &amp; Info</Filter>
-    </ClInclude>
-    <ClInclude Include="Settings.h">
-      <Filter>Settings &amp; Info</Filter>
     </ClInclude>
     <ClInclude Include="WowTypes.h">
       <Filter>Common\Types</Filter>
@@ -285,16 +273,31 @@
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="InputKeys.h">
-      <Filter>Input</Filter>
+      <Filter>Module\Modules\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Modules.h">
+      <Filter>Module</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineConfig.h">
+      <Filter>Module\Modules\Engine Config</Filter>
+    </ClInclude>
+    <ClInclude Include="Console.h">
+      <Filter>Module\Modules\Engine Log\Common</Filter>
     </ClInclude>
     <ClInclude Include="DebugOutput.h">
-      <Filter>Debug</Filter>
+      <Filter>Module\Modules\Engine Log\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourcesManager.h">
+      <Filter>Module\Modules\Resource Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineLog.h">
+      <Filter>Module\Modules\Engine Log</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug.h">
+      <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ModulesMgr.inl">
-      <Filter>Module</Filter>
-    </None>
     <None Include="RefManager1Dim.inl">
       <Filter>RefManager\1 Dim</Filter>
     </None>

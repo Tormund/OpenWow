@@ -47,7 +47,7 @@ public:
 	short* strip;
 	int striplen;
 
-	Liquid* lq;
+	Liquid* m_Liquid;
 
 	BoundingBox m_Bounds;
 

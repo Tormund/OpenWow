@@ -21,7 +21,7 @@ MapSkies::MapSkies(uint32 mapid)
 			Sky* sky = new Sky(it->second);
 			skies.push_back(sky);
 
-			//Debug::Warn("Sky [%d] position = %f, %f, %f", it->second->Get_Map(), sky->position.x, sky->position.y, sky->position.z);
+			//Modules::log().Warn("Sky [%d] position = %f, %f, %f", it->second->Get_Map(), sky->position.x, sky->position.y, sky->position.z);
 		}
 	}
 

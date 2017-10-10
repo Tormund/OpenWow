@@ -10,8 +10,7 @@
 Map::Map()
 {
 	// Load default variables
-	mapHasTerrain = false;
-	tilesCount = 0;
+	m_TilesCount = 0;
 	memset(m_TileExists, 0, sizeof(m_TileExists));
 	memset(m_TileIsWater, 0, sizeof(m_TileIsWater));
 	memset(lowrestiles, 0, sizeof(lowrestiles));
@@ -118,18 +117,16 @@ void Map::InitGlobalsWMOs()
 {
 	// Load global WMO
 
-	Debug::Info("Map_GlobalWMOs[]: Global WMO exists [%s].", globalWMOExists ? "true" : "false");
+	Modules::log().Green("Map_GlobalWMOs[]: Global WMO exists [%s].", globalWMOExists ? "true" : "false");
 	if (globalWMOExists)
 	{
 		WMO* wmo = _WMOsMgr->Add(globalWMOName);
 		globalWMO = new WMOInstance(wmo, globalWMOplacementInfo);
 	}
 
-
-
 	// Load low-resolution WMOs
 
-	Debug::Info("Map_GlobalWMOs[]: Low WMOs count [%d].", lowResolutionWMOsCount);
+	Modules::log().Green("Map_GlobalWMOs[]: Low WMOs count [%d].", lowResolutionWMOsCount);
 	for (uint32 i = 0; i < lowResolutionWMOsCount; i++)
 	{
 		const string name = lowResolutionWMOsNames[lowResolutionWMOsplacementInfo[i]->nameIndex];
@@ -146,7 +143,7 @@ void Map::PreloadMap(DBC_MapRecord* _map)
 {
 	templateMap = _map;
 
-	Debug::Print("Map[%s]: Id [%d]. Preloading...", templateMap->Get_Directory(), templateMap->Get_ID());
+	Modules::log().Print("Map[%s]: Id [%d]. Preloading...", templateMap->Get_Directory(), templateMap->Get_ID());
 
 	path = "World\\Maps\\" + string(templateMap->Get_Directory()) + "\\";
 
@@ -154,7 +151,7 @@ void Map::PreloadMap(DBC_MapRecord* _map)
 	File f(path + templateMap->Get_Directory() + ".wdt");
 	if (!f.Open())
 	{
-		Debug::Info("Map[%s]: WDT: Error opening.", templateMap->Get_Directory());
+		Modules::log().Info("Map[%s]: WDT: Error opening.", templateMap->Get_Directory());
 		return;
 	}
 
@@ -221,7 +218,7 @@ void Map::PreloadMap(DBC_MapRecord* _map)
 					if ((flags & Map_HasADT) == Map_HasADT)
 					{
 						m_TileExists[j][i] = true;
-						tilesCount++;
+						m_TilesCount++;
 					}
 
 					if ((flags & Map_AllWater) == Map_AllWater)
@@ -261,17 +258,16 @@ void Map::PreloadMap(DBC_MapRecord* _map)
 		}
 		else
 		{
-			Debug::Info("Map[%s]: WDT: Chunks [%s], Size [%d] not implemented.", templateMap->Get_Directory(), fourcc, size);
+			Modules::log().Info("Map[%s]: WDT: Chunks [%s], Size [%d] not implemented.", templateMap->Get_Directory(), fourcc, size);
 		}
 
 		f.Seek(nextpos);
 	}
 
 	// Load terrain
-	if (tilesCount > 0)
+	if (m_TilesCount > 0)
 	{
-		mapHasTerrain = true;
-		Debug::Info("Map[%s]: Is tile-based map.", templateMap->Get_Directory());
+		Modules::log().Green("Map[%s]: Is tile-based map.", templateMap->Get_Directory());
 	}
 
 	LoadLowTerrain();
@@ -282,7 +278,7 @@ void Map::LoadLowTerrain()
 	File f(path + templateMap->Get_Directory() + ".wdl");
 	if (!f.Open())
 	{
-		Debug::Info("World[%s]: WDL: Error opening.", templateMap->Get_Directory());
+		Modules::log().Info("World[%s]: WDL: Error opening.", templateMap->Get_Directory());
 		return;
 	}
 
@@ -347,7 +343,7 @@ void Map::LoadLowTerrain()
 		}
 		else
 		{
-			Debug::Info("Map[%s]: WDL: Chunks [%s], Size [%d] not implemented.", templateMap->Get_Directory(), fourcc, size);
+			Modules::log().Info("Map[%s]: WDL: Chunks [%s], Size [%d] not implemented.", templateMap->Get_Directory(), fourcc, size);
 		}
 		f.Seek(nextpos);
 	}
@@ -722,7 +718,7 @@ void Map::enterTile(int x, int z)
 	{
 		for (int j = 0; j < C_RenderedTiles; j++)
 		{
-			current[i][j] = LoadTile(x - static_cast<int>(C_RenderedTiles / 2) + i, z - static_cast<int>(C_RenderedTiles / 2) + j);
+			current[i][j] = LoadTile(x - static_cast<uint32>(C_RenderedTiles / 2) + i, z - static_cast<uint32>(C_RenderedTiles / 2) + j);
 		}
 	}
 }
@@ -786,7 +782,7 @@ MapTile* Map::LoadTile(int x, int z)
 	if (!maptilecache[firstnull]->Init(templateMap->Get_Directory()))
 	{
 		delete maptilecache[firstnull];
-		Debug::Info("Map[%d]: Error loading tile [%d, %d].", GetPath().c_str(), x, z);
+		Modules::log().Info("Map[%d]: Error loading tile [%d, %d].", GetPath().c_str(), x, z);
 		return nullptr;
 	}
 

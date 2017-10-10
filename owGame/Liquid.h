@@ -103,6 +103,7 @@ struct MH2O_WaterLayer
 
 	vector<float> heights;
 	vector<uint8> depths;
+	vector<std::pair<float, float>> textureCoords;
 
 	vector<bool> renderTiles;
 };

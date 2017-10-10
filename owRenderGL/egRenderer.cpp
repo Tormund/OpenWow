@@ -152,11 +152,11 @@ bool Renderer::init( RenderBackendType::List type )
 
 	// Check capabilities
 	if( !_renderDevice->getCaps().texFloat )
-		Debug::Warn( "Renderer: No floating point texture support available" );
+		Modules::log().Warn( "Renderer: No floating point texture support available" );
 	if( !_renderDevice->getCaps().texNPOT )
-		Debug::Warn( "Renderer: No non-Power-of-two texture support available" );
+		Modules::log().Warn( "Renderer: No non-Power-of-two texture support available" );
 	if( !_renderDevice->getCaps().rtMultisampling )
-		Debug::Warn( "Renderer: No multisampling for render targets available" );
+		Modules::log().Warn( "Renderer: No multisampling for render targets available" );
 	
 	// Create vertex layouts
 	VertexLayoutAttrib attribsPosOnly[1] = {
@@ -190,7 +190,7 @@ bool Renderer::init( RenderBackendType::List type )
 	// Upload default shaders
 	if ( !createShaderComb( _defColorShader, _renderDevice->getDefaultVSCode(), _renderDevice->getDefaultFSCode(), 0, 0, 0, 0 ) )
 	{
-		Debug::Error( "Failed to compile default shaders" );
+		Modules::log().Error( "Failed to compile default shaders" );
 		return false;
 	}
 
@@ -200,7 +200,7 @@ bool Renderer::init( RenderBackendType::List type )
 	// Create shadow map render target
 	if( !createShadowRB( Modules::config().shadowMapSize, Modules::config().shadowMapSize ) )
 	{
-		Debug::Error( "Failed to create shadow map" );
+		Modules::log().Error( "Failed to create shadow map" );
 		return false;
 	}
 
@@ -292,7 +292,7 @@ RenderDeviceInterface *Renderer::createRenderDevice( int type )
 			return new RDI_GL2::RenderDeviceGL2();
 		}
 		default:
-			Debug::Error( "Incorrect render interface type or type not specified. Renderer cannot be initialized." );
+			Modules::log().Error( "Incorrect render interface type or type not specified. Renderer cannot be initialized." );
 			break;
 	}
 

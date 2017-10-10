@@ -15,7 +15,7 @@ WMOLight::WMOLight(File& f)
 	fcolor *= lightDef.intensity;
 	fcolor.w = 1.0f;
 
-	//Debug::Warn("Atten = %f, %f", lightDef.attenStart, lightDef.attenEnd);
+	//Modules::log().Warn("Atten = %f, %f", lightDef.attenStart, lightDef.attenEnd);
 }
 
 void WMOLight::setup(GLint light)

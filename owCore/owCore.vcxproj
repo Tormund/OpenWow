@@ -30,7 +30,6 @@
     </ClCompile>
     <ClCompile Include="ContainerAssync.cpp" />
     <ClCompile Include="File.cpp" />
-    <ClCompile Include="InfoPortions.cpp" />
     <ClCompile Include="MPQFile.cpp" />
     <ClCompile Include="Primitives.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -38,20 +37,21 @@
     <ClCompile Include="RefManager1Dim.cpp" />
     <ClCompile Include="ByteBuffer.cpp" />
     <ClCompile Include="Console.cpp" />
-    <ClCompile Include="Debug.cpp" />
+    <ClCompile Include="EngineLog.cpp" />
     <ClCompile Include="LocalFile.cpp" />
     <ClCompile Include="FileSystem.cpp" />
     <ClCompile Include="DebugOutput.cpp" />
     <ClCompile Include="INIFile.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="RefItem.cpp" />
-    <ClCompile Include="ModulesMgr.cpp" />
+    <ClCompile Include="Modules.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="RefItemNamed.cpp" />
     <ClCompile Include="RefManager1DimAssync.cpp" />
     <ClCompile Include="RefManager2Dim.cpp" />
     <ClCompile Include="RefSimpleManagers.cpp" />
-    <ClCompile Include="Settings.cpp" />
+    <ClCompile Include="ResourcesManager.cpp" />
+    <ClCompile Include="EngineConfig.cpp" />
     <ClCompile Include="SmartItemPtr.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Utils.cpp" />
@@ -72,8 +72,6 @@
     </ClInclude>
     <ClInclude Include="ContainerAssync.h" />
     <ClInclude Include="File.h" />
-    <ClInclude Include="GameModule.h" />
-    <ClInclude Include="InfoPortions.h" />
     <ClInclude Include="InputKeys.h" />
     <ClInclude Include="Macros.h" />
     <ClInclude Include="Math.h" />
@@ -88,8 +86,8 @@
     <ClInclude Include="common.h" />
     <ClInclude Include="Console.h" />
     <ClInclude Include="Consts.h" />
+    <ClInclude Include="EngineLog.h" />
     <ClInclude Include="Debug.h" />
-    <ClInclude Include="DebugMacros.h" />
     <ClInclude Include="LocalFile.h" />
     <ClInclude Include="FileSystem.h" />
     <ClInclude Include="Function.h" />
@@ -102,11 +100,12 @@
     <ClInclude Include="RefSimpleManagers.h" />
     <ClInclude Include="RefItem.h" />
     <ClInclude Include="Module.h" />
-    <ClInclude Include="ModulesMgr.h" />
+    <ClInclude Include="Modules.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="Rect.h" />
     <ClInclude Include="RefManager2Dim.h" />
-    <ClInclude Include="Settings.h" />
+    <ClInclude Include="ResourcesManager.h" />
+    <ClInclude Include="EngineConfig.h" />
     <ClInclude Include="SmartItemPtr.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Timer.h" />
@@ -119,7 +118,6 @@
     <ClInclude Include="XMLFile.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ModulesMgr.inl" />
     <None Include="RefManager1DimAssync.inl" />
     <None Include="RefManager2Dim.inl" />
     <None Include="RefManager1Dim.inl" />

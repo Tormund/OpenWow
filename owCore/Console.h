@@ -41,7 +41,7 @@ public:
 		}
 		else
 		{
-			Debug::Error("ConsoleCommand[%s]: Can't parse argument [%s] to [%s].", commandName.c_str(), _args.c_str(), typeid(T).name());
+			Modules::log().Error("ConsoleCommand[%s]: Can't parse argument [%s] to [%s].", commandName.c_str(), _args.c_str(), typeid(T).name());
 		}
 
 		delete value;
@@ -59,16 +59,16 @@ public:
 	typedef vector<ConsoleCommandBase*> ConsoleCommands;
 
 public:
-	static  void AddCommonCommands();
+	static void AddCommonCommands();
 
 	//
 
-	static  bool AddConsoleCommand(ConsoleCommandBase* _command);
-	static  ConsoleCommandBase* GetConsoleCommandByName(cstring _commandName);
+	static bool AddConsoleCommand(ConsoleCommandBase* _command);
+	static ConsoleCommandBase* GetConsoleCommandByName(cstring _commandName);
 
 protected:
-	static  ConsoleCommands GetConsoleCommandHelp(string _input);
-	static  bool ProcessConsoleCommand(string _line);
+	static ConsoleCommands GetConsoleCommandHelp(string _input);
+	static bool ProcessConsoleCommand(string _line);
 
 private:
 	static const unsigned consoleCommandHelpMaxSize = 7;

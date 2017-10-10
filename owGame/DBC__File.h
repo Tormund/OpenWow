@@ -116,7 +116,7 @@ protected:
 	float_t getFloat(uint32 field) const
 	{
 		assert2(field < dbcStats->fieldCount, std::to_string(field).c_str());
-		return *reinterpret_cast<float_t*>(offset + field * 4);
+		return *reinterpret_cast<float_t*>(offset + (field * 4));
 	}
 	uint32 getUInt(uint32 field) const
 	{
@@ -126,7 +126,7 @@ protected:
 	int32 getInt(uint32 field) const
 	{
 		assert2(field < dbcStats->fieldCount, std::to_string(field).c_str());
-		return *reinterpret_cast<int32*>(offset + field * 4);
+		return *reinterpret_cast<int32*>(offset + (field * 4));
 	}
 	uint8 getByte(uint32 ofs) const
 	{

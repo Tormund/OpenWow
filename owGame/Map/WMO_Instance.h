@@ -26,7 +26,7 @@ public:
 	WMOInstance(WMO* _wmoObject, WMOPlacementInfo* _placementInfo);
 	~WMOInstance();
 
-	void SetWMO(WMO* m);
+	void SetWMO(WMO* _wmo) { wmoObject = _wmo; }
 	WMO* GetWMO() { return wmoObject; }
 
 	void draw();

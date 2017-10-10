@@ -37,6 +37,10 @@ void Font::Render(cstring _string, vec2 _offset) const
 	for (uint32 i = 0; i < _string.length(); i++)
 	{
 		uint8 ch = _string.c_str()[i];
+		if (ch == 0)
+		{
+			continue;
+		}
 
 		_TechniquesMgr->m_UI_Font->SetCharOffset(_offset);
 		_offset.x += static_cast<float>(m_CharWidthArray[ch - SPACE]);

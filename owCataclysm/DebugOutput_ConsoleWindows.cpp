@@ -16,8 +16,6 @@ bool DebugOutput_ConsoleWindows::Init()
 
 void DebugOutput_ConsoleWindows::Destroy()
 {
-	//hConsole = nullptr;
-	//defaultConsoleColor = 0;
 }
 
 //

@@ -123,7 +123,6 @@ public:
 	// -----------------------------------------------------------------------------
 	virtual ~GPUTimer()
 	{
-
 	}
 
 	void beginQuery(uint32 frameID)

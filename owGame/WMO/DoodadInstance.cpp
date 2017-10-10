@@ -39,14 +39,14 @@ void DoodadInstance::Draw()
 		//float radius = modelObject->m_Bounds.Radius * placementInfo->scale;
 
 		// Distance test
-		//if ((pos - _Camera->Position).length2() > (Settings::doodaddrawdistance2 + radius))
+		//if ((pos - _Camera->Position).length2() > (Modules::config().doodaddrawdistance2 + radius))
 		//{
 		//	_Pipeline->Pop(); // restore matrix
 		//	return;
 		//}
 
 		// Frustrum test
-		if (_Camera->_frustum.cullBox(aabb))
+		if (_CameraFrustum->_frustum.cullBox(aabb))
 		{
 			_Pipeline->Pop(); // restore matrix
 			return;

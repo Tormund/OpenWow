@@ -119,8 +119,8 @@ void MDX::initAnimated(File& f)
 			}
 			else
 			{
-				//Debug::Warn("MDX[%s]: Animation doesn't exists.", tempname);
-				//Debug::Warn("header.bones.size = [%d]", header.bones.size);
+				//Modules::log().Warn("MDX[%s]: Animation doesn't exists.", tempname);
+				//Modules::log().Warn("header.bones.size = [%d]", header.bones.size);
 				//assert1(animBones == false);
 			}
 		}
@@ -215,6 +215,11 @@ void MDX::calcBones(uint32 _animationIndex, int time)
 void MDX::animate(uint32 _animationIndex)
 {
 	int tmax = m_Sequences[_animationIndex].duration;
+	if (tmax == 0) // FIXME Outland 
+	{
+		return;
+	}
+
 	animtime = _EnvironmentManager->globalTime % tmax;
 
 	m_CurrentAnimationIndex = _animationIndex;

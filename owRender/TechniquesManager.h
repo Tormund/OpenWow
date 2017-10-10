@@ -1,9 +1,7 @@
 #pragma once
 
-// Debug
+// EngineLog
 #include "Techniques\Debug_GeometryPass.h"
-
-#include "Techniques\Billboard_GeometryPass.h"
 
 #include "Techniques/Sky_GeometryPass.h"
 #include "Techniques/MapTileLowRes_GeometryPass.h"
@@ -29,8 +27,6 @@ class TechniquesMgr
 	void Init();
 
 	Debug_GeometryPass* m_Debug_GeometryPass;
-
-	Billboard_GeometryPass* m_Billboard;
 
 	Sky_GeometryPass* m_Sky_GeometryPass;
 	MapChunk_GeometryPass* m_MapChunk_GeometryPass;

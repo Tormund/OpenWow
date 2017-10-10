@@ -13,9 +13,10 @@ public:
 	//
 
 	 void Allocate(uint64_t _size);
+	 void SetFilled();
 	 void CopyData(uint8* _data, uint64_t _size);
 	 void Init(uint8* _dataPtr, uint64_t _size);
-
+	 
 	//
 
 	 const string ReadLine();

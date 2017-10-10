@@ -21,7 +21,7 @@ void ModelsManager::Destroy()
 
 	DeleteAll();
 
-	Debug::Info("MDXsManager[]: All MDXs destroyed.");
+	Modules::log().Info("MDXsManager[]: All MDXs destroyed.");
 }
 
 //

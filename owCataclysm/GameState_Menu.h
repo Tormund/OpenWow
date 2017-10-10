@@ -27,7 +27,7 @@ public:
 
 	void OnBtn(DBC_MapRecord* _e)
 	{
-		Debug::Green("Load level %s [%d]", _e->Get_Directory(), _e->Get_ID());
+		Modules::log().Green("Load level %s [%d]", _e->Get_Directory(), _e->Get_ID());
 
 		_Map->PreloadMap(_e);
 		cmd = CMD_SELECT2;

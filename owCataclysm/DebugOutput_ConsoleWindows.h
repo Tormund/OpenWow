@@ -2,6 +2,14 @@
 
 class DebugOutput_ConsoleWindows : public DebugOutput
 {
+public:
+	 bool Init();
+	 void Destroy();
+
+protected:
+	 void Print(string _messageFmt, DebugOutput::DebugMessageType _type);
+
+protected:
 	enum ConsoleWindowsColor
 	{
 		GRAY = 8,
@@ -13,13 +21,6 @@ class DebugOutput_ConsoleWindows : public DebugOutput
 		YELLOW = 14,
 		WHITE = 15
 	};
-
-public:
-	 bool Init();
-	 void Destroy();
-
-protected:
-	 void Print(string _messageFmt, DebugOutput::DebugMessageType _type);
 
 private:
 	HANDLE hConsole;

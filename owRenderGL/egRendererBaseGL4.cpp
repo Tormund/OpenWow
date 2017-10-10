@@ -24,7 +24,7 @@ namespace RDI_GL4
 #	define CHECK_GL_ERROR
 #endif
 
-	// Debug shaders
+	// EngineLog shaders
 	static const char *defaultShaderVS =
 		"#version 330\n"
 		"uniform mat4 viewProjMat;\n"
@@ -213,46 +213,46 @@ namespace RDI_GL4
 
 		if (!version || !renderer || !vendor)
 		{
-			Debug::Error("OpenGL not initialized. Make sure you have a valid OpenGL context");
+			Modules::log().Error("OpenGL not initialized. Make sure you have a valid OpenGL context");
 			return false;
 		}
 
-		Debug::Info("Initializing GL4 backend using OpenGL driver '%s' by '%s' on '%s'", version, vendor, renderer);
+		Modules::log().Info("Initializing GL4 backend using OpenGL driver '%s' by '%s' on '%s'", version, vendor, renderer);
 
 		// Init extensions
 		if (!initOpenGLExtensions(false))
 		{
-			Debug::Error("Could not find all required OpenGL function entry points");
+			Modules::log().Error("Could not find all required OpenGL function entry points");
 			failed = true;
 		}
 
 		// Check that OpenGL 3.3 is available
 		if (glExt::majorVersion * 10 + glExt::minorVersion < 33)
 		{
-			Debug::Error("OpenGL 3.3 not available");
+			Modules::log().Error("OpenGL 3.3 not available");
 			failed = true;
 		}
 
 		// Check that required extensions are supported
 		if (!glExt::EXT_texture_filter_anisotropic)
 		{
-			Debug::Error("Extension EXT_texture_filter_anisotropic not supported");
+			Modules::log().Error("Extension EXT_texture_filter_anisotropic not supported");
 			failed = true;
 		}
 		if (!glExt::EXT_texture_compression_s3tc)
 		{
-			Debug::Error("Extension EXT_texture_compression_s3tc not supported");
+			Modules::log().Error("Extension EXT_texture_compression_s3tc not supported");
 			failed = true;
 		}
 		if (!glExt::EXT_texture_sRGB)
 		{
-			Debug::Error("Extension EXT_texture_sRGB not supported");
+			Modules::log().Error("Extension EXT_texture_sRGB not supported");
 			failed = true;
 		}
 
 		if (failed)
 		{
-			Debug::Error("Failed to init renderer backend (OpenGL %d.%d), retrying with legacy OpenGL 2.1 backend", glExt::majorVersion, glExt::minorVersion);
+			Modules::log().Error("Failed to init renderer backend (OpenGL %d.%d), retrying with legacy OpenGL 2.1 backend", glExt::majorVersion, glExt::minorVersion);
 			return false;
 		}
 
@@ -280,7 +280,7 @@ namespace RDI_GL4
 		if (testBuf == 0)
 		{
 			_depthFormat = GL_DEPTH_COMPONENT16;
-			Debug::Warn("Render target depth precision limited to 16 bit");
+			Modules::log().Warn("Render target depth precision limited to 16 bit");
 		}
 		else
 		{
@@ -478,7 +478,7 @@ namespace RDI_GL4
 			return createBuffer(GL_SHADER_STORAGE_BUFFER, size, data);
 		else
 		{
-			Debug::Error("Shader storage buffers are not supported on this OpenGL 4 device.");
+			Modules::log().Error("Shader storage buffers are not supported on this OpenGL 4 device.");
 
 			return 0;
 		}
@@ -650,7 +650,7 @@ namespace RDI_GL4
 		{
 			// Check if texture is NPOT
 			if ((width & (width - 1)) != 0 || (height & (height - 1)) != 0)
-				Debug::Warn("Texture has non-power-of-two dimensions although NPOT is not supported by GPU");
+				Modules::log().Warn("Texture has non-power-of-two dimensions although NPOT is not supported by GPU");
 		}
 
 		RDITextureGL4 tex;
@@ -844,7 +844,7 @@ namespace RDI_GL4
 	void RenderDeviceGL4::bindImageToTexture(uint32 texObj, void *eglImage)
 	{
 		if (!glExt::OES_EGL_image)
-			Debug::Error("OES_egl_image not supported");
+			Modules::log().Error("OES_egl_image not supported");
 		else
 		{
 			const RDITextureGL4 &tex = _textures.getRef(texObj);
@@ -1198,7 +1198,7 @@ namespace RDI_GL4
 		}
 		else
 		{
-			Debug::Error("Shader storage buffers are not supported on this device.");
+			Modules::log().Error("Shader storage buffers are not supported on this device.");
 
 			return -1;
 		}
@@ -1277,7 +1277,7 @@ namespace RDI_GL4
 		if (samples > maxSamples)
 		{
 			samples = maxSamples;
-			Debug::Warn("GPU does not support desired multisampling quality for render target");
+			Modules::log().Warn("GPU does not support desired multisampling quality for render target");
 		}
 
 		RDIRenderBufferGL4 rb;

@@ -23,7 +23,7 @@ File::File(cstring _name, cstring _path) : BaseFile(_name, _path)
 
 File::~File()
 {
-	BaseFile::~BaseFile();
+	//Modules::log().Error("File[%s] closed.", Path_Name().c_str());
 }
 
 //
@@ -169,11 +169,9 @@ bool File::OpenLocalFile()
 {
 	if (ByteBuffer::isFilled)
 	{
-		Debug::Warn("File[%s]: Not reason to open file, because buffer is filled.", Path_Name().c_str());
+		Modules::log().Warn("File[%s]: Not reason to open file, because buffer is filled.", Path_Name().c_str());
 		return true;
 	}
-
-
 
 	// Open stream
 	ifstream stream;
@@ -191,7 +189,7 @@ bool File::OpenLocalFile()
 	// Check stream
 	if (!stream.is_open())
 	{
-		Debug::Error("File[%s]: Can not open file!", Path_Name().c_str());
+		Modules::log().Error("File[%s]: Can not open file!", Path_Name().c_str());
 		return false;
 	}
 
@@ -203,20 +201,21 @@ bool File::OpenLocalFile()
 	// Check filesize
 	if (fileSize == 0)
 	{
-		Debug::Error("File[%s]: Is empty!", Path_Name().c_str());
+		Modules::log().Error("File[%s]: Is empty!", Path_Name().c_str());
 		return false;
 	}
 
 	// Read data
 	ByteBuffer::Allocate(fileSize);
-	stream.read((char*)&ByteBuffer::GetData()[0], fileSize);
-	isFilled = true;
+	stream.read((char*)&data[0], fileSize);
+	ByteBuffer::SetFilled();
 
 	streamsize readedBytes = stream.gcount();
 	if (readedBytes < fileSize)
 	{
 		memset(&data[0] + readedBytes, 0, fileSize - static_cast<size_t>(readedBytes));
-		Debug::Error("File[%s]: Stream reading error. Readed [%d], filesize [%d]", Path_Name().c_str(), readedBytes, fileSize);
+		Modules::log().Error("File[%s]: Stream reading error. Readed [%d], filesize [%d]", Path_Name().c_str(), readedBytes, fileSize);
+		fail1();
 	}
 
 	// Close stream
@@ -238,9 +237,9 @@ bool File::OpenMPQFile()
 		// HACK: in patch.mpq some files don't want to open and give 1 for filesize
 		if (size <= 1)
 		{
-			Debug::Warn("MPQFile[%s]: Has size [%d]. Considered dummy file.", Path_Name().c_str(), size);
+			Modules::log().Warn("MPQFile[%s]: Has size [%d]. Considered dummy file.", Path_Name().c_str(), size);
 			isEof = true;
-			data = 0;
+			data = nullptr;
 			return false;
 		}
 
@@ -248,7 +247,7 @@ bool File::OpenMPQFile()
 		ByteBuffer::Allocate(size);
 		libmpq__file_read(location.archive, location.fileNumber, data, bufferSize, &size);
 		assert1(bufferSize == size);
-		ByteBuffer::Init(data, size);
+		ByteBuffer::SetFilled();
 
 		return true;
 	}

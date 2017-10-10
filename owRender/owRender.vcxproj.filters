@@ -75,9 +75,6 @@
     <ClCompile Include="Techniques\Sky_GeometryPass.cpp">
       <Filter>Techniques\Geometry</Filter>
     </ClCompile>
-    <ClCompile Include="Techniques\Billboard_GeometryPass.cpp">
-      <Filter>Techniques\Geometry</Filter>
-    </ClCompile>
     <ClCompile Include="Techniques\UI_Font.cpp">
       <Filter>Techniques\UI</Filter>
     </ClCompile>
@@ -166,9 +163,6 @@
       <Filter>Techniques\Common</Filter>
     </ClInclude>
     <ClInclude Include="Techniques\Sky_GeometryPass.h">
-      <Filter>Techniques\Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Techniques\Billboard_GeometryPass.h">
       <Filter>Techniques\Geometry</Filter>
     </ClInclude>
     <ClInclude Include="Techniques\UI_Font.h">

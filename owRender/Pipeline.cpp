@@ -11,6 +11,13 @@ void Pipeline::SetCamera(Camera* _camera)
 	camera = _camera;
 }
 
+void Pipeline::SetCameraFrustum(Camera* _camera)
+{
+	assert1(_camera != nullptr);
+
+	cameraFrustum = _camera;
+}
+
 /*void Pipeline::SetCamera(const vec3& _position, const vec3& _rotation, const vec3& _up)
 {
 	vec3 CameraRight = glm::normalize(glm::cross(_rotation, _up));

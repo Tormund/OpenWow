@@ -34,11 +34,11 @@ void MDX_Part_Light::setup(int time, GLuint l)
 	}
 	else
 	{
-		Debug::Error("ModelLight[]: Error: Light type [%d] is unknown.", type);
+		Modules::log().Error("ModelLight[]: Error: Light type [%d] is unknown.", type);
 		return;
 	}
 
-	//Debug::Info("Light %d (%f,%f,%f) (%f,%f,%f) [%f,%f,%f]", l-GL_LIGHT4, ambcol.x, ambcol.y, ambcol.z, diffcol.x, diffcol.y, diffcol.z, p.x, p.y, p.z);
+	//Modules::log().Info("Light %d (%f,%f,%f) (%f,%f,%f) [%f,%f,%f]", l-GL_LIGHT4, ambcol.x, ambcol.y, ambcol.z, diffcol.x, diffcol.y, diffcol.z, p.x, p.y, p.z);
 	glLightfv(l, GL_POSITION, p);
 	glLightfv(l, GL_DIFFUSE, diffcol);
 	glLightfv(l, GL_AMBIENT, ambcol);

@@ -9,6 +9,7 @@
 // Additional
 #include "Environment/EnvironmentManager.h"
 
+// Internal
 #include "../shared/pack_begin.h"
 
 struct MH20_Attributes
@@ -132,9 +133,9 @@ void Liquid::initFromTerrainMH2O(File& f, MH2O_Header * _header)
 
 		if (mh2o_instance->minHeightLevel - mh2o_instance->maxHeightLevel > 0.001f)
 		{
-			Debug::Green("MinHeight %f:", mh2o_instance->minHeightLevel);
-			Debug::Green("MaxHeight %f:", mh2o_instance->maxHeightLevel);
-			Debug::Error("MIN WATER != MAX_WATER!!!!");
+			Modules::log().Green("MinHeight %f:", mh2o_instance->minHeightLevel);
+			Modules::log().Green("MaxHeight %f:", mh2o_instance->maxHeightLevel);
+			Modules::log().Error("MIN WATER != MAX_WATER!!!!");
 			fail1();
 		}
 
@@ -143,7 +144,7 @@ void Liquid::initFromTerrainMH2O(File& f, MH2O_Header * _header)
 		assert1(liquidType != nullptr);
 		uint32 vertexFormat = liquidType->Get_LiquidMaterialID()->Get_LiquidVertexFormat();
 		InitTextures(liquidType);
-		Debug::Warn("Liquid is [%s]", liquidType->Get_Name());
+		//Modules::log().Warn("Liquid is [%s]", liquidType->Get_Name());
 
 		// Fix ocean shit
 		if (mh2o_instance->liquidType == 2) 
@@ -214,7 +215,7 @@ void Liquid::initFromTerrainMH2O(File& f, MH2O_Header * _header)
 				waterLayer.depths.push_back(pDepths[g]);
 			}
 		}
-		else if (vertexFormat == 1)    //Case 1, Height and Texture Coordinate data
+		else if (vertexFormat == 1)         // Case 1, Height and Texture Coordinate data
 		{
 			float* pHeights = (float*)(f.GetDataFromCurrent() + mh2o_instance->offsetVertexData);
 			uv_map_entry* pUVMap = (uv_map_entry*)(f.GetDataFromCurrent() + mh2o_instance->offsetVertexData + (sizeof(float) * vertexDataSize));
@@ -222,7 +223,7 @@ void Liquid::initFromTerrainMH2O(File& f, MH2O_Header * _header)
 			for (uint32 g = 0; g < vertexDataSize; g++)
 			{
 				waterLayer.heights.push_back(pHeights[g]);
-				// push textcoords
+				waterLayer.textureCoords.push_back(make_pair(static_cast<float>(pUVMap[g].x / 8), static_cast<float>(pUVMap[g].y / 8)));
 			}
 		}
 		else if (vertexFormat == 2)         // Case 2, Depth only data (OCEAN)
@@ -245,7 +246,7 @@ void Liquid::initFromTerrainMH2O(File& f, MH2O_Header * _header)
 			for (uint32 g = 0; g < vertexDataSize; g++)
 			{
 				waterLayer.heights.push_back(pHeights[g]);
-				// push textcoords
+				waterLayer.textureCoords.push_back(make_pair(static_cast<float>(pUVMap[g].x / 8), static_cast<float>(pUVMap[g].y / 8)));
 				waterLayer.depths.push_back(pDepths[g]);
 			}
 		}
@@ -337,10 +338,35 @@ void Liquid::createBuffer(cvec3 _position)
 				unsigned p3 = tx + 1 + (ty + 1) * (layer.Width + 1);
 				unsigned p4 = tx + 1 + ty       * (layer.Width + 1);
 
-				// alpha values helper
+				// heights
+				float h1, h2, h3, h4;
+				h1 = h2 = h3 = h4 = 0.0f;
+				if (layer.heights.size() > 0)
+				{
+					h1 = layer.heights[p1];
+					h2 = layer.heights[p2];
+					h3 = layer.heights[p3];
+					h4 = layer.heights[p4];
+				}
+
+				// textures coords
+				std::pair<float, float> t1, t2, t3, t4;
+				t1 = make_pair(0.0f, 0.0f);
+				t2 = make_pair(0.0f, 1.0f);
+				t3 = make_pair(1.0f, 1.0f);
+				t4 = make_pair(1.0f, 0.0f);
+				if (layer.textureCoords.size() > 0)
+				{
+					t1 = layer.textureCoords[p1];
+					t2 = layer.textureCoords[p2];
+					t3 = layer.textureCoords[p3];
+					t4 = layer.textureCoords[p4];
+				}
+
+				// alpha
 				float a1, a2, a3, a4;
 				a1 = a2 = a3 = a4 = 1.0f;
-				if (layer.depths.size() != 0)
+				if (layer.depths.size() > 0)
 				{
 					a1 = (float)layer.depths[p1] / 255.f * 4.0f + 0.0f; // whats the magic formular here ???
 					a2 = (float)layer.depths[p2] / 255.f * 4.0f + 0.0f;
@@ -348,16 +374,7 @@ void Liquid::createBuffer(cvec3 _position)
 					a4 = (float)layer.depths[p4] / 255.f * 4.0f + 0.0f;
 				}
 
-				// height values helper
-				float h1, h2, h3, h4;
-				h1 = h2 = h3 = h4 = 0.0f;
-				if (layer.heights.size() != 0)
-				{
-					h1 = layer.heights[p1];
-					h2 = layer.heights[p2];
-					h3 = layer.heights[p3];
-					h4 = layer.heights[p4];
-				}
+				
 
 				// Skip hidden water tile
 				if (layer.renderTiles.size() != 0)
@@ -373,28 +390,28 @@ void Liquid::createBuffer(cvec3 _position)
 				mh2oVertices.push_back
 				({
 					vec3(_position.x + C_UnitSize * static_cast<float>(x), h1, _position.z + ydir * (C_UnitSize * static_cast<float>(y))),
-					vec3(0.0f, 0.0f, a1),
+					vec3(t1.first, t1.second, a1),
 					defaultNormal
 				});
 
 				mh2oVertices.push_back
 				({
 					vec3(_position.x + C_UnitSize * static_cast<float>(x), h2, _position.z + ydir * (C_UnitSize +  C_UnitSize * static_cast<float>(y))),
-					vec3(0.0f, texRepeats, a2),
+					vec3(t2.first, t2.second, a2),
 					defaultNormal
 				});
 
 				mh2oVertices.push_back
 				({
 					vec3(_position.x + C_UnitSize + C_UnitSize * static_cast<float>(x), h3, _position.z + ydir * (C_UnitSize + C_UnitSize * static_cast<float>(y))),
-					vec3(texRepeats, texRepeats, a3),
+					vec3(t3.first, t3.second, a3),
 					defaultNormal
 				});
 
 				mh2oVertices.push_back
 				({
 					vec3(_position.x + C_UnitSize + C_UnitSize * static_cast<float>(x), h4, _position.z + ydir * (C_UnitSize * static_cast<float>(y))),
-					vec3(texRepeats, 0.0f, a4),
+					vec3(t4.first, t4.second, a4),
 					defaultNormal
 				});
 			}
@@ -460,7 +477,7 @@ void Liquid::draw()
 	//	glDepthMask(GL_FALSE);
 	//}
 
-	/*if (Settings::useshadersfalse && (shader >= 0))
+	/*if (Modules::config().useshadersfalse && (shader >= 0))
 	{
 	// SHADER-BASED
 	vec3 col2;

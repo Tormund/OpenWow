@@ -40,7 +40,7 @@ bool ShadowMapFBO::Init(unsigned int WindowWidth, unsigned int WindowHeight) {
 	GLenum Status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
 	if(Status != GL_FRAMEBUFFER_COMPLETE) {
-		Debug::Error("FB error, status: 0x%x", Status);
+		Modules::log().Error("FB error, status: 0x%x", Status);
 		return false;
 	}
 

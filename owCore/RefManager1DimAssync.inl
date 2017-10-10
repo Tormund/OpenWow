@@ -105,7 +105,7 @@ inline std::string RefManager1DimAssync<OBJECT_TYPE>::GetNameByItem(OBJECT_TYPE*
 	return "";
 }
 
-// Debug
+// EngineLog
 
 template <class OBJECT_TYPE>
 inline void RefManager1DimAssync<OBJECT_TYPE>::PrintAllInfo()
@@ -114,9 +114,9 @@ inline void RefManager1DimAssync<OBJECT_TYPE>::PrintAllInfo()
 	for (auto it = objects.begin(); it != objects.end(); ++it)
 	{
 		refsCnt += it->second->GetRefsCount();
-		Debug::Info("Item (%d) [%s]", it->second->GetRefsCount(), it->first.c_str());
+		Modules::log().Info("Item (%d) [%s]", it->second->GetRefsCount(), it->first.c_str());
 	}
 
-	Debug::Info("Item's count [%d], items refs [%d]", objects.size(), refsCnt);
+	Modules::log().Info("Item's count [%d], items refs [%d]", objects.size(), refsCnt);
 }
 

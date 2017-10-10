@@ -8,7 +8,7 @@ Shader::Shader(GLenum _shaderType, cstring _shaderFileName) : shaderType(_shader
 	File f = _shaderFileName;
 	if (!f.Open())
 	{
-		Debug::Error("Shader[%s]: Error while open shader file.", _shaderFileName.c_str());
+		Modules::log().Error("Shader[%s]: Error while open shader file.", _shaderFileName.c_str());
 		return;
 	}
 
@@ -16,14 +16,14 @@ Shader::Shader(GLenum _shaderType, cstring _shaderFileName) : shaderType(_shader
 
 	if (shaderOglObj == 0)
 	{
-		Debug::Error("Shader[%s]: Error create shader OGL object! Shader type [%d].", _shaderFileName.c_str(), _shaderType);
+		Modules::log().Error("Shader[%s]: Error create shader OGL object! Shader type [%d].", _shaderFileName.c_str(), _shaderType);
 		return;
 	}
 
 	const GLchar* data = (GLchar*)f.GetData();
 	glShaderSource(shaderOglObj, 1, &data, 0);
 
-	Debug::Info("Shader[%s]: Loaded successfully.", _shaderFileName.c_str());
+	Modules::log().Info("Shader[%s]: Loaded successfully.", _shaderFileName.c_str());
 }
 
 Shader::~Shader()
@@ -50,11 +50,11 @@ bool Shader::Compile()
 		glGetShaderiv(shaderOglObj, GL_INFO_LOG_LENGTH, &length);
 		memset(info, 0, 512);
 		glGetShaderInfoLog(shaderOglObj, length, 0, info);
-		Debug::Error("Shader[]: Compiled failed [%s].", info);
+		Modules::log().Error("Shader[]: Compiled failed [%s].", info);
 		return false;
 	}
 
-	Debug::Info("Shader[]: Compiled successfully.");
+	Modules::log().Info("Shader[]: Compiled successfully.");
 
 	return true;
 }

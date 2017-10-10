@@ -6,22 +6,22 @@
 
 void Test(vector<string>& _args)
 {
-	Debug::Print("00000000Args size[%d]", _args.size());
+	Modules::log().Print("00000000Args size[%d]", _args.size());
 	for (auto it = _args.begin(); it != _args.end(); ++it)
-		Debug::Print("000000000Arg [%s]", (*it).c_str());
+		Modules::log().Print("000000000Arg [%s]", (*it).c_str());
 }
 
 void Test1(int _argInt)
 {
-	Debug::Print("11111111Arg = [%d]", _argInt);
+	Modules::log().Print("11111111Arg = [%d]", _argInt);
 }
 
 void Test11(uint32 _argInt)
 {
-	Debug::Print("11111111Arg = [%d]", _argInt);
+	Modules::log().Print("11111111Arg = [%d]", _argInt);
 }
 
-void Test2() { Debug::Print("TEST2"); }
+void Test2() { Modules::log().Print("TEST2"); }
 
 //
 
@@ -44,7 +44,7 @@ bool Console::AddConsoleCommand(ConsoleCommandBase* _command)
 	// Name is empty
 	if (_command->GetName().empty())
 	{
-		Debug::Error("Command name is empty.");
+		Modules::log().Error("Command name is empty.");
 		return false;
 	}
 
@@ -53,13 +53,13 @@ bool Console::AddConsoleCommand(ConsoleCommandBase* _command)
 	{
 		if ((*it)->GetName() == _command->GetName())
 		{
-			Debug::Error("Command [%s] already exists.", _command->GetName().c_str());
+			Modules::log().Error("Command [%s] already exists.", _command->GetName().c_str());
 			return false;
 		}
 	}
 
 	consoleCommands.push_back(_command);
-	Debug::Print("Command [%s] added.", _command->GetName().c_str());
+	Modules::log().Print("Command [%s] added.", _command->GetName().c_str());
 
 	return true;
 }
@@ -142,7 +142,7 @@ bool Console::ProcessConsoleCommand(string _line)
 
 	if (consoleCommand == nullptr)
 	{
-		Debug::Warn("Command [%s] not found.", command.c_str());
+		Modules::log().Warn("Command [%s] not found.", command.c_str());
 		return false;
 	}
 

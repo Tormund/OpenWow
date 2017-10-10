@@ -47,10 +47,10 @@ public: // Getters
 
 	bool IsBigAlpha() { return m_BigAlpha; }
 
-	bool MapHasTerrain() { return mapHasTerrain; }
+	bool MapHasTerrain() { return (m_TilesCount > 0); }
 	bool MapHasGlobalWMO() { return globalWMOExists; }
 
-	uint32 GetTilesCount() { return tilesCount; }
+	uint32 GetTilesCount() { return m_TilesCount; }
 	GLuint GetMinimap() { return minimap; }
 
 	int GetCurrentX() { return currentTileX; }
@@ -91,8 +91,7 @@ private:
 	bool m_BigAlpha;
 
 private:
-	bool mapHasTerrain;
-	uint32 tilesCount;
+	uint32 m_TilesCount;
 	bool m_TileExists[C_TilesInMap][C_TilesInMap];
 	bool m_TileIsWater[C_TilesInMap][C_TilesInMap];
 	GLuint lowrestiles[C_TilesInMap][C_TilesInMap];

@@ -11,7 +11,7 @@ BaseFile::BaseFile() :
 {}
 
 BaseFile::BaseFile(const BaseFile& _file) :
-	ByteBuffer(_file), 
+	ByteBuffer(_file),
 	name(_file.name),
 	path(_file.path),
 	extension(_file.extension)
@@ -47,7 +47,6 @@ BaseFile::BaseFile(cstring _name, cstring _path) :
 
 BaseFile::~BaseFile()
 {
-	ByteBuffer::~ByteBuffer();
 }
 
 void BaseFile::ParsePathAndExtension()
@@ -56,25 +55,28 @@ void BaseFile::ParsePathAndExtension()
 	size_t index = 0;
 	while (true)
 	{
-	index = name.find('/', index);
-	if (index == std::string::npos)
-	{
-	break;
+		index = name.find('/', index);
+		if (index == std::string::npos)
+		{
+			break;
+		}
+
+		name.replace(index, 1, "\\");
+
+		index += 3;
 	}
 
-	name.replace(index, 1, "\\");
-
-	index += 3;
-	}
-
+	// Find name and path
 	auto lastSlashPos = name.find_last_of('\\');
 	if (lastSlashPos != string::npos)
 	{
-	path += name.substr(0, lastSlashPos + 1);
-	name = name.substr(lastSlashPos + 1);
+		path += name.substr(0, lastSlashPos + 1);
+		name = name.substr(lastSlashPos + 1);
 	}
 
 	auto lastPointPos = name.find_last_of('.');
 	if (lastPointPos != string::npos)
+	{
 		extension = Utils::ToLower(name.substr(lastPointPos + 1));
+	}
 }

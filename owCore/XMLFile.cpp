@@ -9,7 +9,7 @@ XMLNode::XMLNode(cstring _name, XMLNode* _parent)
 	parent = _parent;
 	isDataNode = false;
 
-	Debug::Info("XML: Node [%s] added.", name.c_str());
+	Modules::log().Info("XML: Node [%s] added.", name.c_str());
 }
 
 void XMLNode::DeleteChilds()
@@ -37,7 +37,7 @@ void XMLNode::SetAsDataNode()
 
 	if (!childs.empty())
 	{
-		Debug::Error("XMLFile: Data node [%s] has childs. Deleting childs.", name.c_str());
+		Modules::log().Error("XMLFile: Data node [%s] has childs. Deleting childs.", name.c_str());
 		DeleteChilds();
 	}
 }
@@ -46,7 +46,7 @@ void XMLNode::AddChild(XMLNode* _node)
 {
 	if (isDataNode)
 	{
-		Debug::Error("XML: Data node [%s] can't has childs.", name.c_str());
+		Modules::log().Error("XML: Data node [%s] can't has childs.", name.c_str());
 		return;
 	}
 
@@ -59,7 +59,7 @@ void XMLNode::AddData(cstring _keyName, cstring _value, bool append)
 {
 	if (isDataNode)
 	{
-		Debug::Error("XML: Data node [%s] can't has data.", name.c_str());
+		Modules::log().Error("XML: Data node [%s] can't has data.", name.c_str());
 		return;
 	}
 
@@ -71,7 +71,7 @@ void XMLNode::AddData(cstring _keyName, cstring _value, bool append)
 	else
 	{
 		if (data.find(_keyName) != data.end())
-			Debug::Error("Node [%s] key [%s] exists with value [%s], override with value [%s]", name.c_str(), _keyName.c_str(), data[_keyName].c_str(), _value.c_str());
+			Modules::log().Error("Node [%s] key [%s] exists with value [%s], override with value [%s]", name.c_str(), _keyName.c_str(), data[_keyName].c_str(), _value.c_str());
 		data[_keyName] = _value;
 	}
 }
@@ -87,7 +87,7 @@ bool XMLFile::Open(cstring _filename)
 
 	if (filename.empty())
 	{
-		Debug::Error("XML[%s]: No such file or directory!", filename.c_str());
+		Modules::log().Error("XML[%s]: No such file or directory!", filename.c_str());
 		return false;
 	}
 
@@ -95,7 +95,7 @@ bool XMLFile::Open(cstring _filename)
 	xmlStream.open(filename, ios::in);
 	if (!xmlStream.is_open())
 	{
-		Debug::Error("XML[%s]: Can not open file!", filename.c_str());
+		Modules::log().Error("XML[%s]: Can not open file!", filename.c_str());
 		return false;
 	}
 
@@ -106,7 +106,7 @@ bool XMLFile::Open(cstring _filename)
 		result = ProcessLine(Utils::getLine(xmlStream));
 		if (!result)
 		{
-			Debug::Error("XML[%s]: Error while read file!", filename.c_str());
+			Modules::log().Error("XML[%s]: Error while read file!", filename.c_str());
 			if (rootNode != nullptr)
 			{
 				rootNode->DeleteAll();
@@ -121,7 +121,7 @@ bool XMLFile::Open(cstring _filename)
 
 	if (rootNode == nullptr)
 	{
-		Debug::Error("XML[%s]: File is empty!", filename.c_str());
+		Modules::log().Error("XML[%s]: File is empty!", filename.c_str());
 		return false;
 	}
 
@@ -149,12 +149,12 @@ void XMLFile::Print(XMLNode* _startNode, int _level) const
 	string spaces = "";
 	for (auto i = 0; i < _level; i++) spaces += "   ";
 	line += spaces + '<' + _startNode->GetName() + '>';
-	//Debug::Print(line);
+	//Modules::log().Print(line);
 
 	//for (auto it = _startNode->GetData().begin(); it != _startNode->GetData().end(); ++it)
-	//	Debug::Print(spaces + "[" + (*it).first + "=\"" + (*it).second + "\"]");
+	//	Modules::log().Print(spaces + "[" + (*it).first + "=\"" + (*it).second + "\"]");
 
-	Debug::Print("");
+	Modules::log().Print("");
 
 	for (auto it = _startNode->GetChilds().begin(); it != _startNode->GetChilds().end(); ++it)
 	{
@@ -176,13 +176,13 @@ bool XMLFile::ProcessLine(string& _line)
 
 	if (openBracketPos == string::npos && closeBracketPos != string::npos)
 	{
-		Debug::Error("XML[%s]: Syntax error: Can't find '<', but '>' finded. Line [%s]", filename.c_str(), _line.c_str());
+		Modules::log().Error("XML[%s]: Syntax error: Can't find '<', but '>' finded. Line [%s]", filename.c_str(), _line.c_str());
 		return false;
 	}
 
 	if (openBracketPos > closeBracketPos)
 	{
-		Debug::Error("XML[%s]: Syntax error: '<' previous than '>'. Line [%s]", filename.c_str(), _line.c_str());
+		Modules::log().Error("XML[%s]: Syntax error: '<' previous than '>'. Line [%s]", filename.c_str(), _line.c_str());
 		return false;
 	}
 
@@ -196,14 +196,14 @@ bool XMLFile::ProcessLine(string& _line)
 		data = _line.substr(0, openBracketPos);
 		if (!ProcessData(data))
 		{
-			Debug::Error("XML[%s]: Error processing data [%s].", filename.c_str(), data);
+			Modules::log().Error("XML[%s]: Error processing data [%s].", filename.c_str(), data);
 			return false;
 		}
 
 		// Process other
 		otherString = _line.substr(openBracketPos);
 		assert1(!otherString.empty());
-		Debug::Info("Proc line [%s]...", otherString.c_str());
+		Modules::log().Info("Proc line [%s]...", otherString.c_str());
 		return ProcessLine(otherString);
 	}
 
@@ -214,7 +214,7 @@ bool XMLFile::ProcessLine(string& _line)
 		data = _line;
 		if (!ProcessData(data))
 		{
-			Debug::Error("XML[%s]: Error processing data [%s].", filename.c_str(), data.c_str());
+			Modules::log().Error("XML[%s]: Error processing data [%s].", filename.c_str(), data.c_str());
 			return false;
 		}
 
@@ -225,7 +225,7 @@ bool XMLFile::ProcessLine(string& _line)
 	string tag = _line.substr(0, closeBracketPos + 1);
 	if (!ProcessTag(tag))
 	{
-		Debug::Error("XML[%s]: Error processing tag [%s].", filename.c_str(), tag.c_str());
+		Modules::log().Error("XML[%s]: Error processing tag [%s].", filename.c_str(), tag.c_str());
 		return false;
 	}
 
@@ -234,7 +234,7 @@ bool XMLFile::ProcessLine(string& _line)
 	{
 		otherString = _line.substr(closeBracketPos + 1);
 		assert1(!otherString.empty());
-		Debug::Info("Proc line [%s]...", otherString.c_str());
+		Modules::log().Info("Proc line [%s]...", otherString.c_str());
 		return ProcessLine(otherString);
 	}
 
@@ -245,7 +245,7 @@ bool XMLFile::ProcessTag(string& _tag)
 {
 	assert1(!_tag.empty());
 	_tag = _tag.substr(1, _tag.size() - 2);
-	Debug::Info("Proc tag [%s]...", _tag.c_str());
+	Modules::log().Info("Proc tag [%s]...", _tag.c_str());
 
 	// Skip comments
 	if (_tag[0] == '?' || _tag[0] == '!')
@@ -259,14 +259,14 @@ bool XMLFile::ProcessTag(string& _tag)
 		// If we find close tag, but hasn't open tag
 		if (currentNode == nullptr)
 		{
-			Debug::Error("XML[%s]: Syntax error: Not currentTag previous endTag [%s] ", filename.c_str(), _tag.c_str());
+			Modules::log().Error("XML[%s]: Syntax error: Not currentTag previous endTag [%s] ", filename.c_str(), _tag.c_str());
 			return false;
 		}
 
 		// If end tag not much current tag
 		if (currentNode->GetName() != _tag)
 		{
-			Debug::Error("XML[%s]: Syntax error: EndTag [%s] is not much currentTag [%s]", filename.c_str(), _tag.c_str(), currentNode->GetName().c_str());
+			Modules::log().Error("XML[%s]: Syntax error: EndTag [%s] is not much currentTag [%s]", filename.c_str(), _tag.c_str(), currentNode->GetName().c_str());
 			return false;
 		}
 
@@ -283,7 +283,7 @@ bool XMLFile::ProcessTag(string& _tag)
 	if (currentNode != nullptr)
 		if (currentNode->IsDataNode())
 		{
-			Debug::Error("XML[%s]: Syntax error: Data tag [%s] can't has childs", filename.c_str(), currentNode->GetName().c_str());
+			Modules::log().Error("XML[%s]: Syntax error: Data tag [%s] can't has childs", filename.c_str(), currentNode->GetName().c_str());
 			return false;
 		}
 
@@ -294,7 +294,7 @@ bool XMLFile::ProcessTag(string& _tag)
 	{
 		_tag = _tag.substr(0, slashPos);
 		isSingleNode = true;
-		Debug::Green("Is single");
+		Modules::log().Green("Is single");
 	}
 
 	// If we have space
@@ -336,7 +336,7 @@ bool XMLFile::ProcessTag(string& _tag)
 			auto quotesPos = value.find_first_of('"');
 			if (quotesPos != 0)
 			{
-				Debug::Error("XML[%s]: Syntax error: Attributes error. Line [%s].", filename.c_str(), value.c_str());
+				Modules::log().Error("XML[%s]: Syntax error: Attributes error. Line [%s].", filename.c_str(), value.c_str());
 				return false;
 			}
 			value = value.substr(1);
@@ -345,7 +345,7 @@ bool XMLFile::ProcessTag(string& _tag)
 			quotesPos = value.find_first_of('"');
 			if (quotesPos == 0)
 			{
-				Debug::Error("XML[%s]: Syntax error: Attributes error. Line [%s].", filename.c_str(), value.c_str());
+				Modules::log().Error("XML[%s]: Syntax error: Attributes error. Line [%s].", filename.c_str(), value.c_str());
 				return false;
 			}
 			value = value.substr(0, quotesPos);
@@ -356,7 +356,7 @@ bool XMLFile::ProcessTag(string& _tag)
 			assert1(newNode != nullptr);
 			newNode->AddData(key, value);
 
-			Debug::Green("KEY [%s] VALUE [%s]", key.c_str(), value.c_str());
+			Modules::log().Green("KEY [%s] VALUE [%s]", key.c_str(), value.c_str());
 			string substr = attrs.substr(key.length() + value.length() + 3);
 
 			attrs = Utils::Trim(substr);
@@ -369,14 +369,14 @@ bool XMLFile::ProcessTag(string& _tag)
 bool XMLFile::ProcessData(string& _data)
 {
 	assert1(!_data.empty());
-	Debug::Info("Proc data [%s]...", _data.c_str());
+	Modules::log().Info("Proc data [%s]...", _data.c_str());
 
 	// Add data or append data
 	if (!currentNode->IsDataNode())
 	{
 		currentNode->GetParent()->AddData(currentNode->GetName(), _data);
 		currentNode->SetAsDataNode();
-		Debug::Print("XML: Node [%s] is data node.", currentNode->GetName().c_str());
+		Modules::log().Print("XML: Node [%s] is data node.", currentNode->GetName().c_str());
 	}
 	else
 		currentNode->GetParent()->AddData(currentNode->GetName(), _data, true);
@@ -393,7 +393,7 @@ void XMLFile::DeleteDataNodes(XMLNode* _startNode)
 		assert1(node != nullptr);
 		if (node->IsDataNode())
 		{
-			Debug::Error("DATA Node FINDED [%s]", node->GetName().c_str());
+			Modules::log().Error("DATA Node FINDED [%s]", node->GetName().c_str());
 			it = _startNode->GetChilds().erase(it);
 			delete node;
 		}

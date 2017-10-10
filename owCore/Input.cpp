@@ -3,35 +3,30 @@
 // General
 #include "Input.h"
 
-bool Input::Init()
+Input::Input()
 {
 	// Inits keystates
-	keyState = new bool[OW_KEYSCOUNT];
 	for (int i = 0; i < OW_KEYSCOUNT; i++)
 	{
 		keyState[i] = false;
 	}
 
 	// Inits mousebuttons states
-	mouseButtonState = new bool[OW_MOUSEBUTTONSCOUNT];
 	for (int i = 0; i < OW_MOUSEBUTTONSCOUNT; i++)
 	{
 		mouseButtonState[i] = false;
 	}
-
-	return true;
 }
 
-void Input::Destroy()
+Input::~Input()
 {
-	delete[] keyState;
-	delete[] mouseButtonState;
-
 	inputListeners.clear();
 }
 
 void Input::AddInputListener(InputListener* _inputListener)
 {
+	//assert1(inputListeners.find(_inputListener) != inputListeners.end());
+
 	if (_inputListener != nullptr)
 	{
 		inputListeners.push_back(_inputListener);
@@ -50,7 +45,9 @@ void Input::MousePositionCallback(cvec2 _mousePos)
 	mousePos = _mousePos;
 
 	for (auto it = inputListeners.begin(); it != inputListeners.end(); ++it)
+	{
 		(*it)->OnMouseMoved(mousePos);
+	}
 }
 
 void Input::MouseCallback(int button, int action, int mods)

@@ -37,12 +37,12 @@ void ModelInstance::draw()
 		aabb.transform(_Pipeline->GetWorld());
 
 		//float dist = (placementInfo->position - _Camera->Position).length();
-		//if (dist > Settings::modeldrawdistance + modelObject->m_Radius * sc)
+		//if (dist > Modules::config().modeldrawdistance + modelObject->m_Radius * sc)
 		//{
 		//	return;
 		//}
 
-		if (_Camera->_frustum.cullBox(aabb))
+		if (_CameraFrustum->_frustum.cullBox(aabb))
 		{
 			return;
 		}

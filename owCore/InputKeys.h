@@ -135,10 +135,10 @@
 #define OW_KEY_LAST               OW_KEY_MENU
 
 /* Mod keys */
-#define OW_MOD_SHIFT           0x0001
-#define OW_MOD_CONTROL         0x0002
-#define OW_MOD_ALT             0x0004
-#define OW_MOD_SUPER           0x0008
+#define OW_MOD_SHIFT              0x0001
+#define OW_MOD_CONTROL            0x0002
+#define OW_MOD_ALT                0x0004
+#define OW_MOD_SUPER              0x0008
 
 /* Mouse keys */
 #define OW_MOUSE_BUTTON_1         0
@@ -155,5 +155,5 @@
 #define OW_MOUSE_BUTTON_MIDDLE    OW_MOUSE_BUTTON_3
 
 /* Common */
-#define OW_KEYSCOUNT 349
-#define OW_MOUSEBUTTONSCOUNT 8
+#define OW_KEYSCOUNT              349
+#define OW_MOUSEBUTTONSCOUNT      8

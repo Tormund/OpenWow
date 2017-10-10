@@ -27,20 +27,11 @@ TechniquesMgr::~TechniquesMgr()
 
 void TechniquesMgr::Init()
 {
-	// Debug
+	// EngineLog
 
 	m_Debug_GeometryPass = new Debug_GeometryPass();
 	m_Debug_GeometryPass->Init();
 
-
-	//
-
-	m_Billboard = new Billboard_GeometryPass();
-	m_Billboard->Init();
-	m_Billboard->Bind();
-	m_Billboard->SetColorTextureUnit(COLOR_TEXTURE_UNIT_INDEX);
-	m_Billboard->SetSpecularTextureUnit(SPECULAR_TEXTURE_UNIT_INDEX);
-	m_Billboard->Unbind();
 
 	//
 
@@ -110,7 +101,7 @@ void TechniquesMgr::Init()
 
 	m_DSDirLightPassTech->BindToPostprocess();
 
-	m_DSDirLightPassTech->SetScreenSize(Settings::windowSizeX, Settings::windowSizeY);
+	m_DSDirLightPassTech->SetScreenSize(Modules::config().windowSizeX, Modules::config().windowSizeY);
 	m_DSDirLightPassTech->SetMatSpecularPower(64);
 	
 	m_DSDirLightPassTech->Unbind();
@@ -127,7 +118,7 @@ void TechniquesMgr::Init()
 
 	m_DSDirLightPassTech->BindToPostprocess();
 
-	m_SimpleRender->SetScreenSize(Settings::windowSizeX, Settings::windowSizeY);
+	m_SimpleRender->SetScreenSize(Modules::config().windowSizeX, Modules::config().windowSizeY);
 	m_SimpleRender->Unbind();*/
 
 	m_UI_Font = new UI_Font();

@@ -247,7 +247,7 @@ public:
 
 	Vec2f operator*(const float f) const
 	{
-		Vec2f(x * f, y * f);
+		return Vec2f(x * f, y * f);
 	}
 
 	Vec2f &operator*=(const float f)
@@ -402,7 +402,7 @@ public:
 
 	Vec3f operator*(const Vec3f &v) const
 	{
-		Vec3f(x * v.x, y * v.y, z / v.z);
+		return Vec3f(x * v.x, y * v.y, z / v.z);
 	}
 
 	Vec3f &operator*=(const Vec3f &v)

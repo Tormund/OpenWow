@@ -23,7 +23,7 @@ void WMOsManager::Destroy()
 
 	DeleteAll();
 
-	Debug::Info("WMOsManager[]: All WMOs destroyed.");
+	Modules::log().Info("WMOsManager[]: All WMOs destroyed.");
 }
 
 WMO* WMOsManager::CreateAction(cstring name)
@@ -36,9 +36,9 @@ void WMOsManager::LoadAction(string name, WMO* _wmo)
 {
 	//wglMakeCurrent(_Render->dc, _Render->glrc4);
 
-	if (!_wmo->Init())
+	if (!_wmo->Load())
 	{
-		Debug::Error("WMOsManager[%s]: Failed init WMO.", name.c_str());
+		Modules::log().Error("WMOsManager[%s]: Failed init WMO.", name.c_str());
 	}
 }
 

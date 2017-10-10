@@ -184,7 +184,6 @@
     </ClCompile>
     <ClCompile Include="ShadowMapFBO.cpp" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="Techniques\Billboard_GeometryPass.cpp" />
     <ClCompile Include="Techniques\Debug_GeometryPass.cpp" />
     <ClCompile Include="Techniques\ds_dir_light_pass_tech.cpp" />
     <ClCompile Include="Techniques\ds_light_pass_tech.cpp" />
@@ -223,7 +222,6 @@
     </ClInclude>
     <ClInclude Include="ShadowMapFBO.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Techniques\Billboard_GeometryPass.h" />
     <ClInclude Include="Techniques\Debug_GeometryPass.h" />
     <ClInclude Include="Techniques\ds_dir_light_pass_tech.h" />
     <ClInclude Include="Techniques\ds_light_pass_tech.h" />

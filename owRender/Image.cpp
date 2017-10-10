@@ -7,7 +7,7 @@ void Image::CalculateCoords()
 {
 	if (texture == nullptr)
 	{
-		Debug::Error("Can't calculate coord for null texture.");
+		Modules::log().Error("Can't calculate coord for null texture.");
 		return;
 	}
 

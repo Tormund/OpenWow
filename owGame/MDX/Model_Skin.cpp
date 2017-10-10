@@ -10,7 +10,7 @@ Model_Skin::Model_Skin(MDX* _model, File& _mF, File& _aF) : m_ModelObject(_model
 {
 	if (!_aF.Open())
 	{
-		Debug::Info("Error: loading lod [%s]", _aF.Path_Name().c_str());
+		Modules::log().Info("Error: loading lod [%s]", _aF.Path_Name().c_str());
 		return;
 	}
 

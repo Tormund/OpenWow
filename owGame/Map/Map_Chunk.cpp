@@ -30,7 +30,7 @@ MapChunk::MapChunk(MapTile* _parentTile) :
 	blend(0),
 	strip(0),
 	striplen(0),
-	lq(nullptr)
+	m_Liquid(nullptr)
 {
 
 	waterlevel[0] = 0;
@@ -56,9 +56,9 @@ MapChunk::~MapChunk()
 		delete[] strip;
 	}
 
-	if (lq != nullptr)
+	if (m_Liquid != nullptr)
 	{
-		delete lq;
+		delete m_Liquid;
 	}
 }
 
@@ -87,9 +87,9 @@ void MapChunk::init(File& f, load_phases phase)
 
 		hasholes = (header->holes != 0);
 
-		if (lq != nullptr)
+		if (m_Liquid != nullptr)
 		{
-			lq->createBuffer(vec3(m_GamePositionX, 0.0f, m_GamePositionZ));
+			m_Liquid->createBuffer(vec3(m_GamePositionX, 0.0f, m_GamePositionZ));
 		}
 
 		//
@@ -200,14 +200,14 @@ void MapChunk::init(File& f, load_phases phase)
 		{
 			if (header->sizeLiquid)
 			{
-				Debug::Green("MapChunk[%d, %d]: Contain liquid!!!!", m_ParentTile->m_IndexX, m_ParentTile->m_IndexZ);
+				Modules::log().Green("MapChunk[%d, %d]: Contain liquid!!!!", m_ParentTile->m_IndexX, m_ParentTile->m_IndexZ);
 				fail1();
 
 				CRange height;
 				f.ReadBytes(&height, 8);
 
-				lq = new Liquid(8, 8, vec3(m_GamePositionX, height.min, m_GamePositionZ));
-				lq->initFromTerrainMCLQ(f, GetLiquidType());
+				m_Liquid = new Liquid(8, 8, vec3(m_GamePositionX, height.min, m_GamePositionZ));
+				m_Liquid->initFromTerrainMCLQ(f, GetLiquidType());
 			}
 		}
 
@@ -422,7 +422,7 @@ void MapChunk::init(File& f, load_phases phase)
 					{ // Uncomressed (4096)
 						if (f.GetPos() + mcly[i].offsetInMCAL + 0x1000 > f.GetSize())
 						{
-							Debug::Info("CONT");
+							Modules::log().Info("CONT");
 							continue;
 						}
 
@@ -588,16 +588,16 @@ void MapChunk::Render()
 		return;
 	}
 
-	if (_Camera->_frustum.cullBox(m_Bounds))
+	if (_CameraFrustum->_frustum.cullBox(m_Bounds))
 	{
 		return;
 	}
 
 	// Draw chunk before fog
 	/*float mydist = (_Camera->Position - vcenter).length() - r;
-	if (mydist > Settings::culldistance)
+	if (mydist > Modules::config().culldistance)
 	{
-		if (Settings::uselowlod)
+		if (Modules::config().uselowlod)
 		{
 			this->drawNoDetail();
 			return;
@@ -608,10 +608,10 @@ void MapChunk::Render()
 
 	if (!hasholes)
 	{
-		bool highres = Settings::drawhighres;
+		bool highres = Modules::config().drawhighres;
 		//if (highres)
 		//{
-		//	highres = mydist < Settings::highresdistance2;
+		//	highres = mydist < Modules::config().highresdistance2;
 		//}
 
 		//if (highres)
@@ -655,8 +655,8 @@ void MapChunk::Render()
 
 	_TechniquesMgr->m_MapChunk_GeometryPass->SetLayersCount(header->nLayers);
 
-	_TechniquesMgr->m_MapChunk_GeometryPass->SetMCCVExists(header->flags.has_mccv && Settings::enableMCCV);
-	_TechniquesMgr->m_MapChunk_GeometryPass->SetMCLVExists(MCLV_exists && Settings::enableMCLV);
+	_TechniquesMgr->m_MapChunk_GeometryPass->SetMCCVExists(header->flags.has_mccv && Modules::config().enableMCCV);
+	_TechniquesMgr->m_MapChunk_GeometryPass->SetMCLVExists(MCLV_exists && Modules::config().enableMCLV);
 
 	// Bind textures
 	for (uint32 i = 0; i < header->nLayers; i++)
@@ -727,10 +727,10 @@ void MapChunk::drawNoDetail()
 void MapChunk::CreateMH2OLiquid(File& f, MH2O_Header* _liquidHeader)
 {
 	assert1(_liquidHeader != nullptr);
-	assert1(lq == nullptr);
+	assert1(m_Liquid == nullptr);
 
-	lq = new Liquid(8, 8, vec3());
-	lq->initFromTerrainMH2O(f, _liquidHeader);
+	m_Liquid = new Liquid(8, 8, vec3());
+	m_Liquid->initFromTerrainMH2O(f, _liquidHeader);
 }
 
 MCNK_MCLQ_LiquidType MapChunk::GetLiquidType()

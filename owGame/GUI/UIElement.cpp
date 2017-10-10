@@ -32,7 +32,7 @@ UIElement::UIElement()
 	textAlignW = TextAlignW::TEXT_ALIGNW_LEFT;
 	textAlignH = TextAlignH::TEXT_ALIGNH_CENTER;
 
-	Debug::Info("UI: [%s] created.", name.c_str());
+	Modules::log().Info("UI: [%s] created.", name.c_str());
 }
 
 UIElement::~UIElement()
@@ -42,7 +42,7 @@ UIElement::~UIElement()
 		delete image;
 	}
 
-	Debug::Info("UI: [%s] destroyed.", name.c_str());
+	Modules::log().Info("UI: [%s] destroyed.", name.c_str());
 }
 
 void UIElement::Init(cvec2 _position, cvec2 _size, Image* _image, Color _color)
@@ -69,7 +69,7 @@ void UIElement::Attach(UIWindow* _parent)
 {
 	if (parent != nullptr)
 	{
-		Debug::Error("UIElement: Can't attach element, because element already have a parent!");
+		Modules::log().Error("UIElement: Can't attach element, because element already have a parent!");
 		return;
 	}
 
@@ -82,7 +82,7 @@ void UIElement::Detach()
 	/*if (parent != nullptr) {
 		for (auto chIt = parent->childs.begin(); chIt != parent->childs.end(); ++chIt)
 			if (*chIt == this) {
-				Debug::Info("UI: Element [%s] deleted from parent.", (*chIt)->GetName().c_str());
+				Modules::log().Info("UI: Element [%s] deleted from parent.", (*chIt)->GetName().c_str());
 				parent->childs.erase(chIt);
 				return;
 			}
@@ -117,7 +117,7 @@ bool UIElement::CheckMouseHover()
 		return false;
 	}
 
-	if (Utils::PointInRectangle(_Input->GetMouse(), GetPosition(), GetPosition() + size))
+	if (Utils::PointInRectangle(Modules::input().GetMouse(), GetPosition(), GetPosition() + size))
 		mouseHover = true;
 	else
 		mouseHover = false;

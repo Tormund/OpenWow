@@ -73,16 +73,16 @@ ByteBuffer::~ByteBuffer()
 
 	if (data != nullptr)
 	{
-		//delete data; FIXME
+		//Modules::log().Error("Data deleted!!!");
+		delete[] data;
 	}
-
 }
 
 //
 
 void ByteBuffer::Allocate(uint64_t _size)
 {
-	isEof = (_size == 0);
+	isEof = true;
 
 	if (_size > 0)
 	{
@@ -91,10 +91,22 @@ void ByteBuffer::Allocate(uint64_t _size)
 			data = new uint8[_size];
 			allocated = true;
 		}
+		else
+		{
+			fail1();
+		}
 	}
 
 	position = 0;
 	bufferSize = _size;
+}
+
+void ByteBuffer::SetFilled()
+{
+	isEof = (bufferSize == 0);
+
+	isFilled = true;
+	isOnlyPointerToData = false;
 }
 
 void ByteBuffer::CopyData(uint8* _data, uint64_t _size)
@@ -106,8 +118,8 @@ void ByteBuffer::CopyData(uint8* _data, uint64_t _size)
 
 	if (_size > bufferSize)
 	{
-		Debug::Error("ByteBuffer[]: Source data size [%d] bigger than allocated memory [%d]!", _size, bufferSize);
-		Debug::Error("ByteBuffer[]: Copy part of source data.");
+		Modules::log().Error("ByteBuffer[]: Source data size [%d] bigger than allocated memory [%d]!", _size, bufferSize);
+		Modules::log().Error("ByteBuffer[]: Copy part of source data.");
 		_size = bufferSize;
 	}
 

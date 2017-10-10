@@ -8,11 +8,11 @@ World::World()
 {
 	// SHADERS
 	mainCamera = new Camera;
-	mainCamera->setupViewParams(45.0f, Settings::aspectRatio, 2.0f, 15000.0f);
+	mainCamera->setupViewParams(45.0f, Modules::config().aspectRatio, 2.0f, 15000.0f);
 	_PipelineGlobal->SetCamera(mainCamera);
 
 	testCamera = new Camera;
-	testCamera->setupViewParams(45.0f, Settings::aspectRatio, 2.0f, 15000.0f);
+	testCamera->setupViewParams(45.0f, Modules::config().aspectRatio, 2.0f, 15000.0f);
 
 	_EnvironmentManager->Init();
 
@@ -20,13 +20,13 @@ World::World()
 
 	glGenTextures(1, &finalTexture1);
 	glBindTexture(GL_TEXTURE_2D, finalTexture1);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Settings::windowSizeX, Settings::windowSizeY, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Modules::config().windowSizeX, Modules::config().windowSizeY, 0, GL_RGB, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
 	glGenTextures(1, &finalTexture2);
 	glBindTexture(GL_TEXTURE_2D, finalTexture2);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Settings::windowSizeX, Settings::windowSizeY, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Modules::config().windowSizeX, Modules::config().windowSizeY, 0, GL_RGB, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
@@ -35,7 +35,7 @@ World::World()
 
 	//----------------------------------------------------------------//
 
-	Settings::CalculateSquareDistances();
+	Modules::config().CalculateSquareDistances();
 
 	// Fog params
 	l_const = 0.0f;
@@ -47,7 +47,7 @@ World::World()
 
 World::~World()
 {
-	Debug::Info("Unloaded world [%s]", _Map->GetPath().c_str());
+	Modules::log().Info("Unloaded world [%s]", _Map->GetPath().c_str());
 
 	// temp code until I figure out water properly
 	//if (water)
@@ -56,7 +56,7 @@ World::~World()
 
 	_EnvironmentManager->Destroy();
 
-	Debug::Info("World [%s] unloaded", _Map->GetPath().c_str());
+	Modules::log().Info("World [%s] unloaded", _Map->GetPath().c_str());
 }
 
 void World::drawShader(GLint _color)
@@ -70,8 +70,10 @@ void World::drawShader(GLint _color)
 #endif
 
 	_PipelineGlobal->SetCamera(mainCamera);
+	_PipelineGlobal->SetCameraFrustum(mainCamera);
 	_Perfomance->FrameBegin();
 	_EnvironmentManager->BeforeDraw();
+	mainCamera->onPostUpdate();
 		
 	// Main frame
 	m_gbuffer->StartFrame(finalTexture1);
@@ -92,7 +94,7 @@ void World::drawShader(GLint _color)
 	//
 	// SECONDS PASS
 	//
-	/*
+	
 #ifdef WMO_INCL
 	WMOInstance::reset();
 #endif
@@ -112,7 +114,7 @@ void World::drawShader(GLint _color)
 	m_gbuffer->BindForGeomPass();
 	m_gbuffer->Clear();
 	RenderGeom();
-	_PipelineGlobal->RenderCamera(mainCamera);*/
+	_PipelineGlobal->RenderCamera(_CameraFrustum);
 	
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 }
@@ -132,7 +134,7 @@ void World::RenderGeom()
 	//------------------------------------------------------------------------------
 	// Draw sky from WMO
 	//------------------------------------------------------------------------------
-	//if (Settings::draw_map_mdx)
+	//if (Modules::config().draw_map_mdx)
 	//{
 	_Map->RenderSky();
 	//}
@@ -161,7 +163,7 @@ void World::RenderGeom()
 	glDisable(GL_DEPTH_TEST);
 
 	PERF_START(PERF_MAP_LOWRESOLUTION);
-	if (/*Settings::drawfog &&*/ Settings::draw_map_chunk)
+	if (/*Modules::config().drawfog &&*/ Modules::config().draw_map_chunk)
 	{
 		_TechniquesMgr->m_MapTileLowRes_GeometryPass->Bind();
 		_Pipeline->Clear();
@@ -183,9 +185,9 @@ void World::RenderGeom()
 	glEnable(GL_CULL_FACE);
 
 	PERF_START(PERF_MAP_CHUNK_GEOMETRY);
-	if (Settings::draw_map_chunk)
+	if (Modules::config().draw_map_chunk)
 	{
-		Settings::uselowlod = Settings::drawfog;
+		Modules::config().uselowlod = Modules::config().drawfog;
 
 		_TechniquesMgr->m_MapChunk_GeometryPass->Bind();
 		_Pipeline->Clear();
@@ -206,7 +208,7 @@ void World::RenderGeom()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	if (Settings::draw_map_chunk)
+	if (Modules::config().draw_map_chunk)
 	{
 		_Map->RenderWater();
 	}
@@ -242,7 +244,7 @@ void World::RenderGeom()
 	glDisable(GL_CULL_FACE);
 
 	PERF_START(PERF_MAP_MODELS_WMOs);
-	if (Settings::draw_map_wmo)
+	if (Modules::config().draw_map_wmo)
 	{
 		_Map->RenderObjects();
 	}
@@ -256,7 +258,7 @@ void World::RenderGeom()
 	glDisable(GL_CULL_FACE);
 
 	PERF_START(PERF_MAP_MODELS_MDXs);
-	if (Settings::draw_map_mdx)
+	if (Modules::config().draw_map_mdx)
 	{
 		_Map->RenderModels();
 	}
@@ -276,7 +278,7 @@ void World::RenderPostprocess()
 
 void World::tick(float dt)
 {
-	Settings::CalculateSquareDistances();
+	Modules::config().CalculateSquareDistances();
 
 	_Map->Tick();
 

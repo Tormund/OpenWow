@@ -7,7 +7,7 @@ struct C33Matrix
 	vec3 columns[3];
 };
 
-struct C44Matrix // todo: row or column?
+struct C44Matrix
 {
 	Vec4f columns[4];
 };

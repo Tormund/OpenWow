@@ -70,9 +70,10 @@ bool ModelRenderPass::init(MDX* m)
 	// TODO: Add proper support for multi-texturing.
 
 	// blend mode
-	/***switch (blendmode)
+	/*switch (blendmode)
 	{
 		case BM_OPAQUE:	// 0
+		glDisable(GL_BLEND);
 		break;
 
 		case BM_TRANSPARENT: // 1
@@ -106,72 +107,50 @@ bool ModelRenderPass::init(MDX* m)
 		break;
 
 		default:
-		Debug::Info("Error: Unknown blendmode: %d", blendmode);
+		Modules::log().Info("Error: Unknown blendmode: %d", blendmode);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	}***/
+	}*/
 
 	if (cull)
+	{
 		glEnable(GL_CULL_FACE);
+	}
+	else
+	{
+		glDisable(GL_CULL_FACE);
+	}
 
 	// Texture wrapping around the geometry
 	/*if (swrap)
+	{
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	}
 
 	if (twrap)
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);*/
+	{
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	}*/
 
 	// no writing to the depth buffer.
-	if (noZWrite)
-	{
-		glDepthMask(GL_FALSE);
-	}
+	glDepthMask(noZWrite ? GL_FALSE : GL_TRUE);
 
-	if (unlit)
-	{
-		//glDisable(GL_LIGHTING);
-		//glDisable(GL_FOG); // unfogged = unlit?
-	}
-
-	// Environmental mapping, material, and effects
-	if (useEnvMap)
-	{
-		// Turn on the 'reflection' shine, using 18.0f as that is what WoW uses based on the reverse engineering
-		// This is now set in InitGL(); - no need to call it every render.
-	//***	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 18.0f);
-
-		// env mapping
-	//***	glEnable(GL_TEXTURE_GEN_S);
-	//***	glEnable(GL_TEXTURE_GEN_T);
-
-		const GLint maptype = GL_SPHERE_MAP;
-		//const GLint maptype = GL_REFLECTION_MAP_ARB;
-
-	//***	glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, maptype);
-	//***	glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, maptype);
-	}
-
-	if (texanim != -1)
+	/*if (texanim != -1)
 	{
 		glMatrixMode(GL_TEXTURE);
 		glPushMatrix();
 
 		m->m_TexturesAnims[texanim].setup(texanim);
-	}
+	}*/
 
 	// color
 	//**glColor4fv(glm::value_ptr(ocol));
 	//glMaterialfv(GL_FRONT, GL_SPECULAR, ocol);
 
-	// don't use lighting on the surface
-	if (unlit)
-	{
-	//***	glDisable(GL_LIGHTING);
-	}
 
 	if (blendmode <= 1 && ocol.w < 1.0f)
 	{
-	//***	glEnable(GL_BLEND);
+		glEnable(GL_BLEND);
 	}
 
 	return true;
@@ -179,7 +158,7 @@ bool ModelRenderPass::init(MDX* m)
 
 void ModelRenderPass::deinit()
 {
-	/***switch (blendmode)
+	/*switch (blendmode)
 	{
 		case BM_OPAQUE:
 		break;
@@ -194,23 +173,23 @@ void ModelRenderPass::deinit()
 		default:
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // default blend func
 		break;
-	}***/
+	}*/
 
 	if (noZWrite)
 	{
 		glDepthMask(GL_TRUE);
 	}
 
-	if (texanim != -1)
+	/*if (texanim != -1)
 	{
 		glPopMatrix(); // BOUZI
 		glMatrixMode(GL_MODELVIEW);
-	}
+	}*/
 
 	if (unlit)
 	{
 	//***	glEnable(GL_LIGHTING);
-	//***	if (Settings::drawfog) glEnable(GL_FOG);
+	//***	if (Modules::config().drawfog) glEnable(GL_FOG);
 	}
 
 	if (useEnvMap)

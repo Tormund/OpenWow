@@ -14,49 +14,49 @@ void APIENTRY glDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severi
 {
 	if (id == 131169 || id == 131185 || id == 131218 || id == 131204) return;
 
-	Debug::Error("---------------");
-	Debug::Error("OpenGL Debug message (%d): [%s]", id, message);
+	Modules::log().Error("---------------");
+	Modules::log().Error("OpenGL Debug message (%d): [%s]", id, message);
 
 	switch (source)
 	{
-		case GL_DEBUG_SOURCE_API:             Debug::Error("Source: OpenGL API"); break;
-		case GL_DEBUG_SOURCE_WINDOW_SYSTEM:   Debug::Error("Source: Window System API"); break;
-		case GL_DEBUG_SOURCE_SHADER_COMPILER: Debug::Error("Source: Shader Compiler"); break;
-		case GL_DEBUG_SOURCE_THIRD_PARTY:     Debug::Error("Source: Third Party"); break;
-		case GL_DEBUG_SOURCE_APPLICATION:     Debug::Error("Source: Application"); break;
-		case GL_DEBUG_SOURCE_OTHER:           Debug::Error("Source: Other"); break;
+		case GL_DEBUG_SOURCE_API:             Modules::log().Error("Source: OpenGL API"); break;
+		case GL_DEBUG_SOURCE_WINDOW_SYSTEM:   Modules::log().Error("Source: Window System API"); break;
+		case GL_DEBUG_SOURCE_SHADER_COMPILER: Modules::log().Error("Source: Shader Compiler"); break;
+		case GL_DEBUG_SOURCE_THIRD_PARTY:     Modules::log().Error("Source: Third Party"); break;
+		case GL_DEBUG_SOURCE_APPLICATION:     Modules::log().Error("Source: Application"); break;
+		case GL_DEBUG_SOURCE_OTHER:           Modules::log().Error("Source: Other"); break;
 	}
 
 	switch (type)
 	{
-		case GL_DEBUG_TYPE_ERROR:               Debug::Error("Type: Error"); break;
-		case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: Debug::Error("Type: Deprecated Behaviour"); break;
-		case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:  Debug::Error("Type: Undefined Behaviour"); break;
-		case GL_DEBUG_TYPE_PORTABILITY:         Debug::Error("Type: Portability"); break;
-		case GL_DEBUG_TYPE_PERFORMANCE:         Debug::Error("Type: Performance"); break;
-		case GL_DEBUG_TYPE_MARKER:              Debug::Error("Type: Marker"); break;
-		case GL_DEBUG_TYPE_PUSH_GROUP:          Debug::Error("Type: Push Group"); break;
-		case GL_DEBUG_TYPE_POP_GROUP:           Debug::Error("Type: Pop Group"); break;
-		case GL_DEBUG_TYPE_OTHER:               Debug::Error("Type: Other"); break;
+		case GL_DEBUG_TYPE_ERROR:               Modules::log().Error("Type: Error"); break;
+		case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: Modules::log().Error("Type: Deprecated Behaviour"); break;
+		case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:  Modules::log().Error("Type: Undefined Behaviour"); break;
+		case GL_DEBUG_TYPE_PORTABILITY:         Modules::log().Error("Type: Portability"); break;
+		case GL_DEBUG_TYPE_PERFORMANCE:         Modules::log().Error("Type: Performance"); break;
+		case GL_DEBUG_TYPE_MARKER:              Modules::log().Error("Type: Marker"); break;
+		case GL_DEBUG_TYPE_PUSH_GROUP:          Modules::log().Error("Type: Push Group"); break;
+		case GL_DEBUG_TYPE_POP_GROUP:           Modules::log().Error("Type: Pop Group"); break;
+		case GL_DEBUG_TYPE_OTHER:               Modules::log().Error("Type: Other"); break;
 	}
 
 	switch (severity)
 	{
-		case GL_DEBUG_SEVERITY_HIGH:         Debug::Error("Severity: high"); break;
-		case GL_DEBUG_SEVERITY_MEDIUM:       Debug::Error("Severity: medium"); break;
-		case GL_DEBUG_SEVERITY_LOW:          Debug::Error("Severity: low"); break;
-		case GL_DEBUG_SEVERITY_NOTIFICATION: Debug::Error("Severity: notification"); break;
+		case GL_DEBUG_SEVERITY_HIGH:         Modules::log().Error("Severity: high"); break;
+		case GL_DEBUG_SEVERITY_MEDIUM:       Modules::log().Error("Severity: medium"); break;
+		case GL_DEBUG_SEVERITY_LOW:          Modules::log().Error("Severity: low"); break;
+		case GL_DEBUG_SEVERITY_NOTIFICATION: Modules::log().Error("Severity: notification"); break;
 	}
 
 
 	//system("pause");
-	//Debug::Exit(-1);
+	//Modules::log().Exit(-1);
 }
 
 
 bool RenderGL::Init()
 {
-	// Debug output
+	// EngineLog output
 	/*GLint flags;
 	glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
 	if (flags & GL_CONTEXT_FLAG_DEBUG_BIT)
@@ -77,17 +77,17 @@ bool RenderGL::Init()
 
 	if (wglShareLists(glrc1, glrc2) == FALSE)
 	{
-		Debug::Error("Mega error !!!!1111");
+		Modules::log().Error("Mega error !!!!1111");
 	}
 
 	if (wglShareLists(glrc1, glrc3) == FALSE)
 	{
-		Debug::Error("Mega error !!!!2222");
+		Modules::log().Error("Mega error !!!!2222");
 	}
 
 	if (wglShareLists(glrc1, glrc4) == FALSE)
 	{
-		Debug::Error("Mega error !!!!3333");
+		Modules::log().Error("Mega error !!!!3333");
 	}
 
 	wglMakeCurrent(dc, glrc1);*/
@@ -135,9 +135,9 @@ bool RenderGL::Init()
 	//glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
 
 	// Viewport
-	glViewport(0, 0, Settings::windowSizeX, Settings::windowSizeY);
+	glViewport(0, 0, Modules::config().windowSizeX, Modules::config().windowSizeY);
 
-	m_OrhoMatrix = Matrix4f::OrthoMat(0.0f, Settings::windowSizeX, Settings::windowSizeY, 0.0f, -1.0f, 1.0f);
+	m_OrhoMatrix = Matrix4f::OrthoMat(0.0f, Modules::config().windowSizeX, Modules::config().windowSizeY, 0.0f, -1.0f, 1.0f);
 
 	return true;
 }
@@ -364,15 +364,15 @@ void RenderGL::RenderText(cvec2 _pos, cstring _string, TextAlignW _alignW, TextA
 void RenderGL::OnWindowResized(uint32 _width, uint32 _height)
 {
 	// Window size
-	Settings::windowSizeX = _width;
-	Settings::windowSizeY = _height;
+	Modules::config().windowSizeX = _width;
+	Modules::config().windowSizeY = _height;
 
 	// Aspect
-	Settings::CalculateAspectFactor();
+	Modules::config().CalculateAspectFactor();
 
 	// Set viewport
-	glViewport(0, 0, Settings::windowSizeX, Settings::windowSizeY);
+	glViewport(0, 0, Modules::config().windowSizeX, Modules::config().windowSizeY);
 
 	// Projection matix
-	m_OrhoMatrix = Matrix4f::OrthoMat(0.0f, Settings::windowSizeX, Settings::windowSizeY, 0.0f, -1.0f, 1.0f);
+	m_OrhoMatrix = Matrix4f::OrthoMat(0.0f, Modules::config().windowSizeX, Modules::config().windowSizeY, 0.0f, -1.0f, 1.0f);
 }

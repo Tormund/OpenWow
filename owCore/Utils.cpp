@@ -80,7 +80,7 @@ bool Utils::TryParse(const type_info& type, cstring value, void* output)
 
 	else
 	{
-		Debug::Error("UtilsParsing: a required type is not defined! [%s]", value.c_str());
+		Modules::log().Error("UtilsParsing: a required type is not defined! [%s]", value.c_str());
 		return false;
 	}
 

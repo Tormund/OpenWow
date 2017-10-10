@@ -6,7 +6,7 @@
 // Error callback
 void GLFWErrorCallback(int error, const char* description)
 {
-	Debug::Error("GLFW[]: Error [%d] (%s).", error, description);
+	Modules::log().Error("GLFW[]: Error [%d] (%s).", error, description);
 }
 
 // Resize callback
@@ -18,23 +18,23 @@ void GLFWFramebufferCallback(GLFWwindow* _window, int _width, int _height)
 // Input callbacks
 void GLFWMousePositionCallback(GLFWwindow* window, double xpos, double ypos)
 {
-	_Input->MousePositionCallback(vec2(static_cast<int>(xpos), static_cast<int>(ypos)));
+	Modules::input().MousePositionCallback(vec2(static_cast<int>(xpos), static_cast<int>(ypos)));
 }
 void GLFWMouseCallback(GLFWwindow* window, int button, int action, int mods)
 {
-	_Input->MouseCallback(button, action, mods);
+	Modules::input().MouseCallback(button, action, mods);
 }
 void GLFWMouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
-	_Input->MouseScrollCallback(static_cast<int>(yoffset));
+	Modules::input().MouseScrollCallback(static_cast<int>(yoffset));
 }
 void GLFWKeyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	_Input->KeyboardCallback(key, scancode, action, mods);
+	Modules::input().KeyboardCallback(key, scancode, action, mods);
 }
 void GLFWCharCallback(GLFWwindow* window, unsigned int _char)
 {
-	_Input->CharCallback(_char);
+	Modules::input().CharCallback(_char);
 }
 
 //---------------------------------------------------------
@@ -47,15 +47,15 @@ bool GLFWBackend::Init()
 	// Loading glfw libary
 	if (!glfwInit())
 	{
-		Debug::Error("GLFW[]: Error while init GLFW!");
+		Modules::log().Error("GLFW[]: Error while init GLFW!");
 		return false;
 	}
-	Debug::Print("GLFW[]: Version [%s].", glfwGetVersionString());
+	Modules::log().Print("GLFW[]: Version [%s].", glfwGetVersionString());
 
 	// Set window options
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	//glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 	//glfwWindowHint(GLFW_SAMPLES, 8);
@@ -65,27 +65,27 @@ bool GLFWBackend::Init()
 
 	primaryMonitor = glfwGetPrimaryMonitor();
 	//const char* primaryMonitorName = glfwGetMonitorName(primaryMonitor);
-	//Debug::Print("GLFW[]: Primary monitor name [%s]", primaryMonitorName);
+	//Modules::log().Print("GLFW[]: Primary monitor name [%s]", primaryMonitorName);
 
 	// Videomode contain settings
 
 	const GLFWvidmode* primaryMonitorMode = glfwGetVideoMode(primaryMonitor);
-	Debug::Print("GLFW[]: Primary monitor resolution [%d, %d]", primaryMonitorMode->width, primaryMonitorMode->height);
+	Modules::log().Print("GLFW[]: Primary monitor resolution [%d, %d]", primaryMonitorMode->width, primaryMonitorMode->height);
 
 	// Physical size in mm
 	//int32 primaryMonitorPhysicalWidth, primaryMonitorPhysicalHeight;
 	//glfwGetMonitorPhysicalSize(primaryMonitor, &primaryMonitorPhysicalWidth, &primaryMonitorPhysicalHeight);
-	//Debug::Print("GLFW[]: Primary monitor physical size [%d, %d]", primaryMonitorPhysicalWidth, primaryMonitorPhysicalHeight);
+	//Modules::log().Print("GLFW[]: Primary monitor physical size [%d, %d]", primaryMonitorPhysicalWidth, primaryMonitorPhysicalHeight);
 
 	// Create GLFW window
 
-	window = glfwCreateWindow(Settings::windowSizeX, Settings::windowSizeY, "Default window title.", nullptr, nullptr);
+	window = glfwCreateWindow(Modules::config().windowSizeX, Modules::config().windowSizeY, "Default window title.", nullptr, nullptr);
 
 	// Move window to center
-	//uint32 windowPositionX = (primaryMonitorMode->width / 2) - (Settings::windowSizeX / 2);
-	//uint32 windowPositionY = (primaryMonitorMode->height / 2) - (Settings::windowSizeY / 2);
+	//uint32 windowPositionX = (primaryMonitorMode->width / 2) - (Modules::config().windowSizeX / 2);
+	//uint32 windowPositionY = (primaryMonitorMode->height / 2) - (Modules::config().windowSizeY / 2);
 	//glfwSetWindowPos(window, windowPositionX, windowPositionY);
-	//Debug::Print("GLFW[]: Window position [%d, %d]", windowPositionX, windowPositionY);
+	//Modules::log().Print("GLFW[]: Window position [%d, %d]", windowPositionX, windowPositionY);
 
 	//nativeWindow = glfwGetWin32Window(window);
 	glfwMakeContextCurrent(window);
@@ -103,17 +103,17 @@ bool GLFWBackend::Init()
 	GLenum err = glewInit();
 	if (err != GLEW_OK)
 	{
-		Debug::Error("GLFW[]: Error while init GLEW! [%s]", glewGetErrorString(err));
+		Modules::log().Error("GLFW[]: Error while init GLEW! [%s]", glewGetErrorString(err));
 		return false;
 	}
-	Debug::Print("GLFW[]: GLEW version [%s]", glewGetString(GLEW_VERSION));
+	Modules::log().Print("GLFW[]: GLEW version [%s]", glewGetString(GLEW_VERSION));
 
 	// OpenGL
 
-	Debug::Print("GLFW[]: OpenGL version [%s].", glGetString(GL_VERSION));
-	Debug::Print("GLFW[]: OpenGL vendor [%s].", glGetString(GL_VENDOR));
-	Debug::Print("GLFW[]: OpenGL renderer [%s].", glGetString(GL_RENDERER));
-	Debug::Print("GLFW[]: OpenGL shaders version [%s].", glGetString(GL_SHADING_LANGUAGE_VERSION));
+	Modules::log().Print("GLFW[]: OpenGL version [%s].", glGetString(GL_VERSION));
+	Modules::log().Print("GLFW[]: OpenGL vendor [%s].", glGetString(GL_VENDOR));
+	Modules::log().Print("GLFW[]: OpenGL renderer [%s].", glGetString(GL_RENDERER));
+	Modules::log().Print("GLFW[]: OpenGL shaders version [%s].", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
 	// Input
 

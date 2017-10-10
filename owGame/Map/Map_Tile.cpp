@@ -54,7 +54,7 @@ MapTile::MapTile(int x0, int z0) : m_IndexX(x0), m_IndexZ(z0)
 
 MapTile::~MapTile()
 {
-	Debug::Info("MapTile[%d, %d]: Unloading tile...", m_IndexX, m_IndexZ);
+	Modules::log().Info("MapTile[%d, %d]: Unloading tile...", m_IndexX, m_IndexZ);
 
 	for (uint32 i = 0; i < C_ChunksInTile; i++)
 	{
@@ -94,7 +94,7 @@ MapTile::~MapTile()
 	ERASE_VECTOR(mdxInstances);
 #endif
 
-	Debug::Green("MapTile[%d, %d]: Unloaded.", m_IndexX, m_IndexZ);
+	Modules::log().Green("MapTile[%d, %d]: Unloaded.", m_IndexX, m_IndexZ);
 }
 
 bool MapTile::Init(cstring _filename)
@@ -107,7 +107,7 @@ bool MapTile::Init(cstring _filename)
 		}
 	}
 
-	Debug::Info("MapTile[%d, %d, %s]: Loading...", m_IndexX, m_IndexZ, _filename.c_str());
+	Modules::log().Info("MapTile[%d, %d, %s]: Loading...", m_IndexX, m_IndexZ, _filename.c_str());
 
 	for (int fileindex = 0; fileindex < 3; fileindex++)
 	{
@@ -133,7 +133,7 @@ bool MapTile::Init(cstring _filename)
 		}
 	}
 
-	Debug::Green("MapTile[%d, %d, %s]: Loaded!", m_IndexX, m_IndexZ, _filename.c_str());
+	Modules::log().Green("MapTile[%d, %d, %s]: Loaded!", m_IndexX, m_IndexZ, _filename.c_str());
 
 	// init quadtree
 	//topnode = new MapNode(x, z, 16);
@@ -171,7 +171,7 @@ bool MapTile::parse_adt(cstring _filename, load_phases _phase)
 	File f = name;
 	if (!f.Open())
 	{
-		Debug::Error("MapTile[%d, %d, %s]: Error open file!", m_IndexX, m_IndexZ, name);
+		Modules::log().Error("MapTile[%d, %d, %s]: Error open file!", m_IndexX, m_IndexZ, name);
 		return false;
 	}
 
@@ -323,7 +323,7 @@ bool MapTile::parse_adt(cstring _filename, load_phases _phase)
 		}
 		else
 		{
-			Debug::Info("MapTile[%s]: No implement chunk %s [%d].", name, fourcc, size);
+			Modules::log().Info("MapTile[%s]: No implement chunk %s [%d].", name, fourcc, size);
 		}
 
 		f.Seek(nextpos);
@@ -347,8 +347,8 @@ void MapTile::drawWater()
 	for (uint32 i = 0; i < C_ChunksInTile; i++)
 		for (uint32 j = 0; j < C_ChunksInTile; j++)
 			if (chunks[i][j] != nullptr)
-				if(chunks[i][j]->lq != nullptr)
-					chunks[i][j]->lq->draw();
+				if(chunks[i][j]->m_Liquid != nullptr)
+					chunks[i][j]->m_Liquid->draw();
 }
 
 void MapTile::drawObjects()

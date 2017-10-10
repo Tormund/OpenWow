@@ -10,6 +10,11 @@ const float skymul = 36.0f;
 
 Sky::Sky(DBC_LightRecord* data)
 {
+	if (data == nullptr)
+	{
+		return;
+	}
+
 	position.x = data->Get_PositionX() / skymul;
 	position.y = data->Get_PositionY() / skymul;
 	position.z = data->Get_PositionZ() / skymul;
@@ -32,7 +37,8 @@ Sky::Sky(DBC_LightRecord* data)
 		auto rec = DBC_LightIntBand[ParamsClear + i];
 		if (rec == nullptr)
 		{
-			Debug::Error("Sky NOT FOUND!!!!!!");
+			Modules::log().Error("Sky NOT FOUND!!!!!!");
+			continue;
 		}
 
 		uint32 entries = rec->Get_Count();
@@ -59,6 +65,7 @@ vec3 Sky::colorFor(int r, int _time) const
 	{
 		return vec3(0, 0, 0);
 	}
+
 	vec3 c1, c2;
 	int t1, t2;
 	size_t last = colorRows[r].size() - 1;

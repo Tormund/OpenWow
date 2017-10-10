@@ -4,10 +4,11 @@
 #include "InputListener.h"
 #include "InputKeys.h"
 
-class Input : public Module
+class Input
 {
 public:
-	DEF_MODULE(Input);
+	Input();
+	~Input();
 
 	void AddInputListener(InputListener* _inputListener);
 	void DeleteInputListener(InputListener* _inputListener);
@@ -24,11 +25,9 @@ public:
 	void CharCallback(uint32 _char);
 
 private:
-	bool* keyState;
-	bool* mouseButtonState;
+	bool keyState[OW_KEYSCOUNT];
+	bool mouseButtonState[OW_MOUSEBUTTONSCOUNT];
 	vec2 mousePos;
 
 	vector<InputListener*> inputListeners;
 };
-
-#define _Input Input::instance()

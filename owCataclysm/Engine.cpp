@@ -11,7 +11,6 @@
 void shutdown(int _errCode)
 {
 	_Engine->Destroy();
-	Debug::Exit(_errCode);
 }
 
 bool Engine::Init(vector<string>& _argumentQueue)
@@ -20,38 +19,36 @@ bool Engine::Init(vector<string>& _argumentQueue)
 	File::InitCriticalSect();
 	Random::SetSeed(static_cast<unsigned long>(time(0)));
 
-
 	// Add debug outputs
-	Debug::AddDebugOutput(new DebugOutput_ConsoleWindows);
-	//Debug::AddDebugOutput(new DebugOutput_Log);
+	Modules::log().AddDebugOutput(new DebugOutput_ConsoleWindows);
+	//Modules::log().AddDebugOutput(new DebugOutput_Log);
 
 	// Load graphics
-	_ModulesMgr->LoadModule(_GLFW);
+	_GLFW->Init();
 
-	Debug::Green("Engine[]: Loading.");
+	Modules::log().Green("Engine[]: Loading.");
 
 	// Arguments
-	Debug::Print("Engine[]: Arguments count: [%d]", _argumentQueue.size());
+	Modules::log().Print("Engine[]: Arguments count: [%d]", _argumentQueue.size());
 	for (auto it = _argumentQueue.begin(); it != _argumentQueue.end(); ++it)
 	{
 		arguments.push_back(*it);
-		Debug::Print("Engine[]: Argument: [%s]", (*it).c_str());
+		Modules::log().Print("Engine[]: Argument: [%s]", (*it).c_str());
 	}
 
 	// Load modules
-	_ModulesMgr->LoadModule(_Render);
-	_ModulesMgr->LoadModule(_TexturesMgr);
-	_ModulesMgr->LoadModule(_FontsMgr);
-	_ModulesMgr->LoadModule(_Input);
-	_ModulesMgr->LoadModule(_UIMgr);
+	_Render->Init();
+	_TexturesMgr->Init();
+	_FontsMgr->Init();
+	_UIMgr->Init();
 
 	// Add OpenGL console
-	//consoleOpenGL = new ConsoleOpenGL;
-	//Debug::AddDebugOutput(consoleOpenGL);
+	consoleOpenGL = new ConsoleOpenGL;
+    Modules::log().AddDebugOutput(consoleOpenGL);
 
 	// Add listener
-	//_Input->AddInputListener(consoleOpenGL);
-	_Input->AddInputListener(_UIMgr);
+	Modules::input().AddInputListener(consoleOpenGL);
+	Modules::input().AddInputListener(_UIMgr);
 
 	needExit = false;
 	currentGameState = nullptr;
@@ -67,25 +64,25 @@ bool Engine::Init(vector<string>& _argumentQueue)
 
 void Engine::Destroy(uint32 _errorCode)
 {
-	Debug::Green("Engine[]: Destroy engine.");
+	Modules::log().Green("Engine[]: Destroy engine.");
 
 	if (currentGameState != nullptr)
 	{
 		currentGameState->Destroy();
 	}
 
-	_ModulesMgr->DestroyAllModules();
+	Modules::Destroy();
 
-	Debug::Exit(_errorCode);
+	exit(0);
 }
 
 bool Engine::SetGameState(GameState* _newGameState)
 {
-	Debug::Print("Engine[]: Setting new GameState.");
+	Modules::log().Print("Engine[]: Setting new GameState.");
 
 	if (_newGameState == nullptr)
 	{
-		Debug::Error("Engine[]: New GameState in null.");
+		Modules::log().Error("Engine[]: New GameState in null.");
 		return false;
 	}
 
@@ -93,13 +90,13 @@ bool Engine::SetGameState(GameState* _newGameState)
 	{
 		currentGameState->Destroy();
 		delete currentGameState;
-		Debug::Print("Engine[]: Current GameState destroyed.");
+		Modules::log().Print("Engine[]: Current GameState destroyed.");
 	}
 
 	currentGameState = _newGameState;
 	if (!currentGameState->IsInited())
 	{
-		Debug::Warn("Engine[]: New GameState in not inited. Initializating.");
+		Modules::log().Warn("Engine[]: New GameState in not inited. Initializating.");
 		currentGameState->Init();
 	}
 
@@ -147,7 +144,7 @@ bool Engine::Tick()
 		currentGameState->RenderUI(dTime, dDtTime);
 	}
 	_UIMgr->RenderUI();
-	//consoleOpenGL->RenderUI();
+	consoleOpenGL->RenderUI();
 
 	//
 
@@ -156,7 +153,7 @@ bool Engine::Tick()
 	{
 		if (!needExit)
 		{
-			Debug::Green("Engine[]: Need exit.");
+			Modules::log().Green("Engine[]: Need exit.");
 			needExit = true;
 			return false;
 		}

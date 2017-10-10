@@ -9,7 +9,7 @@ Technique::Technique(cstring _fileName)
 	programOglObj = 0;
 	glfxEffectObj = glfxGenEffect();
 
-	Debug::Print("Technique[%s]: Created. GLOBJ = [%d]", _fileName.c_str(), glfxEffectObj);
+	Modules::log().Print("Technique[%s]: Created. GLOBJ = [%d]", _fileName.c_str(), glfxEffectObj);
 }
 
 Technique::~Technique()
@@ -30,25 +30,25 @@ bool Technique::CompileProgram(cstring _programName)
 	if (!glfxParseEffectFromFile(glfxEffectObj, f.FullPath().c_str())) // FIXME
 	{
 		string log = string(glfxGetEffectLog(glfxEffectObj));
-		Debug::Error("Techique[%s]: Error creating program.", fileName.c_str());
-		Debug::Error("Techique[%s]: Log [%s].", fileName.c_str(), log.c_str());
+		Modules::log().Error("Techique[%s]: Error creating program.", fileName.c_str());
+		Modules::log().Error("Techique[%s]: Log [%s].", fileName.c_str(), log.c_str());
 		fail1();
 		return false;
 	}
 
 	programOglObj = glfxCompileProgram(glfxEffectObj, _programName.c_str());
-	Debug::Info("Technique[%s]: Program [%s] OGLID [%d]", fileName.c_str(), _programName.c_str(), glfxEffectObj);
+	Modules::log().Info("Technique[%s]: Program [%s] OGLID [%d]", fileName.c_str(), _programName.c_str(), glfxEffectObj);
 
 	if (programOglObj < 0)
 	{
 		string log = string(glfxGetEffectLog(glfxEffectObj));
-		Debug::Error("Techique[%s]: Error compiling program [%s].", fileName.c_str(), _programName.c_str());
-		Debug::Error("Techique[%s]: Log [%s].", fileName.c_str(), log.c_str());
+		Modules::log().Error("Techique[%s]: Error compiling program [%s].", fileName.c_str(), _programName.c_str());
+		Modules::log().Error("Techique[%s]: Log [%s].", fileName.c_str(), log.c_str());
 		fail1();
 		return false;
 	}
 
-	Debug::Print("Technique[%s]: Compiled. Program [%s]. GLOBJ = [%d]", fileName.c_str(), _programName.c_str(), glfxEffectObj);
+	Modules::log().Print("Technique[%s]: Compiled. Program [%s]. GLOBJ = [%d]", fileName.c_str(), _programName.c_str(), glfxEffectObj);
 
 	return true;
 }

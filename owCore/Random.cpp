@@ -1,4 +1,6 @@
 #include "stdafx.h"
+
+// General
 #include "Random.h"
 
 unsigned long Random::rStateVector[Random::N];

@@ -22,14 +22,13 @@ WMO::WMO(cstring name) : RefItemNamed(name), m_Loaded(false)
 	m_Skybox_Filename = nullptr;
 	m_Skybox = nullptr;
 
-
 	m_MDXFilenames = nullptr;
 #endif
 }
 
 WMO::~WMO()
 {
-	Debug::Info("WMO[%s]: Unloading...", GetName().c_str());
+	Modules::log().Info("WMO[%s]: Unloading...", GetName().c_str());
 
 	//
 
@@ -45,7 +44,7 @@ WMO::~WMO()
 #endif
 
 	// Clear portals
-	if (header.nPortals)
+	if (m_Header.nPortals)
 	{
 		delete[] m_PortalVertices;
 		ERASE_VECTOR(m_PortalInformation);
@@ -73,16 +72,15 @@ WMO::~WMO()
 	ERASE_VECTOR(m_Fogs);
 }
 
-bool WMO::Init()
+bool WMO::Load()
 {
 	File f = GetName();
 	if (!f.Open())
 	{
-		Debug::Info("WMO[%s]: Error loading WMO.", GetName().c_str());
 		return false;
 	}
 
-	//Debug::Info("WMO[%s]: Loading...", GetName().c_str());
+	//Modules::log().Info("WMO[%s]: Loading...", GetName().c_str());
 
 	char fourcc[5];
 	uint32 size;
@@ -101,11 +99,11 @@ bool WMO::Init()
 		{
 			uint32 version;
 			f.ReadBytes(&version, 4);
-			assert3(version == 17, "Version mismatch != 17", std::to_string(version).c_str());
+			assert1(version == 17);
 		}
 		else if (strcmp(fourcc, "MOHD") == 0)               // Header
 		{
-			f.ReadBytes(&header, WMOHeaderDef::__size);
+			f.ReadBytes(&m_Header, WMOHeaderDef::__size);
 		}
 		else if (strcmp(fourcc, "MOTX") == 0)               // List of textures (BLP Files) used in this map object.
 		{
@@ -115,7 +113,7 @@ bool WMO::Init()
 		}
 		else if (strcmp(fourcc, "MOMT") == 0)               // Materials used in this map object, 64 bytes per texture (BLP file), nMaterials entries.
 		{
-			for (uint32 i = 0; i < header.nTextures; i++)
+			for (uint32 i = 0; i < m_Header.nTextures; i++)
 			{
 				WMOMaterial* _mat = new WMOMaterial(this, f);
 				m_Materials.push_back(_mat);
@@ -129,7 +127,7 @@ bool WMO::Init()
 		}
 		else if (strcmp(fourcc, "MOGI") == 0)
 		{
-			for (uint32 i = 0; i < header.nGroups; i++)
+			for (uint32 i = 0; i < m_Header.nGroups; i++)
 			{
 				WMOGroup* group = new WMOGroup(this, i, f);
 				m_Groups.push_back(group);
@@ -143,7 +141,7 @@ bool WMO::Init()
 				m_Skybox_Filename = new char[size + 1];
 				f.ReadBytes(m_Skybox_Filename, size);
 				m_Skybox_Filename[size] = 0x00;
-				Debug::Warn("WMO[%s]: Skybox [%s]", GetName().c_str(), m_Skybox_Filename);
+				Modules::log().Warn("WMO[%s]: Skybox [%s]", GetName().c_str(), m_Skybox_Filename);
 
 				//m_SkyModel = new Sky_Model(m_Skybox_Filename);
 			}
@@ -164,7 +162,7 @@ bool WMO::Init()
 		else if (strcmp(fourcc, "MOPT") == 0)
 		{
 			assert1((size % WMO_PortalInformation::__size) == 0);
-			assert1((size / WMO_PortalInformation::__size) == header.nPortals);
+			assert1((size / WMO_PortalInformation::__size) == m_Header.nPortals);
 
 			for (uint32 i = 0; i < size / WMO_PortalInformation::__size; i++)
 			{
@@ -208,7 +206,7 @@ bool WMO::Init()
 		}
 		else if (strcmp(fourcc, "MOLT") == 0)
 		{
-			for (uint32 i = 0; i < header.nLights; i++)
+			for (uint32 i = 0; i < m_Header.nLights; i++)
 			{
 				WMOLight* _wmoLight = new WMOLight(f);
 				m_Lights.push_back(_wmoLight);
@@ -216,7 +214,7 @@ bool WMO::Init()
 		}
 		else if (strcmp(fourcc, "MODS") == 0)
 		{
-			for (uint32 i = 0; i < header.nDoodadSets; i++)
+			for (uint32 i = 0; i < m_Header.nDoodadSets; i++)
 			{
 #ifdef DOODADS_INCL
 				WMO_DoodadSet* dds = new WMO_DoodadSet();
@@ -243,8 +241,8 @@ bool WMO::Init()
 		}
 		else if (strcmp(fourcc, "MODD") == 0) // Information for doodad instances. 40 bytes per doodad instance, nDoodads entries.
 		{
-			header.nDoodadNames = size / 40;
-			for (uint32 i = 0; i < header.nDoodadNames; i++)
+			m_Header.nDoodadNames = size / 40;
+			for (uint32 i = 0; i < m_Header.nDoodadNames; i++)
 			{
 #ifdef DOODADS_INCL
 				DoodadInstance* _doodadInstance = new DoodadInstance(f);
@@ -273,7 +271,7 @@ bool WMO::Init()
 		}
 		else
 		{
-			Debug::Warn("WMO[%s]: No implement wmo chunk [%s] [%d].", GetName().c_str(), fourcc, size);
+			Modules::log().Warn("WMO[%s]: No implement wmo chunk [%s] [%d].", GetName().c_str(), fourcc, size);
 		}
 
 		f.Seek(nextpos);
@@ -282,7 +280,7 @@ bool WMO::Init()
 	// Init m_Groups
 	for (auto it = m_Groups.begin(); it != m_Groups.end(); ++it)
 	{
-		(*it)->initDisplayList();
+		(*it)->Load();
 		m_Bounds.makeUnion((*it)->m_Bounds);
 	}
 
@@ -303,7 +301,7 @@ bool WMO::draw(uint32 _doodadSet)
 	BoundingBox aabb = m_Bounds;
 	aabb.transform(_Pipeline->GetWorld());
 
-	if (_Camera->_frustum.cullBox(aabb))
+	if (_CameraFrustum->_frustum.cullBox(aabb))
 	{
 		return false;
 	}
@@ -321,7 +319,7 @@ bool WMO::draw(uint32 _doodadSet)
 	// WMO doodads
 	{
 		PERF_START(PERF_MAP_MODELS_WMOs_DOODADS);
-		if (Settings::draw_map_wmo_doodads)
+		if (Modules::config().draw_map_wmo_doodads)
 		{
 			for (auto it = m_Groups.begin(); it != m_Groups.end(); ++it)
 			{
@@ -500,7 +498,7 @@ void WMO::DEBUG_DrawMainBoundingBox()
 
 void WMO::DEBUG_DrawBoundingBoxes()
 {
-	for (int i = 0; i < header.nGroups; i++)
+	for (int i = 0; i < m_Header.nGroups; i++)
 	{
 		WMOGroup* g = m_Groups[i];
 		float fc[2] = {1, 0};
@@ -567,7 +565,7 @@ void WMO::DEBUG_DrawBoundingBoxes()
 
 void WMO::DEBUG_DrawPortalsRelations()
 {
-	for (size_t i = 0; i < header.nPortals; i++)
+	for (size_t i = 0; i < m_Header.nPortals; i++)
 	{
 		WMO_PortalInformation* portalInformation = m_PortalInformation[i];
 		WMO_PortalReferences* portalReference = m_PortalReferences[i];
@@ -619,7 +617,7 @@ void WMO::DEBUG_DrawPortals()
 {
 	_TechniquesMgr->m_Debug_GeometryPass->SetColor4(vec4(0.0f, 1.0f, 0.0f, 0.5f));
 
-	for (uint32 i = 0; i < header.nPortals; i++)
+	for (uint32 i = 0; i < m_Header.nPortals; i++)
 	{
 		WMO_PortalInformation* portalInformation = m_PortalInformation[i];
 

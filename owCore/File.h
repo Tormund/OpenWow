@@ -7,12 +7,12 @@
 class File : public BaseFile, protected LocalFile, protected MPQFile
 {
 public:
-	 File();
-	 File(const File& _file);
-	 File(cstring _fullFileName);
-	 File(const char* _fullFileName);
-	 File(cstring _name, cstring _path);
-	 ~File();
+	File();
+	File(const File& _file);
+	File(cstring _fullFileName);
+	File(const char* _fullFileName);
+	File(cstring _name, cstring _path);
+	~File();
 
 	//
 
@@ -23,27 +23,23 @@ public:
 
 	//
 
-	 File& operator=(const File& _file);
-	 File& operator=(cstring _fullFileName);
-	 File& operator=(const char* _fullFileName);
+	File& operator=(const File& _file);
+	File& operator=(cstring _fullFileName);
+	File& operator=(const char* _fullFileName);
 
 	//
 
-	 void SetName(cstring _fullFileName) override;
-	 void SetName(const char* _fullFileName) override;
+	void SetName(cstring _fullFileName) override;
+	void SetName(const char* _fullFileName) override;
 
 	//
 
-	 string Name() const override;
-	 string Path() const override;
-	 string Extension() const override;
-	 string Path_Name() const override;
+	string Name() const override;
+	string Path() const override;
+	string Extension() const override;
+	string Path_Name() const override;
 
-	// LocalFile
-	 string FullPath();
-
-	// MPQFile
-	// mpq_archive* MPQArchive();
+	string FullPath();
 
 	//
 
