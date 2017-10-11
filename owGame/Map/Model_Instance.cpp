@@ -21,7 +21,7 @@ ModelInstance::~ModelInstance()
 	delete placementInfo;
 }
 
-void ModelInstance::draw()
+void ModelInstance::Render()
 {
 	_Pipeline->Clear();
 	{

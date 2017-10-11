@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../MDX/MDX.h"
+
 
 struct DoodadPlacementInfo
 {
@@ -20,9 +20,11 @@ struct DoodadPlacementInfo
 	static const uint32 __size = 40;
 };
 
+#include "../MDX/MDX.h"
+#include "../RenderableItem.h"
 #include "../SceneNode.h"
 
-class DoodadInstance : protected SceneNode
+class DoodadInstance : protected SceneNode, protected RenderableItem
 {
 public:
 	DoodadInstance(File& f);
@@ -31,7 +33,7 @@ public:
 	void SetModel(MDX* m);
 	MDX* GetMDX() { return modelObject; }
 
-	void Draw();
+	void Render();
 
 private:
 	void CalculateMatrix();

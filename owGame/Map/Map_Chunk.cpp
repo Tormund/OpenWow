@@ -9,6 +9,25 @@
 // Additional
 #include "Map.h"
 
+struct MCLY
+{
+	uint32 textureIndex;
+	struct
+	{
+		uint32 animation_rotation : 3;        // each tick is 45
+		uint32 animation_speed : 3;
+		uint32 animation_enabled : 1;
+		uint32 overbright : 1;                // This will make the texture way brighter. Used for lava to make it "glow".
+		uint32 use_alpha_map : 1;             // set for every layer after the first
+		uint32 alpha_map_compressed : 1;      // see MCAL chunk description
+		uint32 use_cube_map_reflection : 1;   // This makes the layer behave like its a reflection of the skybox. See below
+		uint32 : 21;
+	} flags;
+	uint32 offsetInMCAL;
+	__DBC_FOREIGN_KEY_ID(uint16, DBC_GroundEffectTexture, effectId);
+	int16 padding;
+};
+
 bool isHole(int holes, int i, int j)
 {
 	const int holetab_h[4] = {0x1111, 0x2222, 0x4444, 0x8888};
@@ -323,34 +342,7 @@ void MapChunk::init(File& f, load_phases phase)
 			}
 		}
 
-		struct MCLY
-		{
-			uint32 textureIndex;
-			/*struct {
-				uint32 animation_rotation : 3;        // each tick is 45°
-				uint32 animation_speed : 3;
-				uint32 animation_enabled : 1;
-				uint32 overbright : 1;                // This will make the texture way brighter. Used for lava to make it "glow".
-				uint32 use_alpha_map : 1;             // set for every layer after the first
-				uint32 alpha_map_compressed : 1;      // see MCAL chunk description
-				uint32 use_cube_map_reflection : 1;   // This makes the layer behave like its a reflection of the skybox. See below
-				uint32 : 21;
-			} flags;*/
-
-			enum
-			{
-				FLAG_USE_ALPHA_MAP = 0x100,
-				FLAG_ALPHA_MAP_COMRESSED = 0x200,
-				FLAG_CUBE_MAP_REFLECTIONS = 0x400,
-			};
-
-			uint32 flags;
-			uint32 offsetInMCAL;
-			int16 effectId;
-			int16 padding;
-		};
 		MCLY mcly[4];
-		memset(mcly, 0, sizeof(struct MCLY) * 4);
 
 		//------------------------------------------- Blend buffer Init
 		uint8* blendbuf = new uint8[64 * 64 * 4];
@@ -365,9 +357,9 @@ void MapChunk::init(File& f, load_phases phase)
 			{
 				f.ReadBytes(&mcly[i], 16);
 
-				if (mcly[i].flags & 0x80)
+				if (mcly[i].flags.animation_enabled)
 				{
-					animated[i] = mcly[i].flags;
+					//animated[i] = mcly[i].flags;
 				}
 				else
 				{
@@ -388,7 +380,7 @@ void MapChunk::init(File& f, load_phases phase)
 			{
 				for (uint32 i = 1; i < header->nLayers; i++)
 				{
-					if (!((mcly[i].flags & MCLY::FLAG_USE_ALPHA_MAP) == MCLY::FLAG_USE_ALPHA_MAP))
+					if (!(mcly[i].flags.use_alpha_map))
 					{
 						continue;
 					}
@@ -396,8 +388,8 @@ void MapChunk::init(File& f, load_phases phase)
 					uint8 amap[64 * 64];
 					uint8* abuf = data + mcly[i].offsetInMCAL;
 
-					if (_Map->IsBigAlpha() && ((mcly[i].flags & MCLY::FLAG_ALPHA_MAP_COMRESSED) == MCLY::FLAG_ALPHA_MAP_COMRESSED))
-					{ // Compressed: MPHD is only about bit depth!
+					if (_Map->GetMapFlag().ALL_MCNK_MCAL_BIGALPHA && mcly[i].flags.alpha_map_compressed) // Compressed: MPHD is only about bit depth!
+					{ 
 						unsigned offI = 0; //offset IN buffer
 						unsigned offO = 0; //offset OUT buffer
 
@@ -418,8 +410,8 @@ void MapChunk::init(File& f, load_phases phase)
 						}
 
 					}
-					else if (_Map->IsBigAlpha())
-					{ // Uncomressed (4096)
+					else if (_Map->GetMapFlag().ALL_MCNK_MCAL_BIGALPHA) // Uncomressed (4096)
+					{ 
 						if (f.GetPos() + mcly[i].offsetInMCAL + 0x1000 > f.GetSize())
 						{
 							Modules::log().Info("CONT");
@@ -435,8 +427,8 @@ void MapChunk::init(File& f, load_phases phase)
 							}
 						}
 					}
-					else
-					{ // Uncompressed (2048)
+					else // Uncompressed (2048)
+					{ 
 						uint8 *p = &amap[0];
 						for (int j = 0; j < 64; j++)
 						{

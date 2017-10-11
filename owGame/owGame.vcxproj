@@ -60,6 +60,7 @@
     <ClCompile Include="MDX\ParticleSystem.cpp" />
     <ClCompile Include="MDX\RibbonEmitter.cpp" />
     <ClCompile Include="MDX\Sky_Model.cpp" />
+    <ClCompile Include="RenderableItem.cpp" />
     <ClCompile Include="SceneNode.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="WMO\DoodadInstance.cpp" />
@@ -75,6 +76,8 @@
     <ClInclude Include="common.h" />
     <ClInclude Include="ConsoleOpenGL.h" />
     <ClInclude Include="DBC_AreaTable.h" />
+    <ClInclude Include="DBC_GroundEffectDoodad.h" />
+    <ClInclude Include="DBC_GroundEffectTexture.h" />
     <ClInclude Include="DBC_Light.h" />
     <ClInclude Include="DBC_LightFloatBand.h" />
     <ClInclude Include="DBC_LightIntBand.h" />
@@ -127,6 +130,7 @@
     <ClInclude Include="MDX\ParticleSystem.h" />
     <ClInclude Include="MDX\RibbonEmitter.h" />
     <ClInclude Include="MDX\Sky_Model.h" />
+    <ClInclude Include="RenderableItem.h" />
     <ClInclude Include="SceneNode.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="WMO\DoodadInstance.h" />

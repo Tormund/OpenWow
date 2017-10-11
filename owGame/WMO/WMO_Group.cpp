@@ -341,9 +341,6 @@ void WMOGroup::Load()
 
 	initLighting();
 
-	for (uint32 b = 0; b < m_WMOBatchIndexesCount; b++)
-	{
-
 	GLsizeiptr bufferSize = 8 * sizeof(float);
 	if (m_Header.flags.FLAG_HAS_VERTEX_COLORS)
 	{
@@ -367,8 +364,6 @@ void WMOGroup::Load()
 		}
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	}
 
 	delete[] m_TextureCoords;
 
@@ -439,37 +434,6 @@ bool WMOGroup::Render()
 	}
 
 	visible = true;
-
-	/*if (m_HasVertexColors)
-	{
-		glDisable(GL_LIGHTING);
-		_EnvironmentManager->SetAmbientLights(false);
-	}
-	else
-	{
-		if (Modules::config().lighting)
-		{
-			if (_EnvironmentManager->skies->hasSkies())
-			{
-				_EnvironmentManager->SetAmbientLights(true);
-			}
-			else
-			{
-				// Default m_Lights
-				glEnable(GL_LIGHT0);
-				glLightfv(GL_LIGHT0, GL_AMBIENT, glm::value_ptr(vec4(0.4f, 0.4f, 0.4f, 1)));
-				glLightfv(GL_LIGHT0, GL_DIFFUSE, glm::value_ptr(vec4(0.8f, 0.8f, 0.8f, 1)));
-				glLightfv(GL_LIGHT0, GL_POSITION, glm::value_ptr(vec4(1, 1, 1, 0)));
-
-				glDisable(GL_LIGHT1);
-			}
-		}
-		else
-		{
-			glDisable(GL_LIGHTING);
-		}
-	}
-	setupFog();*/
 
 	_TechniquesMgr->m_WMO_GeometryPass->Bind();
 	_TechniquesMgr->m_WMO_GeometryPass->SetPVW();
@@ -548,13 +512,7 @@ bool WMOGroup::drawDoodads(uint32 _doodadSet)
 #ifdef DOODADS_INCL
 		if (m_ParentWMO->doodadsets[_doodadSet]->InSet(doodadIndex) || m_ParentWMO->doodadsets[0]->InSet(doodadIndex))
 		{
-			/*DoodadInstance* doodadInstance = m_ParentWMO->m_MDXInstances[doodadIndex];
-			if (!m_EnableOutdoorLights)
-			{
-				WMOLight::setupOnce(GL_LIGHT2, doodadInstance->ldir, doodadInstance->lcol);
-			}*/
-
-			m_ParentWMO->m_MDXInstances[doodadIndex]->Draw();
+			m_ParentWMO->m_MDXInstances[doodadIndex]->Render();
 		}
 #endif
 	}

@@ -193,6 +193,9 @@
     <ClCompile Include="Liquid.cpp">
       <Filter>Liquid</Filter>
     </ClCompile>
+    <ClCompile Include="RenderableItem.cpp">
+      <Filter>General\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameState.h">
@@ -383,6 +386,15 @@
     </ClInclude>
     <ClInclude Include="DBC_WMOAreaTable.h">
       <Filter>DBC</Filter>
+    </ClInclude>
+    <ClInclude Include="DBC_GroundEffectTexture.h">
+      <Filter>DBC</Filter>
+    </ClInclude>
+    <ClInclude Include="DBC_GroundEffectDoodad.h">
+      <Filter>DBC</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderableItem.h">
+      <Filter>General\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

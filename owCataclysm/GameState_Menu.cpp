@@ -33,7 +33,7 @@ bool GameState_Menu::Init()
 	randBackground();
 	currentColor = GL_COLOR_ATTACHMENT6;
 
-	/*_Map->PreloadMap(DBC_Map[1]);
+	/*_Map->Load_WDT(DBC_Map[1]);
 	LoadWorld(vec3(17644, 68, 17823));
 	return true;*/
 
@@ -195,13 +195,13 @@ void GameState_Menu::RenderUI(double t, double dt)
 	}
 	else if (cmd == CMD_SELECT2)
 	{
-		if (_Map->GetTilesCount() == 0)
+		if (_Map->MapHasTiles())
 		{
-			_Render->RenderText(vec2(400, 360), "Click to enter");
+			_Render->RenderText(vec2(400, 0), "Select your starting point");
 		}
 		else
 		{
-			_Render->RenderText(vec2(400, 0), "Select your starting point");
+			_Render->RenderText(vec2(400, 360), "Click to enter");
 		}
 	}
 	else if (cmd == CMD_IN_WORLD2)
@@ -338,7 +338,7 @@ MOUSE_PRESSED(GameState_Menu)
 
 		vec3 pointInWorld;
 
-		if (_Map->MapHasTerrain())
+		if (_Map->MapHasTiles())
 		{
 			pointInWorld = vec3(selectedPointX / 12.0f, 0.1f, selectedPointZ / 12.0f) * C_TileSize;
 		}

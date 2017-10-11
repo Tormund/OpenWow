@@ -5,6 +5,9 @@
 
 DBC_DEFINE(DBÑ_AreaTable);
 
+DBC_DEFINE(DBC_GroundEffectDoodad);
+DBC_DEFINE(DBC_GroundEffectTexture);
+
 DBC_DEFINE(DBC_Light);
 DBC_DEFINE(DBC_LightFloatBand);
 DBC_DEFINE(DBC_LightIntBand);
@@ -23,6 +26,9 @@ DBC_DEFINE(DBC_WMOAreaTable)
 // My files
 #include "DBC_AreaTable.h"
 
+#include "DBC_GroundEffectDoodad.h"
+#include "DBC_GroundEffectTexture.h"
+
 #include "DBC_Light.h"
 #include "DBC_LightFloatBand.h"
 #include "DBC_LightIntBand.h"
@@ -37,35 +43,4 @@ DBC_DEFINE(DBC_WMOAreaTable)
 #include "DBC_Map.h"
 #include "DBC_WMOAreaTable.h"
 
-
-class GroundEffectTextureDB : public DBCFile<Record>
-{
-public:
-	GroundEffectTextureDB() :
-		DBCFile("GroundEffectTexture.dbc")
-	{}
-
-	/// Fields
-	static const size_t ID = 0;				// uint
-	static const size_t Doodads = 1;		// uint[4]
-	static const size_t Weights = 5;		// uint[4]
-	static const size_t Amount = 9;			// uint
-	static const size_t TerrainType = 10;	// uint
-};
-
-class GroundEffectDoodadDB : public DBCFile<Record>
-{
-public:
-	GroundEffectDoodadDB() :
-		DBCFile("GroundEffectDoodad.dbc")
-	{}
-
-	/// Fields
-	static const size_t ID = 0;				// uint
-	static const size_t Filename = 1;		// string
-};
-
  void OpenDBs();
-
- extern GroundEffectDoodadDB gGroundEffectDoodadDB;
- extern GroundEffectTextureDB gGroundEffectTextureDB;

@@ -16,10 +16,11 @@ struct WMOPlacementInfo
 	static const uint32 __size = 64;
 };
 
+#include "../RenderableItem.h"
 #include "../SceneNode.h"
 #include "../WMO/WMO.h"
 
-class WMOInstance : protected SceneNode
+class WMOInstance : protected SceneNode, protected RenderableItem
 {
 public:
 	WMOInstance(WMO* _wmoObject, File& f);
@@ -29,7 +30,7 @@ public:
 	void SetWMO(WMO* _wmo) { wmoObject = _wmo; }
 	WMO* GetWMO() { return wmoObject; }
 
-	void draw();
+	void Render();
 
 private:
 	void CalculateMatrix();

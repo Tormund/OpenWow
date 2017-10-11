@@ -25,9 +25,12 @@ struct ModelPlacementInfo
 	static const uint32 __size = 36;
 };
 
+
+#include "../RenderableItem.h"
+#include "../SceneNode.h"
 #include "../MDX/MDX.h"
 
-class ModelInstance
+class ModelInstance : protected SceneNode, protected RenderableItem
 {
 public:
 	ModelInstance(File& f);
@@ -38,7 +41,7 @@ public:
 		modelObject = m;
 	}
 
-	void draw();
+	void Render();
 
 public: 
 	MDX* modelObject;

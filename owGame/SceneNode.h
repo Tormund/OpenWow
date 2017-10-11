@@ -5,6 +5,7 @@ struct SceneNodeTypes
 	enum List
 	{
 		Undefined = 0,
+		MapChunk,
 		WMO,
 		WMO_Doodad,
 		MDX,

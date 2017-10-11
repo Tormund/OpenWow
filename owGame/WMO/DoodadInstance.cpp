@@ -25,7 +25,7 @@ void DoodadInstance::SetModel(MDX* _model)
 	m_Bounds.transform(m_AbsTransform);
 }
 
-void DoodadInstance::Draw()
+void DoodadInstance::Render()
 {
 	BoundingBox aabb = m_Bounds;
 	aabb.transform(_Pipeline->GetWorld());

@@ -10,13 +10,13 @@ enum load_phases;
 class MapTile
 {
 public:
-	MapTile(int x0, int z0);
+	MapTile(uint32 _intexX, uint32 _intexZ);
 	~MapTile();
 
 	//
 
-	bool Init(cstring _filename);
-	bool parse_adt(cstring _filename, load_phases _phase);
+	bool Load(cstring _filename);
+	bool Load_SplitFile(cstring _filename, load_phases _phase);
 
 	//
 
@@ -35,21 +35,19 @@ public:
 	vector<Texture*> m_SpecularTextures;
 
 #ifdef WMO_INCL
-	uint32 wmoCount;
-	vector<string> wmoNames;
-	vector<WMOInstance*> wmoInstances;
+	vector<string> m_WMOsNames;
+	vector<WMOInstance*> m_WMOsInstances;
 #endif
 
 #ifdef MDX_INCL
-	uint32 mdxCount;
-	vector<string> mdxNames;
-	vector<ModelInstance*> mdxInstances;
+	vector<string> m_MDXsNames;
+	vector<ModelInstance*> m_MDXsInstances;
 #endif
 
 	int m_IndexX, m_IndexZ;
 	float m_GamePositionX, m_GamePositionZ;
 
-	MapChunk* chunks[C_ChunksInTile][C_ChunksInTile];
+	MapChunk* m_Chunks[C_ChunksInTile][C_ChunksInTile];
 };
 
 

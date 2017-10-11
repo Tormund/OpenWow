@@ -8,9 +8,14 @@
 #include "../MDX/ModelsManager.h"
 #include "../WMO/WMO_Manager.h"
 
-struct MapTileHeader
+struct ADT_MHDR
 {
-	uint32 flags;
+	struct
+	{
+		uint32 HAS_MFBO : 1;
+		uint32 IS_NORTREND : 1;
+		uint32 : 30;
+	} flags;
 
 	uint32 MCIN;
 	uint32 MTEX;
@@ -25,29 +30,19 @@ struct MapTileHeader
 	uint32 MTXF;
 
 	uint8 mamp_value;             // Cata+, explicit MAMP chunk overrides data
-	uint8 padding[3];
-	uint32 unused[3];
+	uint8 unk[15];
 };
 
-MapTile::MapTile(int x0, int z0) : m_IndexX(x0), m_IndexZ(z0)
+MapTile::MapTile(uint32 _intexX, uint32 _intexZ) : m_IndexX(_intexX), m_IndexZ(_intexZ)
 {
-
-#ifdef WMO_INCL
-	wmoCount = 0;
-#endif
-
-#ifdef MDX_INCL
-	mdxCount = 0;
-#endif
-
-	m_GamePositionX = x0 * C_TileSize;
-	m_GamePositionZ = z0 * C_TileSize;
+	m_GamePositionX = _intexX * C_TileSize;
+	m_GamePositionZ = _intexZ * C_TileSize;
 
 	for (uint32 i = 0; i < C_ChunksInTile; i++)
 	{
 		for (uint32 j = 0; j < C_ChunksInTile; j++)
 		{
-			chunks[i][j] = nullptr;
+			m_Chunks[i][j] = new MapChunk(this);
 		}
 	}
 }
@@ -56,14 +51,16 @@ MapTile::~MapTile()
 {
 	Modules::log().Info("MapTile[%d, %d]: Unloading tile...", m_IndexX, m_IndexZ);
 
+	//---------------------------------------------------------------------------------
+
 	for (uint32 i = 0; i < C_ChunksInTile; i++)
 	{
 		for (uint32 j = 0; j < C_ChunksInTile; j++)
 		{
-			if (chunks[i][j] != nullptr)
+			if (m_Chunks[i][j] != nullptr)
 			{
-				delete chunks[i][j];
-				chunks[i][j] = nullptr;
+				delete m_Chunks[i][j];
+				m_Chunks[i][j] = nullptr;
 			}
 		}
 	}
@@ -79,35 +76,31 @@ MapTile::~MapTile()
 	}
 
 #ifdef WMO_INCL
-	for (auto it = wmoNames.begin(); it != wmoNames.end(); ++it)
+	for (auto it = m_WMOsNames.begin(); it != m_WMOsNames.end(); ++it)
 	{
 		_WMOsMgr->Delete(*it);
 	}
-	ERASE_VECTOR(wmoInstances);
+	ERASE_VECTOR(m_WMOsInstances);
 #endif
 
 #ifdef MDX_INCL
-	for (auto it = mdxNames.begin(); it != mdxNames.end(); ++it)
+	for (auto it = m_MDXsNames.begin(); it != m_MDXsNames.end(); ++it)
 	{
 		_ModelsMgr->Delete(*it);
 	}
-	ERASE_VECTOR(mdxInstances);
+	ERASE_VECTOR(m_MDXsInstances);
 #endif
+
+	//---------------------------------------------------------------------------------
 
 	Modules::log().Green("MapTile[%d, %d]: Unloaded.", m_IndexX, m_IndexZ);
 }
 
-bool MapTile::Init(cstring _filename)
+bool MapTile::Load(cstring _filename)
 {
-	for (uint32 i = 0; i < C_ChunksInTile; i++)
-	{
-		for (uint32 j = 0; j < C_ChunksInTile; j++)
-		{
-			chunks[i][j] = new MapChunk(this);
-		}
-	}
-
 	Modules::log().Info("MapTile[%d, %d, %s]: Loading...", m_IndexX, m_IndexZ, _filename.c_str());
+
+	//---------------------------------------------------------------------------------
 
 	for (int fileindex = 0; fileindex < 3; fileindex++)
 	{
@@ -127,26 +120,20 @@ bool MapTile::Init(cstring _filename)
 			break;
 		}
 
-		if (!parse_adt(_filename, phase))
+		if (!Load_SplitFile(_filename, phase))
 		{
 			return false;
 		}
 	}
 
+	//---------------------------------------------------------------------------------
+
 	Modules::log().Green("MapTile[%d, %d, %s]: Loaded!", m_IndexX, m_IndexZ, _filename.c_str());
-
-	// init quadtree
-	//topnode = new MapNode(x, z, 16);
-	//topnode->setup(this);
-
-	// Verteces
-	//technique = new LightTechnique();
-	//technique->Init();
 
 	return true;
 }
 
-bool MapTile::parse_adt(cstring _filename, load_phases _phase)
+bool MapTile::Load_SplitFile(cstring _filename, load_phases _phase)
 {
 	char name[256];
 	switch (_phase)
@@ -195,10 +182,12 @@ bool MapTile::parse_adt(cstring _filename, load_phases _phase)
 		{
 			uint32 version;
 			f.ReadBytes(&version, 4);
-			assert4(version == 18, "Version mismatch != 18", std::to_string(version).c_str(), name);
+			assert1(version == 18);
 		}
 		else if (strncmp(fourcc, "MHDR", 4) == 0) // Contains offsets relative to &MHDR.data in the file for specific chunks.
 		{
+			ADT_MHDR header;
+			f.ReadBytes(&header, sizeof(ADT_MHDR));
 		}
 		else if (strncmp(fourcc, "MTEX", 4) == 0) // List of textures used for texturing the terrain in this map m_TileExists.
 		{
@@ -216,61 +205,61 @@ bool MapTile::parse_adt(cstring _filename, load_phases _phase)
 		}
 		else if (strncmp(fourcc, "MMDX", 4) == 0) // List of filenames for M2 models that appear in this map m_TileExists.
 		{
-			WOWCHUNK_READ_STRINGS_BEGIN
 #ifdef MDX_INCL
-				_ModelsMgr->Add(_string);
-			mdxNames.push_back(_string);
-#endif
+			WOWCHUNK_READ_STRINGS_BEGIN
+			_ModelsMgr->Add(_string);
+			m_MDXsNames.push_back(_string);
 			WOWCHUNK_READ_STRINGS_END
+#endif
 		}
 		else if (strncmp(fourcc, "MMID", 4) == 0) // List of offsets of model filenames in the MMDX chunk.
 		{
+			// Currently unused
 		}
 		else if (strncmp(fourcc, "MWMO", 4) == 0) // List of filenames for WMOs (world map objects) that appear in this map m_TileExists.
 		{
-			WOWCHUNK_READ_STRINGS_BEGIN
 #ifdef WMO_INCL
+			WOWCHUNK_READ_STRINGS_BEGIN
 				_WMOsMgr->Add(_string);
-			wmoNames.push_back(_string);
-#endif
+			m_WMOsNames.push_back(_string);
 			WOWCHUNK_READ_STRINGS_END
+#endif
 		}
 		else if (strncmp(fourcc, "MWID", 4) == 0) // List of offsets of WMO filenames in the MWMO chunk.
 		{
+			// Currently unused
 		}
 		else if (strncmp(fourcc, "MDDF", 4) == 0) // Placement information for doodads (M2 models).
 		{
 #ifdef MDX_INCL
-			mdxCount = size / ModelPlacementInfo::__size;
-			for (uint32 i = 0; i < mdxCount; i++)
+			for (uint32 i = 0; i < size / ModelPlacementInfo::__size; i++)
 			{
 				ModelInstance* inst = new ModelInstance(f);
 
-				MDX *model = (MDX*)_ModelsMgr->objects[mdxNames[inst->placementInfo->nameId]];
+				MDX *model = (MDX*)_ModelsMgr->objects[m_MDXsNames[inst->placementInfo->nameId]];
 				assert1(model != nullptr);
 				inst->SetModel(model);
 
-				mdxInstances.push_back(inst);
+				m_MDXsInstances.push_back(inst);
 			}
 #endif
 		}
 		else if (strncmp(fourcc, "MODF", 4) == 0) // Placement information for WMOs.
 		{
 #ifdef WMO_INCL
-			wmoCount = size / WMOPlacementInfo::__size;
-			for (uint32 i = 0; i < wmoCount; i++)
+			for (uint32 i = 0; i < size / WMOPlacementInfo::__size; i++)
 			{
 				uint32 wmoIndex;
 				f.ReadBytes(&wmoIndex, 4);
 				f.SeekRelative(-4);
 
-				WMO* wmo = (WMO*)_WMOsMgr->GetItemByName(wmoNames[wmoIndex]);
+				WMO* wmo = (WMO*)_WMOsMgr->GetItemByName(m_WMOsNames[wmoIndex]);
 				WMOInstance* inst = new WMOInstance(wmo, f);
-				wmoInstances.push_back(inst);
+				m_WMOsInstances.push_back(inst);
 			}
 #endif
 		}
-		else if (strncmp(fourcc, "MH2O", 4) == 0)
+		else if (strncmp(fourcc, "MH2O", 4) == 0) // Water
 		{
 			uint8* abuf = f.GetDataFromCurrent();
 
@@ -278,14 +267,14 @@ bool MapTile::parse_adt(cstring _filename, load_phases _phase)
 			{
 				MH2O_Header* mh2o_Header = (MH2O_Header*)abuf;
 
-				chunks[i / C_ChunksInTile][i % C_ChunksInTile]->CreateMH2OLiquid(f, mh2o_Header);
+				m_Chunks[i / C_ChunksInTile][i % C_ChunksInTile]->CreateMH2OLiquid(f, mh2o_Header);
 
 				abuf += sizeof(MH2O_Header);
 			}
 		}
 		else if (strncmp(fourcc, "MCNK", 4) == 0)
 		{
-			chunks[chunkI][chunkJ]->init(f, _phase);
+			m_Chunks[chunkI][chunkJ]->init(f, _phase);
 			chunkJ++;
 			if (chunkJ == 16)
 			{
@@ -338,25 +327,25 @@ void MapTile::draw()
 {
 	for (uint32 i = 0; i < C_ChunksInTile; i++)
 		for (uint32 j = 0; j < C_ChunksInTile; j++)
-			if (chunks[i][j] != nullptr)
-				chunks[i][j]->Render();
+			if (m_Chunks[i][j] != nullptr)
+				m_Chunks[i][j]->Render();
 }
 
 void MapTile::drawWater()
 {
 	for (uint32 i = 0; i < C_ChunksInTile; i++)
 		for (uint32 j = 0; j < C_ChunksInTile; j++)
-			if (chunks[i][j] != nullptr)
-				if(chunks[i][j]->m_Liquid != nullptr)
-					chunks[i][j]->m_Liquid->draw();
+			if (m_Chunks[i][j] != nullptr)
+				if (m_Chunks[i][j]->m_Liquid != nullptr)
+					m_Chunks[i][j]->m_Liquid->draw();
 }
 
 void MapTile::drawObjects()
 {
 #ifdef WMO_INCL
-	for (auto it = wmoInstances.begin(); it != wmoInstances.end(); ++it)
+	for (auto it = m_WMOsInstances.begin(); it != m_WMOsInstances.end(); ++it)
 	{
-		(*it)->draw();
+		(*it)->Render();
 	}
 #endif
 }
@@ -365,7 +354,7 @@ void MapTile::drawSky()
 {
 #ifdef WMO_INCL
 #ifdef MDX_INCL
-	for (auto it = wmoInstances.begin(); it != wmoInstances.end(); ++it)
+	for (auto it = m_WMOsInstances.begin(); it != m_WMOsInstances.end(); ++it)
 	{
 		(*it)->GetWMO()->drawSkybox();
 
@@ -381,9 +370,9 @@ void MapTile::drawSky()
 void MapTile::drawModels()
 {
 #ifdef MDX_INCL
-	for (auto it = mdxInstances.begin(); it != mdxInstances.end(); ++it)
+	for (auto it = m_MDXsInstances.begin(); it != m_MDXsInstances.end(); ++it)
 	{
-		(*it)->draw();
+		(*it)->Render();
 	}
 #endif
 }
@@ -395,5 +384,5 @@ void MapTile::drawModels()
 MapChunk* MapTile::getChunk(uint32 x, uint32 z)
 {
 	assert1(x < C_ChunksInTile && z < C_ChunksInTile);
-	return chunks[x][z];
+	return m_Chunks[x][z];
 }

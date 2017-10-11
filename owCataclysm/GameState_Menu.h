@@ -29,7 +29,7 @@ public:
 	{
 		Modules::log().Green("Load level %s [%d]", _e->Get_Directory(), _e->Get_ID());
 
-		_Map->PreloadMap(_e);
+		_Map->Load_WDT(_e);
 		cmd = CMD_SELECT2;
 		window->Detach();
 	}

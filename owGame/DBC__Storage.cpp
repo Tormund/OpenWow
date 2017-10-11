@@ -5,6 +5,9 @@
 
 DBC_LOAD(DBÑ_AreaTable, "AreaTable.dbc")
 
+DBC_LOAD(DBC_GroundEffectDoodad, "GroundEffectDoodad.dbc")
+DBC_LOAD(DBC_GroundEffectTexture, "GroundEffectTexture.dbc")
+
 DBC_LOAD(DBC_Light, "Light.dbc")
 DBC_LOAD(DBC_LightFloatBand, "LightFloatBand.dbc")
 DBC_LOAD(DBC_LightIntBand, "LightIntBand.dbc")
@@ -21,12 +24,13 @@ DBC_LOAD(DBC_Map, "Map.dbc")
 
 DBC_LOAD(DBC_WMOAreaTable, "WMOAreaTable.dbc")
 
-GroundEffectDoodadDB gGroundEffectDoodadDB;
-GroundEffectTextureDB gGroundEffectTextureDB;
 
 void OpenDBs()
 {
 	DBÑ_AreaTable.Open();
+
+	DBC_GroundEffectDoodad.Open();
+	DBC_GroundEffectTexture.Open();
 
 	DBC_Light.Open();
 	DBC_LightFloatBand.Open();
@@ -41,8 +45,4 @@ void OpenDBs()
 	DBC_LoadingScreen.Open();
 	DBC_Map.Open();
 	DBC_WMOAreaTable.Open();
-
-	gGroundEffectDoodadDB.Open();
-	gGroundEffectTextureDB.Open();
-
 }

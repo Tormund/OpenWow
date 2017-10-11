@@ -10,9 +10,7 @@
 Map::Map()
 {
 	// Load default variables
-	m_TilesCount = 0;
-	memset(m_TileExists, 0, sizeof(m_TileExists));
-	memset(m_TileIsWater, 0, sizeof(m_TileIsWater));
+	m_IsTileBased = false;
 	memset(lowrestiles, 0, sizeof(lowrestiles));
 	minimap = 0;
 	memset(maptilecache, 0, sizeof(maptilecache));
@@ -139,24 +137,24 @@ void Map::InitGlobalsWMOs()
 
 //
 
-void Map::PreloadMap(DBC_MapRecord* _map)
+void Map::Load_WDT(DBC_MapRecord* _map)
 {
-	templateMap = _map;
+	m_DBC_Map = _map;
 
-	Modules::log().Print("Map[%s]: Id [%d]. Preloading...", templateMap->Get_Directory(), templateMap->Get_ID());
+	Modules::log().Print("Map[%s]: Id [%d]. Preloading...", m_DBC_Map->Get_Directory(), m_DBC_Map->Get_ID());
 
-	path = "World\\Maps\\" + string(templateMap->Get_Directory()) + "\\";
+	m_MapFolder = "World\\Maps\\" + string(m_DBC_Map->Get_Directory()) + "\\";
 
 	// Init main section
-	File f(path + templateMap->Get_Directory() + ".wdt");
+	File f(m_MapFolder + m_DBC_Map->Get_Directory() + ".wdt");
 	if (!f.Open())
 	{
-		Modules::log().Info("Map[%s]: WDT: Error opening.", templateMap->Get_Directory());
+		Modules::log().Info("Map[%s]: WDT: Error opening.", m_DBC_Map->Get_Directory());
 		return;
 	}
 
 	// Load sky
-	_EnvironmentManager->InitSkies(templateMap->Get_ID());
+	_EnvironmentManager->InitSkies(m_DBC_Map->Get_ID());
 
 	char fourcc[5];
 	uint32 size;
@@ -180,52 +178,27 @@ void Map::PreloadMap(DBC_MapRecord* _map)
 		}
 		else if (strcmp(fourcc, "MPHD") == 0)
 		{
-			enum MPHD_Flags
-			{
-				Map_No_Terrain = 0x1,				// Use global map object definition.
-				Map_VertexPNC = 0x2,				// Use vertex shading (ADT.MCNK.MCCV)
-				Map_TerrainShaders_BigAlpha = 0x4,	// Decides whether to use _env terrain shaders or not: funky and if MCAL has 4096 instead of 2048(?)
-				Map_Disable_Something = 0x8,			// Disables something. No idea what. Another rendering thing. Someone may check all them in wild life..
-				Map_VertexPNC2 = 0x10,				// vertexBufferFormat = PNC2. (adds second color: ADT.MCNK.MCLV)
-				Map_FlipGroundDisplay = 0x20,		// Flips the ground display upside down to create a ceiling (Cataclysm)
-			};
-
 			// unit32 flags
 			// unit32 something
-			// unit32 unused[6]
+			// unit32 unk[6]
 
-			uint32 flags;
-			f.ReadBytes(&flags, 4);
-
-			m_BigAlpha = ((flags & Map_TerrainShaders_BigAlpha) == Map_TerrainShaders_BigAlpha);
+			f.ReadBytes(&m_Flag, 4);
 		}
 		else if (strcmp(fourcc, "MAIN") == 0) // Map tile table. Contains 64x64 = 4096 records of 8 bytes each.
 		{
-			enum MAIN_Flags
-			{
-				Map_HasADT = 0x01,
-				Map_AllWater = 0x02,
-				Map_Loaded = 0x04,
-			};
-
 			for (int i = 0; i < 64; i++)
 			{
 				for (int j = 0; j < 64; j++)
 				{
-					uint32 flags;
-					f.ReadBytes(&flags, 4);
+					// Flag
+					f.ReadBytes(&m_TileFlag[j][i], 4);
 
-					if ((flags & Map_HasADT) == Map_HasADT)
+					if (m_TileFlag[j][i].HasADT)
 					{
-						m_TileExists[j][i] = true;
-						m_TilesCount++;
+						m_IsTileBased = true;
 					}
 
-					if ((flags & Map_AllWater) == Map_AllWater)
-					{
-						m_TileIsWater[j][i] = true;
-					}
-
+					// UNUSED: Assync ID
 					uint32 asyncId;
 					f.ReadBytes(&asyncId, 4);
 				}
@@ -246,7 +219,7 @@ void Map::PreloadMap(DBC_MapRecord* _map)
 		else if (strcmp(fourcc, "MODF") == 0)
 		{
 			uint32 globalWMOCount = WMOPlacementInfo::__size;
-			assert4(globalWMOCount > 1, "Map has more then 1 global WMO ", templateMap->Get_Directory(), std::to_string(globalWMOCount).c_str());
+			assert4(globalWMOCount > 1, "Map has more then 1 global WMO ", m_DBC_Map->Get_Directory(), std::to_string(globalWMOCount).c_str());
 
 			if (globalWMOCount > 0)
 			{
@@ -258,27 +231,21 @@ void Map::PreloadMap(DBC_MapRecord* _map)
 		}
 		else
 		{
-			Modules::log().Info("Map[%s]: WDT: Chunks [%s], Size [%d] not implemented.", templateMap->Get_Directory(), fourcc, size);
+			Modules::log().Info("Map[%s]: WDT: Chunks [%s], Size [%d] not implemented.", m_DBC_Map->Get_Directory(), fourcc, size);
 		}
 
 		f.Seek(nextpos);
 	}
 
-	// Load terrain
-	if (m_TilesCount > 0)
-	{
-		Modules::log().Green("Map[%s]: Is tile-based map.", templateMap->Get_Directory());
-	}
-
-	LoadLowTerrain();
+	Load_WDL();
 }
 
-void Map::LoadLowTerrain()
+void Map::Load_WDL()
 {
-	File f(path + templateMap->Get_Directory() + ".wdl");
+	File f(m_MapFolder + m_DBC_Map->Get_Directory() + ".wdl");
 	if (!f.Open())
 	{
-		Modules::log().Info("World[%s]: WDL: Error opening.", templateMap->Get_Directory());
+		Modules::log().Info("World[%s]: WDL: Error opening.", m_DBC_Map->Get_Directory());
 		return;
 	}
 
@@ -343,7 +310,7 @@ void Map::LoadLowTerrain()
 		}
 		else
 		{
-			Modules::log().Info("Map[%s]: WDL: Chunks [%s], Size [%d] not implemented.", templateMap->Get_Directory(), fourcc, size);
+			Modules::log().Info("Map[%s]: WDL: Chunks [%s], Size [%d] not implemented.", m_DBC_Map->Get_Directory(), fourcc, size);
 		}
 		f.Seek(nextpos);
 	}
@@ -514,7 +481,7 @@ void Map::LoadLowTerrain()
 #endif
 }
 
-void Map::UnloadMap()
+void Map::Unload()
 {
 	for (int i = 0; i < 64; i++)
 	{
@@ -709,7 +676,7 @@ void Map::enterTile(int x, int z)
 		return;
 	}
 
-	outOfBounds = !m_TileExists[x][z];
+	outOfBounds = !m_TileFlag[x][z].HasADT;
 
 	currentTileX = x;
 	currentTileZ = z;
@@ -730,7 +697,7 @@ MapTile* Map::LoadTile(int x, int z)
 		return nullptr;
 	}
 
-	if (!m_TileExists[x][z])
+	if (!m_TileFlag[x][z].HasADT)
 	{
 		return nullptr;
 	}
@@ -779,10 +746,10 @@ MapTile* Map::LoadTile(int x, int z)
 
 	// Create new tile
 	maptilecache[firstnull] = new MapTile(x, z);
-	if (!maptilecache[firstnull]->Init(templateMap->Get_Directory()))
+	if (!maptilecache[firstnull]->Load(m_DBC_Map->Get_Directory()))
 	{
 		delete maptilecache[firstnull];
-		Modules::log().Info("Map[%d]: Error loading tile [%d, %d].", GetPath().c_str(), x, z);
+		Modules::log().Info("Map[%d]: Error loading tile [%d, %d].", m_MapFolder.c_str(), x, z);
 		return nullptr;
 	}
 

@@ -47,7 +47,7 @@ World::World()
 
 World::~World()
 {
-	Modules::log().Info("Unloaded world [%s]", _Map->GetPath().c_str());
+	Modules::log().Info("Unloaded world [%s]", _Map->GetFolder().c_str());
 
 	// temp code until I figure out water properly
 	//if (water)
@@ -56,7 +56,7 @@ World::~World()
 
 	_EnvironmentManager->Destroy();
 
-	Modules::log().Info("World [%s] unloaded", _Map->GetPath().c_str());
+	Modules::log().Info("World [%s] unloaded", _Map->GetFolder().c_str());
 }
 
 void World::drawShader(GLint _color)
@@ -230,7 +230,7 @@ void World::RenderGeom()
 	{
 #ifdef WMO_INCL
 		_Map->SetOutOfBounds(false);
-		_Map->GetGlobalWMOInstance()->draw();
+		_Map->GetGlobalWMOInstance()->Render();
 
 #endif
 	}
