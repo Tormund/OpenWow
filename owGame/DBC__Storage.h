@@ -16,9 +16,8 @@ DBC_DEFINE(DBC_LiquidObject);
 DBC_DEFINE(DBC_LiquidType);
 
 DBC_DEFINE(DBC_LoadingScreen);
-
 DBC_DEFINE(DBC_Map);
-
+DBC_DEFINE(DBC_WMOAreaTable)
 
 
 // My files
@@ -36,7 +35,7 @@ DBC_DEFINE(DBC_Map);
 
 #include "DBC_LoadingScreen.h"
 #include "DBC_Map.h"
-
+#include "DBC_WMOAreaTable.h"
 
 
 class GroundEffectTextureDB : public DBCFile<Record>

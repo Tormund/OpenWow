@@ -104,6 +104,7 @@ bool WMO::Load()
 		else if (strcmp(fourcc, "MOHD") == 0)               // Header
 		{
 			f.ReadBytes(&m_Header, WMOHeaderDef::__size);
+			Modules::log().Error("ID = [%d]", m_Header.wmoID()->Get_ID());
 		}
 		else if (strcmp(fourcc, "MOTX") == 0)               // List of textures (BLP Files) used in this map object.
 		{

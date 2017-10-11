@@ -7,6 +7,7 @@
 #include "liquid.h"
 
 // Additional
+#include "DBC__Storage.h"
 #include "Environment/EnvironmentManager.h"
 
 // Internal
@@ -20,8 +21,10 @@ struct MH20_Attributes
 
 struct MH2O_Instance
 {
-	uint16 liquidType;
-	uint16 liquidObjectOrLVF;
+	__DBC_FOREIGN_KEY_ID(uint16, DBC_LiquidType, liquidType);
+	__DBC_FOREIGN_KEY_ID(uint16, DBC_LiquidObject, liquidObjectOrLVF);
+	//uint16 liquidType;
+	//uint16 liquidObjectOrLVF;
 
 	/*
 	float min;
@@ -140,14 +143,14 @@ void Liquid::initFromTerrainMH2O(File& f, MH2O_Header * _header)
 		}
 
 		// Init liquid
-		DBC_LiquidTypeRecord* liquidType = DBC_LiquidType[mh2o_instance->liquidType];
+		const DBC_LiquidTypeRecord* liquidType = mh2o_instance->liquidType();
 		assert1(liquidType != nullptr);
 		uint32 vertexFormat = liquidType->Get_LiquidMaterialID()->Get_LiquidVertexFormat();
 		InitTextures(liquidType);
 		//Modules::log().Warn("Liquid is [%s]", liquidType->Get_Name());
 
 		// Fix ocean shit
-		if (mh2o_instance->liquidType == 2) 
+		if (mh2o_instance->liquidType()->Get_ID() == 2) 
 		{
 			if (mh2o_instance->offsetVertexData == 0)
 			{
@@ -168,10 +171,10 @@ void Liquid::initFromTerrainMH2O(File& f, MH2O_Header * _header)
 		waterLayer.Width = mh2o_instance->width;
 		waterLayer.Height = mh2o_instance->height;
 
-		waterLayer.LiquidType = mh2o_instance->liquidType;
+		waterLayer.LiquidType = mh2o_instance->liquidType()->Get_ID();
 		waterLayer.MinHeightLevel = mh2o_instance->minHeightLevel;
 		waterLayer.MaxHeightLevel = mh2o_instance->maxHeightLevel;
-		waterLayer.LiquidObjectOrLVF = mh2o_instance->liquidObjectOrLVF; // FIXME Send format to create buffer
+		//waterLayer.LiquidObjectOrLVF = mh2o_instance->liquidObjectOrLVF()->Get_ID(); // FIXME Send format to create buffer
 
 		waterLayer.hasmask = mh2o_instance->offsetExistsBitmap != 0;
 
@@ -291,7 +294,7 @@ void Liquid::initFromTerrainMCLQ(File& f, MCNK_MCLQ_LiquidType _liquidType)
 	m_WaterColorDark = vec3(0.7f, 0.7f, 0.7f);
 }
 
-void Liquid::initFromWMO2(File& f, WMOMaterial* _material, DBC_LiquidTypeRecord* _liquidType, bool _indoor)
+void Liquid::initFromWMO2(File& f, WMOMaterial* _material, const DBC_LiquidTypeRecord* _liquidType, bool _indoor)
 {
 	// Magic for WMO
 	texRepeats = 4.0f;
@@ -638,7 +641,7 @@ void Liquid::initGeometry(File& f)
 	delete[] col;*/
 }
 
-void Liquid::InitTextures(DBC_LiquidTypeRecord * _liquidType)
+void Liquid::InitTextures(const DBC_LiquidTypeRecord * _liquidType)
 {
 	assert1(_liquidType != nullptr);
 

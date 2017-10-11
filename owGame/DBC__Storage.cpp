@@ -19,6 +19,8 @@ DBC_LOAD(DBC_LoadingScreen, "LoadingScreens.dbc")
 
 DBC_LOAD(DBC_Map, "Map.dbc")
 
+DBC_LOAD(DBC_WMOAreaTable, "WMOAreaTable.dbc")
+
 GroundEffectDoodadDB gGroundEffectDoodadDB;
 GroundEffectTextureDB gGroundEffectTextureDB;
 
@@ -38,7 +40,7 @@ void OpenDBs()
 
 	DBC_LoadingScreen.Open();
 	DBC_Map.Open();
-
+	DBC_WMOAreaTable.Open();
 
 	gGroundEffectDoodadDB.Open();
 	gGroundEffectTextureDB.Open();

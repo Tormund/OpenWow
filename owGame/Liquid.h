@@ -137,14 +137,14 @@ public:
 
 	void initFromTerrainMH2O(File& f, MH2O_Header* _header);
 	void initFromTerrainMCLQ(File& f, MCNK_MCLQ_LiquidType _liquidType);
-	void initFromWMO2(File& f, WMOMaterial* _material, DBC_LiquidTypeRecord* _liquidType, bool _indoor);
+	void initFromWMO2(File& f, WMOMaterial* _material, const DBC_LiquidTypeRecord* _liquidType, bool _indoor);
 	void createBuffer(cvec3 _position);
 
 	void draw();
 
 private:
 	void initGeometry(File& f);
-	void InitTextures(DBC_LiquidTypeRecord* _liquidType);
+	void InitTextures(const DBC_LiquidTypeRecord* _liquidType);
 	void initTextures(const char *basename, int first, int last);
 
 private:

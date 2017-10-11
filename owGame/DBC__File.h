@@ -1,42 +1,66 @@
 #pragma once
 
+// Record create
+#define CONCAT_GET(a) Get_##a
+#define CONCAT_CLASS(a) a##Record
+
 // Add data
 
 #define __DBC_TVALUE(type, _name, _field) \
-type Get_##_name() const \
+type CONCAT_GET(_name)() const \
 { \
 	return getValue<type>(static_cast<uint32>(_field - 1)); \
 }
 
 #define __DBC_STRING(_name, _field) \
-const char* Get_##_name() const \
+const char* CONCAT_GET(_name)() const \
 { \
 	return getString(static_cast<uint32>(_field - 1)); \
 }
 
 #define __DBC_LOCSTR(_name, _field) \
-const char* Get_##_name(int8 _locale = -1) const \
+const char* CONCAT_GET(_name)(int8 _locale = -1) const \
 { \
 	return getLocalizedString(static_cast<uint32>(_field - 1), _locale); \
 }
 
 #define __DBC_REF_ID(_dbc, _name, _field) \
-_dbc##Record* Get_##_name() const \
+_dbc##Record* CONCAT_GET(_name)() const \
 { \
 	return _dbc[static_cast<uint32>(getValue<uint32>(static_cast<uint32>(_field - 1)))]; \
 }
 
 #define __DBC_TARRAY(_type, _name, _field, _size) \
-_type Get_##_name(uint8 _index) const \
+_type CONCAT_GET(_name)(uint8 _index) const \
 { \
     assert1(_index < _size); \
 	return getValue<_type>(static_cast<uint32>(_field - 1 + _index)); \
 }
 
+// Uses in common classes
 
-// Record create
+#define __DBC_FOREIGN_KEY(_type, _dbc, _refFieldName, _dispName) \
+_type __##_dispName;\
+const CONCAT_CLASS(_dbc)* _dispName() \
+{ \
+	for (auto it = _dbc.begin(); it != _dbc.end(); ++it) \
+	{ \
+		if (static_cast<_type>(it->CONCAT_GET(_refFieldName)()) == __##_dispName) \
+		{ \
+			return &(*it); \
+		} \
+	} \
+ \
+	return nullptr; \
+}
 
-#define CONCAT_CLASS(a) a##Record
+#define __DBC_FOREIGN_KEY_ID(_type, _dbc, _dispName) \
+_type __##_dispName;\
+const _dbc##Record* _dispName() \
+{ \
+    return _dbc[static_cast<uint32>(__##_dispName)]; \
+}
+
 
 // Create class
 
@@ -102,6 +126,11 @@ public:
 
 	// All data has ID
 	__DBC_TVALUE(uint32, ID, 1);
+
+	operator uint32()
+	{
+		return Get_ID();
+	}
 
 protected:
 	// Get value with common type
@@ -209,6 +238,7 @@ public:
 	{
 	public:
 		Iterator(DBCFile* file, uint8* offset) : record(file, offset) {}
+		Iterator(Iterator& _iterator) : record(_iterator.record) {}
 
 		Iterator& operator++()
 		{
@@ -216,7 +246,7 @@ public:
 			return *this;
 		}
 
-		RECORD_T const& operator*() const
+		const RECORD_T& operator*() const
 		{
 			return record;
 		}

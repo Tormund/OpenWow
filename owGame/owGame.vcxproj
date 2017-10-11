@@ -85,6 +85,7 @@
     <ClInclude Include="DBC_LiquidType.h" />
     <ClInclude Include="DBC_LoadingScreen.h" />
     <ClInclude Include="DBC_Map.h" />
+    <ClInclude Include="DBC_WMOAreaTable.h" />
     <ClInclude Include="DBC__File.h" />
     <ClInclude Include="DBC__Storage.h" />
     <ClInclude Include="Environment\DayNightCycle.h" />
