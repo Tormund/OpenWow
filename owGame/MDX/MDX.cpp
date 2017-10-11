@@ -69,12 +69,9 @@ MDX::~MDX()
 	if (colors) delete[] colors;
 	if (transparency) delete[] transparency;
 
-
 	delete[] m_Vertices;
 	delete[] m_Texcoords;
 	delete[] m_Normals;
-
-
 
 	if (animated)
 	{
