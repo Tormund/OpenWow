@@ -30,7 +30,7 @@ bool GameState_Menu::Init()
 
 	cmd = CMD_NONE2;
 	backgroundModel = 0;
-	randBackground();
+	//randBackground();
 	currentColor = GL_COLOR_ATTACHMENT6;
 
 	/*_Map->Load_WDT(DBC_Map[1]);
@@ -159,32 +159,18 @@ void GameState_Menu::RenderUI(double t, double dt)
 		if (_Map->GetMinimap() != 0)
 		{
 			const int len = 768;
-			glColor4f(1, 1, 1, 1);
-			glEnable(GL_TEXTURE_2D);
-			glBindTexture(GL_TEXTURE_2D, _Map->GetMinimap());
-			glBegin(GL_QUADS);
-			{
-				glTexCoord2f(0, 0);
-				glVertex2i(basex, basey);
-				glTexCoord2f(1, 0);
-				glVertex2i(basex + len, basey);
-				glTexCoord2f(1, 1);
-				glVertex2i(basex + len, basey + len);
-				glTexCoord2f(0, 1);
-				glVertex2i(basex, basey + len);
-			}
-			glEnd();
-			glDisable(GL_TEXTURE_2D);
+
+			_Render->RenderTexture(vec2(basex, basey), _Map->GetMinimap(), vec2(len, len));
 
 			// Player position
-			glBegin(GL_LINES);
+			/*glBegin(GL_LINES);
 			float fx, fz;
 			fx = basex + _World->mainCamera->Position.x / C_TileSize * 12.0f;
 			fz = basey + _World->mainCamera->Position.z / C_TileSize * 12.0f;
 			glVertex2f(fx, fz);
 			glColor4f(1, 1, 1, 0);
 			glVertex2f(fx + 10.0f * cosf(degToRad(_World->mainCamera->Roll)), fz + 10.0f * sinf(degToRad(_World->mainCamera->Roll)));
-			glEnd();
+			glEnd();*/
 		}
 	}
 
@@ -281,15 +267,7 @@ void GameState_Menu::RenderUI(double t, double dt)
 		_Render->RenderText(vec2(Modules::config().windowSizeX - 400, 60), buff);
 
 
-
-
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, _World->m_gbuffer->textures[3]);
-
-		_Render->RenderRectangle(vec2(Modules::config().windowSizeX * 2.0 / 3.0, Modules::config().windowSizeY * 2.0 / 3.0), vec2(Modules::config().windowSizeX / 3, Modules::config().windowSizeY / 3), true, COLOR_WHITE);
-
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glDisable(GL_TEXTURE_2D);
+		_Render->RenderTexture(vec2(Modules::config().windowSizeX * 2.0 / 3.0, Modules::config().windowSizeY * 2.0 / 3.0), _World->m_gbuffer->textures[3], vec2(Modules::config().windowSizeX / 3, Modules::config().windowSizeY / 3));
 	}
 }
 
@@ -548,8 +526,6 @@ void GameState_Menu::randBackground()
 {
 	if (backgroundModel != nullptr)
 		delete backgroundModel;
-
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
 
 	char* ui[] = {"MainMenu", "NightElf", "Human", "Dwarf", "Orc", "Tauren", "Scourge"};
 

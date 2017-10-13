@@ -85,7 +85,6 @@ void MapSkies::InitBuffer()
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_GlobalBuffer);
 	glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float) * m_GlobalBufferSize, NULL, GL_DYNAMIC_DRAW);
-	glBufferSubData(GL_ARRAY_BUFFER, m_GlobalBufferSize * 0 * sizeof(float), m_GlobalBufferSize * sizeof(vec3), vertices.data());
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
@@ -202,7 +201,7 @@ bool MapSkies::drawSky(cvec3 pos)
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (const GLvoid*)(m_GlobalBufferSize * sizeof(vec3)));
 
-	glDrawArrays(GL_QUADS, 0, m_GlobalBufferSize);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, m_GlobalBufferSize);
 
 	//_Perfomance->Inc(PERF_MAP_CHUNK_MH20);
 

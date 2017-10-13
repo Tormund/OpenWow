@@ -2,14 +2,9 @@
 
 #include "MDX_GeometryPass.h"
 
-MDX_GeometryPass::MDX_GeometryPass() : Technique("shaders/MDX_GeometryPass.glsl") {}
+MDX_GeometryPass::MDX_GeometryPass() : Technique("shaders/MDX") {}
 
 bool MDX_GeometryPass::Init()
 {
-	if (!CompileProgram("MDX_GeometryPass"))
-	{
-		return false;
-	}
-
 	return true;
 }

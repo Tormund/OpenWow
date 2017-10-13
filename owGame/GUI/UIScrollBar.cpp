@@ -45,7 +45,7 @@ void UIScrollBar::Render() {
 	begunokPoint = vec2(begunokBounds.x + value * begunokBoundsSize, begunokYOffset) - vec2(begunokSize.x / 2, 0);
 
 	if (begunokSelected)
-		_Render->RenderRectangle(GetPosition() + begunokPoint, begunokSize, false);
+		_Render->RenderRectangleOutline(GetPosition() + begunokPoint, begunokSize);
 
 	_Render->RenderImage(GetPosition() + begunokPoint, begunokImage, begunokSize);
 }

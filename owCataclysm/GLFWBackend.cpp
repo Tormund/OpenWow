@@ -97,17 +97,6 @@ bool GLFWBackend::Init()
 	// Resize callback
 	glfwSetFramebufferSizeCallback(window, GLFWFramebufferCallback);
 
-	// GLEW
-
-	//glewExperimental = GL_TRUE;
-	GLenum err = glewInit();
-	if (err != GLEW_OK)
-	{
-		Modules::log().Error("GLFW[]: Error while init GLEW! [%s]", glewGetErrorString(err));
-		return false;
-	}
-	Modules::log().Print("GLFW[]: GLEW version [%s]", glewGetString(GLEW_VERSION));
-
 	// OpenGL
 
 	Modules::log().Print("GLFW[]: OpenGL version [%s].", glGetString(GL_VERSION));

@@ -2,7 +2,7 @@
 
 #include "MapChunk_GeometryPass.h"
 
-MapChunk_GeometryPass::MapChunk_GeometryPass() : Technique("shaders/MapChunk_GeometryPass.glsl") {}
+MapChunk_GeometryPass::MapChunk_GeometryPass() : Technique("shaders/MapChunk") {}
 
 bool MapChunk_GeometryPass::Init()
 {
@@ -24,29 +24,29 @@ void MapChunk_GeometryPass::SetLayersCount(int _layersCount)
 
 void MapChunk_GeometryPass::SetColorTextureUnit0(int TextureUnit)
 {
-	setInt("gColorMap0", TextureUnit);
+	setTexture("gColorMap0", TextureUnit);
 }
 
 void MapChunk_GeometryPass::SetColorTextureUnit1(int TextureUnit)
 {
-	setInt("gColorMap1", TextureUnit);
+	setTexture("gColorMap1", TextureUnit);
 }
 
 void MapChunk_GeometryPass::SetColorTextureUnit2(int TextureUnit)
 {
-	setInt("gColorMap2", TextureUnit);
+	setTexture("gColorMap2", TextureUnit);
 }
 
 void MapChunk_GeometryPass::SetColorTextureUnit3(int TextureUnit)
 {
-	setInt("gColorMap3", TextureUnit);
+	setTexture("gColorMap3", TextureUnit);
 }
 
 // ----------------------------------------------------
 
 void MapChunk_GeometryPass::SetBlendBuffer(int TextureUnit)
 {
-	setInt("gBlend", TextureUnit);
+	setTexture("gBlend", TextureUnit);
 }
 
 // ----------------------------------------------------
@@ -66,22 +66,22 @@ void MapChunk_GeometryPass::SetShadowColor(vec3 _shadowColor)
 
 void MapChunk_GeometryPass::SetSpecularTextureUnit0(int TextureUnit)
 {
-	setInt("gSpecularMap0", TextureUnit);
+	setTexture("gSpecularMap0", TextureUnit);
 }
 
 void MapChunk_GeometryPass::SetSpecularTextureUnit1(int TextureUnit)
 {
-	setInt("gSpecularMap1", TextureUnit);
+	setTexture("gSpecularMap1", TextureUnit);
 }
 
 void MapChunk_GeometryPass::SetSpecularTextureUnit2(int TextureUnit)
 {
-	setInt("gSpecularMap2", TextureUnit);
+	setTexture("gSpecularMap2", TextureUnit);
 }
 
 void MapChunk_GeometryPass::SetSpecularTextureUnit3(int TextureUnit)
 {
-	setInt("gSpecularMap3", TextureUnit);
+	setTexture("gSpecularMap3", TextureUnit);
 }
 
 void MapChunk_GeometryPass::SetMCCVExists(bool _exists)

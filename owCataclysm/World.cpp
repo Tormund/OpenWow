@@ -43,6 +43,23 @@ World::World()
 	l_quadratic = 0.03f;
 
 	_TechniquesMgr->Init();
+
+
+	glGenBuffers(1, &m_VertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VertexBuffer);
+
+	vector<vec3> vertices;
+	vertices.push_back(vec3(-1.0f, -1.0f, 0.0f));
+	vertices.push_back(vec3(1.0f, -1.0f, 0.0f));
+	vertices.push_back(vec3(-1.0f, 1.0f, 0.0f));
+
+	vertices.push_back(vec3(-1.0f, 1.0f, 0.0f));
+	vertices.push_back(vec3(1.0f, -1.0f, 0.0f));
+	vertices.push_back(vec3(1.0f, 1.0f, 0.0f));
+	
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vec3), vertices.data(), GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 World::~World()
@@ -301,23 +318,20 @@ void World::DSDirectionalLightPass(DirectionalLight& _light)
 	_TechniquesMgr->m_DSDirLightPassTech->Bind();
 	_TechniquesMgr->m_DSDirLightPassTech->SetEyeWorldPos(_Camera->Position);
 	_TechniquesMgr->m_DSDirLightPassTech->SetDirectionalLight(_light);
-
+	_TechniquesMgr->m_DSDirLightPassTech->SetScreenSize(Modules::config().windowSizeX, Modules::config().windowSizeY);
 	_TechniquesMgr->m_DSDirLightPassTech->BindToPostprocess();
 
 	glDisable(GL_DEPTH_TEST);
 
 	glEnable(GL_BLEND);
-	glBlendEquation(GL_FUNC_ADD);
 	glBlendFunc(GL_ONE, GL_ONE);
 
-	glBegin(GL_QUADS);
-	{
-		glVertex3f(1.0f, 1.0f, 0.0f);
-		glVertex3f(-1.0f, 1.0f, 0.0f);
-		glVertex3f(-1.0f, -1.0f, 0.0f);
-		glVertex3f(1.0f, -1.0f, 0.0f);
-	}
-	glEnd();
+	glBindBuffer(GL_ARRAY_BUFFER, m_VertexBuffer);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (const GLvoid*)0);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glDisableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	glDisable(GL_BLEND);
 
@@ -328,24 +342,20 @@ void World::DSDirectionalLightPass(DirectionalLight& _light)
 
 void World::DSSimpleRenderPass()
 {
-	m_gbuffer->BindForLightPass();
-
 	_TechniquesMgr->m_SimpleRender->Bind();
+	_TechniquesMgr->m_SimpleRender->SetScreenSize(Modules::config().windowSizeX, Modules::config().windowSizeY);
 
 	glDisable(GL_DEPTH_TEST);
 
 	glEnable(GL_BLEND);
-	glBlendEquation(GL_FUNC_ADD);
 	glBlendFunc(GL_ONE, GL_ONE);
 
-	glBegin(GL_QUADS);
-	{
-		glVertex3f(1.0f, 1.0f, 0.0f);
-		glVertex3f(-1.0f, 1.0f, 0.0f);
-		glVertex3f(-1.0f, -1.0f, 0.0f);
-		glVertex3f(1.0f, -1.0f, 0.0f);
-	}
-	glEnd();
+	glBindBuffer(GL_ARRAY_BUFFER, m_VertexBuffer);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (const GLvoid*)0);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glDisableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	glDisable(GL_BLEND);
 

@@ -114,14 +114,12 @@ void RibbonEmitter::draw()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-	glDisable(GL_LIGHTING);
-	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_CULL_FACE);
 	glDepthMask(GL_FALSE);
 	
-	glColor4fv(tcolor);
+	//glColor4fv(tcolor);
 
-	glBegin(GL_QUAD_STRIP);
+	/*glBegin(GL_QUAD_STRIP);
 	{
 		list<RibbonSegment>::iterator it = segs.begin();
 		float l = 0;
@@ -150,7 +148,7 @@ void RibbonEmitter::draw()
 	glEnd();
 
 	glColor4f(1, 1, 1, 1);
-	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHTING);*/
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDepthMask(GL_TRUE);
 }

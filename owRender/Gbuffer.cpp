@@ -163,10 +163,11 @@ void GBuffer::BindForLightPass()
 void GBuffer::BindForFinalPass(GLint _color)
 {
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+
 	glReadBuffer(_color);
 
-	glBlitNamedFramebuffer(
-		gBuffer, 0,
+	glBlitFramebuffer(
 		0, 0, Modules::config().windowSizeX, Modules::config().windowSizeY,
 		0, 0, Modules::config().windowSizeX, Modules::config().windowSizeY,
 		GL_COLOR_BUFFER_BIT, GL_LINEAR);

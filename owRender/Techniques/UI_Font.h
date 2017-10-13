@@ -12,7 +12,7 @@ public:
 
 	inline void SetFontTexture(int texture)
 	{
-		setInt("gFontTexture", texture);
+		setTexture("gFontTexture", texture);
 	}
 
 	inline void SetFontColor(cvec3 _color)

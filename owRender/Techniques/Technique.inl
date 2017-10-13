@@ -2,78 +2,80 @@
 
 #include "../GBuffer.h"
 #include "../Pipeline.h"
+#include "../Render.h"
 
 inline void Technique::Bind()
 {
-	glUseProgram(programOglObj);
+	_Render->r->bindShader(shaderId);
 }
 
 inline void Technique::Unbind()
 {
-	glUseProgram(0);
+	//glUseProgram(0);
 }
 
 
 inline GLint Technique::getLocation(const char* name) const
 {
-	return glGetUniformLocation(programOglObj, name);
+	return _Render->r->getShaderConstLoc(shaderId, name);
 }
 
-inline GLint Technique::getParam(GLint param) const
+
+//
+
+inline void Technique::setTexture(const char* name, GLuint value) const
 {
-	GLint ret;
-	glGetProgramiv(programOglObj, param, &ret);
-	return ret;
+	_Render->r->setShaderSampler(getLocation(name), value);
 }
 
 //
 
 inline void Technique::setBool(const char* name, bool value) const
 {
-	glUniform1i(glGetUniformLocation(programOglObj, name), (GLint)value);
+	_Render->r->setShaderConst(getLocation(name), CONST_INT, (int*)&value);
 }
 
 inline void Technique::setInt(const char* name, GLint value) const
 {
-	glUniform1i(glGetUniformLocation(programOglObj, name), value);
+	_Render->r->setShaderConst(getLocation(name), CONST_INT, &value);
 }
 
 inline void Technique::setFloat(const char* name, GLfloat value) const
 {
-	glUniform1f(glGetUniformLocation(programOglObj, name), value);
+	_Render->r->setShaderConst(getLocation(name), CONST_FLOAT, &value);
 }
 
 //
 
-inline void Technique::setVec2(const char* name, cvec2 value) const
+inline void Technique::setVec2(const char* name, vec2 value) const
 {
-	glUniform2fv(glGetUniformLocation(programOglObj, name), 1, &value.x);
+	_Render->r->setShaderConst(getLocation(name), CONST_FLOAT2, &value.x);
 }
 inline void Technique::setVec2(const char* name, GLfloat x, GLfloat y) const
 {
-	glUniform2f(glGetUniformLocation(programOglObj, name), x, y);
+	_Render->r->setShaderConst(getLocation(name), CONST_FLOAT2, vec2(x, y));
 }
 
 //
 
-inline void Technique::setVec3(const char* name, const vec3& value) const
+inline void Technique::setVec3(const char* name, vec3 value) const
 {
-	glUniform3fv(glGetUniformLocation(programOglObj, name), 1, &value.x);
+	_Render->r->setShaderConst(getLocation(name), CONST_FLOAT3, &value.x);
 }
 inline void Technique::setVec3(const char* name, GLfloat x, GLfloat y, GLfloat z) const
 {
-	glUniform3f(glGetUniformLocation(programOglObj, name), x, y, z);
+	//_Render->r->setShaderConst(getLocation(name), CONST_FLOAT3, vec3(x, y, z));
 }
 
 //
 
-inline void Technique::setVec4(const char* name, const vec4& value) const
+inline void Technique::setVec4(const char* name, vec4 value) const
 {
-	glUniform4fv(glGetUniformLocation(programOglObj, name), 1, &value.x);
+	_Render->r->setShaderConst(getLocation(name), CONST_FLOAT4, &value.x);
 }
 inline void Technique::setVec4(const char* name, GLfloat x, GLfloat y, GLfloat z, GLfloat w) const
 {
-	glUniform4f(glGetUniformLocation(programOglObj, name), x, y, z, w);
+	//_Render->r->setShaderConst(getLocation(name), CONST_FLOAT4, vec4(x, y, z, w));
 }
 
 //
@@ -88,9 +90,9 @@ inline void Technique::setMat3(const char* name, const mat3& mat) const
 	glUniformMatrix3fv(glGetUniformLocation(programOglObj, name), 1, GL_FALSE, &mat[0][0]);
 }*/
 
-inline void Technique::setMat4(const char* name, const mat4& mat) const
+inline void Technique::setMat4(const char* name, mat4 mat) const
 {
-	glUniformMatrix4fv(glGetUniformLocation(programOglObj, name), 1, GL_FALSE, &mat.x[0]);
+	_Render->r->setShaderConst(getLocation(name), CONST_FLOAT44, &mat.x[0]);
 }
 
 //
@@ -119,11 +121,11 @@ inline void Technique::SetProjectionMatrix(cmat4 WorldInverse)
 
 inline void Technique::BindToPostprocess()
 {
-	setInt("gbuffer.gWorldSpacePosMap", GBuffer::GBUFFER_TEXTURE_TYPE_POSITION);
-	setInt("gbuffer.gNormalMap", GBuffer::GBUFFER_TEXTURE_TYPE_NORMAL);
+	setTexture("gbuffer.gWorldSpacePosMap", GBuffer::GBUFFER_TEXTURE_TYPE_POSITION);
+	setTexture("gbuffer.gNormalMap", GBuffer::GBUFFER_TEXTURE_TYPE_NORMAL);
 
-	setInt("gbuffer.gAmbientMap", GBuffer::GBUFFER_TEXTURE_TYPE_AMBIENT);
-	setInt("gbuffer.gDiffuseMap", GBuffer::GBUFFER_TEXTURE_TYPE_DIFFUSE);
-	setInt("gbuffer.gSpecularMap", GBuffer::GBUFFER_TEXTURE_TYPE_SPECULAR);
-	setInt("gbuffer.gSpecularShininessMap", GBuffer::GBUFFER_TEXTURE_TYPE_SPECULAR_SHININESS);
+	setTexture("gbuffer.gAmbientMap", GBuffer::GBUFFER_TEXTURE_TYPE_AMBIENT);
+	setTexture("gbuffer.gDiffuseMap", GBuffer::GBUFFER_TEXTURE_TYPE_DIFFUSE);
+	setTexture("gbuffer.gSpecularMap", GBuffer::GBUFFER_TEXTURE_TYPE_SPECULAR);
+	setTexture("gbuffer.gSpecularShininessMap", GBuffer::GBUFFER_TEXTURE_TYPE_SPECULAR_SHININESS);
 }

@@ -33,7 +33,7 @@ void UIInput::Render()
 	base::Render();
 
 	if (_UIMgr->GetFocus() == this)
-		_Render->RenderRectangle(GetPosition() + vec2(2, 2), size - vec2(4, 4), false, COLOR_WHITE);
+		_Render->RenderRectangleOutline(GetPosition() + vec2(2, 2), size - vec2(4, 4), COLOR_WHITE);
 }
 
 MOUSE_PRESSED(UIInput)

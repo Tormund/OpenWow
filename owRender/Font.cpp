@@ -45,7 +45,7 @@ void Font::Render(cstring _string, vec2 _offset) const
 		_TechniquesMgr->m_UI_Font->SetCharOffset(_offset);
 		_offset.x += static_cast<float>(m_CharWidthArray[ch - SPACE]);
 
-		glDrawArrays(GL_QUADS, (ch - SPACE) * 4, 4);
+		glDrawArrays(GL_TRIANGLES, (ch - SPACE) * 6, 6);
 	}
 
 	glBindTexture(GL_TEXTURE_2D, 0);

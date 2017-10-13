@@ -30,21 +30,21 @@ void MDX_Part_TextureAnim::calc(int anim, int time)
 
 void MDX_Part_TextureAnim::setup(int anim)
 {
-	glLoadIdentity();
+	//glLoadIdentity();
 
 	if (trans.uses(anim))
 	{
-		glTranslatef(tval.x, tval.y, tval.z);
+		//glTranslatef(tval.x, tval.y, tval.z);
 	}
 
 	if (roll.uses(anim))
 	{
-		glRotatef(rval.x, 0, 0, 1.0f); // this is wrong, I have no idea what I'm doing here ;)
+		//glRotatef(rval.x, 0, 0, 1.0f); // this is wrong, I have no idea what I'm doing here ;)
 	}
 
 	if (scale.uses(anim))
 	{
-		glScalef(sval.x, sval.y, sval.z);
+		//glScalef(sval.x, sval.y, sval.z);
 	}
 }
 

@@ -3,20 +3,10 @@
 #include "ds_dir_light_pass_tech.h"
 
 
-DSDirLightPassTech::DSDirLightPassTech() {}
+DSDirLightPassTech::DSDirLightPassTech() : Technique("shaders/Common_SimpleVertex.vs", "shaders/POST_Light_Direction.fs") {}
 
 bool DSDirLightPassTech::Init()
 {
-	if (!CompileProgram("DirLightPass"))
-	{
-		return false;
-	}
-
-	if (!DSLightPassTech::Init())
-	{
-		return false;
-	}
-
 	return true;
 }
 

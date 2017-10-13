@@ -104,7 +104,7 @@ bool WMO::Load()
 		else if (strcmp(fourcc, "MOHD") == 0)               // Header
 		{
 			f.ReadBytes(&m_Header, WMOHeaderDef::__size);
-			Modules::log().Error("ID = [%d]", m_Header.wmoID()->Get_ID());
+			//Modules::log().Error("ID = [%d]", m_Header.wmoID()->Get_ID());
 		}
 		else if (strcmp(fourcc, "MOTX") == 0)               // List of textures (BLP Files) used in this map object.
 		{
@@ -397,7 +397,7 @@ bool WMO::drawSkybox()
 void WMO::DEBUG_DrawLightPlaceHolders()
 {
 	glDisable(GL_CULL_FACE);
-	glColor4f(1, 1, 1, 1);
+	/*glColor4f(1, 1, 1, 1);
 
 	glBegin(GL_TRIANGLES);
 	for (int i = 0; i < m_Lights.size(); i++)
@@ -408,7 +408,7 @@ void WMO::DEBUG_DrawLightPlaceHolders()
 		glVertex3fv(m_Lights[i]->lightDef.pos + vec3(-0.5f, 1, 0));
 		glVertex3fv(m_Lights[i]->lightDef.pos + vec3(0.5f, 1, 0));
 	}
-	glEnd();
+	glEnd();*/
 
 	glEnable(GL_CULL_FACE);
 }
@@ -417,7 +417,7 @@ void WMO::DEBUG_DrawFogPositions()
 {
 	glDisable(GL_TEXTURE_2D);
 
-	glColor4f(1, 1, 1, 1);
+	/*glColor4f(1, 1, 1, 1);
 
 	for (size_t i = 0; i < m_Fogs.size(); i++)
 	{
@@ -432,69 +432,70 @@ void WMO::DEBUG_DrawFogPositions()
 		glEnd();
 	}
 
-	glColor4f(1, 1, 1, 1);
+	glColor4f(1, 1, 1, 1);*/
+
 	glEnable(GL_TEXTURE_2D);
 }
 
 void WMO::DEBUG_DrawMainBoundingBox()
 {
-		_TechniquesMgr->m_Debug_GeometryPass->SetColor4(vec4(1.0f, 1.0f, 1.0f, 0.7f));
+	_TechniquesMgr->m_Debug_GeometryPass->SetColor4(vec4(1.0f, 1.0f, 1.0f, 0.7f));
 
-		vector<vec3> verts;
+	vector<vec3> verts;
 
-		verts.push_back(vec3(m_Bounds.Min.x, m_Bounds.Min.y, m_Bounds.Min.z));
-		verts.push_back(vec3(m_Bounds.Min.x, m_Bounds.Min.y, m_Bounds.Max.z));
+	verts.push_back(vec3(m_Bounds.Min.x, m_Bounds.Min.y, m_Bounds.Min.z));
+	verts.push_back(vec3(m_Bounds.Min.x, m_Bounds.Min.y, m_Bounds.Max.z));
 
-		verts.push_back(vec3(m_Bounds.Min.x, m_Bounds.Min.y, m_Bounds.Min.z));
-		verts.push_back(vec3(m_Bounds.Min.x, m_Bounds.Max.y, m_Bounds.Min.z));
+	verts.push_back(vec3(m_Bounds.Min.x, m_Bounds.Min.y, m_Bounds.Min.z));
+	verts.push_back(vec3(m_Bounds.Min.x, m_Bounds.Max.y, m_Bounds.Min.z));
 
-		verts.push_back(vec3(m_Bounds.Min.x, m_Bounds.Min.y, m_Bounds.Min.z));
-		verts.push_back(vec3(m_Bounds.Max.x, m_Bounds.Min.y, m_Bounds.Min.z));
-
-
-		verts.push_back(vec3(m_Bounds.Max.x, m_Bounds.Max.y, m_Bounds.Max.z));
-		verts.push_back(vec3(m_Bounds.Max.x, m_Bounds.Min.y, m_Bounds.Max.z));
-
-		verts.push_back(vec3(m_Bounds.Max.x, m_Bounds.Max.y, m_Bounds.Max.z));
-		verts.push_back(vec3(m_Bounds.Max.x, m_Bounds.Max.y, m_Bounds.Min.z));
-
-		verts.push_back(vec3(m_Bounds.Max.x, m_Bounds.Max.y, m_Bounds.Max.z));
-		verts.push_back(vec3(m_Bounds.Min.x, m_Bounds.Max.y, m_Bounds.Max.z));
+	verts.push_back(vec3(m_Bounds.Min.x, m_Bounds.Min.y, m_Bounds.Min.z));
+	verts.push_back(vec3(m_Bounds.Max.x, m_Bounds.Min.y, m_Bounds.Min.z));
 
 
-		verts.push_back(vec3(m_Bounds.Max.x, m_Bounds.Max.y, m_Bounds.Min.z));
-		verts.push_back(vec3(m_Bounds.Max.x, m_Bounds.Min.y, m_Bounds.Min.z));
+	verts.push_back(vec3(m_Bounds.Max.x, m_Bounds.Max.y, m_Bounds.Max.z));
+	verts.push_back(vec3(m_Bounds.Max.x, m_Bounds.Min.y, m_Bounds.Max.z));
+
+	verts.push_back(vec3(m_Bounds.Max.x, m_Bounds.Max.y, m_Bounds.Max.z));
+	verts.push_back(vec3(m_Bounds.Max.x, m_Bounds.Max.y, m_Bounds.Min.z));
+
+	verts.push_back(vec3(m_Bounds.Max.x, m_Bounds.Max.y, m_Bounds.Max.z));
+	verts.push_back(vec3(m_Bounds.Min.x, m_Bounds.Max.y, m_Bounds.Max.z));
 
 
-		verts.push_back(vec3(m_Bounds.Max.x, m_Bounds.Min.y, m_Bounds.Min.z));
-		verts.push_back(vec3(m_Bounds.Max.x, m_Bounds.Min.y, m_Bounds.Max.z));
+	verts.push_back(vec3(m_Bounds.Max.x, m_Bounds.Max.y, m_Bounds.Min.z));
+	verts.push_back(vec3(m_Bounds.Max.x, m_Bounds.Min.y, m_Bounds.Min.z));
 
-		verts.push_back(vec3(m_Bounds.Max.x, m_Bounds.Min.y, m_Bounds.Max.z));
-		verts.push_back(vec3(m_Bounds.Min.x, m_Bounds.Min.y, m_Bounds.Max.z));
 
-		verts.push_back(vec3(m_Bounds.Min.x, m_Bounds.Min.y, m_Bounds.Max.z));
-		verts.push_back(vec3(m_Bounds.Min.x, m_Bounds.Max.y, m_Bounds.Max.z));
+	verts.push_back(vec3(m_Bounds.Max.x, m_Bounds.Min.y, m_Bounds.Min.z));
+	verts.push_back(vec3(m_Bounds.Max.x, m_Bounds.Min.y, m_Bounds.Max.z));
 
-		verts.push_back(vec3(m_Bounds.Min.x, m_Bounds.Max.y, m_Bounds.Max.z));
-		verts.push_back(vec3(m_Bounds.Min.x, m_Bounds.Max.y, m_Bounds.Min.z));
+	verts.push_back(vec3(m_Bounds.Max.x, m_Bounds.Min.y, m_Bounds.Max.z));
+	verts.push_back(vec3(m_Bounds.Min.x, m_Bounds.Min.y, m_Bounds.Max.z));
 
-		verts.push_back(vec3(m_Bounds.Min.x, m_Bounds.Max.y, m_Bounds.Min.z));
-		verts.push_back(vec3(m_Bounds.Max.x, m_Bounds.Max.y, m_Bounds.Min.z));
+	verts.push_back(vec3(m_Bounds.Min.x, m_Bounds.Min.y, m_Bounds.Max.z));
+	verts.push_back(vec3(m_Bounds.Min.x, m_Bounds.Max.y, m_Bounds.Max.z));
 
-		GLuint buffer;
-		glGenBuffers(1, &buffer);
-		glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	verts.push_back(vec3(m_Bounds.Min.x, m_Bounds.Max.y, m_Bounds.Max.z));
+	verts.push_back(vec3(m_Bounds.Min.x, m_Bounds.Max.y, m_Bounds.Min.z));
 
-		glBufferData(GL_ARRAY_BUFFER, verts.size() * sizeof(vec3), verts.data(), GL_STATIC_DRAW);
+	verts.push_back(vec3(m_Bounds.Min.x, m_Bounds.Max.y, m_Bounds.Min.z));
+	verts.push_back(vec3(m_Bounds.Max.x, m_Bounds.Max.y, m_Bounds.Min.z));
 
-		// Vertex
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	GLuint buffer;
+	glGenBuffers(1, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
 
-		glDrawArrays(GL_LINES, 0, verts.size());
+	glBufferData(GL_ARRAY_BUFFER, verts.size() * sizeof(vec3), verts.data(), GL_STATIC_DRAW);
 
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glDeleteBuffers(1, &buffer);
+	// Vertex
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+	glDrawArrays(GL_LINES, 0, verts.size());
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glDeleteBuffers(1, &buffer);
 }
 
 void WMO::DEBUG_DrawBoundingBoxes()
@@ -636,7 +637,7 @@ void WMO::DEBUG_DrawPortals()
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-		glDrawArrays(GL_POLYGON, 0, verts.size());
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, verts.size());
 
 		glDisableVertexAttribArray(0);
 

@@ -10,12 +10,12 @@ public:
 
 	inline void SetColorTextureUnit(int TextureUnit)
 	{
-		setInt("gColorMap", TextureUnit);
+		setTexture("gColorMap", TextureUnit);
 	}
 
 	inline void SetSpecularTextureUnit(int TextureUnit)
 	{
-		setInt("gSpecularMap", TextureUnit);
+		setTexture("gSpecularMap", TextureUnit);
 	}
 
 	//

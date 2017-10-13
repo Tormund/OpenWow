@@ -149,7 +149,7 @@ bool TexturesMgr::LoadBLPTexture(File& _file, Texture* _texture)
 
 				uint32 size = ((header.width + 3) / 4) * ((header.height + 3) / 4) * blocksize;
 
-				glCompressedTexImage2DARB(GL_TEXTURE_2D, i, format, header.width, header.height, 0, size, buf);
+				glCompressedTexImage2D(GL_TEXTURE_2D, i, format, header.width, header.height, 0, size, buf);
 			}
 			else
 			{

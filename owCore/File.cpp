@@ -206,7 +206,7 @@ bool File::OpenLocalFile()
 	}
 
 	// Read data
-	ByteBuffer::Allocate(fileSize);
+	ByteBuffer::Allocate(fileSize + 1);
 	stream.read((char*)&data[0], fileSize);
 	ByteBuffer::SetFilled();
 
@@ -217,6 +217,8 @@ bool File::OpenLocalFile()
 		Modules::log().Error("File[%s]: Stream reading error. Readed [%d], filesize [%d]", Path_Name().c_str(), readedBytes, fileSize);
 		fail1();
 	}
+
+	data[fileSize] = '\0';
 
 	// Close stream
 	stream.close();

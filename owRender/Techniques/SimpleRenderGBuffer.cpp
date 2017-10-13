@@ -2,18 +2,10 @@
 
 #include "SimpleRenderGBuffer.h"
 
-SimpleRenderGBuffer::SimpleRenderGBuffer() : Technique("shaders/simpleRender.glsl")
+SimpleRenderGBuffer::SimpleRenderGBuffer() : Technique("shaders/Common_SimpleVertex.vs", "shaders/POST_SimpleRender.fs")
 {}
 
 bool SimpleRenderGBuffer::Init()
 {
-	if (!CompileProgram("SimpleRender"))
-	{
-		return false;
-	}
-}
-
-void SimpleRenderGBuffer::SetScreenSize(unsigned int Width, unsigned int Height)
-{
-	setVec2("gScreenSize", (float)Width, (float)Height);
+	return true;
 }

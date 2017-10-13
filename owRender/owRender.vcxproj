@@ -169,8 +169,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="OpenGL.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Perfomance.cpp" />
     <ClCompile Include="PipelineWorldTransformation.cpp" />
+    <ClCompile Include="RenderDevice.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GPUTimer.cpp" />
     <ClCompile Include="TechniquesManager.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FontsMgr.cpp" />
@@ -191,12 +198,12 @@
     <ClCompile Include="Techniques\MapChunk_GeometryPass.cpp" />
     <ClCompile Include="Techniques\MapTileLowRes_GeometryPass.cpp" />
     <ClCompile Include="Techniques\MDX_GeometryPass.cpp" />
-    <ClCompile Include="Techniques\null_technique.cpp" />
-    <ClCompile Include="Techniques\SimpleColorTechnique.cpp" />
     <ClCompile Include="Techniques\SimpleRenderGBuffer.cpp" />
     <ClCompile Include="Techniques\Sky_GeometryPass.cpp" />
     <ClCompile Include="Techniques\Technique.cpp" />
+    <ClCompile Include="Techniques\UI_Color.cpp" />
     <ClCompile Include="Techniques\UI_Font.cpp" />
+    <ClCompile Include="Techniques\UI_Texture.cpp" />
     <ClCompile Include="Techniques\WMO_GeomertyPass.cpp" />
     <ClCompile Include="Techniques\Water_Pass.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -206,8 +213,15 @@
     <ClInclude Include="..\shared\owRender.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="common.h" />
+    <ClInclude Include="GPUTimer.h" />
+    <ClInclude Include="OpenGL.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Perfomance.h" />
     <ClInclude Include="PipelineWorldTransformation.h" />
+    <ClInclude Include="RenderDevice.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="TechniquesManager.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="FontsMgr.h" />
@@ -229,12 +243,12 @@
     <ClInclude Include="Techniques\MapChunk_GeometryPass.h" />
     <ClInclude Include="Techniques\MapTileLowRes_GeometryPass.h" />
     <ClInclude Include="Techniques\MDX_GeometryPass.h" />
-    <ClInclude Include="Techniques\null_technique.h" />
-    <ClInclude Include="Techniques\SimpleColorTechnique.h" />
     <ClInclude Include="Techniques\SimpleRenderGBuffer.h" />
     <ClInclude Include="Techniques\Sky_GeometryPass.h" />
     <ClInclude Include="Techniques\Technique.h" />
+    <ClInclude Include="Techniques\UI_Color.h" />
     <ClInclude Include="Techniques\UI_Font.h" />
+    <ClInclude Include="Techniques\UI_Texture.h" />
     <ClInclude Include="Techniques\WMO_GeomertyPass.h" />
     <ClInclude Include="Techniques\Water_Pass.h" />
     <ClInclude Include="Texture.h" />
@@ -289,6 +303,7 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
       <FileType>Document</FileType>
     </None>
+    <None Include="..\_gamedata\shaders\UI_Texture.glsl" />
     <None Include="..\_gamedata\shaders\WMO_GeomertyPass.glsl">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
       <FileType>Document</FileType>

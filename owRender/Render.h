@@ -1,5 +1,7 @@
 #pragma once
 
+#include "RenderDevice.h"
+
 class GLFWBackend;
 
 class RenderGL : public Module
@@ -13,8 +15,11 @@ public:
 
 	void RenderImage(cvec2 _pos, Image* _image);
 	void RenderImage(cvec2 _pos, Image* _image, cvec2 _size);
+	void RenderTexture(cvec2 _pos, GLuint _texture, cvec2 _size, const Rect& _coords = Rect(0,0,1,1));
 	void RenderTexture(cvec2 _pos, Texture* _texture, cvec2 _size, const Rect& _coords);
-	void RenderRectangle(cvec2 _pos, cvec2 _size, bool _filled, const Color& _color = COLOR_GREEN);
+
+	void RenderRectangle(cvec2 _pos, cvec2 _size, const Color& _color = COLOR_GREEN);
+	void RenderRectangleOutline(cvec2 _pos, cvec2 _size, const Color& _color = COLOR_GREEN);
 
 	void RenderText(cvec2 _pos, cstring _string, const Color& _color = COLOR_WHITE) const;
 	void RenderText(cvec2 _pos, cstring _string, Font* _font, const Color& _color = COLOR_WHITE) const;
@@ -33,6 +38,11 @@ private:
 
 private:
 	mat4 m_OrhoMatrix;
+	GLuint m_ImageBuffer;
+	GLuint m_ColorBuffer;
+
+public:
+	RenderDevice* r;
 };
 
 #define _Render RenderGL::instance()

@@ -2,7 +2,7 @@
 
 #include "WMO_GeomertyPass.h"
 
-WMO_GeomertyPass::WMO_GeomertyPass() : Technique("shaders/WMO_GeomertyPass.glsl") {}
+WMO_GeomertyPass::WMO_GeomertyPass() : Technique("shaders/WMO") {}
 
 bool WMO_GeomertyPass::Init()
 {

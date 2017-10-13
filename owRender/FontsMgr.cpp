@@ -164,33 +164,14 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize)
 		double texY1 = (double)(y - maxAscent) / imageHeight;
 		double texY2 = texY1 + (double)(charHeight) / imageHeight;
 
-		/*glNewList(listOpenglIndex + ch, GL_COMPILE);
-		{
-			glBegin(GL_QUADS);
-			{
-				glTexCoord2d(texX1, texY1);
-				glVertex2i(0, 0);
-
-				glTexCoord2d(texX2, texY1);
-				glVertex2i(charWidth[ch], 0);
-
-				glTexCoord2d(texX2, texY2);
-				glVertex2i(charWidth[ch], charHeight);
-
-				glTexCoord2d(texX1, texY2);
-				glVertex2i(0, charHeight);
-			}
-			glEnd();
-
-			glTranslated(charWidth[ch], 0, 0);
-		}
-		glEndList();*/
-
-
 		fontVertices.push_back({vec2(0.0f,          0.0f),       vec2(texX1, texY1)});
 		fontVertices.push_back({vec2(charWidth[ch], 0.0f),       vec2(texX2, texY1)});
-		fontVertices.push_back({vec2(charWidth[ch], charHeight), vec2(texX2, texY2)});
 		fontVertices.push_back({vec2(0.0f,          charHeight), vec2(texX1, texY2)});
+
+		fontVertices.push_back({vec2(0.0f,          charHeight), vec2(texX1, texY2)});
+		fontVertices.push_back({vec2(charWidth[ch], 0.0f),       vec2(texX2, texY1)});
+		fontVertices.push_back({vec2(charWidth[ch], charHeight), vec2(texX2, texY2)});
+		
 	
 		for (uint32 row = 0; row < face->glyph->bitmap.rows; ++row)
 		{
@@ -207,7 +188,7 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize)
 	GLuint globalBuffer;
 	glGenBuffers(1, &globalBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, globalBuffer);
-	glBufferData(GL_ARRAY_BUFFER, Font::NUM_CHARS * 4 * sizeof(Font_Vertex), fontVertices.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, Font::NUM_CHARS * 6 * sizeof(Font_Vertex), fontVertices.data(), GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// Font texture
@@ -215,7 +196,7 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize)
 	glBindTexture(GL_TEXTURE_2D, textureOpenglIndex);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA8, imageWidth, imageHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, image);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, imageWidth, imageHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, image);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	delete[] image;

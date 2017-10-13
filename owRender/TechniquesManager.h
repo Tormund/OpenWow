@@ -15,7 +15,9 @@
 #include "Techniques/SimpleRenderGBuffer.h"
 
 // UI
+#include "Techniques/UI_Color.h"
 #include "Techniques/UI_Font.h"
+#include "Techniques/UI_Texture.h"
 
 class TechniquesMgr
 {
@@ -42,8 +44,9 @@ class TechniquesMgr
 	SimpleRenderGBuffer* m_SimpleRender;
 
 	// UI
+	UI_Color* m_UI_Color;
 	UI_Font* m_UI_Font;
-
+	UI_Texture* m_UI_Texture;
 };
 
 #define _TechniquesMgr TechniquesMgr::instance()

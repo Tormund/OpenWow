@@ -37,7 +37,7 @@ void ConsoleOpenGL::RenderUI()
 	}
 
 	// Console rectangle
-	_Render->RenderRectangle(VECTOR_ZERO, vec2(windowSize.x, consoleHeight), true, COLOR_BLACK);
+	_Render->RenderRectangle(VECTOR_ZERO, vec2(windowSize.x, consoleHeight), COLOR_BLACK);
 
 	// Messages
 	int curLine = 0;
@@ -53,7 +53,7 @@ void ConsoleOpenGL::RenderUI()
 	}
 
 	// Input rectangle
-	_Render->RenderRectangle(vec2(0, consoleHeight), vec2(windowSize.x, fontHeight), true, COLOR_DARKGRAY);
+	_Render->RenderRectangle(vec2(0, consoleHeight), vec2(windowSize.x, fontHeight), COLOR_DARKGRAY);
 
 	// Input string
 	_Render->RenderText(vec2(0.0f, consoleHeight), ">" + inputString, COLOR_WHITE);
@@ -69,13 +69,13 @@ void ConsoleOpenGL::RenderUI()
 			auto commandNameWidth = consoleFont->GetStringWidth(commandName);
 
 			// Rectangle
-			_Render->RenderRectangle(vec2(0.0f, consoleHeight + i * fontHeight), helperOffset + vec2(commandNameWidth, fontHeight), true, COLOR_GRAY);
+			_Render->RenderRectangle(vec2(0.0f, consoleHeight + i * fontHeight), helperOffset + vec2(commandNameWidth, fontHeight), COLOR_GRAY);
 
 			// Selected
 			if (helperSelected == i)
 			{
 				_Render->RenderText(vec2(0.0f, consoleHeight + i * fontHeight), ">", COLOR_WHITE);
-				_Render->RenderRectangle(vec2(0.0f, consoleHeight + i * fontHeight), helperOffset + vec2(commandNameWidth, fontHeight), false, COLOR_BLUE);
+				_Render->RenderRectangleOutline(vec2(0.0f, consoleHeight + i * fontHeight), helperOffset + vec2(commandNameWidth, fontHeight), COLOR_BLUE);
 			}
 
 			// Text

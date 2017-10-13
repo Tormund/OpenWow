@@ -2,7 +2,7 @@
 
 #include "UI_Font.h"
 
-UI_Font::UI_Font() : Technique("shaders/UI_Font.glsl") {}
+UI_Font::UI_Font() : Technique("shaders/UI_Font") {}
 
 bool UI_Font::Init()
 {

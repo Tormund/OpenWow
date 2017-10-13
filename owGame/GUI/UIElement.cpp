@@ -158,14 +158,14 @@ void UIElement::Render()
 {
 	// Render debug
 	if (IsMouseHover())
-		_Render->RenderRectangle(GetPosition(), size, false, COLOR_BLUE);
+		_Render->RenderRectangleOutline(GetPosition(), size, COLOR_BLUE);
 
 	// Render me
 	if (size != VECTOR_ZERO)
 		if (image != nullptr)
 			_Render->RenderImage(GetPosition(), image, size);
 		else if (color != COLOR_EMPTY)
-			_Render->RenderRectangle(GetPosition(), size, true, color);
+			_Render->RenderRectangleOutline(GetPosition(), size, color);
 
 	// Render text
 	if (textEnable)

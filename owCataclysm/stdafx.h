@@ -1,10 +1,5 @@
 #pragma once
 
-//-- Common --//
-#include <GL/glew.h>
-#define GLFW_DLL
-#include <GLFW/glfw3.h>
-
 #include <owCore.h>
 #pragma comment(lib, "owCore.lib")
 
@@ -13,3 +8,8 @@
 
 #include <owGame.h>
 #pragma comment(lib, "owGame.lib")
+
+//-- Common --//
+#define GLFW_DLL
+#define GLFW_INCLUDE_NONE
+#include <GLFW/glfw3.h>

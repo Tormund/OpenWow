@@ -399,8 +399,31 @@ void Liquid::createBuffer(cvec3 _position)
 
 				mh2oVertices.push_back
 				({
+					vec3(_position.x + C_UnitSize + C_UnitSize * static_cast<float>(x), h4, _position.z + ydir * (C_UnitSize * static_cast<float>(y))),
+					vec3(t4.first, t4.second, a4),
+					defaultNormal
+				});
+
+				mh2oVertices.push_back
+				({
 					vec3(_position.x + C_UnitSize * static_cast<float>(x), h2, _position.z + ydir * (C_UnitSize +  C_UnitSize * static_cast<float>(y))),
 					vec3(t2.first, t2.second, a2),
+					defaultNormal
+				});
+
+				//
+
+				mh2oVertices.push_back
+				({
+					vec3(_position.x + C_UnitSize * static_cast<float>(x), h2, _position.z + ydir * (C_UnitSize + C_UnitSize * static_cast<float>(y))),
+					vec3(t2.first, t2.second, a2),
+					defaultNormal
+				});
+
+				mh2oVertices.push_back
+				({
+					vec3(_position.x + C_UnitSize + C_UnitSize * static_cast<float>(x), h4, _position.z + ydir * (C_UnitSize * static_cast<float>(y))),
+					vec3(t4.first, t4.second, a4),
 					defaultNormal
 				});
 
@@ -411,12 +434,7 @@ void Liquid::createBuffer(cvec3 _position)
 					defaultNormal
 				});
 
-				mh2oVertices.push_back
-				({
-					vec3(_position.x + C_UnitSize + C_UnitSize * static_cast<float>(x), h4, _position.z + ydir * (C_UnitSize * static_cast<float>(y))),
-					vec3(t4.first, t4.second, a4),
-					defaultNormal
-				});
+				
 			}
 		}
 	}
@@ -462,7 +480,7 @@ void Liquid::draw()
 	_TechniquesMgr->m_Water->SetWaterColorLight(_EnvironmentManager->GetSkyColor(LIGHT_GLOBAL_DIFFUSE));
 	_TechniquesMgr->m_Water->SetWaterColorDark(_EnvironmentManager->GetSkyColor(LIGHT_GLOBAL_DIFFUSE));
 
-	glDrawArrays(GL_QUADS, 0, globalBufferSize);
+	glDrawArrays(GL_TRIANGLES, 0, globalBufferSize);
 	PERF_INC(PERF_MAP_CHUNK_MH20);
 
 	glDisableVertexAttribArray(2);

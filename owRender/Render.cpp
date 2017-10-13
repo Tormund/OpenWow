@@ -10,7 +10,7 @@
 // Additional
 #include "TechniquesManager.h"
 
-void APIENTRY glDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
+void glDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
 	if (id == 131169 || id == 131185 || id == 131218 || id == 131204) return;
 
@@ -53,9 +53,41 @@ void APIENTRY glDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severi
 	//Modules::log().Exit(-1);
 }
 
+struct Texture_Vertex
+{
+	vec2 vertex;
+	vec2 textureCoord;
+};
+
+struct RenderBackendType
+{
+	enum List
+	{
+		OpenGL2 = 2,
+		OpenGL4 = 4
+	};
+};
 
 bool RenderGL::Init()
 {
+	if (r == 0)
+	{
+		r = new RenderDevice();
+	}
+
+	if (!r)
+	{
+		Modules::log().Fatal("CAN'T CREATE RENDER DEVICE!!!.");
+		return false;
+	}
+
+	if (!r->init())
+	{
+		Modules::log().Fatal("CAN'T INIT RENDER DEVICE!!!.");
+		return false;
+	}
+
+
 	// EngineLog output
 	/*GLint flags;
 	glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
@@ -95,49 +127,22 @@ bool RenderGL::Init()
 	// GL settings
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-
-	glHint(GL_FOG_HINT, GL_FASTEST);
-	glHint(GL_GENERATE_MIPMAP_HINT, GL_FASTEST);
-
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
-
-	glHint(GL_POINT_SMOOTH_HINT, GL_FASTEST);
-	glHint(GL_LINE_SMOOTH_HINT, GL_FASTEST);
-
-	// Arrays // BOUZI ENABLE IN NOOB MODE
-	//glEnableClientState(GL_VERTEX_ARRAY);
-	//glEnableClientState(GL_NORMAL_ARRAY);
-	//glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-	// Light
-	const GLfloat light_ambient[] = {0.0f, 0.0f, 0.0f, 1.0f};
-	const GLfloat light_diffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
-	const GLfloat light_specular[] = {1.0f, 1.0f, 1.0f, 1.0f};
-	const GLfloat light_position[] = {50.0f, 50.0f, 50.0f, 0.0f};
-
-	//glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
-	//glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-	//glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
-	//glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-
-	//glEnable(GL_LIGHTING);
-	//glEnable(GL_LIGHT0);
-
-	// Material const
-	//const GLfloat mat_ambient[] = {0.7f, 0.7f, 0.7f, 1.0f};
-	//const GLfloat mat_diffuse[] = {0.8f, 0.8f, 0.8f, 1.0f};
-	//const GLfloat mat_specular[] = {0.3f, 0.3f, 0.3f, 1.0f};
-	//const GLfloat mat_shininess[] = {100.0};
-
-	//glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
-	//glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
-	//glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-	//glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-
 	// Viewport
 	glViewport(0, 0, Modules::config().windowSizeX, Modules::config().windowSizeY);
 
 	m_OrhoMatrix = Matrix4f::OrthoMat(0.0f, Modules::config().windowSizeX, Modules::config().windowSizeY, 0.0f, -1.0f, 1.0f);
+
+
+	// Font vertex buffer
+	glGenBuffers(1, &m_ImageBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, m_ImageBuffer);
+	glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(Texture_Vertex), NULL, GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glGenBuffers(1, &m_ColorBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, m_ColorBuffer);
+	glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(vec2), NULL, GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	return true;
 }
@@ -160,15 +165,6 @@ void RenderGL::Set3D()
 
 	// Blending settings
 	glDisable(GL_BLEND);
-
-	// Alpha test
-	glDisable(GL_ALPHA_TEST);
-
-	// Smoothing line
-	glDisable(GL_LINE_SMOOTH);
-
-	// Shoothing point
-	glDisable(GL_POINT_SMOOTH);
 }
 
 void RenderGL::Set2D()
@@ -180,10 +176,6 @@ void RenderGL::Set2D()
 	// Cull face
 	glDisable(GL_CULL_FACE);
 
-	// Shoothing
-	//glEnable(GL_SMOOTH);
-	//glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-
 	// Depth settings
 	glDisable(GL_DEPTH_TEST);
 
@@ -191,33 +183,7 @@ void RenderGL::Set2D()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	// Alpha test
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_GREATER, 0.001f);
-
-	// Smoothing line
-	glLineWidth(1.0f);
-	glEnable(GL_LINE_SMOOTH);
-
-	// Shoothing point
-	glPointSize(1.0f);
-	glEnable(GL_POINT_SMOOTH);
-
-	//-----------
-
-	// Projection is orthographic
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-
-	glMultMatrixf(m_OrhoMatrix);
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-
 	glActiveTexture(GL_TEXTURE0);
-	glEnable(GL_TEXTURE_2D);
 }
 
 // UI
@@ -232,71 +198,117 @@ void RenderGL::RenderImage(cvec2 _pos, Image* _image, cvec2 _size)
 	RenderTexture(_pos - _image->offset, _image->texture, _size, _image->coords);
 }
 
+//
+
 void RenderGL::RenderTexture(cvec2 _pos, Texture* _texture, cvec2 _size, const Rect& _coords)
 {
-	glEnable(GL_TEXTURE_2D);
-	_texture->Bind();
-	glPushMatrix();
-	{
-		glTranslatef(_pos.x, _pos.y, 0.0f);
-
-		glPushAttrib(GL_COLOR_BUFFER_BIT);
-		{
-			glColor4f(COLOR_WHITE.red, COLOR_WHITE.green, COLOR_WHITE.blue, COLOR_WHITE.alpha);
-
-			glBegin(GL_TRIANGLE_STRIP);
-			{
-				glTexCoord2f(_coords.p1.x, _coords.p0.y);
-				glVertex2f(_size.x, 0.0f);
-
-				glTexCoord2f(_coords.p0.x, _coords.p0.y);
-				glVertex2f(0.0f, 0.0f);
-
-				glTexCoord2f(_coords.p1.x, _coords.p1.y);
-				glVertex2f(_size.x, _size.y);
-
-				glTexCoord2f(_coords.p0.x, _coords.p1.y);
-				glVertex2f(0.0f, _size.y);
-			}
-			glEnd();
-		}
-		glPopAttrib();
-	}
-	glPopMatrix();
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glDisable(GL_TEXTURE_2D);
+	RenderTexture(_pos, _texture->GetObj(), _size, _coords);
 }
 
-void RenderGL::RenderRectangle(cvec2 _pos, cvec2 _size, bool _filled, const Color& _color)
+void RenderGL::RenderTexture(cvec2 _pos, GLuint _texture, cvec2 _size, const Rect& _coords)
 {
-	glPushMatrix();
-	{
-		glTranslatef(static_cast<double>(_pos.x), static_cast<double>(_pos.y), 0.0);
+	_TechniquesMgr->m_UI_Texture->Bind();
+	_TechniquesMgr->m_UI_Texture->SetProjectionMatrix(m_OrhoMatrix);
 
-		glPushAttrib(GL_COLOR_BUFFER_BIT);
-		{
-			glColor4f(_color.red, _color.green, _color.blue, _color.alpha);
+	glBindBuffer(GL_ARRAY_BUFFER, m_ImageBuffer);
 
-			glBegin(_filled ? GL_POLYGON : GL_LINE_LOOP);
-			{
-				glTexCoord2f(0, 1);
-				glVertex2f(0.0f, 0.0f);
+	vector<Texture_Vertex> vertices;
 
-				glTexCoord2f(1, 1);
-				glVertex2f(_size.x, 0.0f);
+	vertices.push_back({vec2(_pos.x + 0.0f,          _pos.y + 0.0f),       vec2(_coords.p0.x, _coords.p0.y)});
+	vertices.push_back({vec2(_pos.x + _size.x,       _pos.y + 0.0f),       vec2(_coords.p1.x, _coords.p0.y)});
+	vertices.push_back({vec2(_pos.x + 0.0f,          _pos.y + _size.y),     vec2(_coords.p0.x, _coords.p1.y)});
 
-				glTexCoord2f(1, 0);
-				glVertex2f(_size.x, _size.y);
+	vertices.push_back({vec2(_pos.x + 0.0f,          _pos.y + _size.y),     vec2(_coords.p0.x, _coords.p1.y)});
+	vertices.push_back({vec2(_pos.x + _size.x,       _pos.y + 0.0f),       vec2(_coords.p1.x, _coords.p0.y)});
+	vertices.push_back({vec2(_pos.x + _size.x,       _pos.y + _size.y),     vec2(_coords.p1.x, _coords.p1.y)});
 
-				glTexCoord2f(0, 0);
-				glVertex2f(0.0f, _size.y);
-			}
-			glEnd();
-		}
-		glPopAttrib();
-	}
-	glPopMatrix();
+	glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(Texture_Vertex), vertices.data());
+
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (const GLvoid*)(0));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (const GLvoid*)(sizeof(vec2)));
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, _texture);
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	_TechniquesMgr->m_UI_Texture->Unbind();
 }
+
+//
+
+void RenderGL::RenderRectangle(cvec2 _pos, cvec2 _size, const Color& _color)
+{
+	_TechniquesMgr->m_UI_Color->Bind();
+	_TechniquesMgr->m_UI_Color->SetProjectionMatrix(m_OrhoMatrix);
+	_TechniquesMgr->m_UI_Color->SetColor(_color);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_ImageBuffer);
+
+	vector<vec2> vertices;
+
+	vertices.push_back(vec2(_pos.x + 0.0f, _pos.y + 0.0f));
+	vertices.push_back(vec2(_pos.x + _size.x, _pos.y + 0.0f));
+	vertices.push_back(vec2(_pos.x + 0.0f, _pos.y + _size.y));
+
+	vertices.push_back(vec2(_pos.x + 0.0f, _pos.y + _size.y));
+	vertices.push_back(vec2(_pos.x + _size.x, _pos.y + 0.0f));
+	vertices.push_back(vec2(_pos.x + _size.x, _pos.y + _size.y));
+
+	glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(vec2), vertices.data());
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(vec2), (const GLvoid*)(0));
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glDisableVertexAttribArray(0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	_TechniquesMgr->m_UI_Color->Unbind();
+}
+
+void RenderGL::RenderRectangleOutline(cvec2 _pos, cvec2 _size, const Color& _color)
+{
+	_TechniquesMgr->m_UI_Color->Bind();
+	_TechniquesMgr->m_UI_Color->SetProjectionMatrix(m_OrhoMatrix);
+	_TechniquesMgr->m_UI_Color->SetColor(_color);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_ImageBuffer);
+
+	vector<vec2> vertices;
+
+	vertices.push_back(vec2(_pos.x + 0.0f,          _pos.y + 0.0f));
+	vertices.push_back(vec2(_pos.x + _size.x,       _pos.y + 0.0f));
+	vertices.push_back(vec2(_pos.x + _size.x,       _pos.y + _size.y));
+	vertices.push_back(vec2(_pos.x + 0.0f,          _pos.y + _size.y));
+
+	glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(vec2), vertices.data());
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(vec2), (const GLvoid*)(0));
+
+	glDrawArrays(GL_LINE_LOOP, 0, 4);
+
+	glDisableVertexAttribArray(0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	_TechniquesMgr->m_UI_Color->Unbind();
+}
+
+//
 
 void RenderGL::RenderText(cvec2 _pos, cstring _string, const Color& _color) const
 {

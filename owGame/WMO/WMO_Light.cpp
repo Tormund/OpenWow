@@ -23,11 +23,11 @@ void WMOLight::setup(GLint light)
 	GLfloat LightAmbient[] = {0, 0, 0, 1.0f};
 	GLfloat LightPosition[] = {lightDef.pos.x, lightDef.pos.y, lightDef.pos.z, 0.0f};
 
-	glLightfv(light, GL_AMBIENT, LightAmbient);
-	glLightfv(light, GL_DIFFUSE, fcolor);
-	glLightfv(light, GL_POSITION, LightPosition);
+	//glLightfv(light, GL_AMBIENT, LightAmbient);
+	//glLightfv(light, GL_DIFFUSE, fcolor);
+	//glLightfv(light, GL_POSITION, LightPosition);
 
-	glEnable(light);
+	//glEnable(light);
 }
 
 void WMOLight::setupOnce(GLint light, vec3 dir, vec4 lcol)
@@ -37,9 +37,9 @@ void WMOLight::setupOnce(GLint light, vec3 dir, vec4 lcol)
 	vec4 ambient = lcol * 0.3f;
 	vec4 diffuse = lcol;
 
-	glLightfv(light, GL_AMBIENT, ambient);
-	glLightfv(light, GL_DIFFUSE, diffuse);
-	glLightfv(light, GL_POSITION, position);
+	//glLightfv(light, GL_AMBIENT, ambient);
+	//glLightfv(light, GL_DIFFUSE, diffuse);
+	//glLightfv(light, GL_POSITION, position);
 
-	glEnable(light);
+	//glEnable(light);
 }

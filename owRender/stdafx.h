@@ -1,9 +1,5 @@
 #pragma once
 
-//-- Additional --//
-#include <GL/glew.h>
-#include <GL/glfx.h>
-
 //-- Libs --//
 #include <owCore.h>
 

@@ -21,6 +21,7 @@ public:
 	//
 
 	bool IsZeroSized() const { return (size == VECTOR_ZERO); }
+	const GLuint GetObj() { return oglObj; }
 
 	cvec2 GetSize() const { return size; }
 	void SetSize(cvec2 _value) { size = _value; }

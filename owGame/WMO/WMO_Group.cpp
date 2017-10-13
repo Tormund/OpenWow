@@ -457,8 +457,8 @@ bool WMOGroup::Render()
 		// Color
 		if (m_Header.flags.FLAG_HAS_VERTEX_COLORS)
 		{
-			glEnableVertexAttribArray(3);
-			glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 0, (const GLvoid*)(m_VertexesCount * 8 * sizeof(float)));
+			//glEnableVertexAttribArray(3);
+			//glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 0, (const GLvoid*)(m_VertexesCount * 8 * sizeof(float)));
 		}
 
 		WMOBatch* batch = &m_WMOBatchIndexes[i];
@@ -476,7 +476,7 @@ bool WMOGroup::Render()
 
 		if (m_Header.flags.FLAG_HAS_VERTEX_COLORS)
 		{
-			glDisableVertexAttribArray(3);
+			//glDisableVertexAttribArray(3);
 		}
 
 		glDisableVertexAttribArray(2);

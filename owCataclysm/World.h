@@ -27,6 +27,8 @@ public:
 
 	Camera* mainCamera;
 	Camera* testCamera;
+
+	GLuint m_VertexBuffer;
 };
 
 #define _World World::instance()

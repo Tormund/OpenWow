@@ -62,8 +62,11 @@ bool ModelRenderPass::init(MDX* m)
 	else
 		bindtex = m->replaceTextures[m->specialTextures[tex]];
 
-	bindtex->Bind();
-	bindtex->Bind(5);
+	if (bindtex != nullptr)
+	{
+		bindtex->Bind();
+		bindtex->Bind(5);
+	}
 
 	// --
 

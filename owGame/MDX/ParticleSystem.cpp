@@ -215,37 +215,36 @@ void ParticleSystem::draw()
 	{
 		case 0:
 		glDisable(GL_BLEND);
-		glDisable(GL_ALPHA_TEST);
+		//glDisable(GL_ALPHA_TEST);
 		break;
 
 		case 1:
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_COLOR, GL_ONE);
 
-		glDisable(GL_ALPHA_TEST);
+		//glDisable(GL_ALPHA_TEST);
 		break;
 
 		case 2:
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
 
-		glDisable(GL_ALPHA_TEST);
+		//glDisable(GL_ALPHA_TEST);
 		break;
 
 		case 3:
 		glDisable(GL_BLEND);
-		glEnable(GL_ALPHA_TEST);
+		//glEnable(GL_ALPHA_TEST);
 		break;
 
 		case 4:
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-		glDisable(GL_ALPHA_TEST);
+		//glDisable(GL_ALPHA_TEST);
 		break;
 	}
 
-	glDisable(GL_LIGHTING);
 	glDisable(GL_CULL_FACE);
 	glDepthMask(GL_FALSE);
 
@@ -261,14 +260,14 @@ void ParticleSystem::draw()
 	vec3 bv2 = vec3(+f, -f, 0);
 	vec3 bv3 = vec3(-f, -f, 0);
 
-	if (billboard)
+	/*if (billboard)
 	{
 		float modelview[16];
 		glGetFloatv(GL_MODELVIEW_MATRIX, modelview);
 
 		vRight = vec3(modelview[0], modelview[4], modelview[8]);
 		vUp = vec3(modelview[1], modelview[5], modelview[9]);
-	}
+	}*/
 
 	/*
 	* type:
@@ -280,7 +279,7 @@ void ParticleSystem::draw()
 	{
 		if (billboard)
 		{
-			glBegin(GL_QUADS);
+			/*glBegin(GL_QUADS);
 			for (auto it = particles.begin(); it != particles.end(); ++it)
 			{
 				if (tiles.size() - 1 < it->m_TileExists) break;
@@ -300,12 +299,12 @@ void ParticleSystem::draw()
 				glTexCoord2fv(tiles[it->m_TileExists].tc[3]);
 				glVertex3fv(it->pos - (vRight - vUp) * size);
 			}
-			glEnd();
+			glEnd();*/
 
 		}
 		else
 		{
-			glBegin(GL_QUADS);
+			/*glBegin(GL_QUADS);
 			for (auto it = particles.begin(); it != particles.end(); ++it)
 			{
 				if (tiles.size() - 1 < it->m_TileExists) break;
@@ -324,7 +323,7 @@ void ParticleSystem::draw()
 				glTexCoord2fv(tiles[it->m_TileExists].tc[3]);
 				glVertex3fv(it->pos + it->corners[3] * it->size);
 			}
-			glEnd();
+			glEnd();*/
 		}
 	}
 	else if (type == 1)
@@ -339,7 +338,7 @@ void ParticleSystem::draw()
 	  bv1 = mbb * vec3(1.0f,0,0);
 	  */
 
-		glBegin(GL_QUADS);
+		/*glBegin(GL_QUADS);
 		for (auto it = particles.begin(); it != particles.end(); ++it)
 		{
 			if (tiles.size() - 1 < it->m_TileExists) break;
@@ -359,11 +358,10 @@ void ParticleSystem::draw()
 			glTexCoord2fv(tiles[it->m_TileExists].tc[3]);
 			glVertex3fv(it->origin + bv0 * it->size);
 		}
-		glEnd();
+		glEnd();*/
 
 	}
 
-	glEnable(GL_LIGHTING);
 	glEnable(GL_CULL_FACE);
 	glDepthMask(GL_TRUE);
 

@@ -39,9 +39,6 @@
     <ClCompile Include="TechniquesManager.cpp">
       <Filter>Techniques</Filter>
     </ClCompile>
-    <ClCompile Include="Techniques\ds_dir_light_pass_tech.cpp">
-      <Filter>Techniques\Lights</Filter>
-    </ClCompile>
     <ClCompile Include="Techniques\ds_light_pass_tech.cpp">
       <Filter>Techniques\Lights</Filter>
     </ClCompile>
@@ -60,16 +57,7 @@
     <ClCompile Include="Techniques\WMO_GeomertyPass.cpp">
       <Filter>Techniques\Geometry</Filter>
     </ClCompile>
-    <ClCompile Include="Techniques\SimpleColorTechnique.cpp">
-      <Filter>Techniques\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Techniques\SimpleRenderGBuffer.cpp">
-      <Filter>Techniques\Common</Filter>
-    </ClCompile>
     <ClCompile Include="Techniques\Technique.cpp">
-      <Filter>Techniques\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Techniques\null_technique.cpp">
       <Filter>Techniques\Common</Filter>
     </ClCompile>
     <ClCompile Include="Techniques\Sky_GeometryPass.cpp">
@@ -86,6 +74,27 @@
     </ClCompile>
     <ClCompile Include="Techniques\Water_Pass.cpp">
       <Filter>Techniques\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Techniques\UI_Texture.cpp">
+      <Filter>Techniques\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Techniques\UI_Color.cpp">
+      <Filter>Techniques\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL.cpp">
+      <Filter>_NEW_RENDER</Filter>
+    </ClCompile>
+    <ClCompile Include="Techniques\SimpleRenderGBuffer.cpp">
+      <Filter>Techniques\Postprocess</Filter>
+    </ClCompile>
+    <ClCompile Include="Techniques\ds_dir_light_pass_tech.cpp">
+      <Filter>Techniques\Postprocess</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderDevice.cpp">
+      <Filter>_NEW_RENDER</Filter>
+    </ClCompile>
+    <ClCompile Include="GPUTimer.cpp">
+      <Filter>_NEW_RENDER</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -129,9 +138,6 @@
     <ClInclude Include="TechniquesManager.h">
       <Filter>Techniques</Filter>
     </ClInclude>
-    <ClInclude Include="Techniques\ds_dir_light_pass_tech.h">
-      <Filter>Techniques\Lights</Filter>
-    </ClInclude>
     <ClInclude Include="Techniques\ds_light_pass_tech.h">
       <Filter>Techniques\Lights</Filter>
     </ClInclude>
@@ -150,16 +156,7 @@
     <ClInclude Include="Techniques\WMO_GeomertyPass.h">
       <Filter>Techniques\Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="Techniques\SimpleColorTechnique.h">
-      <Filter>Techniques\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Techniques\SimpleRenderGBuffer.h">
-      <Filter>Techniques\Common</Filter>
-    </ClInclude>
     <ClInclude Include="Techniques\Technique.h">
-      <Filter>Techniques\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Techniques\null_technique.h">
       <Filter>Techniques\Common</Filter>
     </ClInclude>
     <ClInclude Include="Techniques\Sky_GeometryPass.h">
@@ -179,6 +176,27 @@
     </ClInclude>
     <ClInclude Include="Techniques\Water_Pass.h">
       <Filter>Techniques\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Techniques\UI_Texture.h">
+      <Filter>Techniques\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGL.h">
+      <Filter>_NEW_RENDER</Filter>
+    </ClInclude>
+    <ClInclude Include="Techniques\UI_Color.h">
+      <Filter>Techniques\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Techniques\SimpleRenderGBuffer.h">
+      <Filter>Techniques\Postprocess</Filter>
+    </ClInclude>
+    <ClInclude Include="Techniques\ds_dir_light_pass_tech.h">
+      <Filter>Techniques\Postprocess</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderDevice.h">
+      <Filter>_NEW_RENDER</Filter>
+    </ClInclude>
+    <ClInclude Include="GPUTimer.h">
+      <Filter>_NEW_RENDER</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -214,6 +232,12 @@
     </Filter>
     <Filter Include="Perfomance">
       <UniqueIdentifier>{2a08d97b-3b8b-4165-a0ac-b16dacad43da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="_NEW_RENDER">
+      <UniqueIdentifier>{83e27261-1695-4e85-a7fe-099ead28f2d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Techniques\Postprocess">
+      <UniqueIdentifier>{3bbd68ab-1670-40fe-b4d5-46393853cd68}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -263,6 +287,9 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="..\_gamedata\shaders\Water_Pass.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\_gamedata\shaders\UI_Texture.glsl">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

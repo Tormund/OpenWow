@@ -3,52 +3,56 @@
 // General
 #include "Technique.h"
 
+// Additional
+
+
 Technique::Technique(cstring _fileName)
 {
-	fileName = _fileName;
-	programOglObj = 0;
-	glfxEffectObj = glfxGenEffect();
+	File f_vs = _fileName + ".vs";
+	if (!f_vs.Open())
+	{
+		fail1();
+	}
 
-	Modules::log().Print("Technique[%s]: Created. GLOBJ = [%d]", _fileName.c_str(), glfxEffectObj);
+	File f_fs = _fileName + ".fs";
+	if (!f_fs.Open())
+	{
+		fail1();
+	}
+
+	shaderId = _Render->r->createShader(string((char*)f_vs.GetData()).c_str(), string((char*)f_fs.GetData()).c_str(), nullptr, nullptr, nullptr, nullptr);
+	Modules::log().Error("SH %s", _Render->r->getShaderLog().c_str());
+
+	Modules::log().Error("ID == %d", shaderId);
+}
+
+Technique::Technique(cstring _fileNameVS, cstring _fileNameFS)
+{
+	File f_vs = _fileNameVS;
+	if (!f_vs.Open())
+	{
+		fail1();
+	}
+
+	File f_fs = _fileNameFS;
+	if (!f_fs.Open())
+	{
+		fail1();
+	}
+
+	shaderId = _Render->r->createShader(string((char*)f_vs.GetData()).c_str(), string((char*)f_fs.GetData()).c_str(), nullptr, nullptr, nullptr, nullptr);
+	Modules::log().Error("SH %s", _Render->r->getShaderLog().c_str());
+
+	Modules::log().Error("ID == %d", shaderId);
 }
 
 Technique::~Technique()
 {
-	if (programOglObj != 0)
-	{
-		glDeleteProgram(programOglObj);
-		programOglObj = 0;
-	}
 
-	glfxDeleteEffect(glfxEffectObj);
 }
 
 bool Technique::CompileProgram(cstring _programName)
 {
-	File f = fileName;
-	
-	if (!glfxParseEffectFromFile(glfxEffectObj, f.FullPath().c_str())) // FIXME
-	{
-		string log = string(glfxGetEffectLog(glfxEffectObj));
-		Modules::log().Error("Techique[%s]: Error creating program.", fileName.c_str());
-		Modules::log().Error("Techique[%s]: Log [%s].", fileName.c_str(), log.c_str());
-		fail1();
-		return false;
-	}
-
-	programOglObj = glfxCompileProgram(glfxEffectObj, _programName.c_str());
-	Modules::log().Info("Technique[%s]: Program [%s] OGLID [%d]", fileName.c_str(), _programName.c_str(), glfxEffectObj);
-
-	if (programOglObj < 0)
-	{
-		string log = string(glfxGetEffectLog(glfxEffectObj));
-		Modules::log().Error("Techique[%s]: Error compiling program [%s].", fileName.c_str(), _programName.c_str());
-		Modules::log().Error("Techique[%s]: Log [%s].", fileName.c_str(), log.c_str());
-		fail1();
-		return false;
-	}
-
-	Modules::log().Print("Technique[%s]: Compiled. Program [%s]. GLOBJ = [%d]", fileName.c_str(), _programName.c_str(), glfxEffectObj);
 
 	return true;
 }
