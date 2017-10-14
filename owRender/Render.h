@@ -4,6 +4,29 @@
 
 class GLFWBackend;
 
+struct RenderTarget
+{
+	std::string           id;
+	uint32                numColBufs;
+	R_TextureFormats::List  format;
+	uint32                width, height;
+	uint32                samples;
+	float                 scale;  // Scale factor for FB width and height
+	bool                  hasDepthBuf;
+	uint32                rendBuf;
+
+	RenderTarget()
+	{
+		hasDepthBuf = false;
+		numColBufs = 0;
+		rendBuf = 0;
+		width = height = 0;
+		samples = 0;
+		scale = 0;
+		format = R_TextureFormats::Unknown;
+	}
+};
+
 class RenderGL : public Module
 {
 	friend GLFWBackend;
@@ -26,13 +49,6 @@ public:
 	void RenderText(cvec2 _pos, cstring _string, TextAlignW _alignW, TextAlignH _alignH, const Color& _color = COLOR_WHITE) const;
 	void RenderText(cvec2 _pos, cstring _string, TextAlignW _alignW, TextAlignH _alignH, Font* _font, const Color& _color = COLOR_WHITE) const;
 
-	/*public:
-		HDC dc;
-		HGLRC glrc1;
-		HGLRC glrc2;
-		HGLRC glrc3;
-		HGLRC glrc4;*/
-
 private:
 	void OnWindowResized(uint32 _width, uint32 _height);
 
@@ -43,6 +59,14 @@ private:
 
 public:
 	RenderDevice* r;
+
+public:
+	vector<RenderTarget>   _renderTargets;
+
+	void addRenderTarget(const string &id, bool depthBuffer, uint32 numBuffers, R_TextureFormats::List format, uint32 samples, uint32 width, uint32 height, float scale);
+	RenderTarget *findRenderTarget(const string &id) const;
+	bool createRenderTargets();
+	void releaseRenderTargets();
 };
 
 #define _Render RenderGL::instance()

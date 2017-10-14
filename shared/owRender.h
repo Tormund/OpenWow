@@ -9,7 +9,6 @@
 #include "../owRender/Pipeline.h"
 #include "../owRender/Render.h"
 #include "../owRender/TexturesMgr.h"
-#include "../owRender/ShadowMapFBO.h"
 
 // Techiques
 #include "../owRender/TechniquesManager.h"

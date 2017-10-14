@@ -24,34 +24,29 @@ public:
 	enum GBUFFER_TEXTURE_TYPE
 	{
 		GBUFFER_TEXTURE_TYPE_POSITION = 0,              // vec3
-		GBUFFER_TEXTURE_TYPE_NORMAL = 1,                // vec3
-
-		GBUFFER_TEXTURE_TYPE_AMBIENT = 2,               
-		GBUFFER_TEXTURE_TYPE_DIFFUSE = 3,
-		GBUFFER_TEXTURE_TYPE_SPECULAR = 4,
-		GBUFFER_TEXTURE_TYPE_SPECULAR_SHININESS = 5
+		GBUFFER_TEXTURE_TYPE_NORMAL = 1,                // vec3              
+		GBUFFER_TEXTURE_TYPE_DIFFUSE = 2,
+		GBUFFER_TEXTURE_TYPE_SPECULAR = 3,
 	};
 
-	GBuffer();
-	~GBuffer();
-
 	bool Init();
-
-	void StartFrame(GLuint _finalTexture);
 	
 	void Clear();
+	void Clear2();
 	void ClearFinalBuffer();
 
 	void BindForGeomPass();
-	void BindForStencilPass();
+	void BindForGeomPass2();
 	void BindForLightPass();
-	void BindForFinalPass(GLint _color = GL_COLOR_ATTACHMENT6);
 
 public:
 	GLuint gBuffer;
 
-	GLuint textures[6];
-	GLuint depthTexture; // Depth
+	GLuint textures[4];
+	GLuint depthTexture;
 
-	//GLuint finalTexture;
+	uint32 rb;
+	uint32 rb2;
+
+	uint32 resultRB;
 };

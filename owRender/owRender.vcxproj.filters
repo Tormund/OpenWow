@@ -27,9 +27,6 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Pipeline</Filter>
     </ClCompile>
-    <ClCompile Include="ShadowMapFBO.cpp">
-      <Filter>Pipeline</Filter>
-    </ClCompile>
     <ClCompile Include="Perfomance.cpp">
       <Filter>Perfomance</Filter>
     </ClCompile>
@@ -124,9 +121,6 @@
       <Filter>Pipeline</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
-      <Filter>Pipeline</Filter>
-    </ClInclude>
-    <ClInclude Include="ShadowMapFBO.h">
       <Filter>Pipeline</Filter>
     </ClInclude>
     <ClInclude Include="Perfomance.h">

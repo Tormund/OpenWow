@@ -44,6 +44,5 @@ bin/
 bin_x64/
 
 _unused/
-_gamedata/
 Externals/CascLib/
 Externals/freetype-2.8_project/

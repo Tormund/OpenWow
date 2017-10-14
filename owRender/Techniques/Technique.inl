@@ -121,11 +121,8 @@ inline void Technique::SetProjectionMatrix(cmat4 WorldInverse)
 
 inline void Technique::BindToPostprocess()
 {
-	setTexture("gbuffer.gWorldSpacePosMap", GBuffer::GBUFFER_TEXTURE_TYPE_POSITION);
-	setTexture("gbuffer.gNormalMap", GBuffer::GBUFFER_TEXTURE_TYPE_NORMAL);
-
-	setTexture("gbuffer.gAmbientMap", GBuffer::GBUFFER_TEXTURE_TYPE_AMBIENT);
-	setTexture("gbuffer.gDiffuseMap", GBuffer::GBUFFER_TEXTURE_TYPE_DIFFUSE);
-	setTexture("gbuffer.gSpecularMap", GBuffer::GBUFFER_TEXTURE_TYPE_SPECULAR);
-	setTexture("gbuffer.gSpecularShininessMap", GBuffer::GBUFFER_TEXTURE_TYPE_SPECULAR_SHININESS);
+	setTexture("gbuf0", GBuffer::GBUFFER_TEXTURE_TYPE_POSITION);
+	setTexture("gbuf1", GBuffer::GBUFFER_TEXTURE_TYPE_NORMAL);
+	setTexture("gbuf2", GBuffer::GBUFFER_TEXTURE_TYPE_DIFFUSE);
+	setTexture("gbuf3", GBuffer::GBUFFER_TEXTURE_TYPE_SPECULAR);
 }

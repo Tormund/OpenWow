@@ -32,7 +32,7 @@ public:
 	void remove(uint32 handle)
 	{
 		assert1(handle > 0 && handle <= _objects.size());
-		assert1(std::find(_freeList.begin(), _freeList.end(), handle - 1) == _freeList.end());
+		assert1(find(_freeList.begin(), _freeList.end(), handle - 1) == _freeList.end());
 
 		_objects[handle - 1] = T();  // Destruct and replace with default object
 		_freeList.push_back(handle - 1);
@@ -46,8 +46,8 @@ public:
 	}
 
 private:
-	std::vector< T >       _objects;
-	std::vector< uint32 >  _freeList;
+	vector< T >       _objects;
+	vector< uint32 >  _freeList;
 };
 
 
@@ -71,7 +71,7 @@ struct DeviceCaps
 
 struct VertexLayoutAttrib
 {
-	std::string  semanticName;
+	string  semanticName;
 	uint32       vbSlot;
 	uint32       size;
 	uint32       offset;
@@ -135,27 +135,6 @@ struct R_TextureUsage
 		ComputeImageWO, // write-only image
 		ComputeImageRW  // read-write image
 	};
-};
-
-struct R_TexSlot
-{
-	R_TexSlot() :
-		texObj(0),
-		samplerState(0),
-		usage(0)
-	{}
-
-	R_TexSlot(uint32 texObj, uint32 samplerState, uint32 usage) :
-		texObj(texObj),
-		samplerState(samplerState),
-		usage(usage)
-	{}
-
-	//
-
-	uint32  texObj;
-	uint32  samplerState;
-	uint32  usage;
 };
 
 
@@ -306,7 +285,7 @@ struct R_DepthStencilState
 // Draw calls and clears
 // ---------------------------------------------------------
 
-enum RDIClearFlags
+enum R_ClearFlags
 {
 	CLR_COLOR_RT0 = 0x00000001,
 	CLR_COLOR_RT1 = 0x00000002,
@@ -315,13 +294,13 @@ enum RDIClearFlags
 	CLR_DEPTH = 0x00000010
 };
 
-enum RDIIndexFormat
+enum R_IndexFormat
 {
 	IDXFMT_16 = 0,
 	IDXFMT_32
 };
 
-enum RDIPrimType
+enum R_PrimitiveType
 {
 	PRIM_TRILIST = 0,
 	PRIM_TRISTRIP,
@@ -330,7 +309,7 @@ enum RDIPrimType
 	PRIM_PATCHES
 };
 
-enum RDIDrawBarriers
+enum R_DrawBarriers
 {
 	NotSet = 0,
 	VertexBufferBarrier,		// Wait till vertex buffer is updated by shaders
@@ -342,43 +321,43 @@ enum RDIDrawBarriers
 // Buffers
 // ---------------------------------------------------------
 
-struct RDIBufferGL4
+struct R_Buffer
 {
 	uint32  type;
 	uint32  glObj;
 	uint32  size;
 	int		geometryRefCount;
 
-	RDIBufferGL4() : type(0), glObj(0), size(0), geometryRefCount(0) {}
+	R_Buffer() : type(0), glObj(0), size(0), geometryRefCount(0) {}
 };
 
-struct RDIVertBufSlotGL4
+struct R_VertexBufferSlot
 {
 	uint32  vbObj;
 	uint32  offset;
 	uint32  stride;
 
-	RDIVertBufSlotGL4() : vbObj(0), offset(0), stride(0) {}
-	RDIVertBufSlotGL4(uint32 vbObj, uint32 offset, uint32 stride) :
+	R_VertexBufferSlot() : vbObj(0), offset(0), stride(0) {}
+	R_VertexBufferSlot(uint32 vbObj, uint32 offset, uint32 stride) :
 		vbObj(vbObj), offset(offset), stride(stride)
 	{}
 };
 
-struct RDIGeometryInfoGL4
+struct R_GeometryInfo
 {
-	std::vector< RDIVertBufSlotGL4 > vertexBufInfo;
+	vector< R_VertexBufferSlot > vertexBufInfo;
 	uint32 vao;
 	uint32 indexBuf;
 	uint32 layout;
 	bool indexBuf32Bit;
 	bool atrribsBinded;
 
-	RDIGeometryInfoGL4() : vao(0), indexBuf(0), layout(0), indexBuf32Bit(false), atrribsBinded(false) {}
+	R_GeometryInfo() : vao(0), indexBuf(0), layout(0), indexBuf32Bit(false), atrribsBinded(false) {}
 };
 
-struct R_ShaderStorageGL4
+struct R_ShaderStorage
 {
-	R_ShaderStorageGL4(uint8 targetSlot, uint32 glObj) :
+	R_ShaderStorage(uint8 targetSlot, uint32 glObj) :
 		oglObject(glObj),
 		slot(targetSlot)
 	{}
@@ -395,7 +374,7 @@ struct R_ShaderStorageGL4
 // Textures
 // ---------------------------------------------------------
 
-struct RDITextureGL4
+struct R_Texture
 {
 	uint32                glObj;
 	uint32                glFmt;
@@ -407,31 +386,41 @@ struct RDITextureGL4
 	bool                  sRGB;
 	bool                  hasMips, genMips;
 
-	RDITextureGL4() : glObj(0), glFmt(0), type(0), format(R_TextureFormats::Unknown), width(0), height(0),
+	R_Texture() : glObj(0), glFmt(0), type(0), format(R_TextureFormats::Unknown), width(0), height(0),
 		depth(0), memSize(0), samplerState(0), sRGB(false), hasMips(false), genMips(false)
 	{
 
 	}
 };
 
-struct RDITexSlotGL4
+struct R_TexSlot
 {
+	R_TexSlot() :
+		texObj(0),
+		samplerState(0),
+		usage(0)
+	{}
+
+	R_TexSlot(uint32 texObj, uint32 samplerState, uint32 usage) :
+		texObj(texObj),
+		samplerState(samplerState),
+		usage(usage)
+	{}
+
+	//
+
 	uint32  texObj;
 	uint32  samplerState;
-
-	RDITexSlotGL4() : texObj(0), samplerState(0) {}
-	RDITexSlotGL4(uint32 texObj, uint32 samplerState) :
-		texObj(texObj), samplerState(samplerState)
-	{}
+	uint32  usage;
 };
 
-struct RDITextureBufferGL4
+struct R_TextureBuffer
 {
 	uint32  bufObj;
 	uint32  glFmt;
 	uint32	glTexID;
 
-	RDITextureBufferGL4() : bufObj(0), glFmt(0), glTexID(0) {}
+	R_TextureBuffer() : bufObj(0), glFmt(0), glTexID(0) {}
 };
 
 
@@ -440,12 +429,12 @@ struct RDITextureBufferGL4
 // Shaders
 // ---------------------------------------------------------
 
-struct RDIInputLayoutGL4
+struct R_InputLayout
 {
 	bool  valid;
 	int8  attribIndices[16];
 
-	RDIInputLayoutGL4() : valid(false)
+	R_InputLayout() : valid(false)
 	{
 		memset(attribIndices, 0, sizeof(attribIndices));
 	}
@@ -454,7 +443,7 @@ struct RDIInputLayoutGL4
 struct RDIShaderGL4
 {
 	uint32				oglProgramObj;
-	RDIInputLayoutGL4	inputLayouts[MaxNumVertexLayouts];
+	R_InputLayout	inputLayouts[MaxNumVertexLayouts];
 
 	RDIShaderGL4() : oglProgramObj(0)
 	{
@@ -468,7 +457,7 @@ struct RDIShaderGL4
 // Render buffers
 // ---------------------------------------------------------
 
-struct RDIRenderBufferGL4
+struct R_RenderBuffer
 {
 	static const uint32 MaxColorAttachmentCount = 4;
 
@@ -479,7 +468,7 @@ struct RDIRenderBufferGL4
 	uint32  depthTex, colTexs[MaxColorAttachmentCount];
 	uint32  depthBuf, colBufs[MaxColorAttachmentCount];  // Used for multisampling
 
-	RDIRenderBufferGL4() : fbo(0), fboMS(0), width(0), height(0), depthTex(0), depthBuf(0), samples(0)
+	R_RenderBuffer() : fbo(0), fboMS(0), width(0), height(0), depthTex(0), depthBuf(0), samples(0)
 	{
 		for (uint32 i = 0; i < MaxColorAttachmentCount; ++i) colTexs[i] = colBufs[i] = 0;
 	}
@@ -510,7 +499,7 @@ public:
 	uint32 beginCreatingGeometry(uint32 vlObj);
 	void finishCreatingGeometry(uint32 geoObj);
 	void setGeomVertexParams(uint32 geoObj, uint32 vbo, uint32 vbSlot, uint32 offset, uint32 stride);
-	void setGeomIndexParams(uint32 geoObj, uint32 indBuf, RDIIndexFormat format);
+	void setGeomIndexParams(uint32 geoObj, uint32 indBuf, R_IndexFormat format);
 	void destroyGeometry(uint32 &geoObj, bool destroyBindedBuffers);
 
 	// Buffers
@@ -609,7 +598,7 @@ public:
 		_texSlots[slot] = R_TexSlot(texObj, samplerState, usage);
 		_pendingMask |= PM_TEXTURES;
 	}
-	void setMemoryBarrier(RDIDrawBarriers barrier)
+	void setMemoryBarrier(R_DrawBarriers barrier)
 	{
 		_memBarriers = barrier;
 		_pendingMask |= PM_BARRIER;
@@ -618,8 +607,8 @@ public:
 	{
 		assert1(slot < _maxComputeBufferAttachments && _storageBufs.size() < _maxComputeBufferAttachments);
 
-		RDIBufferGL4 &buf = _buffers.getRef(bufObj);
-		_storageBufs.push_back(R_ShaderStorageGL4(slot, buf.glObj));
+		R_Buffer &buf = _buffers.getRef(bufObj);
+		_storageBufs.push_back(R_ShaderStorage(slot, buf.glObj));
 
 		_pendingMask |= PM_COMPUTE;
 	}
@@ -741,17 +730,17 @@ public:
 
 	// Draw calls and clears
 	void clear(uint32 flags, float* colorRGBA = 0x0, float depth = 1.0f);
-	void draw(RDIPrimType primType, uint32 firstVert, uint32 numVerts);
-	void drawIndexed(RDIPrimType primType, uint32 firstIndex, uint32 numIndices, uint32 firstVert, uint32 numVerts);
+	void draw(R_PrimitiveType primType, uint32 firstVert, uint32 numVerts);
+	void drawIndexed(R_PrimitiveType primType, uint32 firstIndex, uint32 numIndices, uint32 firstVert, uint32 numVerts);
 
 	// -----------------------------------------------------------------------------
 	// Getters
 	// -----------------------------------------------------------------------------
 
 	// WARNING: Modifying internal states may lead to unexpected behavior and/or crashes
-	RDIBufferGL4& getBuffer(uint32 bufObj) { return _buffers.getRef(bufObj); }
-	RDITextureGL4& getTexture(uint32 texObj) { return _textures.getRef(texObj); }
-	RDIRenderBufferGL4& getRenderBuffer(uint32 rbObj) { return _rendBufs.getRef(rbObj); }
+	R_Buffer& getBuffer(uint32 bufObj) { return _buffers.getRef(bufObj); }
+	R_Texture& getTexture(uint32 texObj) { return _textures.getRef(texObj); }
+	R_RenderBuffer& getRenderBuffer(uint32 rbObj) { return _rendBufs.getRef(rbObj); }
 
 	//	friend class Renderer;
 
@@ -768,8 +757,8 @@ protected:
 	void resolveRenderBuffer(uint32 rbObj);
 
 	void checkError();
-	bool applyVertexLayout(RDIGeometryInfoGL4 &geo);
-	void applySamplerState(RDITextureGL4 &tex);
+	bool applyVertexLayout(R_GeometryInfo &geo);
+	void applySamplerState(R_Texture &tex);
 	void applyRenderStates();
 
 protected:
@@ -790,13 +779,13 @@ protected:
 
 protected:
 	R_VertexLayout                    _vertexLayouts[MaxNumVertexLayouts];
-	RDIObjects< RDIBufferGL4 >         _buffers;
-	RDIObjects< RDITextureGL4 >        _textures;
-	RDIObjects< RDITextureBufferGL4 >  _textureBuffs;
+	RDIObjects< R_Buffer >         _buffers;
+	RDIObjects< R_Texture >        _textures;
+	RDIObjects< R_TextureBuffer >  _textureBuffs;
 	RDIObjects< RDIShaderGL4 >         _shaders;
-	RDIObjects< RDIRenderBufferGL4 >   _rendBufs;
-	RDIObjects< RDIGeometryInfoGL4 >   _vaos;
-	std::vector< R_ShaderStorageGL4 > _storageBufs;
+	RDIObjects< R_RenderBuffer >   _rendBufs;
+	RDIObjects< R_GeometryInfo >   _vaos;
+	vector< R_ShaderStorage > _storageBufs;
 
 	uint32                             _indexFormat;
 	uint32                             _activeVertexAttribsMask;
@@ -815,8 +804,8 @@ protected:
 	R_TexSlot					_texSlots[16];
 	R_RasterState				_curRasterState, _newRasterState;
 	R_BlendState				_curBlendState, _newBlendState;
-	R_DepthStencilState		_curDepthStencilState, _newDepthStencilState;
-	RDIDrawBarriers				_memBarriers;
+	R_DepthStencilState		    _curDepthStencilState, _newDepthStencilState;
+	R_DrawBarriers				_memBarriers;
 
 	// 8 ssbo
 

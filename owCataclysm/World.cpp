@@ -18,18 +18,6 @@ World::World()
 
 	//----------------------------------------------------------------//
 
-	glGenTextures(1, &finalTexture1);
-	glBindTexture(GL_TEXTURE_2D, finalTexture1);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Modules::config().windowSizeX, Modules::config().windowSizeY, 0, GL_RGB, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-	glGenTextures(1, &finalTexture2);
-	glBindTexture(GL_TEXTURE_2D, finalTexture2);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Modules::config().windowSizeX, Modules::config().windowSizeY, 0, GL_RGB, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
 	m_gbuffer = new GBuffer();
 	m_gbuffer->Init();
 
@@ -93,25 +81,25 @@ void World::drawShader(GLint _color)
 	mainCamera->onPostUpdate();
 		
 	// Main frame
-	m_gbuffer->StartFrame(finalTexture1);
 	m_gbuffer->ClearFinalBuffer();
 
 	// Geometry pass
 	m_gbuffer->BindForGeomPass();
 	m_gbuffer->Clear();
+	//_Render->r->setFillMode(R_FillMode::RS_FILL_WIREFRAME);
+	//_Render->r->commitStates();
 	RenderGeom();
 
 	// Postprocess pass
 	m_gbuffer->BindForLightPass();
+	//_Render->r->setFillMode(R_FillMode::RS_FILL_SOLID);
+	//_Render->r->commitStates();
 	RenderPostprocess();
-
-	// Final pass
-	m_gbuffer->BindForFinalPass(_color);
 
 	//
 	// SECONDS PASS
 	//
-	
+	/*
 #ifdef WMO_INCL
 	WMOInstance::reset();
 #endif
@@ -119,21 +107,22 @@ void World::drawShader(GLint _color)
 	// Conf test camera
 	testCamera->Position = mainCamera->Position + vec3(0, 1, 0) * 1000.0f;
 	testCamera->Roll = mainCamera->Roll;
-	testCamera->Pitch = -89.0f;
+	testCamera->Pitch = -90.0f;
 	testCamera->Update();
 
 	// Test frame
 	_PipelineGlobal->SetCamera(testCamera);
-	m_gbuffer->StartFrame(finalTexture2);
-	m_gbuffer->ClearFinalBuffer();
 
 	// Geometry pass
-	m_gbuffer->BindForGeomPass();
+	m_gbuffer->BindForGeomPass2();
 	m_gbuffer->Clear();
 	RenderGeom();
 	_PipelineGlobal->RenderCamera(_CameraFrustum);
-	
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+
+
+	finalTexture2 = _Render->r->getTexture(_Render->r->getRenderBufferTex(m_gbuffer->rb2, 2)).glObj;
+
+	m_gbuffer->BindForLightPass();*/
 }
 
 //***************************************

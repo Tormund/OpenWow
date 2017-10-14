@@ -118,8 +118,8 @@ void ByteBuffer::CopyData(uint8* _data, uint64_t _size)
 
 	if (_size > bufferSize)
 	{
-		Modules::log().Error("ByteBuffer[]: Source data size [%d] bigger than allocated memory [%d]!", _size, bufferSize);
-		Modules::log().Error("ByteBuffer[]: Copy part of source data.");
+		//Modules::log().Error("ByteBuffer[]: Source data size [%d] bigger than allocated memory [%d]!", _size, bufferSize);
+		//Modules::log().Error("ByteBuffer[]: Copy part of source data.");
 		_size = bufferSize;
 	}
 

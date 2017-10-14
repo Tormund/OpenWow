@@ -87,6 +87,7 @@ bool RenderGL::Init()
 		return false;
 	}
 
+	r->setViewport(0, 0, Modules::config().windowSizeX, Modules::config().windowSizeY);
 
 	// EngineLog output
 	/*GLint flags;
@@ -388,3 +389,87 @@ void RenderGL::OnWindowResized(uint32 _width, uint32 _height)
 	// Projection matix
 	m_OrhoMatrix = Matrix4f::OrthoMat(0.0f, Modules::config().windowSizeX, Modules::config().windowSizeY, 0.0f, -1.0f, 1.0f);
 }
+
+//
+
+void RenderGL::addRenderTarget(const string &id, bool depthBuf, uint32 numColBufs, R_TextureFormats::List format, uint32 samples, uint32 width, uint32 height, float scale)
+{
+	RenderTarget rt;
+
+	rt.id = id;
+	rt.hasDepthBuf = depthBuf;
+	rt.numColBufs = numColBufs;
+	rt.format = format;
+	rt.samples = samples;
+	rt.width = width;
+	rt.height = height;
+	rt.scale = scale;
+
+	_renderTargets.push_back(rt);
+}
+
+
+RenderTarget *RenderGL::findRenderTarget(const string &id) const
+{
+	if (id == "")
+	{
+		return 0x0;
+	}
+
+	for (uint32 i = 0; i < _renderTargets.size(); ++i)
+	{
+		if (_renderTargets[i].id == id)
+		{
+			return (RenderTarget*)&_renderTargets[i];
+		}
+	}
+
+	return 0x0;
+}
+
+
+bool RenderGL::createRenderTargets()
+{
+	RenderDevice* rdi = r;
+
+	for (uint32 i = 0; i < _renderTargets.size(); ++i)
+	{
+		RenderTarget &rt = _renderTargets[i];
+
+		uint32 width = ftoi_r(rt.width * rt.scale);
+		if (width == 0)
+		{
+			width = ftoi_r(Modules::config().windowSizeX * rt.scale);
+		}
+
+		uint32 height = ftoi_r(rt.height * rt.scale);
+		if (height == 0)
+		{
+			height = ftoi_r(Modules::config().windowSizeY * rt.scale);
+		}
+
+		rt.rendBuf = rdi->createRenderBuffer(width, height, rt.format, rt.hasDepthBuf, rt.numColBufs, rt.samples);
+		if (rt.rendBuf == 0)
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+
+void RenderGL::releaseRenderTargets()
+{
+	RenderDevice* rdi = r;
+
+	for (uint32 i = 0; i < _renderTargets.size(); ++i)
+	{
+		RenderTarget &rt = _renderTargets[i];
+		if (rt.rendBuf)
+		{
+			rdi->destroyRenderBuffer(rt.rendBuf);
+		}
+	}
+}
+

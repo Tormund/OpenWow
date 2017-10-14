@@ -31,7 +31,7 @@ bool GameState_Menu::Init()
 	cmd = CMD_NONE2;
 	backgroundModel = 0;
 	//randBackground();
-	currentColor = GL_COLOR_ATTACHMENT6;
+	currentColor = GL_COLOR_ATTACHMENT4;
 
 	/*_Map->Load_WDT(DBC_Map[1]);
 	LoadWorld(vec3(17644, 68, 17823));
@@ -267,7 +267,7 @@ void GameState_Menu::RenderUI(double t, double dt)
 		_Render->RenderText(vec2(Modules::config().windowSizeX - 400, 60), buff);
 
 
-		_Render->RenderTexture(vec2(Modules::config().windowSizeX * 2.0 / 3.0, Modules::config().windowSizeY * 2.0 / 3.0), _World->m_gbuffer->textures[3], vec2(Modules::config().windowSizeX / 3, Modules::config().windowSizeY / 3));
+		_Render->RenderTexture(vec2(Modules::config().windowSizeX * 2.0 / 3.0, Modules::config().windowSizeY * 2.0 / 3.0), _World->finalTexture2, vec2(Modules::config().windowSizeX / 3, Modules::config().windowSizeY / 3));
 	}
 }
 
@@ -485,18 +485,6 @@ KEYBD_PRESSED(GameState_Menu)
 	if (_key == GLFW_KEY_5)
 	{
 		currentColor = GL_COLOR_ATTACHMENT4;
-		return true;
-	}
-
-	if (_key == GLFW_KEY_6)
-	{
-		currentColor = GL_COLOR_ATTACHMENT5;
-		return true;
-	}
-
-	if (_key == GLFW_KEY_7)
-	{
-		currentColor = GL_COLOR_ATTACHMENT6;
 		return true;
 	}
 

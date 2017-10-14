@@ -22,9 +22,7 @@ File::File(cstring _name, cstring _path) : BaseFile(_name, _path)
 {}
 
 File::~File()
-{
-	//Modules::log().Error("File[%s] closed.", Path_Name().c_str());
-}
+{}
 
 //
 
@@ -169,8 +167,11 @@ bool File::OpenLocalFile()
 {
 	if (ByteBuffer::isFilled)
 	{
-		Modules::log().Warn("File[%s]: Not reason to open file, because buffer is filled.", Path_Name().c_str());
-		return true;
+		char buff[256];
+		sprintf(buff, "File[%s]: Not reason to open file, because buffer is filled.", Path_Name().c_str());
+		fail2(buff);
+
+		return false;
 	}
 
 	// Open stream
@@ -201,7 +202,10 @@ bool File::OpenLocalFile()
 	// Check filesize
 	if (fileSize == 0)
 	{
-		Modules::log().Error("File[%s]: Is empty!", Path_Name().c_str());
+		char buff[256];
+		sprintf(buff, "File[%s]: Is empty!", Path_Name().c_str());
+		fail2(buff);
+
 		return false;
 	}
 
@@ -213,9 +217,11 @@ bool File::OpenLocalFile()
 	streamsize readedBytes = stream.gcount();
 	if (readedBytes < fileSize)
 	{
-		memset(&data[0] + readedBytes, 0, fileSize - static_cast<size_t>(readedBytes));
-		Modules::log().Error("File[%s]: Stream reading error. Readed [%d], filesize [%d]", Path_Name().c_str(), readedBytes, fileSize);
-		fail1();
+		//memset(&data[0] + readedBytes, 0, fileSize - static_cast<size_t>(readedBytes));
+
+		char buff[256];
+		sprintf(buff, "File[%s]: Stream reading error. Readed [%d], filesize [%d]", Path_Name().c_str(), readedBytes, fileSize);
+		fail2(buff);
 	}
 
 	data[fileSize] = '\0';

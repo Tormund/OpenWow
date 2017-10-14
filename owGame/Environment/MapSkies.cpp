@@ -64,18 +64,13 @@ void MapSkies::InitBuffer()
 
 		for (uint32 v = 0; v < C_SkycolorsCount - 1; v++)
 		{
-			//glColor3fv(glm::value_ptr(colorSet[skycolors[v]]));
-			//glVertex3fv(glm::value_ptr(basepos2[v]));
-			//glVertex3fv(glm::value_ptr(basepos1[v]));
-
-			//glColor3fv(glm::value_ptr(colorSet[skycolors[v + 1]]));
-			//glVertex3fv(glm::value_ptr(basepos1[v + 1]));
-			//glVertex3fv(glm::value_ptr(basepos2[v + 1]));
-
-			vertices.push_back(basepos2[v]);
 			vertices.push_back(basepos1[v]);
 			vertices.push_back(basepos1[v + 1]);
 			vertices.push_back(basepos2[v + 1]);
+
+			vertices.push_back(basepos2[v + 1]);
+			vertices.push_back(basepos2[v]);
+			vertices.push_back(basepos1[v]);
 		}
 	}
 
@@ -85,6 +80,7 @@ void MapSkies::InitBuffer()
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_GlobalBuffer);
 	glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float) * m_GlobalBufferSize, NULL, GL_DYNAMIC_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, m_GlobalBufferSize * sizeof(vec3), vertices.data());
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
@@ -133,9 +129,11 @@ void MapSkies::initSky(cvec3 _cameraPosition, uint32 _time)
 		for (uint32 v = 0; v < C_SkycolorsCount - 1; v++)
 		{
 			colors.push_back(colorSet[C_Skycolors[v]]);
+			colors.push_back(colorSet[C_Skycolors[v + 1]]);
+			colors.push_back(colorSet[C_Skycolors[v + 1]]);
+			colors.push_back(colorSet[C_Skycolors[v + 1]]);
 			colors.push_back(colorSet[C_Skycolors[v]]);
-			colors.push_back(colorSet[C_Skycolors[v + 1]]);
-			colors.push_back(colorSet[C_Skycolors[v + 1]]);
+			colors.push_back(colorSet[C_Skycolors[v]]);
 		}
 	}
 
@@ -201,7 +199,7 @@ bool MapSkies::drawSky(cvec3 pos)
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (const GLvoid*)(m_GlobalBufferSize * sizeof(vec3)));
 
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, m_GlobalBufferSize);
+	glDrawArrays(GL_TRIANGLES, 0, m_GlobalBufferSize);
 
 	//_Perfomance->Inc(PERF_MAP_CHUNK_MH20);
 
