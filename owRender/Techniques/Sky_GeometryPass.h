@@ -5,6 +5,5 @@
 class Sky_GeometryPass : public Technique
 {
 public:
-	Sky_GeometryPass();
-	virtual bool Init();
+	Sky_GeometryPass() : Technique("shaders/Sky") {}
 };

@@ -35,8 +35,6 @@ MapSkies::MapSkies(uint32 mapid)
 
 MapSkies::~MapSkies()
 {
-	glDeleteBuffers(1, &m_GlobalBuffer);
-
 	/*delete stars;*/  // BOUZI FIXME ENABLE ME
 }
 
@@ -73,15 +71,27 @@ void MapSkies::InitBuffer()
 			vertices.push_back(basepos1[v]);
 		}
 	}
+	__vertsSize = vertices.size();
 
-	m_GlobalBufferSize = vertices.size();
 
-	glGenBuffers(1, &m_GlobalBuffer);
+	// Vertex buffer
+	__vb = _Render->r->createVertexBuffer(2 * __vertsSize * sizeof(vec3), vertices.data());
+	_Render->r->updateBufferData(__vb, 0, __vertsSize * sizeof(vec3), vertices.data());
 
-	glBindBuffer(GL_ARRAY_BUFFER, m_GlobalBuffer);
-	glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float) * m_GlobalBufferSize, NULL, GL_DYNAMIC_DRAW);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, m_GlobalBufferSize * sizeof(vec3), vertices.data());
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//
+
+	__geom = _Render->r->beginCreatingGeometry(_Render->__layoutSky);
+
+	// Vertex params
+	_Render->r->setGeomVertexParams(__geom, __vb, 0, 0,                              0);
+	_Render->r->setGeomVertexParams(__geom, __vb, 1, __vertsSize * sizeof(vec3),     0);
+
+	// Index bufer
+	//uint32 __ib = _Render->r->createIndexBuffer(striplen, strip);
+	//_Render->r->setGeomIndexParams(lowrestiles[j][i], __ib, R_IndexFormat::IDXFMT_16);
+
+	// Finish
+	_Render->r->finishCreatingGeometry(__geom);
 }
 
 void MapSkies::initSky(cvec3 _cameraPosition, uint32 _time)
@@ -138,9 +148,8 @@ void MapSkies::initSky(cvec3 _cameraPosition, uint32 _time)
 	}
 
 	// Fill buffer with color
-	glBindBuffer(GL_ARRAY_BUFFER, m_GlobalBuffer);
-	glBufferSubData(GL_ARRAY_BUFFER, m_GlobalBufferSize * 3 * sizeof(float), m_GlobalBufferSize * sizeof(vec3), colors.data());
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	_Render->r->updateBufferData(__vb, __vertsSize * sizeof(vec3), __vertsSize * sizeof(vec3), colors.data());
 }
 
 void MapSkies::CalculateSkiesWeights(cvec3 pos)
@@ -185,32 +194,17 @@ bool MapSkies::drawSky(cvec3 pos)
 		return false;
 	}
 
-	_TechniquesMgr->m_Sky_GeometryPass->Bind();
+	_TechniquesMgr->m_Sky_GeometryPass->BindS();
 
 	_Pipeline->Clear();
 	_Pipeline->Translate(pos);
 	_TechniquesMgr->m_Sky_GeometryPass->SetPVW();
 
-	glBindBuffer(GL_ARRAY_BUFFER, m_GlobalBuffer);
+	_Render->r->setGeometry(__geom);
 
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
+	_Render->r->draw(PRIM_TRILIST, 0, __vertsSize);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (const GLvoid*)(m_GlobalBufferSize * sizeof(vec3)));
-
-	glDrawArrays(GL_TRIANGLES, 0, m_GlobalBufferSize);
-
-	//_Perfomance->Inc(PERF_MAP_CHUNK_MH20);
-
-	glDisableVertexAttribArray(1);
-	glDisableVertexAttribArray(0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	_TechniquesMgr->m_Sky_GeometryPass->Unbind();
-
-
+	//_Render->r->resetStates();
 
 	/*glPushMatrix();
 	{

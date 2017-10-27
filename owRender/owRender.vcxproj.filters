@@ -21,17 +21,11 @@
     <ClCompile Include="Pipeline.cpp">
       <Filter>Pipeline</Filter>
     </ClCompile>
-    <ClCompile Include="Gbuffer.cpp">
-      <Filter>Pipeline</Filter>
-    </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>Pipeline</Filter>
     </ClCompile>
     <ClCompile Include="Perfomance.cpp">
       <Filter>Perfomance</Filter>
-    </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>Shaders</Filter>
     </ClCompile>
     <ClCompile Include="TechniquesManager.cpp">
       <Filter>Techniques</Filter>
@@ -93,6 +87,9 @@
     <ClCompile Include="GPUTimer.cpp">
       <Filter>_NEW_RENDER</Filter>
     </ClCompile>
+    <ClCompile Include="Gbuffer.cpp">
+      <Filter>_NEW_RENDER</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Image.h">
@@ -117,17 +114,11 @@
     <ClInclude Include="Pipeline.h">
       <Filter>Pipeline</Filter>
     </ClInclude>
-    <ClInclude Include="Gbuffer.h">
-      <Filter>Pipeline</Filter>
-    </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Pipeline</Filter>
     </ClInclude>
     <ClInclude Include="Perfomance.h">
       <Filter>Perfomance</Filter>
-    </ClInclude>
-    <ClInclude Include="Shader.h">
-      <Filter>Shaders</Filter>
     </ClInclude>
     <ClInclude Include="TechniquesManager.h">
       <Filter>Techniques</Filter>
@@ -192,6 +183,15 @@
     <ClInclude Include="GPUTimer.h">
       <Filter>_NEW_RENDER</Filter>
     </ClInclude>
+    <ClInclude Include="RenderEnums.h">
+      <Filter>_NEW_RENDER</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTypes.h">
+      <Filter>_NEW_RENDER</Filter>
+    </ClInclude>
+    <ClInclude Include="Gbuffer.h">
+      <Filter>_NEW_RENDER</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Types">
@@ -205,9 +205,6 @@
     </Filter>
     <Filter Include="Pipeline">
       <UniqueIdentifier>{2ca38755-1636-43a8-8b22-bd21ac736ca3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Shaders">
-      <UniqueIdentifier>{f3d818e7-b12a-49b6-b477-32e20e14077d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Techniques">
       <UniqueIdentifier>{3b62bcfc-0d63-440b-a018-58f0bb73c48f}</UniqueIdentifier>
@@ -240,51 +237,6 @@
     </None>
     <None Include="PipelineWorldTransformation.inl">
       <Filter>Pipeline</Filter>
-    </None>
-    <None Include="..\_gamedata\shaders\commonGeometry.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\_gamedata\shaders\commonPostprocess.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\_gamedata\shaders\Debug_GeometryPass.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\_gamedata\shaders\light_pass.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\_gamedata\shaders\MapChunk_GeometryPass.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\_gamedata\shaders\MapTileLowRes_GeometryPass.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\_gamedata\shaders\MDX_GeometryPass.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\_gamedata\shaders\null_technique.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\_gamedata\shaders\SimpleColor.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\_gamedata\shaders\simpleRender.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\_gamedata\shaders\Sky_GeometryPass.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\_gamedata\shaders\UI_Font.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\_gamedata\shaders\WMO_GeomertyPass.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\_gamedata\shaders\Water_Pass.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\_gamedata\shaders\UI_Texture.glsl">
-      <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
 </Project>

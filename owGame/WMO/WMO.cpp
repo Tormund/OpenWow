@@ -344,19 +344,19 @@ bool WMO::draw(uint32 _doodadSet)
 
 	{
 
-		_TechniquesMgr->m_Debug_GeometryPass->Bind();
-		_TechniquesMgr->m_Debug_GeometryPass->SetPVW();
+		//_TechniquesMgr->m_Debug_GeometryPass->BindS();
+		//_TechniquesMgr->m_Debug_GeometryPass->SetPVW();
 
 		//#ifdef _DEBUG
 		//DEBUG_DrawLightPlaceHolders();
 		//DEBUG_DrawFogPositions();
-		DEBUG_DrawMainBoundingBox();
+		//DEBUG_DrawMainBoundingBox();
 		//DEBUG_DrawBoundingBoxes();
 		//DEBUG_DrawPortalsRelations();
 		//DEBUG_DrawPortals();
 		//#endif
 
-		_TechniquesMgr->m_Debug_GeometryPass->Unbind();
+		//_TechniquesMgr->m_Debug_GeometryPass->Unbind();
 	}
 
 	return true;
@@ -379,12 +379,10 @@ bool WMO::drawSkybox()
 	_Pipeline->Translate(_Camera->Position);
 	_Pipeline->Scale(2.0f);
 
-	_TechniquesMgr->m_MDX_GeometryPass->Bind();
+	_TechniquesMgr->m_MDX_GeometryPass->BindS();
 	_TechniquesMgr->m_MDX_GeometryPass->SetPVW();
 
 	m_Skybox->draw();
-
-	_TechniquesMgr->m_MDX_GeometryPass->Unbind();
 
 	_EnvironmentManager->m_HasSky = true;
 #endif
@@ -396,7 +394,7 @@ bool WMO::drawSkybox()
 
 void WMO::DEBUG_DrawLightPlaceHolders()
 {
-	glDisable(GL_CULL_FACE);
+	//glDisable(GL_CULL_FACE);
 	/*glColor4f(1, 1, 1, 1);
 
 	glBegin(GL_TRIANGLES);
@@ -410,12 +408,12 @@ void WMO::DEBUG_DrawLightPlaceHolders()
 	}
 	glEnd();*/
 
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 }
 
 void WMO::DEBUG_DrawFogPositions()
 {
-	glDisable(GL_TEXTURE_2D);
+	//glDisable(GL_TEXTURE_2D);
 
 	/*glColor4f(1, 1, 1, 1);
 
@@ -434,12 +432,12 @@ void WMO::DEBUG_DrawFogPositions()
 
 	glColor4f(1, 1, 1, 1);*/
 
-	glEnable(GL_TEXTURE_2D);
+	//glEnable(GL_TEXTURE_2D);
 }
 
 void WMO::DEBUG_DrawMainBoundingBox()
 {
-	_TechniquesMgr->m_Debug_GeometryPass->SetColor4(vec4(1.0f, 1.0f, 1.0f, 0.7f));
+	/*_TechniquesMgr->m_Debug_GeometryPass->SetColor4(vec4(1.0f, 1.0f, 1.0f, 0.7f));
 
 	vector<vec3> verts;
 
@@ -495,14 +493,14 @@ void WMO::DEBUG_DrawMainBoundingBox()
 	glDrawArrays(GL_LINES, 0, verts.size());
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glDeleteBuffers(1, &buffer);
+	glDeleteBuffers(1, &buffer);*/
 }
 
 void WMO::DEBUG_DrawBoundingBoxes()
 {
 	for (int i = 0; i < m_Header.nGroups; i++)
 	{
-		WMOGroup* g = m_Groups[i];
+		/*WMOGroup* g = m_Groups[i];
 		float fc[2] = {1, 0};
 
 		_TechniquesMgr->m_Debug_GeometryPass->SetColor4(vec4(fc[i % 2], fc[(i / 2) % 2], fc[(i / 3) % 2], 0.7f));
@@ -561,7 +559,7 @@ void WMO::DEBUG_DrawBoundingBoxes()
 		glDrawArrays(GL_LINES, 0, verts.size());
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glDeleteBuffers(1, &buffer);
+		glDeleteBuffers(1, &buffer);*/
 	}
 }
 
@@ -569,7 +567,7 @@ void WMO::DEBUG_DrawPortalsRelations()
 {
 	for (size_t i = 0; i < m_Header.nPortals; i++)
 	{
-		WMO_PortalInformation* portalInformation = m_PortalInformation[i];
+		/*WMO_PortalInformation* portalInformation = m_PortalInformation[i];
 		WMO_PortalReferences* portalReference = m_PortalReferences[i];
 		vec3 pv = m_PortalVertices[portalReference->portalIndex];
 
@@ -611,7 +609,7 @@ void WMO::DEBUG_DrawPortalsRelations()
 		glDisableVertexAttribArray(0);
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glDeleteBuffers(1, &buffer);
+		glDeleteBuffers(1, &buffer);*/
 	}
 }
 
@@ -621,7 +619,7 @@ void WMO::DEBUG_DrawPortals()
 
 	for (uint32 i = 0; i < m_Header.nPortals; i++)
 	{
-		WMO_PortalInformation* portalInformation = m_PortalInformation[i];
+		/*WMO_PortalInformation* portalInformation = m_PortalInformation[i];
 
 		vector<vec3> verts;
 		for (uint32 j = portalInformation->startVertex; j < portalInformation->count; j++)
@@ -642,6 +640,6 @@ void WMO::DEBUG_DrawPortals()
 		glDisableVertexAttribArray(0);
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glDeleteBuffers(1, &buffer);
+		glDeleteBuffers(1, &buffer);*/
 	}
 }

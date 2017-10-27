@@ -34,7 +34,6 @@ string ProcessShader(File& f)
 			assert1(firstBracketPosition != lastBracketPosition);
 
 			string inludeFileName = line.substr(firstBracketPosition + 1, lastBracketPosition - firstBracketPosition - 1);
-			Modules::log().Error("!!!!Include %s", inludeFileName.c_str());
 			data += ProcessShader(File(f.Path() + inludeFileName)) + '\n';
 
 			continue;
@@ -45,6 +44,8 @@ string ProcessShader(File& f)
 
 	return data;
 }
+
+//
 
 Technique::Technique(cstring _fileName)
 {
@@ -72,10 +73,3 @@ Technique::~Technique()
 {
 
 }
-
-bool Technique::CompileProgram(cstring _programName)
-{
-
-	return true;
-}
-

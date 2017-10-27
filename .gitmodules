@@ -1,0 +1,6 @@
+[submodule "Externals/glfw"]
+	path = Externals/glfw
+	url = https://github.com/glfw/glfw
+[submodule "Externals/StormLib"]
+	path = Externals/StormLib
+	url = https://github.com/ladislav-zezula/StormLib

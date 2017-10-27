@@ -114,6 +114,23 @@ Model_Skin::Model_Skin(MDX* _model, File& _mF, File& _aF) : m_ModelObject(_model
 
 	// transparent parts come later
 	sort(m_Passes.begin(), m_Passes.end());
+
+
+	//
+
+	__geom = _Render->r->beginCreatingGeometry(_Render->__layoutMDX);
+
+	// Vertex params
+	_Render->r->setGeomVertexParams(__geom, m_ModelObject->__vb, 0, m_ModelObject->header.vertices.size * 0 * sizeof(float), 0);
+	_Render->r->setGeomVertexParams(__geom, m_ModelObject->__vb, 1, m_ModelObject->header.vertices.size * 3 * sizeof(float), 0);
+	_Render->r->setGeomVertexParams(__geom, m_ModelObject->__vb, 2, m_ModelObject->header.vertices.size * 5 * sizeof(float), 0);
+
+	// Index bufer
+	uint32 __ib = _Render->r->createIndexBuffer(view->indices.size * sizeof(uint16), indices);
+	_Render->r->setGeomIndexParams(__geom, __ib, R_IndexFormat::IDXFMT_16);
+
+	// Finish
+	_Render->r->finishCreatingGeometry(__geom);
 }
 
 Model_Skin::~Model_Skin()
@@ -126,7 +143,7 @@ Model_Skin::~Model_Skin()
 
 void Model_Skin::Draw()
 {
-	_TechniquesMgr->m_MDX_GeometryPass->Bind();
+	_TechniquesMgr->m_MDX_GeometryPass->BindS();
 	_TechniquesMgr->m_MDX_GeometryPass->SetPVW();
 
 	for (size_t i = 0; i < m_Passes.size(); i++)
@@ -135,11 +152,11 @@ void Model_Skin::Draw()
 
 		if (p->init(m_ModelObject) && showGeosets[p->geoset])
 		{
-			m_ModelObject->drawShaderBegin();
+			_Render->r->setGeometry(__geom);
 
-			glDrawElements(GL_TRIANGLES, p->indexCount, GL_UNSIGNED_SHORT, indices + p->indexStart);
+			_Render->r->drawIndexed(PRIM_TRILIST, p->indexStart, p->indexCount, 0, m_ModelObject->header.vertices.size);
 
-			m_ModelObject->drawShaderEnd();
+			//_Render->r->resetStates();
 
 			p->deinit();
 		}

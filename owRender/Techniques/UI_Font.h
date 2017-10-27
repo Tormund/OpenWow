@@ -5,8 +5,7 @@
 class UI_Font : public Technique
 {
 public:
-	UI_Font();
-	virtual bool Init();
+	UI_Font() : Technique("shaders/UI_Font") {}
 
 	//
 

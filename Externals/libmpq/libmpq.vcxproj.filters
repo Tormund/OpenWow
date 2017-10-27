@@ -34,8 +34,6 @@
     <ClInclude Include="huffman.h" />
     <ClInclude Include="mpq.h" />
     <ClInclude Include="mpq-internal.h" />
-    <ClInclude Include="pack_begin.h" />
-    <ClInclude Include="pack_end.h" />
     <ClInclude Include="platform.h" />
     <ClInclude Include="wave.h" />
   </ItemGroup>

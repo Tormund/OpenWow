@@ -2,9 +2,6 @@
 
 #define INVALID_OGL_VALUE 0xFFFFFFFF
 
-// OpenGL
-#include "OpenGL.h"
-
 // Types
 #include "Texture.h"
 #include "Image.h"

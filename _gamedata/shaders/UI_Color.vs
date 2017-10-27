@@ -12,5 +12,5 @@ uniform mat4 gProjection;
 
 void main(void)
 {
-	gl_Position = gProjection * vec4(VertexPosition, 1.0, 1.0);
+	gl_Position = gProjection * vec4(VertexPosition, 0.0, 1.0);
 };

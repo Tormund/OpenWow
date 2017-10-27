@@ -6,10 +6,9 @@ class World
 
 public:
 	World();
-	~World();
 
 	void tick(float dt);
-	void drawShader(GLint _color);
+	void Render();
 	void RenderGeom();
 	void RenderPostprocess();
 
@@ -22,13 +21,12 @@ public:
 
 public:
 	GBuffer* m_gbuffer;
-	GLuint finalTexture1;
-	GLuint finalTexture2;
+
+	uint32 finalTexture1;
+	uint32 finalTexture2;
 
 	Camera* mainCamera;
 	Camera* testCamera;
-
-	GLuint m_VertexBuffer;
 };
 
 #define _World World::instance()

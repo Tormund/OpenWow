@@ -6,8 +6,7 @@
 class SimpleRenderGBuffer : public Technique
 {
 public:
-	SimpleRenderGBuffer();
-	 virtual bool Init();
+	SimpleRenderGBuffer() : Technique("shaders/Common_SimpleVertex.vs", "shaders/POST_SimpleRender.fs") {}
 
 	 void SetScreenSize(unsigned int Width, unsigned int Height)
 	 {

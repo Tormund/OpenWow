@@ -5,8 +5,7 @@
 class MapTileLowRes_GeometryPass : public Technique
 {
 public:
-	MapTileLowRes_GeometryPass();
-	virtual bool Init();
+	MapTileLowRes_GeometryPass() : Technique("shaders/MapTileLowRes") {}
 
 	void SetShadowColor(vec3 _Color)
 	{

@@ -3,36 +3,35 @@
 class Texture : public RefItem
 {
 public:
-	Texture() : RefItem(), oglObj(0), size(VECTOR_ZERO)
+	Texture() : RefItem(), m_Object(0), size(VECTOR_ZERO)
 	{}
 
-	Texture(GLuint _openglId) : RefItem(), oglObj(_openglId), size(VECTOR_ZERO)
+	Texture(uint32 _Object) : RefItem(), m_Object(_Object), size(VECTOR_ZERO)
 	{}
 
-	Texture(GLuint _openglId, cvec2 _size) : RefItem(), oglObj(_openglId), size(_size)
+	Texture(uint32 _Object, cvec2 _size) : RefItem(), m_Object(_Object), size(_size)
 	{}
 
 	~Texture()
 	{
-		assert1(glIsTexture(oglObj));
-		glDeleteTextures(1, &oglObj);
+		// _Render->r->delete
 	}
 
 	//
 
 	bool IsZeroSized() const { return (size == VECTOR_ZERO); }
-	const GLuint GetObj() { return oglObj; }
 
 	cvec2 GetSize() const { return size; }
 	void SetSize(cvec2 _value) { size = _value; }
 
+	uint32 GetObj() const { return m_Object; }
+	void SetObj(uint32 _value) { m_Object = _value; }
+
 	//
 
 	 void GenerateTexture();
-	 void Bind(uint8 _textureUnit = 0) const;
-	 void Unbind() const;
 
 private:
-	GLuint oglObj;
 	vec2 size;
+	uint32 m_Object;
 };

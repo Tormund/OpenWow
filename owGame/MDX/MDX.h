@@ -38,11 +38,9 @@ public:
 	void draw();
 	void updateEmitters(float dt);
 
-	void drawShaderBegin();
-	void drawShaderEnd();
-
 	ModelHeader header;
 
+	uint32 __vb;
 
 private:
 	bool m_Loaded;
@@ -51,8 +49,6 @@ private:
 	string m_ModelInternalName;
 
 private:
-	GLuint globalBuffer;
-
 	M2Vertex* m_OriginalVertexes;
 
 	vec3* m_Vertices;
@@ -99,8 +95,8 @@ public:
 	void animate(uint32 _animationIndex);
 	void calcBones(uint32 _animationIndex, int time);
 
-	void lightsOn(GLuint lbase);
-	void lightsOff(GLuint lbase);
+	void lightsOn(uint32 lbase);
+	void lightsOff(uint32 lbase);
 
 public:
 	Texture** textures;

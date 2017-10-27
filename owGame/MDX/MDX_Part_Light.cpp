@@ -16,7 +16,7 @@ void MDX_Part_Light::init(File& f, M2Light& mld, uint32* global)
 	diffIntensity.init(mld.diffuse_intensity, f, global);
 }
 
-void MDX_Part_Light::setup(int time, GLuint l)
+void MDX_Part_Light::setup(int time, uint32 l)
 {
 	vec4 ambcol(ambColor.getValue(0, time) * ambIntensity.getValue(0, time), 1.0f);
 	vec4 diffcol(diffColor.getValue(0, time) * diffIntensity.getValue(0, time), 1.0f);

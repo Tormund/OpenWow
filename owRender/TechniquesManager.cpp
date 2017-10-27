@@ -27,21 +27,16 @@ TechniquesMgr::~TechniquesMgr()
 
 void TechniquesMgr::Init()
 {
-	// EngineLog
-
 	m_Debug_GeometryPass = new Debug_GeometryPass();
-	m_Debug_GeometryPass->Init();
 
 	//
 
 	m_Sky_GeometryPass = new Sky_GeometryPass();
-	m_Sky_GeometryPass->Init();
 
 	//----------------------------------------------------------------//
 
 	m_MapChunk_GeometryPass = new MapChunk_GeometryPass();
-	m_MapChunk_GeometryPass->Init();
-	m_MapChunk_GeometryPass->Bind();
+	m_MapChunk_GeometryPass->BindS();
 
 	m_MapChunk_GeometryPass->SetColorTextureUnit0(0);
 	m_MapChunk_GeometryPass->SetColorTextureUnit1(1);
@@ -54,26 +49,25 @@ void TechniquesMgr::Init()
 	m_MapChunk_GeometryPass->SetSpecularTextureUnit1(6);
 	m_MapChunk_GeometryPass->SetSpecularTextureUnit2(7);
 	m_MapChunk_GeometryPass->SetSpecularTextureUnit3(8);
+
 	m_MapChunk_GeometryPass->Unbind();
 
 	//----------------------------------------------------------------//
 
 	m_MapTileLowRes_GeometryPass = new MapTileLowRes_GeometryPass();
-	m_MapTileLowRes_GeometryPass->Init();
 
 	//----------------------------------------------------------------//
 
 	m_MDX_GeometryPass = new MDX_GeometryPass();
-	m_MDX_GeometryPass->Init();
-	m_MDX_GeometryPass->Bind();
+	m_MDX_GeometryPass->BindS();
 	m_MDX_GeometryPass->SetColorTextureUnit(COLOR_TEXTURE_UNIT_INDEX);
 	m_MDX_GeometryPass->SetSpecularTextureUnit(SPECULAR_TEXTURE_UNIT_INDEX);
-	m_MDX_GeometryPass->Unbind();
+	m_WMO_GeometryPass->Unbind();
 
 	//
+
 	m_Water = new Water_Pass();
-	m_Water->Init();
-	m_Water->Bind();
+	m_Water->BindS();
 	m_Water->SetColorTextureUnit(COLOR_TEXTURE_UNIT_INDEX);
 	m_Water->SetSpecularTextureUnit(SPECULAR_TEXTURE_UNIT_INDEX);
 	m_Water->Unbind();
@@ -81,8 +75,7 @@ void TechniquesMgr::Init()
 	//----------------------------------------------------------------//
 
 	m_WMO_GeometryPass = new WMO_GeomertyPass();
-	m_WMO_GeometryPass->Init();
-	m_WMO_GeometryPass->Bind();
+	m_WMO_GeometryPass->BindS();
 	m_WMO_GeometryPass->SetColorTextureUnit(COLOR_TEXTURE_UNIT_INDEX);
 	m_WMO_GeometryPass->SetSpecularTextureUnit(SPECULAR_TEXTURE_UNIT_INDEX);
 	m_WMO_GeometryPass->Unbind();
@@ -91,8 +84,7 @@ void TechniquesMgr::Init()
 
 	//----------------------------------------------------------------//
 	m_DSDirLightPassTech = new DSDirLightPassTech();
-	m_DSDirLightPassTech->Init();
-	m_DSDirLightPassTech->Bind();
+	m_DSDirLightPassTech->BindS();
 
 	m_DSDirLightPassTech->SetProjectionMatrix(mat4());
 	m_DSDirLightPassTech->SetViewMatrix(mat4());
@@ -102,14 +94,13 @@ void TechniquesMgr::Init()
 
 	m_DSDirLightPassTech->SetScreenSize(Modules::config().windowSizeX, Modules::config().windowSizeY);
 	m_DSDirLightPassTech->SetMatSpecularPower(64);
-	
+
 	m_DSDirLightPassTech->Unbind();
 
 	//----------------------------------------------------------------//
 
 	m_SimpleRender = new SimpleRenderGBuffer();
-	m_SimpleRender->Init();
-	m_SimpleRender->Bind();
+	m_SimpleRender->BindS();
 
 	m_SimpleRender->SetProjectionMatrix(mat4());
 	m_SimpleRender->SetViewMatrix(mat4());
@@ -118,26 +109,24 @@ void TechniquesMgr::Init()
 	m_SimpleRender->BindToPostprocess();
 
 	m_SimpleRender->SetScreenSize(Modules::config().windowSizeX, Modules::config().windowSizeY);
+	
 	m_SimpleRender->Unbind();
 
 	//
 
 	m_UI_Color = new UI_Color();
-	m_UI_Color->Init();
 
 	//
 
 	m_UI_Font = new UI_Font();
-	m_UI_Font->Init();
-	m_UI_Font->Bind();
+	m_UI_Font->BindS();
 	m_UI_Font->SetFontTexture(COLOR_TEXTURE_UNIT_INDEX);
 	m_UI_Font->Unbind();
 
 	//
 
 	m_UI_Texture = new UI_Texture();
-	m_UI_Texture->Init();
-	m_UI_Texture->Bind();
+	m_UI_Texture->BindS();
 	m_UI_Texture->SetTexture(COLOR_TEXTURE_UNIT_INDEX);
 	m_UI_Texture->Unbind();
 }

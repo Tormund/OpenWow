@@ -6,10 +6,18 @@
 class DSDirLightPassTech : public Technique
 {
 public:
-	DSDirLightPassTech();
-	virtual bool Init();
+	DSDirLightPassTech() : Technique("shaders/Common_SimpleVertex.vs", "shaders/POST_Light_Direction.fs") {}
 
-	void SetDirectionalLight(const DirectionalLight& Light);
+	void SetDirectionalLight(const DirectionalLight& Light)
+	{
+		setVec3("gDirectionalLight.Base.ambient", Light.ambient);
+		setVec3("gDirectionalLight.Base.diffuse", Light.diffuse);
+		setVec3("gDirectionalLight.Base.specular", Light.specular);
+
+		vec3 Direction = Light.Direction;
+		Direction = Direction.normalized();
+		setVec3("gDirectionalLight.Direction", Direction);
+	}
 
 
 	void SetEyeWorldPos(const vec3& EyePos)

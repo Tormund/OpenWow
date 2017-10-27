@@ -5,8 +5,7 @@
 class WMO_GeomertyPass : public Technique
 {
 public:
-	WMO_GeomertyPass();
-	virtual bool Init();
+	WMO_GeomertyPass() : Technique("shaders/WMO") {}
 
 	inline void SetColorTextureUnit(int TextureUnit)
 	{
@@ -22,7 +21,7 @@ public:
 
 	void SetHasMOCV(bool hasMOCV)
 	{
-		setBool("gHasMOCV", hasMOCV);
+		setInt("gHasMOCV", hasMOCV);
 	}
 
 	void SetDiffuseColor(vec3 _Color)

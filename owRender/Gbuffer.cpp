@@ -51,10 +51,8 @@ void GBuffer::BindForLightPass()
 {
 	_Render->r->setRenderBuffer(0);
 
-	for (unsigned int i = 0; i < 4; i++)
+	for (uint32 i = 0; i < 4; i++)
 	{
 		_Render->r->setTexture(i, _Render->r->getRenderBufferTex(rb, i), 0, R_TextureUsage::Texture);
 	}
-
-	_Render->r->commitStates();
 }

@@ -3,6 +3,9 @@
 // General 
 #include "GPUTimer.h"
 
+// Additional
+#include "OpenGL.h"
+
 GPUTimer::GPUTimer() : _numQueries(0), _queryFrame(0), _activeQuery(false)
 {
 	reset();

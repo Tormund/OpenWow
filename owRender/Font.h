@@ -3,7 +3,7 @@
 class Font : public RefItem
 {
 public:
-	Font(GLuint textureOpenglId, GLuint _fontBufferObj, uint32* charWidthArray, uint32 charHeight);
+	Font(uint32 _Texture, uint32 _fontGeom, uint32* charWidthArray, uint32 charHeight);
 
 	 ~Font();
 
@@ -17,8 +17,8 @@ public:
 	static const uint32 NUM_CHARS = 192;
 
 private:
-	GLuint m_TextureOpenglId;
-	GLuint m_FontBuffer;
+	uint32 m_Texture;
+	uint32 m_FontBuffer;
 	uint32* m_CharWidthArray;
 	uint32 m_CharHeight;
 };

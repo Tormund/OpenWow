@@ -20,14 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseFile.cpp" />
-    <ClCompile Include="CASCFile.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="CASCFolder.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="ContainerAssync.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="MPQFile.cpp" />
@@ -62,14 +54,6 @@
   <ItemGroup>
     <ClInclude Include="..\shared\owCore.h" />
     <ClInclude Include="BaseFile.h" />
-    <ClInclude Include="CASCFile.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="CASCFolder.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="ContainerAssync.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="InputKeys.h" />

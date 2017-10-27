@@ -5,8 +5,7 @@
 class MDX_GeometryPass : public Technique
 {
 public:
-	MDX_GeometryPass();
-	virtual bool Init();
+	MDX_GeometryPass() : Technique("shaders/MDX") {}
 
 	//
 

@@ -6,8 +6,7 @@
 class DSLightPassTech : public Technique
 {
 public:
-	 DSLightPassTech();
-	 virtual bool Init();
+	DSLightPassTech() : Technique("shaders/light_pass.glsl") {}
 
 	 void SetEyeWorldPos(const vec3& EyePos)
 	 {

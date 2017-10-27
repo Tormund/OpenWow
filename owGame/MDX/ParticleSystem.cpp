@@ -211,7 +211,7 @@ void ParticleSystem::setup(int anim, int time)
 
 void ParticleSystem::draw()
 {
-	switch (blend)
+	/*switch (blend)
 	{
 		case 0:
 		glDisable(GL_BLEND);
@@ -243,12 +243,12 @@ void ParticleSystem::draw()
 
 		//glDisable(GL_ALPHA_TEST);
 		break;
-	}
+	}*/
 
-	glDisable(GL_CULL_FACE);
-	glDepthMask(GL_FALSE);
+	//glDisable(GL_CULL_FACE);
+	//glDepthMask(GL_FALSE);
 
-	texture->Bind();
+	//texture->Bind();
 
 	vec3 vRight(1, 0, 0);
 	vec3 vUp(0, 1, 0);
@@ -362,8 +362,8 @@ void ParticleSystem::draw()
 
 	}
 
-	glEnable(GL_CULL_FACE);
-	glDepthMask(GL_TRUE);
+	//glEnable(GL_CULL_FACE);
+	//glDepthMask(GL_TRUE);
 
 }
 

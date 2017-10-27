@@ -56,7 +56,7 @@ void TexturesMgr::Destroy()
 
 bool TexturesMgr::LoadSoilTexture(File& _file, Texture* _texture)
 {
-	_texture->Bind();
+	//_texture->Bind();
 
 	// Read data
 	int32 sizeX, sizeY;
@@ -72,64 +72,60 @@ bool TexturesMgr::LoadSoilTexture(File& _file, Texture* _texture)
 	_texture->SetSize(vec2(sizeX, sizeY));
 
 	// Create texture
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _texture->GetSize().x, _texture->GetSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-	glGenerateMipmap(GL_TEXTURE_2D);
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _texture->GetSize().x, _texture->GetSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+	//glGenerateMipmap(GL_TEXTURE_2D);
 
 	// Params
 	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 	// Params
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	// Unbind
-	glBindTexture(GL_TEXTURE_2D, 0);
+	//glBindTexture(GL_TEXTURE_2D, 0);
 
 	return true;
 }
 
 bool TexturesMgr::LoadBLPTexture(File& _file, Texture* _texture)
 {
-	_texture->Bind();
+	uint32 texID = 0;
 
 	// Read data
 	BLPHeader header;
 	_file.ReadBytes(&header, 148);
 
-	//Modules::log().Print("Texture[]: compression=[%d], alpha_depth=[%d], alpha_type=[%d], has_mips=[%d] [%s]", header.compression, header.alpha_depth, header.alpha_type, header.has_mips, _file.Path_Name().c_str());
-
 	assert1(header.magic[0] == 'B' && header.magic[1] == 'L' && header.magic[2] == 'P' && header.magic[3] == '2');
 	assert1(header.type == 1);
 
 	_texture->SetSize(vec2(header.width, header.height));
-
+	
 	uint8 mipmax = header.has_mips ? 16 : 1;
 
 	if (header.compression == 2)
 	{
-		GLint format;
-		uint32 blocksize;
+		R_TextureFormats::List format;
 
 		if (header.alpha_type == 0)
 		{
-			format = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-			blocksize = 8u;
+			format = R_TextureFormats::DXT1;
 		}
 		else if (header.alpha_type == 1)
 		{
-			format = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
-			blocksize = 16u;
+			format = R_TextureFormats::DXT3;
 		}
 		else if(header.alpha_type == 7)
 		{
-			format = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
-			blocksize = 16u;
+			format = R_TextureFormats::DXT5;
 		}
 		else
 		{
 			fail1();
 		}
+
+		texID = _Render->r->createTexture(R_TextureTypes::Tex2D, header.width, header.height, 1, format, header.has_mips, false, true, false);
 
 		uint8* buf = new uint8[header.mipSizes[0]];
 		//uint8* ucbuf = new uint8[header.height * header.width * 4];
@@ -137,9 +133,6 @@ bool TexturesMgr::LoadBLPTexture(File& _file, Texture* _texture)
 		// do every mipmap level
 		for (uint8 i = 0; i < mipmax; i++)
 		{
-			if (header.width == 0) header.width = 1;
-			if (header.height == 0)	header.height = 1;
-
 			if (header.mipOffsets[i])
 			{
 				assert1(header.mipSizes[i] > 0);
@@ -147,22 +140,16 @@ bool TexturesMgr::LoadBLPTexture(File& _file, Texture* _texture)
 				_file.Seek(header.mipOffsets[i]);
 				_file.ReadBytes(buf, header.mipSizes[i]);
 
-				uint32 size = ((header.width + 3) / 4) * ((header.height + 3) / 4) * blocksize;
-
-				glCompressedTexImage2D(GL_TEXTURE_2D, i, format, header.width, header.height, 0, size, buf);
+				_Render->r->uploadTextureData(texID, 0, i, buf);
 			}
 			else
 			{
 				break;
 			}
-
-			header.width /= 2;
-			header.height /= 2;
 		}
 
 
 		delete[] buf;
-		//delete[] ucbuf;
 	}
 	else if (header.compression == 1)
 	{
@@ -176,11 +163,10 @@ bool TexturesMgr::LoadBLPTexture(File& _file, Texture* _texture)
 
 		bool hasalpha = (header.alpha_depth != 0);
 
+		texID = _Render->r->createTexture(R_TextureTypes::Tex2D, header.width, header.height, 1, R_TextureFormats::RGBA8, header.has_mips, false, false, false);
+
 		for (int i = 0; i < mipmax; i++)
 		{
-			if (header.width == 0) header.width = 1;
-			if (header.height == 0)	header.height = 1;
-
 			if (header.mipOffsets[i] && header.mipSizes[i])
 			{
 				_file.Seek(header.mipOffsets[i]);
@@ -222,15 +208,13 @@ bool TexturesMgr::LoadBLPTexture(File& _file, Texture* _texture)
 					}
 				}
 
-				glTexImage2D(GL_TEXTURE_2D, i, GL_RGBA8, header.width, header.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buf2);
+				//glTexImage2D(GL_TEXTURE_2D, i, GL_RGBA8, header.width, header.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buf2);
+				_Render->r->uploadTextureData(texID, 0, i, buf2);
 			}
 			else
 			{
 				break;
 			}
-
-			header.width /= 2;
-			header.height /= 2;
 		}
 
 		delete[] buf2;
@@ -242,16 +226,7 @@ bool TexturesMgr::LoadBLPTexture(File& _file, Texture* _texture)
 		//fail1();
 	}
 
-	// Params
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	// Params
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	// Unbind
-	glBindTexture(GL_TEXTURE_2D, 0);
+	_texture->SetObj(texID);
 
 	return true;
 }
@@ -271,10 +246,10 @@ Texture* TexturesMgr::Add(File& _textureFile)
 
 Texture* TexturesMgr::CreateAction(cstring name)
 {
-	GLuint textureOpenglId;
-	glGenTextures(1, &textureOpenglId);
+	//GLuint textureOpenglId;
+	//glGenTextures(1, &textureOpenglId);
 
-	Texture* texture = new Texture(textureOpenglId, vec2(16, 16));
+	Texture* texture = new Texture(0, vec2(16, 16));
 
 	return texture;
 }

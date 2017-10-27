@@ -32,7 +32,6 @@ public:
 	bool Init();
 	
 	void Clear();
-	void Clear2();
 	void ClearFinalBuffer();
 
 	void BindForGeomPass();
@@ -40,11 +39,6 @@ public:
 	void BindForLightPass();
 
 public:
-	GLuint gBuffer;
-
-	GLuint textures[4];
-	GLuint depthTexture;
-
 	uint32 rb;
 	uint32 rb2;
 

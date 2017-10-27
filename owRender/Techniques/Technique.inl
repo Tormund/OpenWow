@@ -4,18 +4,18 @@
 #include "../Pipeline.h"
 #include "../Render.h"
 
-inline void Technique::Bind()
+inline void Technique::BindS()
 {
 	_Render->r->bindShader(shaderId);
 }
 
 inline void Technique::Unbind()
 {
-	//glUseProgram(0);
+	_Render->r->bindShader(0);
 }
 
 
-inline GLint Technique::getLocation(const char* name) const
+inline int32 Technique::getLocation(const char* name) const
 {
 	return _Render->r->getShaderConstLoc(shaderId, name);
 }
@@ -23,24 +23,19 @@ inline GLint Technique::getLocation(const char* name) const
 
 //
 
-inline void Technique::setTexture(const char* name, GLuint value) const
+inline void Technique::setTexture(const char* name, uint32 value) const
 {
 	_Render->r->setShaderSampler(getLocation(name), value);
 }
 
 //
 
-inline void Technique::setBool(const char* name, bool value) const
-{
-	_Render->r->setShaderConst(getLocation(name), CONST_INT, (int*)&value);
-}
-
-inline void Technique::setInt(const char* name, GLint value) const
+inline void Technique::setInt(const char* name, int32 value) const
 {
 	_Render->r->setShaderConst(getLocation(name), CONST_INT, &value);
 }
 
-inline void Technique::setFloat(const char* name, GLfloat value) const
+inline void Technique::setFloat(const char* name, float value) const
 {
 	_Render->r->setShaderConst(getLocation(name), CONST_FLOAT, &value);
 }
@@ -51,7 +46,7 @@ inline void Technique::setVec2(const char* name, vec2 value) const
 {
 	_Render->r->setShaderConst(getLocation(name), CONST_FLOAT2, &value.x);
 }
-inline void Technique::setVec2(const char* name, GLfloat x, GLfloat y) const
+inline void Technique::setVec2(const char* name, float x, float y) const
 {
 	_Render->r->setShaderConst(getLocation(name), CONST_FLOAT2, vec2(x, y));
 }
@@ -62,9 +57,9 @@ inline void Technique::setVec3(const char* name, vec3 value) const
 {
 	_Render->r->setShaderConst(getLocation(name), CONST_FLOAT3, &value.x);
 }
-inline void Technique::setVec3(const char* name, GLfloat x, GLfloat y, GLfloat z) const
+inline void Technique::setVec3(const char* name, float x, float y, float z) const
 {
-	//_Render->r->setShaderConst(getLocation(name), CONST_FLOAT3, vec3(x, y, z));
+	_Render->r->setShaderConst(getLocation(name), CONST_FLOAT3, vec3(x, y, z));
 }
 
 //
@@ -73,9 +68,9 @@ inline void Technique::setVec4(const char* name, vec4 value) const
 {
 	_Render->r->setShaderConst(getLocation(name), CONST_FLOAT4, &value.x);
 }
-inline void Technique::setVec4(const char* name, GLfloat x, GLfloat y, GLfloat z, GLfloat w) const
+inline void Technique::setVec4(const char* name, float x, float y, float z, float w) const
 {
-	//_Render->r->setShaderConst(getLocation(name), CONST_FLOAT4, vec4(x, y, z, w));
+	_Render->r->setShaderConst(getLocation(name), CONST_FLOAT4, vec4(x, y, z, w));
 }
 
 //

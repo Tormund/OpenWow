@@ -41,25 +41,25 @@ Map::~Map()
 void Map::CreateMapArrays()
 {
 	// default strip indices
-	short *defstrip = new short[stripsize];
-	for (int i = 0; i < stripsize; i++)
+	short *defstrip = new short[C_LowResStripSize];
+	for (int i = 0; i < C_LowResStripSize; i++)
 	{
 		defstrip[i] = i; // note: this is ugly and should be handled in stripify
 	}
 
-	mapstrip = new short[stripsize];
+	mapstrip = new short[C_LowResStripSize];
 	stripify<short>(defstrip, mapstrip);
 	delete[] defstrip;
 
 	// hifg-resolution
 
-	defstrip = new short[stripsize2];
-	for (int i = 0; i < stripsize2; i++)
+	defstrip = new short[C_HighResStripSize];
+	for (int i = 0; i < C_HighResStripSize; i++)
 	{
 		defstrip[i] = i;
 	}
 
-	mapstrip2 = new short[stripsize2];
+	mapstrip2 = new short[C_HighResStripSize];
 	stripify2<short>(defstrip, mapstrip2);
 	delete[] defstrip;
 
@@ -320,7 +320,6 @@ void Map::Load_WDL()
 	short tilebuf2[16 * 16];
 
 	// Minimap
-	glGenTextures(1, &minimap);
 	uint32* texbuf = new uint32[512 * 512];
 	memset(texbuf, 0, 512 * 512 * 4);
 
@@ -456,22 +455,29 @@ void Map::Load_WDL()
 					}
 				}
 
-				glGenBuffers(1, &lowrestiles[j][i]);
-				glBindBuffer(GL_ARRAY_BUFFER, lowrestiles[j][i]);
+				// Vertex buffer
+				uint32 __vb = _Render->r->createVertexBuffer(vecrtices.size() * sizeof(vec3), vecrtices.data());
 
-				glBufferData(GL_ARRAY_BUFFER, 16*16*12 * 12, &vecrtices[0], GL_STATIC_DRAW);
+				//
 
-				glBindBuffer(GL_ARRAY_BUFFER, 0);
+				lowrestiles[j][i] = _Render->r->beginCreatingGeometry(_Render->__layoutMapLowResolution);
+
+				// Vertex params
+				_Render->r->setGeomVertexParams(lowrestiles[j][i], __vb, 0, 0, 0);
+
+				// Index bufer
+				//uint32 __ib = _Render->r->createIndexBuffer(striplen, strip);
+				//_Render->r->setGeomIndexParams(lowrestiles[j][i], __ib, R_IndexFormat::IDXFMT_16);
+
+				// Finish
+				_Render->r->finishCreatingGeometry(lowrestiles[j][i]);
 			}
 		}
 	}
 
 	// Finish minimap
-	glBindTexture(GL_TEXTURE_2D, minimap);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 512, 512, 0, GL_RGBA, GL_UNSIGNED_BYTE, texbuf);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
+	minimap = _Render->r->createTexture(R_TextureTypes::Tex2D, 512, 512, 1, R_TextureFormats::RGBA8, false, false, false, false);
+	_Render->r->uploadTextureData(minimap, 0, 0, texbuf);
 	delete[] texbuf;
 
 
@@ -489,7 +495,7 @@ void Map::Unload()
 		{
 			if (lowrestiles[i][j] != 0)
 			{
-				glDeleteBuffers(1, &lowrestiles[i][j]);
+				//glDeleteBuffers(1, &lowrestiles[i][j]);
 			}
 		}
 	}
@@ -504,7 +510,7 @@ void Map::Unload()
 
 	if (minimap)
 	{
-		glDeleteTextures(1, &minimap);
+		//glDeleteTextures(1, &minimap);
 	}
 }
 
@@ -565,26 +571,19 @@ void Map::RenderSky()
 
 void Map::RenderLowResTiles()
 {
-
 	for (int i = 0; i < C_TilesInMap; i++)
+	{
 		for (int j = 0; j < C_TilesInMap; j++)
+		{
 			if (lowrestiles[i][j])
 			{
-				glBindBuffer(GL_ARRAY_BUFFER, lowrestiles[i][j]);
+				_Render->r->setGeometry(lowrestiles[i][j]);
 
-				// Vertex
-				glEnableVertexAttribArray(0);
-				glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-				glDrawArrays(GL_TRIANGLES, 0, 16 * 16 * 12);
+				_Render->r->draw(PRIM_TRILIST, 0, 16 * 16 * 12);
 				PERF_INC(PERF_MAP_LOWRESOLUTION);
-
-				glDisableVertexAttribArray(0);
-
-				glBindBuffer(GL_ARRAY_BUFFER, 0);
 			}
-
-
+		}
+	}
 
 	/*const int lrr = 5;
 	for (int i = currentTileX - lrr; i <= currentTileX + lrr; i++)
@@ -670,20 +669,19 @@ void Map::RenderWater()
 
 void Map::enterTile(int x, int z)
 {
-	if (IsBadTileIndex(x, z))
+	// Check bad tile & exists
+	if (IsBadTileIndex(x, z) || !m_TileFlag[x][z].HasADT)
 	{
 		outOfBounds = true;
 		return;
 	}
 
-	outOfBounds = !m_TileFlag[x][z].HasADT;
-
 	currentTileX = x;
 	currentTileZ = z;
 
-	for (int i = 0; i < C_RenderedTiles; i++)
+	for (uint8 i = 0; i < C_RenderedTiles; i++)
 	{
-		for (int j = 0; j < C_RenderedTiles; j++)
+		for (uint8 j = 0; j < C_RenderedTiles; j++)
 		{
 			current[i][j] = LoadTile(x - static_cast<uint32>(C_RenderedTiles / 2) + i, z - static_cast<uint32>(C_RenderedTiles / 2) + j);
 		}

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.12
+VisualStudioVersion = 15.0.27004.2002
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "owCore", "owCore\owCore.vcxproj", "{A4E6F769-0036-4128-A409-495D9207F587}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -26,8 +26,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libmpq", "Externals\libmpq\libmpq.vcxproj", "{0CC7FA61-23DE-4D9F-A6F4-FDA327AB5984}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "soil", "Externals\soil\soil.vcxproj", "{D9837E8D-ACEE-4D36-A7AF-A4B7566E5A8D}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CascLib_dll", "Externals\CascLib\CascLib_vs17_dll.vcxproj", "{CB385198-50B1-4CF4-883B-11F042DED6AA}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "owCataclysm", "owCataclysm\owCataclysm.vcxproj", "{645797A4-A484-4D99-A130-88BD45546BD5}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -82,14 +80,6 @@ Global
 		{D9837E8D-ACEE-4D36-A7AF-A4B7566E5A8D}.Release|x64.Build.0 = Release|x64
 		{D9837E8D-ACEE-4D36-A7AF-A4B7566E5A8D}.Release|x86.ActiveCfg = Release|Win32
 		{D9837E8D-ACEE-4D36-A7AF-A4B7566E5A8D}.Release|x86.Build.0 = Release|Win32
-		{CB385198-50B1-4CF4-883B-11F042DED6AA}.Debug|x64.ActiveCfg = Debug|x64
-		{CB385198-50B1-4CF4-883B-11F042DED6AA}.Debug|x64.Build.0 = Debug|x64
-		{CB385198-50B1-4CF4-883B-11F042DED6AA}.Debug|x86.ActiveCfg = Debug|Win32
-		{CB385198-50B1-4CF4-883B-11F042DED6AA}.Debug|x86.Build.0 = Debug|Win32
-		{CB385198-50B1-4CF4-883B-11F042DED6AA}.Release|x64.ActiveCfg = Release|x64
-		{CB385198-50B1-4CF4-883B-11F042DED6AA}.Release|x64.Build.0 = Release|x64
-		{CB385198-50B1-4CF4-883B-11F042DED6AA}.Release|x86.ActiveCfg = Release|Win32
-		{CB385198-50B1-4CF4-883B-11F042DED6AA}.Release|x86.Build.0 = Release|Win32
 		{645797A4-A484-4D99-A130-88BD45546BD5}.Debug|x64.ActiveCfg = Debug|x64
 		{645797A4-A484-4D99-A130-88BD45546BD5}.Debug|x64.Build.0 = Debug|x64
 		{645797A4-A484-4D99-A130-88BD45546BD5}.Debug|x86.ActiveCfg = Debug|Win32
@@ -105,7 +95,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{0CC7FA61-23DE-4D9F-A6F4-FDA327AB5984} = {7117DD40-5090-4982-B565-034F60A0D3B1}
 		{D9837E8D-ACEE-4D36-A7AF-A4B7566E5A8D} = {7117DD40-5090-4982-B565-034F60A0D3B1}
-		{CB385198-50B1-4CF4-883B-11F042DED6AA} = {7117DD40-5090-4982-B565-034F60A0D3B1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {30BF641C-2C5D-4C14-B950-C07F6CD68736}

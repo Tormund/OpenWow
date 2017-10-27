@@ -146,14 +146,16 @@ public:
 	int fog;
 	bool visible;
 	bool m_EnableOutdoorLights;
-	GLuint globalBuffer;
 	BoundingBox m_Bounds;
+
+	uint32 __geom;
 
 public:
 	//-- Triangles --//
 	uint32 m_MaterialsInfoCount;
 	WMOGroup_MaterialInfo* m_MaterialsInfo; // MOPY chunk
 
+	uint32 m_IndicesCount;
 	uint16* m_Indices;                  // MOVI chunk
 
 	uint32 m_VertexesCount;

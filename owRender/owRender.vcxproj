@@ -185,10 +185,6 @@
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="Pipeline.cpp" />
     <ClCompile Include="Render.cpp" />
-    <ClCompile Include="Shader.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Techniques\Debug_GeometryPass.cpp" />
     <ClCompile Include="Techniques\ds_dir_light_pass_tech.cpp" />
@@ -221,6 +217,8 @@
     <ClInclude Include="RenderDevice.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="RenderEnums.h" />
+    <ClInclude Include="RenderTypes.h" />
     <ClInclude Include="TechniquesManager.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="FontsMgr.h" />
@@ -229,10 +227,6 @@
     <ClInclude Include="lights_common.h" />
     <ClInclude Include="Pipeline.h" />
     <ClInclude Include="Render.h" />
-    <ClInclude Include="Shader.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Techniques\Debug_GeometryPass.h" />
     <ClInclude Include="Techniques\ds_dir_light_pass_tech.h" />
@@ -253,63 +247,6 @@
     <ClInclude Include="TexturesMgr.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\_gamedata\shaders\commonGeometry.glsl">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
-      <FileType>Document</FileType>
-    </None>
-    <None Include="..\_gamedata\shaders\commonPostprocess.glsl">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
-      <FileType>Document</FileType>
-    </None>
-    <None Include="..\_gamedata\shaders\Debug_GeometryPass.glsl">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
-      <FileType>Document</FileType>
-    </None>
-    <None Include="..\_gamedata\shaders\light_pass.glsl">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
-      <FileType>Document</FileType>
-    </None>
-    <None Include="..\_gamedata\shaders\MapChunk_GeometryPass.glsl">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
-      <FileType>Document</FileType>
-    </None>
-    <None Include="..\_gamedata\shaders\MapTileLowRes_GeometryPass.glsl">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
-      <FileType>Document</FileType>
-    </None>
-    <None Include="..\_gamedata\shaders\MDX_GeometryPass.glsl">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
-      <FileType>Document</FileType>
-    </None>
-    <None Include="..\_gamedata\shaders\null_technique.glsl">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
-      <FileType>Document</FileType>
-    </None>
-    <None Include="..\_gamedata\shaders\SimpleColor.glsl">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
-      <FileType>Document</FileType>
-    </None>
-    <None Include="..\_gamedata\shaders\simpleRender.glsl">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
-      <FileType>Document</FileType>
-    </None>
-    <None Include="..\_gamedata\shaders\Sky_GeometryPass.glsl">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
-      <FileType>Document</FileType>
-    </None>
-    <None Include="..\_gamedata\shaders\UI_Font.glsl">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
-      <FileType>Document</FileType>
-    </None>
-    <None Include="..\_gamedata\shaders\UI_Texture.glsl" />
-    <None Include="..\_gamedata\shaders\WMO_GeomertyPass.glsl">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
-      <FileType>Document</FileType>
-    </None>
-    <None Include="..\_gamedata\shaders\Water_Pass.glsl">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
-      <FileType>Document</FileType>
-    </None>
     <None Include="PipelineWorldTransformation.inl" />
     <None Include="Techniques\Technique.inl" />
   </ItemGroup>

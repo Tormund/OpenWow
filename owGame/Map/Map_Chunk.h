@@ -16,7 +16,7 @@ public:
 	void initStrip(int holes);
 
 	void Render();
-	void drawNoDetail();
+
 	void drawPass(int anim);
 
 	//
@@ -36,13 +36,13 @@ public:
 
 	Texture* textures[4];
 	Texture* SpecularTextures[4];
-	Texture* blend;
+	uint32 blend;
 
 	int animated[4];
 
-
-
-	GLuint globalBuffer;
+	uint32 __geom;
+	uint32 __ibLow;
+	uint32 __ibHigh;
 
 	short* strip;
 	int striplen;

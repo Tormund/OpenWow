@@ -18,10 +18,10 @@ WMOLight::WMOLight(File& f)
 	//Modules::log().Warn("Atten = %f, %f", lightDef.attenStart, lightDef.attenEnd);
 }
 
-void WMOLight::setup(GLint light)
+void WMOLight::setup(uint32 light)
 {
-	GLfloat LightAmbient[] = {0, 0, 0, 1.0f};
-	GLfloat LightPosition[] = {lightDef.pos.x, lightDef.pos.y, lightDef.pos.z, 0.0f};
+	float LightAmbient[] = {0, 0, 0, 1.0f};
+	float LightPosition[] = {lightDef.pos.x, lightDef.pos.y, lightDef.pos.z, 0.0f};
 
 	//glLightfv(light, GL_AMBIENT, LightAmbient);
 	//glLightfv(light, GL_DIFFUSE, fcolor);
@@ -30,7 +30,7 @@ void WMOLight::setup(GLint light)
 	//glEnable(light);
 }
 
-void WMOLight::setupOnce(GLint light, vec3 dir, vec4 lcol)
+void WMOLight::setupOnce(uint32 light, vec3 dir, vec4 lcol)
 {
 	vec4 position(dir, 0);
 

@@ -334,7 +334,7 @@ void Liquid::createBuffer(cvec3 _position)
 				unsigned ty = y - layer.y;
 
 				// p1--p4
-				// |    |  // this is GL_QUADS 
+				// |    |
 				// p2--p3
 				unsigned p1 = tx + ty           * (layer.Width + 1);
 				unsigned p2 = tx + (ty + 1)     * (layer.Width + 1);
@@ -376,8 +376,6 @@ void Liquid::createBuffer(cvec3 _position)
 					a3 = (float)layer.depths[p3] / 255.f * 4.0f + 0.0f;
 					a4 = (float)layer.depths[p4] / 255.f * 4.0f + 0.0f;
 				}
-
-				
 
 				// Skip hidden water tile
 				if (layer.renderTiles.size() != 0)
@@ -446,12 +444,25 @@ void Liquid::createBuffer(cvec3 _position)
 		return;
 	}
 
-	glGenBuffers(1, &globalBufferWater);
-	glBindBuffer(GL_ARRAY_BUFFER, globalBufferWater);
 
-	glBufferData(GL_ARRAY_BUFFER, mh2oVertices.size() * sizeof(MH2O_Vertex), mh2oVertices.data(), GL_STATIC_DRAW);
+	// Vertex buffer
+	uint32 __vb = _Render->r->createVertexBuffer(mh2oVertices.size() * sizeof(MH2O_Vertex), mh2oVertices.data());
 
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//
+
+	__geom = _Render->r->beginCreatingGeometry(_Render->__layoutWater);
+
+	// Vertex params
+	_Render->r->setGeomVertexParams(__geom, __vb, 0, mh2oVertices.size() * 0 * sizeof(float), sizeof(MH2O_Vertex));
+	_Render->r->setGeomVertexParams(__geom, __vb, 1, mh2oVertices.size() * 3 * sizeof(float), sizeof(MH2O_Vertex));
+	_Render->r->setGeomVertexParams(__geom, __vb, 2, mh2oVertices.size() * 6 * sizeof(float), sizeof(MH2O_Vertex));
+
+	// Index bufer
+	//uint32 __ib = _Render->r->createIndexBuffer(m_IndicesCount, m_Indices);
+	//_Render->r->setGeomIndexParams(__geom, __ib, R_IndexFormat::IDXFMT_16);
+
+	// Finish
+	_Render->r->finishCreatingGeometry(__geom);
 }
 
 void Liquid::draw()
@@ -461,95 +472,20 @@ void Liquid::draw()
 		return;
 	}
 
-	_TechniquesMgr->m_Water->Bind();
+	_TechniquesMgr->m_Water->BindS();
 	_TechniquesMgr->m_Water->SetPVW();
 
-	glBindBuffer(GL_ARRAY_BUFFER, globalBufferWater);
-
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (const GLvoid*)(0));
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (const GLvoid*)(3 * sizeof(float)));
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (const GLvoid*)(6 * sizeof(float)));
 
 	size_t texidx = (size_t)(_EnvironmentManager->animtime / 60.0f) % textures.size();
-	textures[texidx]->Bind();
+	_Render->r->setTexture(0, textures[texidx]->GetObj(), 0, 0);
 
 	_TechniquesMgr->m_Water->SetWaterColorLight(_EnvironmentManager->GetSkyColor(LIGHT_GLOBAL_DIFFUSE));
 	_TechniquesMgr->m_Water->SetWaterColorDark(_EnvironmentManager->GetSkyColor(LIGHT_GLOBAL_DIFFUSE));
 
-	glDrawArrays(GL_TRIANGLES, 0, globalBufferSize);
+	_Render->r->setGeometry(__geom);
+
+	_Render->r->draw(PRIM_TRILIST, 0, globalBufferSize);
 	PERF_INC(PERF_MAP_CHUNK_MH20);
-
-	glDisableVertexAttribArray(2);
-	glDisableVertexAttribArray(1);
-	glDisableVertexAttribArray(0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	_TechniquesMgr->m_Water->Unbind();
-
-	//const float tcol = trans ? 0.9f : 1.0f;
-	//if (trans)
-	//{
-	//	glEnable(GL_BLEND);
-	//	glDepthMask(GL_FALSE);
-	//}
-
-	/*if (Modules::config().useshadersfalse && (shader >= 0))
-	{
-	// SHADER-BASED
-	vec3 col2;
-	waterShaders[shader]->bind();
-	if (type == 2)
-	{
-	col = _EnvironmentManager->GetSkyColor(RIVER_COLOR_LIGHT);
-	col2 = _EnvironmentManager->GetSkyColor(RIVER_COLOR_DARK);
-	}
-	else
-	{
-	col2 = col;
-	}
-
-	glProgramLocalParameter4fARB(GL_FRAGMENT_PROGRAM_ARB, 0, col.x, col.y, col.z, tcol);
-	glProgramLocalParameter4fARB(GL_FRAGMENT_PROGRAM_ARB, 1, col2.x, col2.y, col2.z, tcol);
-
-	glCallList(m_OGLList);
-
-	waterShaders[shader]->unbind();
-	}
-	else
-	{
-	// FIXED-FUNCTION
-
-	if (type == 0)
-	{
-	glColor4f(1, 1, 1, tcol);
-	}
-	else
-	{
-	if (type == 2)
-	{
-	col = _EnvironmentManager->GetSkyColor(RIVER_COLOR_LIGHT); // TODO: add variable water colo
-	}
-	glColor4f(col.x, col.y, col.z, tcol);
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_ADD); // TODO: check if ARB_texture_env_add is supported? :(
-	}
-	glCallList(m_OGLList);
-
-	if (type != 0) glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-	}
-
-	//glDepthFunc(GL_LEQUAL);
-	//glColor4f(1, 1, 1, 1);
-	//if (trans)
-	//{
-	//	glDepthMask(GL_TRUE);
-	//	glDisable(GL_BLEND);
-	//}
-	*/
 }
 
 //
@@ -558,10 +494,6 @@ void Liquid::initGeometry(File& f)
 {
 	Liquid_Vertex* map = (Liquid_Vertex*)f.GetDataFromCurrent();
 	Liquid_Flag* flags = (Liquid_Flag*)(f.GetDataFromCurrent() + m_TilesCount * sizeof(Liquid_Vertex));
-
-	// generate vertices
-	//vec3* verts = new vec3[m_TilesCount];
-	//float* col = new float[m_TilesCount];
 
 	MH2O_WaterLayer waterLayer;
 
@@ -598,68 +530,9 @@ void Liquid::initGeometry(File& f)
 	m_WaterLayers.push_back(waterLayer);
 
 	createBuffer(m_Position);
-
-	/*vector<MH2O_Vertex> mh2oVertices;
-
-	// draw tiles
-	for (int j = 0; j < m_TilesY; j++)
-	{
-		for (int i = 0; i < m_TilesX; i++)
-		{
-			Liquid_Flag f = flags[j * m_TilesX + i];
-			if (f.liquid & 0x08)
-			{
-				continue;
-			}
-
-			// 15 seems to be "don't draw"
-			uint32 p = j * (m_TilesX + 1) + i;
-
-			mh2oVertices.push_back({
-				verts[p],
-				vec3(i / texRepeats, j / texRepeats, col[p]),
-				defaultNormal
-			});
-
-			mh2oVertices.push_back({
-				verts[p + 1],
-				vec3((i + 1) / texRepeats, j / texRepeats, col[p + 1]),
-				defaultNormal
-			});
-
-			mh2oVertices.push_back({
-				verts[p + m_TilesX + 1 + 1],
-				vec3((i + 1) / texRepeats, (j + 1) / texRepeats, col[p + m_TilesX + 1 + 1]),
-				defaultNormal
-			});
-
-			mh2oVertices.push_back({
-				verts[p + m_TilesX + 1],
-				vec3(i / texRepeats, (j + 1) / texRepeats, col[p + m_TilesX + 1]),
-				defaultNormal
-			});
-		}
-	}
-
-	globalBufferSize = static_cast<uint32>(mh2oVertices.size());
-
-	if (globalBufferSize == 0)
-	{
-		return;
-	}
-
-	glGenBuffers(1, &globalBufferWater);
-	glBindBuffer(GL_ARRAY_BUFFER, globalBufferWater);
-
-	glBufferData(GL_ARRAY_BUFFER, mh2oVertices.size() * sizeof(MH2O_Vertex), mh2oVertices.data(), GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	delete[] verts;
-	delete[] col;*/
 }
 
-void Liquid::InitTextures(const DBC_LiquidTypeRecord * _liquidType)
+void Liquid::InitTextures(const DBC_LiquidTypeRecord* _liquidType)
 {
 	assert1(_liquidType != nullptr);
 

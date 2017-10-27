@@ -128,6 +128,8 @@ bool Engine::Tick()
 
 	//
 
+	_Render->r->beginRendering();
+
 	// Render world
 	_Render->Set3D();
 	if (currentGameState != nullptr)

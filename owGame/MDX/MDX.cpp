@@ -232,6 +232,13 @@ void MDX::initCommon(File& f)
 			transparency[i].init(f, trDefs[i], m_GlobalLoops);
 		}
 	}
+	
+	// Vertex buffer
+	__vb = _Render->r->createVertexBuffer(header.vertices.size * 8 * sizeof(float), nullptr);
+
+	_Render->r->updateBufferData(__vb, header.vertices.size * 0 * sizeof(float), header.vertices.size * 3 * sizeof(float), m_Vertices);
+	_Render->r->updateBufferData(__vb, header.vertices.size * 3 * sizeof(float), header.vertices.size * 2 * sizeof(float), m_Texcoords);
+	_Render->r->updateBufferData(__vb, header.vertices.size * 5 * sizeof(float), header.vertices.size * 3 * sizeof(float), m_Normals);
 
 	// just use the first LOD/view
 	if (header.num_skin_profiles > 0)
@@ -242,19 +249,6 @@ void MDX::initCommon(File& f)
 
 		m_Skins.push_back(skin);
 	}
-
-
-	// Buffer
-	glGenBuffers(1, &globalBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, globalBuffer);
-
-	glBufferData(GL_ARRAY_BUFFER, header.vertices.size * 8 * sizeof(float), NULL, GL_DYNAMIC_DRAW);
-
-	glBufferSubData(GL_ARRAY_BUFFER, header.vertices.size * 0 * sizeof(float), header.vertices.size * sizeof(vec3), m_Vertices);
-	glBufferSubData(GL_ARRAY_BUFFER, header.vertices.size * 3 * sizeof(float), header.vertices.size * sizeof(vec2), m_Texcoords);
-	glBufferSubData(GL_ARRAY_BUFFER, header.vertices.size * 5 * sizeof(float), header.vertices.size * sizeof(vec3), m_Normals);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 //
@@ -313,36 +307,7 @@ void MDX::draw()
 
 //
 
-void MDX::drawShaderBegin()
-{
-	glBindBuffer(GL_ARRAY_BUFFER, globalBuffer);
-
-	// Vertex
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-	// Texture
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (const GLvoid*)(header.vertices.size * 3 * sizeof(float)));
-
-	// Normal
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (const GLvoid*)(header.vertices.size * 5 * sizeof(float)));
-}
-
-void MDX::drawShaderEnd()
-{
-	glDisableVertexAttribArray(2);
-	glDisableVertexAttribArray(1);
-	glDisableVertexAttribArray(0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-}
-
-//
-
-void MDX::lightsOn(GLuint lbase)
+void MDX::lightsOn(uint32 lbase)
 {
 	/*if (!m_Loaded)
 	{
@@ -356,7 +321,7 @@ void MDX::lightsOn(GLuint lbase)
 	}
 }
 
-void MDX::lightsOff(GLuint lbase)
+void MDX::lightsOff(uint32 lbase)
 {
 	/*if (!m_Loaded)
 	{
@@ -365,7 +330,7 @@ void MDX::lightsOff(GLuint lbase)
 
 	for (uint32 i = 0, l = lbase; i < header.lights.size; i++)
 	{
-		glDisable(l++);
+		//glDisable(l++);
 	}
 }
 

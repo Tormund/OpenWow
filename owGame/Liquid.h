@@ -155,7 +155,8 @@ private:
 	vec3 m_WaterColorLight;
 	vec3 m_WaterColorDark;
 
-	GLuint globalBufferWater;
+	uint32 __geom;
+	//GLuint globalBufferWater;
 	uint32 globalBufferSize;
 
 

@@ -5,8 +5,7 @@
 class UI_Texture : public Technique
 {
 public:
-	UI_Texture();
-	virtual bool Init();
+	UI_Texture() : Technique("shaders/UI_Texture") {}
 
 	//
 

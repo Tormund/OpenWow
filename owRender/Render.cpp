@@ -10,49 +10,6 @@
 // Additional
 #include "TechniquesManager.h"
 
-void glDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
-{
-	if (id == 131169 || id == 131185 || id == 131218 || id == 131204) return;
-
-	Modules::log().Error("---------------");
-	Modules::log().Error("OpenGL Debug message (%d): [%s]", id, message);
-
-	switch (source)
-	{
-		case GL_DEBUG_SOURCE_API:             Modules::log().Error("Source: OpenGL API"); break;
-		case GL_DEBUG_SOURCE_WINDOW_SYSTEM:   Modules::log().Error("Source: Window System API"); break;
-		case GL_DEBUG_SOURCE_SHADER_COMPILER: Modules::log().Error("Source: Shader Compiler"); break;
-		case GL_DEBUG_SOURCE_THIRD_PARTY:     Modules::log().Error("Source: Third Party"); break;
-		case GL_DEBUG_SOURCE_APPLICATION:     Modules::log().Error("Source: Application"); break;
-		case GL_DEBUG_SOURCE_OTHER:           Modules::log().Error("Source: Other"); break;
-	}
-
-	switch (type)
-	{
-		case GL_DEBUG_TYPE_ERROR:               Modules::log().Error("Type: Error"); break;
-		case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: Modules::log().Error("Type: Deprecated Behaviour"); break;
-		case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:  Modules::log().Error("Type: Undefined Behaviour"); break;
-		case GL_DEBUG_TYPE_PORTABILITY:         Modules::log().Error("Type: Portability"); break;
-		case GL_DEBUG_TYPE_PERFORMANCE:         Modules::log().Error("Type: Performance"); break;
-		case GL_DEBUG_TYPE_MARKER:              Modules::log().Error("Type: Marker"); break;
-		case GL_DEBUG_TYPE_PUSH_GROUP:          Modules::log().Error("Type: Push Group"); break;
-		case GL_DEBUG_TYPE_POP_GROUP:           Modules::log().Error("Type: Pop Group"); break;
-		case GL_DEBUG_TYPE_OTHER:               Modules::log().Error("Type: Other"); break;
-	}
-
-	switch (severity)
-	{
-		case GL_DEBUG_SEVERITY_HIGH:         Modules::log().Error("Severity: high"); break;
-		case GL_DEBUG_SEVERITY_MEDIUM:       Modules::log().Error("Severity: medium"); break;
-		case GL_DEBUG_SEVERITY_LOW:          Modules::log().Error("Severity: low"); break;
-		case GL_DEBUG_SEVERITY_NOTIFICATION: Modules::log().Error("Severity: notification"); break;
-	}
-
-
-	//system("pause");
-	//Modules::log().Exit(-1);
-}
-
 struct Texture_Vertex
 {
 	vec2 vertex;
@@ -89,61 +46,125 @@ bool RenderGL::Init()
 
 	r->setViewport(0, 0, Modules::config().windowSizeX, Modules::config().windowSizeY);
 
-	// EngineLog output
-	/*GLint flags;
-	glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
-	if (flags & GL_CONTEXT_FLAG_DEBUG_BIT)
-	{*/
-	glEnable(GL_DEBUG_OUTPUT);
-	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-	glDebugMessageCallback(glDebugOutput, nullptr);
-	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
-	//fail1();
-	//}
-
-
-	/*dc = wglGetCurrentDC();
-	glrc1 = wglCreateContext(dc);
-	glrc2 = wglCreateContext(dc);
-	glrc3 = wglCreateContext(dc);
-	glrc4 = wglCreateContext(dc);
-
-	if (wglShareLists(glrc1, glrc2) == FALSE)
-	{
-		Modules::log().Error("Mega error !!!!1111");
-	}
-
-	if (wglShareLists(glrc1, glrc3) == FALSE)
-	{
-		Modules::log().Error("Mega error !!!!2222");
-	}
-
-	if (wglShareLists(glrc1, glrc4) == FALSE)
-	{
-		Modules::log().Error("Mega error !!!!3333");
-	}
-
-	wglMakeCurrent(dc, glrc1);*/
-
 	// GL settings
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	//glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 	// Viewport
-	glViewport(0, 0, Modules::config().windowSizeX, Modules::config().windowSizeY);
+	//glViewport(0, 0, Modules::config().windowSizeX, Modules::config().windowSizeY);
 
 	m_OrhoMatrix = Matrix4f::OrthoMat(0.0f, Modules::config().windowSizeX, Modules::config().windowSizeY, 0.0f, -1.0f, 1.0f);
 
 
-	// Font vertex buffer
-	glGenBuffers(1, &m_ImageBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, m_ImageBuffer);
-	glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(Texture_Vertex), NULL, GL_DYNAMIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	R_VertexLayoutAttrib attribsPos2[1] = {
+		{"VertexPosition",      0, 2, 0}
+	};
+	__layoutPos2 = _Render->r->registerVertexLayout(1, attribsPos2);
 
-	glGenBuffers(1, &m_ColorBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, m_ColorBuffer);
-	glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(vec2), NULL, GL_DYNAMIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//
+
+	R_VertexLayoutAttrib attribsModel3[2] = {
+		{"vertexPos",      0, 2, 0},
+		{"textureCoords",  1, 2, 0}
+	};
+	__layoutFont = _Render->r->registerVertexLayout(2, attribsModel3);
+
+	//
+
+	R_VertexLayoutAttrib attribsSky[2] = {
+		{"vertexPos",      0, 3, 0},
+		{"color",          1, 3, 0}
+	};
+	__layoutSky = _Render->r->registerVertexLayout(2, attribsSky);
+	//--------------------------------------------------------------------------------------------
+	R_VertexLayoutAttrib attribsMapLowResolution[1] = {
+		{"vertexPos",      0, 3, 0}
+	};
+	__layoutMapLowResolution = _Render->r->registerVertexLayout(1, attribsMapLowResolution);
+	//--------------------------------------------------------------------------------------------
+	R_VertexLayoutAttrib attribsModel333[6] = {
+		{"vertexPos",            0, 3, 0},
+		{"textureCoordsDetail",  1, 2, 0},
+		{"textureCoordsAlpha",   2, 2, 0},
+		{"normal",               3, 3, 0},
+	    {"colorMCCV",            4, 3, 0},
+	    {"colorMCLV",            5, 4, 0}
+	};
+	__layoutMapChunk = _Render->r->registerVertexLayout(6, attribsModel333);
+	//--------------------------------------------------------------------------------------------
+	R_VertexLayoutAttrib attribsWMO[3] = {
+		{"vertexPos",      0, 3, 0},
+		{"textureCoords",  1, 2, 0},
+		{"normal",         2, 3, 0}
+	};
+	__layoutWMO = _Render->r->registerVertexLayout(3, attribsWMO);
+
+	R_VertexLayoutAttrib attribsWMO_VC[4] = {
+		{"vertexPos",      0, 3, 0},
+		{"textureCoords",  1, 2, 0},
+		{"normal",         2, 3, 0},
+		{"color",          3, 4, 0}
+	};
+	__layoutWMO_VC = _Render->r->registerVertexLayout(4, attribsWMO_VC);
+	//--------------------------------------------------------------------------------------------
+	R_VertexLayoutAttrib attribsMDX[3] = {
+		{"vertexPos",      0, 3, 0},
+		{"textureCoords",  1, 2, 0},
+		{"normal",         2, 3, 0}
+	};
+	__layoutMDX = _Render->r->registerVertexLayout(3, attribsMDX);
+	//--------------------------------------------------------------------------------------------
+	R_VertexLayoutAttrib attribsWater[3] = {
+		{"vertexPos",      0, 3, 0},
+		{"textureCoords",  1, 3, 0},
+		{"normal",         2, 3, 0}
+	};
+	__layoutWater = _Render->r->registerVertexLayout(3, attribsWater);
+	
+	//
+
+	// Indexes
+	uint16 indexes[6] = {0, 1, 2, 2, 1, 3};
+	uint32 __ib = r->createIndexBuffer(6 * sizeof(uint16), indexes);
+
+	//
+
+	//-- Pos2
+
+	__vbPos2 = _Render->r->createVertexBuffer(4 * sizeof(vec2), nullptr);
+	__geomPos2 = _Render->r->beginCreatingGeometry(_Render->__layoutPos2);
+
+	r->setGeomVertexParams(__geomPos2, __vbPos2, 0, 0, 0);
+	r->setGeomIndexParams(__geomPos2, __ib, R_IndexFormat::IDXFMT_16);
+
+	_Render->r->finishCreatingGeometry(__geomPos2);
+
+
+	//-- Pos3
+
+	__vbPos3 = _Render->r->createVertexBuffer(4 * sizeof(vec2), nullptr);
+	__geomPos3 = _Render->r->beginCreatingGeometry(_Render->__layoutPos2);
+
+	r->setGeomVertexParams(__geomPos3, __vbPos3, 0, 0, 0);
+
+	uint16 indexes3[8] = {0, 1, 1, 2, 2, 3, 3, 0};
+	uint32 __ibPos3 = r->createIndexBuffer(8 * sizeof(uint16), indexes3);
+	r->setGeomIndexParams(__geomPos3, __ibPos3, R_IndexFormat::IDXFMT_16);
+
+	_Render->r->finishCreatingGeometry(__geomPos3);
+
+	//
+
+	//-- Pos2 Texture2
+	
+	__vb = _Render->r->createVertexBuffer(4 * sizeof(Texture_Vertex), nullptr);
+	__geom = _Render->r->beginCreatingGeometry(_Render->__layoutFont);
+
+	r->setGeomVertexParams(__geom, __vb, 0, 0,            2 * sizeof(vec2));
+	r->setGeomVertexParams(__geom, __vb, 1, sizeof(vec2), 2 * sizeof(vec2));
+	r->setGeomIndexParams(__geom, __ib, R_IndexFormat::IDXFMT_16);
+
+	_Render->r->finishCreatingGeometry(__geom);
+
 
 	return true;
 }
@@ -153,19 +174,17 @@ void RenderGL::Destroy()
 
 void RenderGL::Set3D()
 {
-	//wglMakeCurrent(dc, glrc1);
-
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	r->clear(0xFFFFFFFF);
 
 	// Cull face
-	glDisable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
+	r->setCullMode(R_CullMode::RS_CULL_BACK);
 
 	// Depth settings
-	glDisable(GL_DEPTH_TEST);
+	r->setDepthMask(true);
+	r->setDepthTest(true);
 
 	// Blending settings
-	glDisable(GL_BLEND);
+	r->setBlendMode(false);
 }
 
 void RenderGL::Set2D()
@@ -175,16 +194,13 @@ void RenderGL::Set2D()
 	//-----------
 
 	// Cull face
-	glDisable(GL_CULL_FACE);
+	r->setCullMode(R_CullMode::RS_CULL_NONE);
 
 	// Depth settings
-	glDisable(GL_DEPTH_TEST);
+	r->setDepthTest(false);
 
 	// Blending settings
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	glActiveTexture(GL_TEXTURE0);
+	r->setBlendMode(true, R_BlendFunc::BS_BLEND_SRC_ALPHA, R_BlendFunc::BS_BLEND_INV_SRC_ALPHA);
 }
 
 // UI
@@ -206,42 +222,23 @@ void RenderGL::RenderTexture(cvec2 _pos, Texture* _texture, cvec2 _size, const R
 	RenderTexture(_pos, _texture->GetObj(), _size, _coords);
 }
 
-void RenderGL::RenderTexture(cvec2 _pos, GLuint _texture, cvec2 _size, const Rect& _coords)
+void RenderGL::RenderTexture(cvec2 _pos, uint32 _texture, cvec2 _size, const Rect& _coords)
 {
-	_TechniquesMgr->m_UI_Texture->Bind();
+	_TechniquesMgr->m_UI_Texture->BindS();
 	_TechniquesMgr->m_UI_Texture->SetProjectionMatrix(m_OrhoMatrix);
 
-	glBindBuffer(GL_ARRAY_BUFFER, m_ImageBuffer);
-
 	vector<Texture_Vertex> vertices;
-
 	vertices.push_back({vec2(_pos.x + 0.0f,          _pos.y + 0.0f),       vec2(_coords.p0.x, _coords.p0.y)});
 	vertices.push_back({vec2(_pos.x + _size.x,       _pos.y + 0.0f),       vec2(_coords.p1.x, _coords.p0.y)});
 	vertices.push_back({vec2(_pos.x + 0.0f,          _pos.y + _size.y),     vec2(_coords.p0.x, _coords.p1.y)});
-
-	vertices.push_back({vec2(_pos.x + 0.0f,          _pos.y + _size.y),     vec2(_coords.p0.x, _coords.p1.y)});
-	vertices.push_back({vec2(_pos.x + _size.x,       _pos.y + 0.0f),       vec2(_coords.p1.x, _coords.p0.y)});
 	vertices.push_back({vec2(_pos.x + _size.x,       _pos.y + _size.y),     vec2(_coords.p1.x, _coords.p1.y)});
 
-	glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(Texture_Vertex), vertices.data());
+	r->updateBufferData(__vb, 0, vertices.size() * sizeof(Texture_Vertex), &vertices[0]);
 
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (const GLvoid*)(0));
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (const GLvoid*)(sizeof(vec2)));
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, _texture);
-
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-	glDisableVertexAttribArray(1);
-	glDisableVertexAttribArray(0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	r->setTexture(0, _texture, 0, 0);
+	
+	r->setGeometry(__geom);
+	r->drawIndexed(PRIM_TRILIST, 0, 6, 0, 6);
 
 	_TechniquesMgr->m_UI_Texture->Unbind();
 }
@@ -250,63 +247,42 @@ void RenderGL::RenderTexture(cvec2 _pos, GLuint _texture, cvec2 _size, const Rec
 
 void RenderGL::RenderRectangle(cvec2 _pos, cvec2 _size, const Color& _color)
 {
-	_TechniquesMgr->m_UI_Color->Bind();
+	_TechniquesMgr->m_UI_Color->BindS();
 	_TechniquesMgr->m_UI_Color->SetProjectionMatrix(m_OrhoMatrix);
 	_TechniquesMgr->m_UI_Color->SetColor(_color);
 
-	glBindBuffer(GL_ARRAY_BUFFER, m_ImageBuffer);
-
 	vector<vec2> vertices;
+	vertices.push_back(vec2(_pos.x + 0.0f,       _pos.y + 0.0f));
+	vertices.push_back(vec2(_pos.x + _size.x,    _pos.y + 0.0f));
+	vertices.push_back(vec2(_pos.x + 0.0f,       _pos.y + _size.y));
+	vertices.push_back(vec2(_pos.x + _size.x,    _pos.y + _size.y));
 
-	vertices.push_back(vec2(_pos.x + 0.0f, _pos.y + 0.0f));
-	vertices.push_back(vec2(_pos.x + _size.x, _pos.y + 0.0f));
-	vertices.push_back(vec2(_pos.x + 0.0f, _pos.y + _size.y));
-
-	vertices.push_back(vec2(_pos.x + 0.0f, _pos.y + _size.y));
-	vertices.push_back(vec2(_pos.x + _size.x, _pos.y + 0.0f));
-	vertices.push_back(vec2(_pos.x + _size.x, _pos.y + _size.y));
-
-	glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(vec2), vertices.data());
-
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(vec2), (const GLvoid*)(0));
-
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-
-	glDisableVertexAttribArray(0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	r->updateBufferData(__vbPos2, 0, vertices.size() * sizeof(vec2), &vertices[0]);
+	
+	r->setGeometry(__geomPos2);
+	r->drawIndexed(PRIM_TRILIST, 0, 6, 0, 4);
 
 	_TechniquesMgr->m_UI_Color->Unbind();
 }
 
 void RenderGL::RenderRectangleOutline(cvec2 _pos, cvec2 _size, const Color& _color)
 {
-	_TechniquesMgr->m_UI_Color->Bind();
+	/*_TechniquesMgr->m_UI_Color->BindS();
 	_TechniquesMgr->m_UI_Color->SetProjectionMatrix(m_OrhoMatrix);
 	_TechniquesMgr->m_UI_Color->SetColor(_color);
 
-	glBindBuffer(GL_ARRAY_BUFFER, m_ImageBuffer);
-
 	vector<vec2> vertices;
+	vertices.push_back(vec2(_pos.x + 0.0f, _pos.y + 0.0f));
+	vertices.push_back(vec2(_pos.x + _size.x, _pos.y + 0.0f));
+	vertices.push_back(vec2(_pos.x + 0.0f, _pos.y + _size.y));
+	vertices.push_back(vec2(_pos.x + _size.x, _pos.y + _size.y));
 
-	vertices.push_back(vec2(_pos.x + 0.0f,          _pos.y + 0.0f));
-	vertices.push_back(vec2(_pos.x + _size.x,       _pos.y + 0.0f));
-	vertices.push_back(vec2(_pos.x + _size.x,       _pos.y + _size.y));
-	vertices.push_back(vec2(_pos.x + 0.0f,          _pos.y + _size.y));
+	r->updateBufferData(__vbPos3, 0, vertices.size() * sizeof(vec2), &vertices[0]);
+	
+	r->setGeometry(__geomPos3);
+	r->drawIndexed(PRIM_LINES, 0, 8, 0, 4);
 
-	glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(vec2), vertices.data());
-
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(vec2), (const GLvoid*)(0));
-
-	glDrawArrays(GL_LINE_LOOP, 0, 4);
-
-	glDisableVertexAttribArray(0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	_TechniquesMgr->m_UI_Color->Unbind();
+	_TechniquesMgr->m_UI_Color->Unbind();*/
 }
 
 //
@@ -363,13 +339,29 @@ void RenderGL::RenderText(cvec2 _pos, cstring _string, TextAlignW _alignW, TextA
 		break;
 	}
 
-	_TechniquesMgr->m_UI_Font->Bind();
+	_TechniquesMgr->m_UI_Font->BindS();
 	_TechniquesMgr->m_UI_Font->SetProjectionMatrix(m_OrhoMatrix);
 	_TechniquesMgr->m_UI_Font->SetFontColor(vec3(_color.red, _color.green, _color.blue));
 
 	_font->Render(_string, _pos + offset);
 
 	_TechniquesMgr->m_UI_Font->Unbind();
+}
+
+//
+
+void RenderGL::RenderQuad()
+{
+	vector<vec2> vertices;
+	vertices.push_back(vec2(-1.0f, -1.0f));
+	vertices.push_back(vec2( 1.0f, -1.0f));
+	vertices.push_back(vec2(-1.0f,  1.0f));
+	vertices.push_back(vec2( 1.0f,  1.0f));
+
+	r->updateBufferData(__vbPos2, 0, vertices.size() * sizeof(vec2), vertices.data());
+
+	r->setGeometry(__geomPos2);
+	r->drawIndexed(PRIM_TRILIST, 0, 6, 0, 4);
 }
 
 //
@@ -384,92 +376,10 @@ void RenderGL::OnWindowResized(uint32 _width, uint32 _height)
 	Modules::config().CalculateAspectFactor();
 
 	// Set viewport
-	glViewport(0, 0, Modules::config().windowSizeX, Modules::config().windowSizeY);
+	r->setViewport(0, 0, Modules::config().windowSizeX, Modules::config().windowSizeY);
 
 	// Projection matix
 	m_OrhoMatrix = Matrix4f::OrthoMat(0.0f, Modules::config().windowSizeX, Modules::config().windowSizeY, 0.0f, -1.0f, 1.0f);
 }
 
-//
-
-void RenderGL::addRenderTarget(const string &id, bool depthBuf, uint32 numColBufs, R_TextureFormats::List format, uint32 samples, uint32 width, uint32 height, float scale)
-{
-	RenderTarget rt;
-
-	rt.id = id;
-	rt.hasDepthBuf = depthBuf;
-	rt.numColBufs = numColBufs;
-	rt.format = format;
-	rt.samples = samples;
-	rt.width = width;
-	rt.height = height;
-	rt.scale = scale;
-
-	_renderTargets.push_back(rt);
-}
-
-
-RenderTarget *RenderGL::findRenderTarget(const string &id) const
-{
-	if (id == "")
-	{
-		return 0x0;
-	}
-
-	for (uint32 i = 0; i < _renderTargets.size(); ++i)
-	{
-		if (_renderTargets[i].id == id)
-		{
-			return (RenderTarget*)&_renderTargets[i];
-		}
-	}
-
-	return 0x0;
-}
-
-
-bool RenderGL::createRenderTargets()
-{
-	RenderDevice* rdi = r;
-
-	for (uint32 i = 0; i < _renderTargets.size(); ++i)
-	{
-		RenderTarget &rt = _renderTargets[i];
-
-		uint32 width = ftoi_r(rt.width * rt.scale);
-		if (width == 0)
-		{
-			width = ftoi_r(Modules::config().windowSizeX * rt.scale);
-		}
-
-		uint32 height = ftoi_r(rt.height * rt.scale);
-		if (height == 0)
-		{
-			height = ftoi_r(Modules::config().windowSizeY * rt.scale);
-		}
-
-		rt.rendBuf = rdi->createRenderBuffer(width, height, rt.format, rt.hasDepthBuf, rt.numColBufs, rt.samples);
-		if (rt.rendBuf == 0)
-		{
-			return false;
-		}
-	}
-
-	return true;
-}
-
-
-void RenderGL::releaseRenderTargets()
-{
-	RenderDevice* rdi = r;
-
-	for (uint32 i = 0; i < _renderTargets.size(); ++i)
-	{
-		RenderTarget &rt = _renderTargets[i];
-		if (rt.rendBuf)
-		{
-			rdi->destroyRenderBuffer(rt.rendBuf);
-		}
-	}
-}
 

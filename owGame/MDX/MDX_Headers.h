@@ -393,28 +393,34 @@ struct ModelHeader
 	uint32 version;
 	M2Array<char> name;                                  // should be globally unique, used to reload by name in internal clients
 
-	struct // flags
+	struct
 	{
 		uint32 flag_tilt_x : 1;
 		uint32 flag_tilt_y : 1;
 		uint32 __0 : 1;
-		uint32 flag_has_blend_maps : 1;                // add BlendMaps fields in header
+		uint32 flag_has_blend_maps : 1;                  // add BlendMaps fields in header
 		uint32 __1 : 1;
 		uint32 : 27;
 	} global_flags;
-
 	M2Array<M2Loop> global_loops;                        // Timestamps used in global looping animations.
 
-	M2Array<M2Sequence> sequences;                       // Information about the animations in the model.
-	M2Array<uint16> sequence_lookups;                  // Mapping of sequence IDs to the entries in the Animation sequences block.
 
+	// Sequences
+	M2Array<M2Sequence> sequences;                       // Information about the animations in the model.
+	M2Array<uint16> sequence_lookups;                    // Mapping of sequence IDs to the entries in the Animation sequences block.
+
+	// Bones
 	M2Array<M2CompBone> bones;                           // MAX_BONES = 0x100
-	M2Array<uint16> key_bone_lookup;                   // Lookup table for key skeletal bones.
+	M2Array<uint16> key_bone_lookup;                     // Lookup table for key skeletal bones.
 
 	M2Array<M2Vertex> vertices;
 
-	uint32 num_skin_profiles;                          // Views (LOD) are now in .skins.
 
+	// Skin
+	uint32 num_skin_profiles;                            // Views (LOD) are now in .skins.
+
+
+	// Materials
 	M2Array<M2Color> colors;                             // Color and alpha animations definitions.
 
 	M2Array<M2Texture> textures;
@@ -425,30 +431,44 @@ struct ModelHeader
 	M2Array<M2Material> materials;                       // Blending modes / render flags.
 	M2Array<uint16> bone_lookup_table;
 	M2Array<uint16> texture_lookup_table;
-	M2Array<uint16> tex_unit_lookup_table;             // ≥ Cata: unused
+	M2Array<uint16> tex_unit_lookup_table;               // ≥ Cata: unused
 	M2Array<uint16> transparency_lookup_table;
 	M2Array<uint16> texture_transforms_lookup_table;
 
+
+	// Bounding box
 	CAaBox bounding_box;                                 // min/max( [1].z, 2.0277779f ) - 0.16f seems to be the maximum camera height
 	float bounding_sphere_radius;                        // detail doodad draw dist = clamp (bounding_sphere_radius * detailDoodadDensityFade * detailDoodadDist, …)
 
 	CAaBox collision_box;
 	float collision_sphere_radius;
 
+
+	// Collision stuff
 	M2Array<uint16> m_CollisionTriangles;
 	M2Array<vec3> m_CollisionVertices;
 	M2Array<vec3> m_CollisionNormals;
 
+
+	// Attachments
 	M2Array<M2Attachment> attachments;
 	M2Array<uint16> attachment_lookup_table;
 
+
+	// Events
 	M2Array<M2Event> events;
 
+
+	// Light
 	M2Array<M2Light> lights;
 
+
+	// Camara
 	M2Array<M2Camera> cameras;
 	M2Array<uint16> camera_lookup_table;
 
+
+	// Emitters and particles
 	M2Array<M2Ribbon> ribbon_emitters;
 	M2Array<M2Particle> particle_emitters;
 };

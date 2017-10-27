@@ -40,9 +40,6 @@
     <Filter Include="RefManager\1 Dim Assync">
       <UniqueIdentifier>{5c44a7fc-a9a9-4eb0-91bf-99900a34046c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Files\CASCFile">
-      <UniqueIdentifier>{488ed99e-97e9-4c74-ac04-8bcc02832f34}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Common">
       <UniqueIdentifier>{d3676bbf-d093-460e-875e-6d61fb171ed1}</UniqueIdentifier>
     </Filter>
@@ -127,12 +124,6 @@
     </ClCompile>
     <ClCompile Include="WowChunkUtils.cpp">
       <Filter>Utils &amp; Helpers</Filter>
-    </ClCompile>
-    <ClCompile Include="CASCFile.cpp">
-      <Filter>Files\CASCFile</Filter>
-    </ClCompile>
-    <ClCompile Include="CASCFolder.cpp">
-      <Filter>Files\CASCFile</Filter>
     </ClCompile>
     <ClCompile Include="Primitives.cpp">
       <Filter>Common\Types</Filter>
@@ -238,12 +229,6 @@
     </ClInclude>
     <ClInclude Include="WowTime.h">
       <Filter>Common\Types</Filter>
-    </ClInclude>
-    <ClInclude Include="CASCFile.h">
-      <Filter>Files\CASCFile</Filter>
-    </ClInclude>
-    <ClInclude Include="CASCFolder.h">
-      <Filter>Files\CASCFile</Filter>
     </ClInclude>
     <ClInclude Include="Primitives.h">
       <Filter>Common\Types</Filter>

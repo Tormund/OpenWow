@@ -254,14 +254,8 @@ void MDX::animate(uint32 _animationIndex)
 		}
 
 		// Add sub-data
-
-		glBindBuffer(GL_ARRAY_BUFFER, globalBuffer);
-
-		glBufferSubData(GL_ARRAY_BUFFER, header.vertices.size * 0 * sizeof(float), header.vertices.size * sizeof(vec3), m_Vertices);
-		//glBufferSubData(GL_ARRAY_BUFFER, header.vertices.size * 3 * sizeof(float), header.vertices.size * sizeof(vec2), m_Texcoords); not used
-		glBufferSubData(GL_ARRAY_BUFFER, header.vertices.size * 5 * sizeof(float), header.vertices.size * sizeof(vec3), m_Normals);
-
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		_Render->r->updateBufferData(__vb, header.vertices.size * 0 * sizeof(float), header.vertices.size * 3 * sizeof(float), m_Vertices);
+		_Render->r->updateBufferData(__vb, header.vertices.size * 5 * sizeof(float), header.vertices.size * 3 * sizeof(float), m_Normals);
 	}
 
 	for (uint32 i = 0; i < header.lights.size; i++)

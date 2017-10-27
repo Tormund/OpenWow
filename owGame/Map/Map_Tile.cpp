@@ -98,7 +98,7 @@ MapTile::~MapTile()
 
 bool MapTile::Load(cstring _filename)
 {
-	Modules::log().Info("MapTile[%d, %d, %s]: Loading...", m_IndexX, m_IndexZ, _filename.c_str());
+	//Modules::log().Info("MapTile[%d, %d, %s]: Loading...", m_IndexX, m_IndexZ, _filename.c_str());
 
 	//---------------------------------------------------------------------------------
 

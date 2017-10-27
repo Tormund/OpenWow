@@ -5,8 +5,7 @@
 class UI_Color : public Technique
 {
 public:
-	UI_Color();
-	virtual bool Init();
+	UI_Color() : Technique("shaders/UI_Color") {}
 
 	//
 

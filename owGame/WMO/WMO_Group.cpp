@@ -174,7 +174,8 @@ void WMOGroup::Load()
 		}
 		else if (strcmp(fourcc, "MOVI") == 0) // Vertex indices for triangles
 		{
-			m_Indices = new uint16[size / sizeof(uint16)];
+			m_IndicesCount = size / sizeof(uint16);
+			m_Indices = new uint16[m_IndicesCount];
 			f.ReadBytes(m_Indices, size);
 		}
 		else if (strcmp(fourcc, "MOVT") == 0) // Vertices chunk.
@@ -195,7 +196,10 @@ void WMOGroup::Load()
 		{
 			m_WMOBatchIndexesCount = size / WMOBatch::__size;
 			m_WMOBatchIndexes = new WMOBatch[m_WMOBatchIndexesCount];
-			f.ReadBytes(m_WMOBatchIndexes, size);
+			for (uint32 i = 0; i < m_WMOBatchIndexesCount; i++)
+			{
+				f.ReadBytes(&m_WMOBatchIndexes[i], WMOBatch::__size);
+			}
 		}
 		else if (strcmp(fourcc, "MOLR") == 0) // Light references
 		{
@@ -341,29 +345,45 @@ void WMOGroup::Load()
 
 	initLighting();
 
-	GLsizeiptr bufferSize = 8 * sizeof(float);
+	uint32 bufferSize = 8 * sizeof(float);
 	if (m_Header.flags.FLAG_HAS_VERTEX_COLORS)
 	{
-		bufferSize += 4 * sizeof(float);
+		bufferSize += sizeof(vec4);
 	}
 
-	
+	// Vertex buffer
+	uint32 __vb = _Render->r->createVertexBuffer(m_VertexesCount * bufferSize, nullptr);
 
-		glGenBuffers(1, &globalBuffer);
-		glBindBuffer(GL_ARRAY_BUFFER, globalBuffer);
+	_Render->r->updateBufferData(__vb, m_VertexesCount * 0 * sizeof(float), m_VertexesCount * sizeof(vec3), m_Vertexes);
+	_Render->r->updateBufferData(__vb, m_VertexesCount * 3 * sizeof(float), m_VertexesCount * sizeof(vec2), m_TextureCoords[0]); // FIXME
+	_Render->r->updateBufferData(__vb, m_VertexesCount * 5 * sizeof(float), m_VertexesCount * sizeof(vec3), m_Normals);
+	if (m_Header.flags.FLAG_HAS_VERTEX_COLORS)
+	{
+		_Render->r->updateBufferData(__vb, m_VertexesCount * 8 * sizeof(float), m_VertexesCount * sizeof(vec4), vertexColors);
+	}
 
-		glBufferData(GL_ARRAY_BUFFER, m_VertexesCount * bufferSize, NULL, GL_STATIC_DRAW);
+	//
 
-		glBufferSubData(GL_ARRAY_BUFFER, m_VertexesCount * 0 * sizeof(float), m_VertexesCount * 3 * sizeof(float), m_Vertexes);
-		glBufferSubData(GL_ARRAY_BUFFER, m_VertexesCount * 3 * sizeof(float), m_VertexesCount * 2 * sizeof(float), m_TextureCoords[0]); // FIXME
-		glBufferSubData(GL_ARRAY_BUFFER, m_VertexesCount * 5 * sizeof(float), m_VertexesCount * 3 * sizeof(float), m_Normals);
+	__geom = _Render->r->beginCreatingGeometry(m_Header.flags.FLAG_HAS_VERTEX_COLORS ? _Render->__layoutWMO_VC : _Render->__layoutWMO);
 
-		if (m_Header.flags.FLAG_HAS_VERTEX_COLORS)
-		{
-			glBufferSubData(GL_ARRAY_BUFFER, m_VertexesCount * 8 * sizeof(float), m_VertexesCount * 4 * sizeof(float), vertexColors);
-		}
+	// Vertex params
+	_Render->r->setGeomVertexParams(__geom, __vb, 0, m_VertexesCount * 0 * sizeof(float), 0);
+	_Render->r->setGeomVertexParams(__geom, __vb, 1, m_VertexesCount * 3 * sizeof(float), 0);
+	_Render->r->setGeomVertexParams(__geom, __vb, 2, m_VertexesCount * 5 * sizeof(float), 0);
+	if (m_Header.flags.FLAG_HAS_VERTEX_COLORS)
+	{
+		_Render->r->setGeomVertexParams(__geom, __vb, 3, m_VertexesCount * 8 * sizeof(float), 0);
+	}
 
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	// Index bufer
+	uint32 __ib = _Render->r->createIndexBuffer(m_IndicesCount * sizeof(uint16), m_Indices);
+	_Render->r->setGeomIndexParams(__geom, __ib, R_IndexFormat::IDXFMT_16);
+
+	// Finish
+	_Render->r->finishCreatingGeometry(__geom);
+
+	//
+
 
 	delete[] m_TextureCoords;
 
@@ -435,59 +455,28 @@ bool WMOGroup::Render()
 
 	visible = true;
 
-	_TechniquesMgr->m_WMO_GeometryPass->Bind();
+	_TechniquesMgr->m_WMO_GeometryPass->BindS();
 	_TechniquesMgr->m_WMO_GeometryPass->SetPVW();
 
 	for (uint32 i = 0; i < m_WMOBatchIndexesCount; i++)
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, globalBuffer);
-
-		// Vertex
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-		// Texture
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (const GLvoid*)(m_VertexesCount * 3 * sizeof(float)));
-
-		// Normal
-		glEnableVertexAttribArray(2);
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (const GLvoid*)(m_VertexesCount * 5 * sizeof(float)));
-
-		// Color
-		if (m_Header.flags.FLAG_HAS_VERTEX_COLORS)
-		{
-			//glEnableVertexAttribArray(3);
-			//glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 0, (const GLvoid*)(m_VertexesCount * 8 * sizeof(float)));
-		}
-
 		WMOBatch* batch = &m_WMOBatchIndexes[i];
 		WMOMaterial* material = m_ParentWMO->m_Materials[batch->material_id];
 
+		_Render->r->setGeometry(__geom);
+
 		// Materials settings
-		material->setup();
-		material->texture->Bind(5);
+		//material->setup();
+		_Render->r->setTexture(0, material->texture->GetObj(), SS_FILTER_BILINEAR | SS_ANISO16 | SS_ADDR_WRAP, 0);
+		_Render->r->setTexture(5, material->texture->GetObj(), SS_FILTER_BILINEAR | SS_ANISO16 | SS_ADDR_WRAP, 0);
 
 		//_TechniquesMgr->m_WMO_GeometryPass->SetDiffuseColor(fromARGB(material->GetDiffuseColor()));
 		_TechniquesMgr->m_WMO_GeometryPass->SetHasMOCV(false);
 
-		glDrawElements(GL_TRIANGLES, batch->indexCount, GL_UNSIGNED_SHORT, m_Indices + batch->indexStart);
-		PERF_INC(PERF_MAP_MODELS_WMOs_GEOMETRY);
+		_Render->r->drawIndexed(PRIM_TRILIST, batch->indexStart, batch->indexCount, 0, m_VertexesCount);
 
-		if (m_Header.flags.FLAG_HAS_VERTEX_COLORS)
-		{
-			//glDisableVertexAttribArray(3);
-		}
-
-		glDisableVertexAttribArray(2);
-		glDisableVertexAttribArray(1);
-		glDisableVertexAttribArray(0);
-
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-
+		//_Render->r->resetStates();
 	}
-
-	_TechniquesMgr->m_WMO_GeometryPass->Unbind();
 
 	return true;
 }
@@ -548,14 +537,7 @@ bool WMOGroup::drawLiquid()
 		glLightfv(GL_LIGHT2, GL_POSITION, vec4(0, 1, 0, 0));*/
 	}
 
-	glDisable(GL_CULL_FACE);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 	m_Liquid->draw();
-
-	glEnable(GL_CULL_FACE);
-	glDisable(GL_BLEND);
 
 	PERF_INC(PERF_MAP_MODELS_WMOs_LIQUIDS);
 

@@ -32,19 +32,19 @@ void WMOMaterial::setup()
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}*/
 
-	if (IsTwoSided())
+	/*if (IsTwoSided())
 	{
 		glDisable(GL_CULL_FACE);
 	}
 	else
 	{
 		glEnable(GL_CULL_FACE);
-	}
+	}*/
 
-	texture->Bind();
+	_Render->r->setTexture(0, texture->GetObj(), SS_FILTER_BILINEAR | SS_ANISO16 | SS_ADDR_WRAP, 0);
 }
 
-void GLSetBlend(bool _enable, GLenum _srcColor, GLenum _descColor, GLenum _srcAlpha, GLenum _destAlpha)
+/*void GLSetBlend(bool _enable, GLenum _srcColor, GLenum _descColor, GLenum _srcAlpha, GLenum _destAlpha)
 {
 	if (_enable)
 		glEnable(GL_BLEND);
@@ -56,11 +56,11 @@ void GLSetBlend(bool _enable, GLenum _srcColor, GLenum _descColor, GLenum _srcAl
 
 	glBlendFunc(GL_SRC_ALPHA, _srcAlpha);
 	glBlendFunc(GL_DST_ALPHA, _destAlpha);
-}
+}*/
 
 void WMOMaterial::SetBlendMode()
 {
-	switch (matDef.blendMode)
+	/*switch (matDef.blendMode)
 	{
 		case 0:
 		//GxBlend_Opaque	
@@ -131,5 +131,5 @@ void WMOMaterial::SetBlendMode()
 		//GxBlend_BlendAdd	
 		GLSetBlend(true, GL_ONE, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 		break;
-	}
+	}*/
 }

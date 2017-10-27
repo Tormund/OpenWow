@@ -5,8 +5,7 @@
 class Water_Pass : public Technique
 {
 public:
-	Water_Pass();
-	virtual bool Init();
+	Water_Pass() : Technique("shaders/Water") {}
 
 	inline void SetColorTextureUnit(int TextureUnit)
 	{

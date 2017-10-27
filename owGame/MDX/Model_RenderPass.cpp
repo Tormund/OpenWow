@@ -64,8 +64,8 @@ bool ModelRenderPass::init(MDX* m)
 
 	if (bindtex != nullptr)
 	{
-		bindtex->Bind();
-		bindtex->Bind(5);
+		_Render->r->setTexture(0, bindtex->GetObj(), SS_FILTER_BILINEAR | SS_ANISO16 | SS_ADDR_WRAP, 0);
+		_Render->r->setTexture(5, bindtex->GetObj(), SS_FILTER_BILINEAR | SS_ANISO16 | SS_ADDR_WRAP, 0);
 	}
 
 	// --
@@ -117,11 +117,11 @@ bool ModelRenderPass::init(MDX* m)
 
 	if (cull)
 	{
-		glEnable(GL_CULL_FACE);
+		//glEnable(GL_CULL_FACE);
 	}
 	else
 	{
-		glDisable(GL_CULL_FACE);
+		//glDisable(GL_CULL_FACE);
 	}
 
 	// Texture wrapping around the geometry
@@ -136,7 +136,7 @@ bool ModelRenderPass::init(MDX* m)
 	}*/
 
 	// no writing to the depth buffer.
-	glDepthMask(noZWrite ? GL_FALSE : GL_TRUE);
+	//glDepthMask(noZWrite ? GL_FALSE : GL_TRUE);
 
 	/*if (texanim != -1)
 	{
@@ -153,7 +153,7 @@ bool ModelRenderPass::init(MDX* m)
 
 	if (blendmode <= 1 && ocol.w < 1.0f)
 	{
-		glEnable(GL_BLEND);
+		//glEnable(GL_BLEND);
 	}
 
 	return true;
@@ -180,7 +180,7 @@ void ModelRenderPass::deinit()
 
 	if (noZWrite)
 	{
-		glDepthMask(GL_TRUE);
+		//glDepthMask(GL_TRUE);
 	}
 
 	/*if (texanim != -1)

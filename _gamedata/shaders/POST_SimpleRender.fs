@@ -1,5 +1,8 @@
 #version 330
-#include "Postprocess_Common.glsl"
+#include "lib/fragDeferredRead.glsl"
+
+// Uniform
+uniform vec2 gScreenSize;
 
 // Out
 out vec4 FragColor;
@@ -7,9 +10,10 @@ out vec4 FragColor;
 void main(void)
 {
 	vec2 pixelXY = gl_FragCoord.xy / gScreenSize;
-	vec3 WorldPos = texture(gbuffer.gWorldSpacePosMap, pixelXY).xyz;
-	vec4 Color = texture(gbuffer.gDiffuseMap, pixelXY);
-	vec3 Normal = normalize(texture(gbuffer.gNormalMap, pixelXY).xyz);
-
-	FragColor = Color; //vec4(Color.rgb, 1.0);
+	
+	vec3 WorldPos = getPos(pixelXY);
+	vec3 Normal = getNormal(pixelXY);
+	vec3 Color = getAlbedo(pixelXY);
+	
+	FragColor = vec4(Color, 1.0);
 }

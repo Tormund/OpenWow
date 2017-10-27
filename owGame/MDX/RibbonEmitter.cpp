@@ -110,12 +110,12 @@ void RibbonEmitter::draw()
 	glEnable(GL_LIGHTING);
 	*/
 
-	texture->Bind();
-	glEnable(GL_BLEND);
+	//texture->Bind();
+	/*glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
 	glDisable(GL_CULL_FACE);
-	glDepthMask(GL_FALSE);
+	glDepthMask(GL_FALSE);*/
 	
 	//glColor4fv(tcolor);
 
@@ -148,7 +148,7 @@ void RibbonEmitter::draw()
 	glEnd();
 
 	glColor4f(1, 1, 1, 1);
-	glEnable(GL_LIGHTING);*/
+	glEnable(GL_LIGHTING);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glDepthMask(GL_TRUE);
+	glDepthMask(GL_TRUE);*/
 }

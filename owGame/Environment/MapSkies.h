@@ -53,8 +53,9 @@ public:
 	bool hasSkies() { return !skies.empty(); }
 
 private:
-	GLuint m_GlobalBuffer;
-	GLsizei m_GlobalBufferSize;
+	uint32 __vb;
+	uint32 __geom;
+	uint32 __vertsSize;
 	vector<vec3> colors;
 
 	vector<Sky*> skies;

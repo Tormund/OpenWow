@@ -29,9 +29,9 @@ class WMOLight
 public:
 	WMOLight(File& f);
 
-	void setup(GLint light);
+	void setup(uint32 light);
 
-	static void setupOnce(GLint light, vec3 dir, vec4 lcol);
+	static void setupOnce(uint32 light, vec3 dir, vec4 lcol);
 
 public:
 	vec4 fcolor;

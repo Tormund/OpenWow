@@ -89,6 +89,8 @@ private:
 	MDX* m_ModelObject;
 	vector<ModelRenderPass*> m_Passes;
 
+	uint32 __geom;
+
 	uint16* indices;
 	bool* showGeosets;
 };

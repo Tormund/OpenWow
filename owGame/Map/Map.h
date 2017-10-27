@@ -69,7 +69,7 @@ public: // Getters
 
 	const WDT_MPHD_Flags& GetMapFlag() { return m_Flag; }
 
-	GLuint GetMinimap() { return minimap; }
+	uint32 GetMinimap() { return minimap; }
 
 	int GetCurrentX() { return currentTileX; }
 	int GetCurrentZ() { return currentTileZ; }
@@ -110,8 +110,8 @@ private:
 private:
 	bool m_IsTileBased;
 	WDT_MAIN_Flags m_TileFlag[C_TilesInMap][C_TilesInMap];
-	GLuint lowrestiles[C_TilesInMap][C_TilesInMap];
-	GLuint minimap;
+	uint32 lowrestiles[C_TilesInMap][C_TilesInMap];
+	uint32 minimap;
 	MapTile* maptilecache[C_TilesCacheSize];
 	int currentTileX, currentTileZ;
 	MapTile* current[C_RenderedTiles][C_RenderedTiles];
@@ -136,8 +136,8 @@ private: // Index buffer
 	int16* mapstrip2;
 
 public: // Consts
-	const uint32 stripsize = 8 * 18 + 7 * 2;
-	const uint32 stripsize2 = 16 * 18 + 7 * 2 + 8 * 2;
+	const uint32 C_LowResStripSize = 8 * 18 + 7 * 2;
+	const uint32 C_HighResStripSize = 16 * 18 + 7 * 2 + 8 * 2;
 };
 
 #define _Map Map::instance()

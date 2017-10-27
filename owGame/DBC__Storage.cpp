@@ -3,6 +3,8 @@
 // General
 #include "DBC__Storage.h"
 
+// Tables
+
 DBC_LOAD(DBÑ_AreaTable, "AreaTable.dbc")
 
 DBC_LOAD(DBC_GroundEffectDoodad, "GroundEffectDoodad.dbc")

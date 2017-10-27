@@ -127,11 +127,6 @@ public:
 	// All data has ID
 	__DBC_TVALUE(uint32, ID, 1);
 
-	operator uint32()
-	{
-		return Get_ID();
-	}
-
 protected:
 	// Get value with common type
 	template<typename T>
@@ -141,34 +136,12 @@ protected:
 		return *reinterpret_cast<T*>(offset + field * 4);
 	}
 
-	// Common types
-	float_t getFloat(uint32 field) const
-	{
-		assert2(field < dbcStats->fieldCount, std::to_string(field).c_str());
-		return *reinterpret_cast<float_t*>(offset + (field * 4));
-	}
-	uint32 getUInt(uint32 field) const
-	{
-		assert2(field < dbcStats->fieldCount, std::to_string(field).c_str());
-		return *reinterpret_cast<uint32*>(offset + (field * 4));
-	}
-	int32 getInt(uint32 field) const
-	{
-		assert2(field < dbcStats->fieldCount, std::to_string(field).c_str());
-		return *reinterpret_cast<int32*>(offset + (field * 4));
-	}
-	uint8 getByte(uint32 ofs) const
-	{
-		assert2(ofs < dbcStats->recordSize, std::to_string(ofs).c_str());
-		return *reinterpret_cast<uint8*>(offset + ofs);
-	}
-
 	// Strings
 	const char* getString(uint32 field) const
 	{
 		assert2(field < dbcStats->fieldCount, std::to_string(field).c_str());
 
-		size_t stringOffset = getUInt(field);
+		size_t stringOffset = getValue<uint32>(field);
 		if (stringOffset >= dbcStats->stringSize)
 		{
 			stringOffset = 0;
@@ -185,13 +158,13 @@ protected:
 			assert2(field < dbcStats->fieldCount - 8, std::to_string(field).c_str());
 			for (loc = 0; loc < 8; loc++)
 			{
-				uint32 stringOffset = getUInt(field + loc);
+				uint32 stringOffset = getValue<uint32>(field + loc);
 				if (stringOffset != 0)
 					break;
 			}
 		}
 		assert2(field + loc < dbcStats->fieldCount, std::to_string(field).c_str());
-		uint32 stringOffset = getUInt(field + static_cast<uint32>(loc));
+		uint32 stringOffset = getValue<uint32>(field + static_cast<uint32>(loc));
 
 		assert2(stringOffset < dbcStats->stringSize, std::to_string(stringOffset).c_str());
 		return reinterpret_cast<char*>(dbcStats->stringTable + stringOffset);
@@ -214,8 +187,10 @@ class DBCFile : public File, public DBCStats
 	friend RECORD_T;
 
 public:
-	DBCFile(cstring _file) : File(string("DBFilesClient\\") + string(_file)) {}
-	~DBCFile() 
+	DBCFile(cstring _file) : File(string("DBFilesClient\\") + string(_file))
+	{}
+
+	~DBCFile()
 	{
 		for (auto it = records.begin(); it != records.end();)
 		{

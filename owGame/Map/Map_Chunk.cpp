@@ -55,7 +55,7 @@ MapChunk::MapChunk(MapTile* _parentTile) :
 	waterlevel[0] = 0;
 	waterlevel[1] = 0;
 
-	blend = new Texture();
+	blend = 0;
 
 
 	colorBufferEnable = false;
@@ -64,12 +64,6 @@ MapChunk::MapChunk(MapTile* _parentTile) :
 
 MapChunk::~MapChunk()
 {
-	//delete[] alphamaps;
-
-	//delete shadow;
-
-	glDeleteBuffers(1, &globalBuffer);
-
 	if (hasholes)
 	{
 		delete[] strip;
@@ -275,25 +269,46 @@ void MapChunk::init(File& f, load_phases phase)
 
 		////////////////////////////
 
-		// Buffers
-		glGenBuffers(1, &globalBuffer);
-		glBindBuffer(GL_ARRAY_BUFFER, globalBuffer);
+		uint32 t = C_MapBufferSize * sizeof(float);
 
-		glBufferData(GL_ARRAY_BUFFER, C_MapBufferSize * (17 * sizeof(float)), NULL, GL_STATIC_DRAW);
+		// Vertex buffer
+		uint32 __vb = _Render->r->createVertexBuffer(17 * t, nullptr);
 
-		glBufferSubData(GL_ARRAY_BUFFER, C_MapBufferSize * 0 * sizeof(float), C_MapBufferSize * 3 * sizeof(float), tempVertexes);
-		glBufferSubData(GL_ARRAY_BUFFER, C_MapBufferSize * 3 * sizeof(float), C_MapBufferSize * 2 * sizeof(float), _Map->GetTextureCoordDetail());
-		glBufferSubData(GL_ARRAY_BUFFER, C_MapBufferSize * 5 * sizeof(float), C_MapBufferSize * 2 * sizeof(float), _Map->GetTextureCoordAlpha());
-		glBufferSubData(GL_ARRAY_BUFFER, C_MapBufferSize * 7 * sizeof(float), C_MapBufferSize * 3 * sizeof(float), tempNormals);
-		glBufferSubData(GL_ARRAY_BUFFER, C_MapBufferSize * 10 * sizeof(float), C_MapBufferSize * 3 * sizeof(float), mccvColors);
-		glBufferSubData(GL_ARRAY_BUFFER, C_MapBufferSize * 13 * sizeof(float), C_MapBufferSize * 4 * sizeof(float), mclvColors);
+		_Render->r->updateBufferData(__vb, 0 * t,  C_MapBufferSize * sizeof(vec3), tempVertexes);
+		_Render->r->updateBufferData(__vb, 3 * t,  C_MapBufferSize * sizeof(vec2), _Map->GetTextureCoordDetail());
+		_Render->r->updateBufferData(__vb, 5 * t,  C_MapBufferSize * sizeof(vec2), _Map->GetTextureCoordAlpha());
+		_Render->r->updateBufferData(__vb, 7 * t,  C_MapBufferSize * sizeof(vec3), tempNormals);
+		_Render->r->updateBufferData(__vb, 10 * t, C_MapBufferSize * sizeof(vec3), mccvColors);
+		_Render->r->updateBufferData(__vb, 13 * t, C_MapBufferSize * sizeof(vec4), mclvColors);
 
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		//
+
+		__geom = _Render->r->beginCreatingGeometry(_Render->__layoutMapChunk);
+
+		// Vertex params
+		_Render->r->setGeomVertexParams(__geom, __vb, 0, 0 * t, 0);
+		_Render->r->setGeomVertexParams(__geom, __vb, 1, 3 * t, 0);
+		_Render->r->setGeomVertexParams(__geom, __vb, 2, 5 * t, 0);
+		_Render->r->setGeomVertexParams(__geom, __vb, 3, 7 * t, 0);
+		_Render->r->setGeomVertexParams(__geom, __vb, 4, 10 * t, 0);
+		_Render->r->setGeomVertexParams(__geom, __vb, 5, 13 * t, 0);
 
 		if (hasholes)
 		{
 			initStrip(header->holes);
 		}
+		else
+		{
+			strip = _Map->GetHighResolutionIndexes();
+			striplen = _Map->C_HighResStripSize;
+		}
+
+		// Index bufer
+		uint32 __ib = _Render->r->createIndexBuffer(striplen * sizeof(uint16), strip);
+		_Render->r->setGeomIndexParams(__geom, __ib, R_IndexFormat::IDXFMT_16);
+
+		// Finish
+		_Render->r->finishCreatingGeometry(__geom);
 	}
 
 	// Textures file. Offsets are NOT set
@@ -484,14 +499,8 @@ void MapChunk::init(File& f, load_phases phase)
 
 
 		//-------------------------------------------- Blend buffer Final
-		blend->GenerateTexture();
-		blend->Bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 64, 64, 0, GL_RGBA, GL_UNSIGNED_BYTE, blendbuf);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		blend->Unbind();
+		blend = _Render->r->createTexture(R_TextureTypes::Tex2D, 64, 64, 1, R_TextureFormats::RGBA8, false, false, false, false);
+		_Render->r->uploadTextureData(blend, 0, 0, blendbuf);
 		//------------------------------------------
 	}
 
@@ -514,8 +523,7 @@ void MapChunk::initStrip(int holes)
 		{
 			if (!isHole(holes, x, y))
 			{
-				// draw m_TileExists here
-				// this is ugly but sort of works
+				// draw tiles here this is ugly but sort of works
 				int i = x * 2;
 				int j = y * 4;
 				for (int k = 0; k < 2; k++)
@@ -524,7 +532,11 @@ void MapChunk::initStrip(int holes)
 					{
 						*s++ = indexMapBuf(i, j + k * 2);
 					}
-					else first = false;
+					else
+					{
+						first = false;
+					}
+
 					for (int l = 0; l < 3; l++)
 					{
 						*s++ = indexMapBuf(i + l, j + k * 2);
@@ -560,7 +572,7 @@ void MapChunk::drawPass(int anim)
 		glTranslatef(f * fdx, f * fdy, 0);
 	}*/
 
-	glDrawElements(GL_TRIANGLE_STRIP, striplen, GL_UNSIGNED_SHORT, strip);
+	//glDrawElements(GL_TRIANGLE_STRIP, striplen, GL_UNSIGNED_SHORT, strip);
 
 	/*if (anim)
 	{
@@ -574,11 +586,6 @@ void MapChunk::drawPass(int anim)
 void MapChunk::Render()
 {
 	visible = false;
-
-	if (header->nLayers == 0)
-	{
-		return;
-	}
 
 	if (_CameraFrustum->_frustum.cullBox(m_Bounds))
 	{
@@ -598,9 +605,9 @@ void MapChunk::Render()
 
 	visible = true;
 
-	if (!hasholes)
-	{
-		bool highres = Modules::config().drawhighres;
+	//if (!hasholes)
+	//{
+		//bool highres = Modules::config().drawhighres;
 		//if (highres)
 		//{
 		//	highres = mydist < Modules::config().highresdistance2;
@@ -609,58 +616,47 @@ void MapChunk::Render()
 		//if (highres)
 		//{
 		//	strip = _Map->GetHighResolutionIndexes();
-		//	striplen = _Map->stripsize2;
+		//	striplen = _Map->C_HighResStripSize;
 		//}
 		//else
 		//{
-		strip = _Map->GetLowResolutionIndexes();
-		striplen = _Map->stripsize;
+		//strip = _Map->GetLowResolutionIndexes();
+		//striplen = _Map->C_LowResStripSize;
 		//}
-	}
-
-
-	glBindBuffer(GL_ARRAY_BUFFER, globalBuffer);
-
-	// Vertex
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-	// Texture Detail
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (const GLvoid*)(C_MapBufferSize * 3 * sizeof(float)));
-
-	// Texture Detail
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (const GLvoid*)(C_MapBufferSize * 5 * sizeof(float)));
-
-	// Normal
-	glEnableVertexAttribArray(3);
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, (const GLvoid*)(C_MapBufferSize * 7 * sizeof(float)));
-
-	// Vertex colors
-	glEnableVertexAttribArray(4);
-	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 0, (const GLvoid*)(C_MapBufferSize * 10 * sizeof(float)));
-
-	// Vertex colors 2
-	glEnableVertexAttribArray(5);
-	glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 0, (const GLvoid*)(C_MapBufferSize * 13 * sizeof(float)));
+	//}
 
 	_TechniquesMgr->m_MapChunk_GeometryPass->SetLayersCount(header->nLayers);
 
 	_TechniquesMgr->m_MapChunk_GeometryPass->SetMCCVExists(header->flags.has_mccv && Modules::config().enableMCCV);
 	_TechniquesMgr->m_MapChunk_GeometryPass->SetMCLVExists(MCLV_exists && Modules::config().enableMCLV);
 
+
+	/*if (Modules::config().drawhighres)
+	{
+		_Render->r->setGeomIndexParams(__geom, __ibHigh, R_IndexFormat::IDXFMT_16);
+		striplen = _Map->C_HighResStripSize;
+	}
+	else
+	{
+		_Render->r->setGeomIndexParams(__geom, __ibLow, R_IndexFormat::IDXFMT_16);
+		striplen = _Map->C_LowResStripSize;
+	}*/
+
+	_Render->r->setGeometry(__geom);
+
+	//_Render->r->setFillMode(R_FillMode::RS_FILL_WIREFRAME);
+
 	// Bind textures
 	for (uint32 i = 0; i < header->nLayers; i++)
 	{
-		textures[i]->Bind(i);
-		SpecularTextures[i]->Bind(5 + i);
+		_Render->r->setTexture(i, textures[i]->GetObj(), SS_FILTER_BILINEAR | SS_ANISO16 | SS_ADDR_WRAP, 0);
+		_Render->r->setTexture(5 + i, SpecularTextures[i]->GetObj(), SS_FILTER_BILINEAR | SS_ANISO16 | SS_ADDR_WRAP, 0);
 	}
 
 	// Bind blend
 	if (header->nLayers > 0)
 	{
-		blend->Bind(4);
+		_Render->r->setTexture(4, blend, SS_FILTER_BILINEAR | SS_ADDR_CLAMP, 0);
 	}
 
 	// Bind shadow
@@ -670,48 +666,12 @@ void MapChunk::Render()
 		_TechniquesMgr->m_MapChunk_GeometryPass->SetShadowColor(vec3(0.0f, 0.0f, 0.0f) * 0.3f);
 	}
 
-	glDrawElements(GL_TRIANGLE_STRIP, striplen, GL_UNSIGNED_SHORT, strip);
+	_Render->r->drawIndexed(PRIM_TRISTRIP, 0, striplen, 0, C_MapBufferSize);
+
 	PERF_INC(PERF_MAP_CHUNK_GEOMETRY);
 
-	glDisableVertexAttribArray(5);
-	glDisableVertexAttribArray(4);
-	glDisableVertexAttribArray(3);
-	glDisableVertexAttribArray(2);
-	glDisableVertexAttribArray(1);
-	glDisableVertexAttribArray(0);
 
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-void MapChunk::drawNoDetail()
-{
-	/*glActiveTexture(GL_TEXTURE0);
-	glDisable(GL_TEXTURE_2D);
-
-	glActiveTexture(GL_TEXTURE1);
-	glDisable(GL_TEXTURE_2D);
-
-	glDisable(GL_LIGHTING);
-
-	glColor3fv(glm::value_ptr(_EnvironmentManager->GetSkyColor(FOG_COLOR)));
-
-	// low detail version
-	glBindBuffer(GL_ARRAY_BUFFER, vertices);
-	glVertexPointer(3, GL_FLOAT, 0, 0);
-
-	glDisableClientState(GL_NORMAL_ARRAY);
-	glDrawElements(GL_TRIANGLE_STRIP, stripsize, GL_UNSIGNED_SHORT, _MapsMgr->mapstrip);
-	glEnableClientState(GL_NORMAL_ARRAY);
-
-	glColor4f(1, 1, 1, 1);
-
-	glEnable(GL_LIGHTING);
-
-	glActiveTexture(GL_TEXTURE1);
-	glEnable(GL_TEXTURE_2D);
-
-	glActiveTexture(GL_TEXTURE0);
-	glEnable(GL_TEXTURE_2D);*/
+	//_Render->r->setFillMode(R_FillMode::RS_FILL_SOLID);
 }
 
 //

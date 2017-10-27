@@ -6,6 +6,7 @@
 // Additional
 #include <freetype/config/ftheader.h>
 #include FT_FREETYPE_H
+#include "Render.h"
 
 //
 
@@ -62,7 +63,7 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize)
 		return nullptr;
 	}
 
-	GLuint textureOpenglIndex = 0;
+	uint32 texture = 0;
 	uint32* charWidth = new uint32[Font::NUM_CHARS];
 	uint32 charHeight = 0;
 
@@ -172,7 +173,6 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize)
 		fontVertices.push_back({vec2(charWidth[ch], 0.0f),       vec2(texX2, texY1)});
 		fontVertices.push_back({vec2(charWidth[ch], charHeight), vec2(texX2, texY2)});
 		
-	
 		for (uint32 row = 0; row < face->glyph->bitmap.rows; ++row)
 		{
 			for (uint32 pixel = 0; pixel < face->glyph->bitmap.width; ++pixel)
@@ -184,20 +184,23 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize)
 		x += charWidth[ch];
 	}
 
-	// Font vertex buffer
-	GLuint globalBuffer;
-	glGenBuffers(1, &globalBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, globalBuffer);
-	glBufferData(GL_ARRAY_BUFFER, Font::NUM_CHARS * 6 * sizeof(Font_Vertex), fontVertices.data(), GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	uint32 __vb = _Render->r->createVertexBuffer(fontVertices.size() * sizeof(Font_Vertex), fontVertices.data());
+
+	//
+
+	uint32 __geom = _Render->r->beginCreatingGeometry(_Render->__layoutFont);
+
+	// Vertex params
+	_Render->r->setGeomVertexParams(__geom, __vb, 0, 0 * sizeof(float), 4 * sizeof(float));
+	_Render->r->setGeomVertexParams(__geom, __vb, 1, 2 * sizeof(float), 4 * sizeof(float));
+
+	// Finish
+	_Render->r->finishCreatingGeometry(__geom);
 
 	// Font texture
-	glGenTextures(1, &textureOpenglIndex);
-	glBindTexture(GL_TEXTURE_2D, textureOpenglIndex);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, imageWidth, imageHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, image);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	texture = _Render->r->createTexture(R_TextureTypes::Tex2D, imageWidth, imageHeight, 1, R_TextureFormats::ALPHA, false, false, false, false);
+	_Render->r->uploadTextureData(texture, 0, 0, image);
 
 	delete[] image;
 
@@ -206,7 +209,7 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize)
 
 	//
 
-	Font* font = new Font(textureOpenglIndex, globalBuffer, charWidth, charHeight);
+	Font* font = new Font(texture, __geom, charWidth, charHeight);
 	Fonts.insert(make_pair(_nameAndSize, font));
 
 	Modules::log().Info("FontsMgr[%s]: Font loaded. Size [%d].", f.Path_Name().c_str(), fontSize);

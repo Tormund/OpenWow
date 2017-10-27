@@ -5,8 +5,7 @@
 class Debug_GeometryPass : public Technique
 {
 public:
-	Debug_GeometryPass();
-	virtual bool Init();
+	Debug_GeometryPass() : Technique("shaders/Debug") {}
 
 	inline void SetColor4(cvec4 _color)
 	{
