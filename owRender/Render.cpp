@@ -8,22 +8,8 @@
 #include "Render.h"
 
 // Additional
+#include "RenderStorage.h"
 #include "TechniquesManager.h"
-
-struct Texture_Vertex
-{
-	vec2 vertex;
-	vec2 textureCoord;
-};
-
-struct RenderBackendType
-{
-	enum List
-	{
-		OpenGL2 = 2,
-		OpenGL4 = 4
-	};
-};
 
 bool RenderGL::Init()
 {
@@ -46,125 +32,9 @@ bool RenderGL::Init()
 
 	r->setViewport(0, 0, Modules::config().windowSizeX, Modules::config().windowSizeY);
 
-	// GL settings
-	//glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-
-	// Viewport
-	//glViewport(0, 0, Modules::config().windowSizeX, Modules::config().windowSizeY);
-
 	m_OrhoMatrix = Matrix4f::OrthoMat(0.0f, Modules::config().windowSizeX, Modules::config().windowSizeY, 0.0f, -1.0f, 1.0f);
 
-
-	R_VertexLayoutAttrib attribsPos2[1] = {
-		{"VertexPosition",      0, 2, 0}
-	};
-	__layoutPos2 = _Render->r->registerVertexLayout(1, attribsPos2);
-
-	//
-
-	R_VertexLayoutAttrib attribsModel3[2] = {
-		{"vertexPos",      0, 2, 0},
-		{"textureCoords",  1, 2, 0}
-	};
-	__layoutFont = _Render->r->registerVertexLayout(2, attribsModel3);
-
-	//
-
-	R_VertexLayoutAttrib attribsSky[2] = {
-		{"vertexPos",      0, 3, 0},
-		{"color",          1, 3, 0}
-	};
-	__layoutSky = _Render->r->registerVertexLayout(2, attribsSky);
-	//--------------------------------------------------------------------------------------------
-	R_VertexLayoutAttrib attribsMapLowResolution[1] = {
-		{"vertexPos",      0, 3, 0}
-	};
-	__layoutMapLowResolution = _Render->r->registerVertexLayout(1, attribsMapLowResolution);
-	//--------------------------------------------------------------------------------------------
-	R_VertexLayoutAttrib attribsModel333[6] = {
-		{"vertexPos",            0, 3, 0},
-		{"textureCoordsDetail",  1, 2, 0},
-		{"textureCoordsAlpha",   2, 2, 0},
-		{"normal",               3, 3, 0},
-	    {"colorMCCV",            4, 3, 0},
-	    {"colorMCLV",            5, 4, 0}
-	};
-	__layoutMapChunk = _Render->r->registerVertexLayout(6, attribsModel333);
-	//--------------------------------------------------------------------------------------------
-	R_VertexLayoutAttrib attribsWMO[3] = {
-		{"vertexPos",      0, 3, 0},
-		{"textureCoords",  1, 2, 0},
-		{"normal",         2, 3, 0}
-	};
-	__layoutWMO = _Render->r->registerVertexLayout(3, attribsWMO);
-
-	R_VertexLayoutAttrib attribsWMO_VC[4] = {
-		{"vertexPos",      0, 3, 0},
-		{"textureCoords",  1, 2, 0},
-		{"normal",         2, 3, 0},
-		{"color",          3, 4, 0}
-	};
-	__layoutWMO_VC = _Render->r->registerVertexLayout(4, attribsWMO_VC);
-	//--------------------------------------------------------------------------------------------
-	R_VertexLayoutAttrib attribsMDX[3] = {
-		{"vertexPos",      0, 3, 0},
-		{"textureCoords",  1, 2, 0},
-		{"normal",         2, 3, 0}
-	};
-	__layoutMDX = _Render->r->registerVertexLayout(3, attribsMDX);
-	//--------------------------------------------------------------------------------------------
-	R_VertexLayoutAttrib attribsWater[3] = {
-		{"vertexPos",      0, 3, 0},
-		{"textureCoords",  1, 3, 0},
-		{"normal",         2, 3, 0}
-	};
-	__layoutWater = _Render->r->registerVertexLayout(3, attribsWater);
-	
-	//
-
-	// Indexes
-	uint16 indexes[6] = {0, 1, 2, 2, 1, 3};
-	uint32 __ib = r->createIndexBuffer(6 * sizeof(uint16), indexes);
-
-	//
-
-	//-- Pos2
-
-	__vbPos2 = _Render->r->createVertexBuffer(4 * sizeof(vec2), nullptr);
-	__geomPos2 = _Render->r->beginCreatingGeometry(_Render->__layoutPos2);
-
-	r->setGeomVertexParams(__geomPos2, __vbPos2, 0, 0, 0);
-	r->setGeomIndexParams(__geomPos2, __ib, R_IndexFormat::IDXFMT_16);
-
-	_Render->r->finishCreatingGeometry(__geomPos2);
-
-
-	//-- Pos3
-
-	__vbPos3 = _Render->r->createVertexBuffer(4 * sizeof(vec2), nullptr);
-	__geomPos3 = _Render->r->beginCreatingGeometry(_Render->__layoutPos2);
-
-	r->setGeomVertexParams(__geomPos3, __vbPos3, 0, 0, 0);
-
-	uint16 indexes3[8] = {0, 1, 1, 2, 2, 3, 3, 0};
-	uint32 __ibPos3 = r->createIndexBuffer(8 * sizeof(uint16), indexes3);
-	r->setGeomIndexParams(__geomPos3, __ibPos3, R_IndexFormat::IDXFMT_16);
-
-	_Render->r->finishCreatingGeometry(__geomPos3);
-
-	//
-
-	//-- Pos2 Texture2
-	
-	__vb = _Render->r->createVertexBuffer(4 * sizeof(Texture_Vertex), nullptr);
-	__geom = _Render->r->beginCreatingGeometry(_Render->__layoutFont);
-
-	r->setGeomVertexParams(__geom, __vb, 0, 0,            2 * sizeof(vec2));
-	r->setGeomVertexParams(__geom, __vb, 1, sizeof(vec2), 2 * sizeof(vec2));
-	r->setGeomIndexParams(__geom, __ib, R_IndexFormat::IDXFMT_16);
-
-	_Render->r->finishCreatingGeometry(__geom);
-
+	_RenderStorage->Init();
 
 	return true;
 }
@@ -174,8 +44,6 @@ void RenderGL::Destroy()
 
 void RenderGL::Set3D()
 {
-	r->clear(0xFFFFFFFF);
-
 	// Cull face
 	r->setCullMode(R_CullMode::RS_CULL_BACK);
 
@@ -232,13 +100,12 @@ void RenderGL::RenderTexture(cvec2 _pos, uint32 _texture, cvec2 _size, const Rec
 	vertices.push_back({vec2(_pos.x + _size.x,       _pos.y + 0.0f),       vec2(_coords.p1.x, _coords.p0.y)});
 	vertices.push_back({vec2(_pos.x + 0.0f,          _pos.y + _size.y),     vec2(_coords.p0.x, _coords.p1.y)});
 	vertices.push_back({vec2(_pos.x + _size.x,       _pos.y + _size.y),     vec2(_coords.p1.x, _coords.p1.y)});
-
-	r->updateBufferData(__vb, 0, vertices.size() * sizeof(Texture_Vertex), &vertices[0]);
-
-	r->setTexture(0, _texture, 0, 0);
 	
-	r->setGeometry(__geom);
-	r->drawIndexed(PRIM_TRILIST, 0, 6, 0, 6);
+	r->updateBufferData(_RenderStorage->__vb, 0, 4 * sizeof(Texture_Vertex), &vertices[0]);
+	r->setTexture(0, _texture, 0, 0);
+
+	r->setGeometry(_RenderStorage->__geom);
+	r->drawIndexed(PRIM_TRILIST, 0, 6, 0, 4);
 
 	_TechniquesMgr->m_UI_Texture->Unbind();
 }
@@ -257,9 +124,9 @@ void RenderGL::RenderRectangle(cvec2 _pos, cvec2 _size, const Color& _color)
 	vertices.push_back(vec2(_pos.x + 0.0f,       _pos.y + _size.y));
 	vertices.push_back(vec2(_pos.x + _size.x,    _pos.y + _size.y));
 
-	r->updateBufferData(__vbPos2, 0, vertices.size() * sizeof(vec2), &vertices[0]);
+	r->updateBufferData(_RenderStorage->__vbPos2, 0, vertices.size() * sizeof(vec2), &vertices[0]);
 	
-	r->setGeometry(__geomPos2);
+	r->setGeometry(_RenderStorage->__geomPos2);
 	r->drawIndexed(PRIM_TRILIST, 0, 6, 0, 4);
 
 	_TechniquesMgr->m_UI_Color->Unbind();
@@ -358,9 +225,9 @@ void RenderGL::RenderQuad()
 	vertices.push_back(vec2(-1.0f,  1.0f));
 	vertices.push_back(vec2( 1.0f,  1.0f));
 
-	r->updateBufferData(__vbPos2, 0, vertices.size() * sizeof(vec2), vertices.data());
+	r->updateBufferData(_RenderStorage->__vbPos2, 0, vertices.size() * sizeof(vec2), vertices.data());
 
-	r->setGeometry(__geomPos2);
+	r->setGeometry(_RenderStorage->__geomPos2);
 	r->drawIndexed(PRIM_TRILIST, 0, 6, 0, 4);
 }
 

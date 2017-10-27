@@ -8,6 +8,7 @@
 #include "../owRender/FontsMgr.h"
 #include "../owRender/Pipeline.h"
 #include "../owRender/Render.h"
+#include "../owRender/RenderStorage.h"
 #include "../owRender/TexturesMgr.h"
 
 // Techiques

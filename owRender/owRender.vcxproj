@@ -178,6 +178,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GPUTimer.cpp" />
+    <ClCompile Include="RenderStorage.cpp" />
     <ClCompile Include="TechniquesManager.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FontsMgr.cpp" />
@@ -218,6 +219,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="RenderEnums.h" />
+    <ClInclude Include="RenderStorage.h" />
     <ClInclude Include="RenderTypes.h" />
     <ClInclude Include="TechniquesManager.h" />
     <ClInclude Include="Font.h" />

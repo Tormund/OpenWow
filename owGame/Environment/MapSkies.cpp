@@ -80,7 +80,7 @@ void MapSkies::InitBuffer()
 
 	//
 
-	__geom = _Render->r->beginCreatingGeometry(_Render->__layoutSky);
+	__geom = _Render->r->beginCreatingGeometry(_RenderStorage->__layoutSky);
 
 	// Vertex params
 	_Render->r->setGeomVertexParams(__geom, __vb, 0, 0,                              0);

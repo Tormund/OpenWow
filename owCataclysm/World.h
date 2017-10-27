@@ -22,9 +22,6 @@ public:
 public:
 	GBuffer* m_gbuffer;
 
-	uint32 finalTexture1;
-	uint32 finalTexture2;
-
 	Camera* mainCamera;
 	Camera* testCamera;
 };

@@ -450,7 +450,7 @@ void Liquid::createBuffer(cvec3 _position)
 
 	//
 
-	__geom = _Render->r->beginCreatingGeometry(_Render->__layoutWater);
+	__geom = _Render->r->beginCreatingGeometry(_RenderStorage->__layoutWater);
 
 	// Vertex params
 	_Render->r->setGeomVertexParams(__geom, __vb, 0, mh2oVertices.size() * 0 * sizeof(float), sizeof(MH2O_Vertex));

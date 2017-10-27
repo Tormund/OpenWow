@@ -57,32 +57,8 @@ private:
 private:
 	mat4 m_OrhoMatrix;
 
-	uint32 __quadGeom;
-
 public:
 	RenderDevice* r;
-
-	uint32 __layoutPos2;
-	uint32 __layoutFont;
-	
-
-	// World
-	uint32 __layoutSky;
-	uint32 __layoutMapLowResolution;
-	uint32 __layoutMapChunk;
-	uint32 __layoutWMO;
-	uint32 __layoutWMO_VC;
-	uint32 __layoutMDX;
-	uint32 __layoutWater;
-
-	uint32 __vbPos2;
-	uint32 __geomPos2;
-
-	uint32 __vb;
-	uint32 __geom;
-
-	uint32 __vbPos3;
-	uint32 __geomPos3;
 };
 
 #define _Render RenderGL::instance()

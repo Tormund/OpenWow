@@ -283,7 +283,7 @@ void MapChunk::init(File& f, load_phases phase)
 
 		//
 
-		__geom = _Render->r->beginCreatingGeometry(_Render->__layoutMapChunk);
+		__geom = _Render->r->beginCreatingGeometry(_RenderStorage->__layoutMapChunk);
 
 		// Vertex params
 		_Render->r->setGeomVertexParams(__geom, __vb, 0, 0 * t, 0);

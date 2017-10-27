@@ -460,7 +460,7 @@ void Map::Load_WDL()
 
 				//
 
-				lowrestiles[j][i] = _Render->r->beginCreatingGeometry(_Render->__layoutMapLowResolution);
+				lowrestiles[j][i] = _Render->r->beginCreatingGeometry(_RenderStorage->__layoutMapLowResolution);
 
 				// Vertex params
 				_Render->r->setGeomVertexParams(lowrestiles[j][i], __vb, 0, 0, 0);

@@ -256,15 +256,15 @@ void GameState_Menu::RenderUI(double t, double dt)
 
 		// Night
 
-		sprintf(buff, "Nig[c=[%0.2f %0.2f %0.2f] i=[%f] d=[%0.2f %0.2f %0.2f]]",
+		sprintf(buff, "Nig[c=[%0.2f %0.2f %0.2f] i=[%f] d=[%0.2f %0.2f %0.2f]]\0",
 				_EnvironmentManager->dayNightPhase.nightColor.x, _EnvironmentManager->dayNightPhase.nightColor.y, _EnvironmentManager->dayNightPhase.nightColor.z,
 				_EnvironmentManager->dayNightPhase.nightIntensity,
 				_EnvironmentManager->dayNightPhase.nightDir.x, _EnvironmentManager->dayNightPhase.nightDir.y, _EnvironmentManager->dayNightPhase.nightDir.z
 		);
 		_Render->RenderText(vec2(Modules::config().windowSizeX - 400, 60), buff);
 
-
-		//_Render->RenderTexture(vec2(Modules::config().windowSizeX * 2.0 / 3.0, Modules::config().windowSizeY * 2.0 / 3.0), _World->finalTexture2, vec2(Modules::config().windowSizeX / 3, Modules::config().windowSizeY / 3));
+		//_Render->RenderRectangle(vec2(Modules::config().windowSizeX * 2.0 / 3.0, Modules::config().windowSizeY * 2.0 / 3.0), vec2(Modules::config().windowSizeX / 3, Modules::config().windowSizeY / 3));
+		//_Render->RenderTexture(vec2(Modules::config().windowSizeX * 2.0 / 3.0, Modules::config().windowSizeY * 2.0 / 3.0), _Map->GetMinimap()/*_Render->r->getRenderBufferTex(_World->m_gbuffer->rb2, 2)*/, vec2(Modules::config().windowSizeX / 3, Modules::config().windowSizeY / 3));
 	}
 }
 

@@ -364,7 +364,7 @@ void WMOGroup::Load()
 
 	//
 
-	__geom = _Render->r->beginCreatingGeometry(m_Header.flags.FLAG_HAS_VERTEX_COLORS ? _Render->__layoutWMO_VC : _Render->__layoutWMO);
+	__geom = _Render->r->beginCreatingGeometry(m_Header.flags.FLAG_HAS_VERTEX_COLORS ? _RenderStorage->__layoutWMO_VC : _RenderStorage->__layoutWMO);
 
 	// Vertex params
 	_Render->r->setGeomVertexParams(__geom, __vb, 0, m_VertexesCount * 0 * sizeof(float), 0);

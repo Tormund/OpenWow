@@ -118,7 +118,7 @@ Model_Skin::Model_Skin(MDX* _model, File& _mF, File& _aF) : m_ModelObject(_model
 
 	//
 
-	__geom = _Render->r->beginCreatingGeometry(_Render->__layoutMDX);
+	__geom = _Render->r->beginCreatingGeometry(_RenderStorage->__layoutMDX);
 
 	// Vertex params
 	_Render->r->setGeomVertexParams(__geom, m_ModelObject->__vb, 0, m_ModelObject->header.vertices.size * 0 * sizeof(float), 0);

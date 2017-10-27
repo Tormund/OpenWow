@@ -6,17 +6,10 @@
 // Additional
 #include <freetype/config/ftheader.h>
 #include FT_FREETYPE_H
+
 #include "Render.h"
+#include "RenderStorage.h"
 
-//
-
-struct Font_Vertex
-{
-	vec2 vertex;
-	vec2 textureCoord;
-};
-
-//
 
 bool FontsMgr::Init()
 {
@@ -143,7 +136,7 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize)
 	size_t x = 0;
 	size_t y = maxAscent;
 
-	vector<Font_Vertex> fontVertices;
+	vector<Texture_Vertex> fontVertices;
 	float xOffset = 0.0f;
 
 	for (uint32 ch = 0; ch < Font::NUM_CHARS; ++ch)
@@ -185,11 +178,11 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize)
 	}
 
 
-	uint32 __vb = _Render->r->createVertexBuffer(fontVertices.size() * sizeof(Font_Vertex), fontVertices.data());
+	uint32 __vb = _Render->r->createVertexBuffer(fontVertices.size() * sizeof(Texture_Vertex), fontVertices.data());
 
 	//
 
-	uint32 __geom = _Render->r->beginCreatingGeometry(_Render->__layoutFont);
+	uint32 __geom = _Render->r->beginCreatingGeometry(_RenderStorage->__layoutFont);
 
 	// Vertex params
 	_Render->r->setGeomVertexParams(__geom, __vb, 0, 0 * sizeof(float), 4 * sizeof(float));

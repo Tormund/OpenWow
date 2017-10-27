@@ -31,7 +31,6 @@ public:
 
 	bool Init();
 	
-	void Clear();
 	void ClearFinalBuffer();
 
 	void BindForGeomPass();

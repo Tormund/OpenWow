@@ -51,21 +51,22 @@ void World::Render()
 	mainCamera->onPostUpdate();
 		
 	// Main frame
-	m_gbuffer->ClearFinalBuffer();
+	
 
 	// Geometry pass
 	m_gbuffer->BindForGeomPass();
-	m_gbuffer->Clear();
+	_Render->r->clear();
 	RenderGeom();
 
 	// Postprocess pass
 	m_gbuffer->BindForLightPass();
+	m_gbuffer->ClearFinalBuffer();
 	RenderPostprocess();
 
 	//
 	// SECONDS PASS
 	//
-	/*
+	
 #ifdef WMO_INCL
 	WMOInstance::reset();
 #endif
@@ -81,12 +82,11 @@ void World::Render()
 
 	// Geometry pass
 	m_gbuffer->BindForGeomPass2();
-	m_gbuffer->Clear();
+	_Render->r->clear();
 	RenderGeom();
-	_PipelineGlobal->RenderCamera(_CameraFrustum);
+	//_PipelineGlobal->RenderCamera(_CameraFrustum);
 
-
-	finalTexture2 = _Render->r->getTexture(_Render->r->getRenderBufferTex(m_gbuffer->rb2, 2)).glObj;*/
+	_Render->r->setRenderBuffer(0);
 }
 
 //***************************************
