@@ -15,7 +15,7 @@ class R_Objects
 public:
 	uint32 add(const T &obj)
 	{
-		if (!_freeList.empty())
+		/*if (!_freeList.empty())
 		{
 			uint32 index = _freeList.back();
 			_freeList.pop_back();
@@ -23,10 +23,10 @@ public:
 			return index + 1;
 		}
 		else
-		{
+		{*/
 			_objects.push_back(obj);
 			return (uint32)_objects.size();
-		}
+		/*}*/
 	}
 
 	void remove(uint32 handle)
@@ -315,13 +315,15 @@ public:
 		_pendingMask |= PM_RENDERSTATES;
 	}
 
+protected:
 	bool commitStates(uint32 filter = 0xFFFFFFFF);
 	void resetStates();
 	
+public:
 	// Draw calls and clears
 	void clear(uint32 flags = CLR_COLOR_RT0 | CLR_COLOR_RT1 | CLR_COLOR_RT2 | CLR_COLOR_RT3 | CLR_DEPTH, float* colorRGBA = 0x0, float depth = 1.0f);
 	void draw(R_PrimitiveType primType, uint32 firstVert, uint32 numVerts);
-	void drawIndexed(R_PrimitiveType primType, uint32 firstIndex, uint32 numIndices, uint32 firstVert, uint32 numVerts);
+	void drawIndexed(R_PrimitiveType primType, uint32 firstIndex, uint32 numIndices, uint32 firstVert, uint32 numVerts, bool _softReset = true);
 
 	// -----------------------------------------------------------------------------
 	// Getters

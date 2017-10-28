@@ -220,8 +220,8 @@ bool MapTile::Load_SplitFile(cstring _filename, load_phases _phase)
 		{
 #ifdef WMO_INCL
 			WOWCHUNK_READ_STRINGS_BEGIN
-			//	_WMOsMgr->Add(_string);
-			//m_WMOsNames.push_back(_string);
+				_WMOsMgr->Add(_string);
+			m_WMOsNames.push_back(_string);
 			WOWCHUNK_READ_STRINGS_END
 #endif
 		}
@@ -247,7 +247,7 @@ bool MapTile::Load_SplitFile(cstring _filename, load_phases _phase)
 		else if (strncmp(fourcc, "MODF", 4) == 0) // Placement information for WMOs.
 		{
 #ifdef WMO_INCL
-			/*for (uint32 i = 0; i < size / WMOPlacementInfo::__size; i++)
+			for (uint32 i = 0; i < size / WMOPlacementInfo::__size; i++)
 			{
 				uint32 wmoIndex;
 				f.ReadBytes(&wmoIndex, 4);
@@ -256,7 +256,7 @@ bool MapTile::Load_SplitFile(cstring _filename, load_phases _phase)
 				WMO* wmo = (WMO*)_WMOsMgr->GetItemByName(m_WMOsNames[wmoIndex]);
 				WMOInstance* inst = new WMOInstance(wmo, f);
 				m_WMOsInstances.push_back(inst);
-			}*/
+			}
 #endif
 		}
 		else if (strncmp(fourcc, "MH2O", 4) == 0) // Water

@@ -129,8 +129,8 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize)
 
 	// Step 3: Generation of the actual texture //
 
-	uint8* image = new uint8[imageHeight * imageWidth];
-	memset(image, 0x00, imageHeight * imageWidth);
+	CArgb* image = new CArgb[imageHeight * imageWidth];
+	memset(image, 0x00, imageHeight * imageWidth * sizeof(CArgb));
 
 	// These are the cameraPosition at which to draw the next glyph
 	size_t x = 0;
@@ -170,7 +170,7 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize)
 		{
 			for (uint32 pixel = 0; pixel < face->glyph->bitmap.width; ++pixel)
 			{
-				image[(x + face->glyph->bitmap_left + pixel) + (y - face->glyph->bitmap_top + row) * imageWidth] = face->glyph->bitmap.buffer[pixel + row * face->glyph->bitmap.pitch];
+				image[(x + face->glyph->bitmap_left + pixel) + (y - face->glyph->bitmap_top + row) * imageWidth].a = face->glyph->bitmap.buffer[pixel + row * face->glyph->bitmap.pitch];
 			}
 		}
 
@@ -182,7 +182,7 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize)
 
 	//
 
-	uint32 __geom = _Render->r->beginCreatingGeometry(_RenderStorage->__layoutFont);
+	uint32 __geom = _Render->r->beginCreatingGeometry(_RenderStorage->__layoutV2T2);
 
 	// Vertex params
 	_Render->r->setGeomVertexParams(__geom, __vb, 0, 0 * sizeof(float), 4 * sizeof(float));
@@ -192,7 +192,7 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize)
 	_Render->r->finishCreatingGeometry(__geom);
 
 	// Font texture
-	texture = _Render->r->createTexture(R_TextureTypes::Tex2D, imageWidth, imageHeight, 1, R_TextureFormats::ALPHA, false, false, false, false);
+	texture = _Render->r->createTexture(R_TextureTypes::Tex2D, imageWidth, imageHeight, 1, R_TextureFormats::RGBA8, false, false, false, false);
 	_Render->r->uploadTextureData(texture, 0, 0, image);
 
 	delete[] image;

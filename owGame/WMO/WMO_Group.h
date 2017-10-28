@@ -68,7 +68,7 @@ struct WMOGroupHeader
 
 	uint32 wmoGroupId; // WMO group ID (column 4 in WMOAreaTable.dbc)
 
-	uint32 unk0; // flags >= Mists
+	uint32 unk0;
 	uint32 unk1;
 
 	//

@@ -41,7 +41,7 @@ public:
 
 	// Position & size functional
 
-	 vec2 GetPosition() const;
+	vec2 GetPosition() const;
 	inline vec2 GetSize() const { return size; }
 
 	// Text functional

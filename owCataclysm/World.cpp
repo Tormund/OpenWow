@@ -60,7 +60,7 @@ void World::Render()
 
 	// Postprocess pass
 	m_gbuffer->BindForLightPass();
-	m_gbuffer->ClearFinalBuffer();
+	_Render->r->clear(CLR_COLOR_RT0 | CLR_DEPTH);
 	RenderPostprocess();
 
 	//

@@ -73,38 +73,37 @@ void RenderGL::Set2D()
 
 // UI
 
-void RenderGL::RenderImage(cvec2 _pos, Image* _image)
+void RenderGL::RenderImage(vec2 _pos, Image* _image)
 {
 	RenderTexture(_pos - _image->offset, _image->texture, _image->size, _image->coords);
 }
 
-void RenderGL::RenderImage(cvec2 _pos, Image* _image, cvec2 _size)
+void RenderGL::RenderImage(vec2 _pos, Image* _image, vec2 _size)
 {
 	RenderTexture(_pos - _image->offset, _image->texture, _size, _image->coords);
 }
 
 //
 
-void RenderGL::RenderTexture(cvec2 _pos, Texture* _texture, cvec2 _size, const Rect& _coords)
+void RenderGL::RenderTexture(vec2 _pos, Texture* _texture, vec2 _size, const Rect& _coords)
 {
 	RenderTexture(_pos, _texture->GetObj(), _size, _coords);
 }
 
-void RenderGL::RenderTexture(cvec2 _pos, uint32 _texture, cvec2 _size, const Rect& _coords)
+void RenderGL::RenderTexture(vec2 _pos, uint32 _texture, vec2 _size, const Rect& _coords)
 {
+	// Transform
+	_Pipeline->Clear();
+	_Pipeline->Translate(_pos.x + _size.x / 2.0f, _pos.y + _size.y / 2.0f, 0.0f);
+	_Pipeline->Scale(_size.x / 2.0f, _size.y / 2.0f, 0.0f);
+
+	// Shader
 	_TechniquesMgr->m_UI_Texture->BindS();
-	_TechniquesMgr->m_UI_Texture->SetProjectionMatrix(m_OrhoMatrix);
+	_TechniquesMgr->m_UI_Texture->SetProjectionMatrix(m_OrhoMatrix * _Pipeline->GetWorld());
 
-	vector<Texture_Vertex> vertices;
-	vertices.push_back({vec2(_pos.x + 0.0f,          _pos.y + 0.0f),       vec2(_coords.p0.x, _coords.p0.y)});
-	vertices.push_back({vec2(_pos.x + _size.x,       _pos.y + 0.0f),       vec2(_coords.p1.x, _coords.p0.y)});
-	vertices.push_back({vec2(_pos.x + 0.0f,          _pos.y + _size.y),     vec2(_coords.p0.x, _coords.p1.y)});
-	vertices.push_back({vec2(_pos.x + _size.x,       _pos.y + _size.y),     vec2(_coords.p1.x, _coords.p1.y)});
-	
-	r->updateBufferData(_RenderStorage->__vb, 0, 4 * sizeof(Texture_Vertex), &vertices[0]);
-	r->setTexture(0, _texture, 0, 0);
-
-	r->setGeometry(_RenderStorage->__geom);
+	// State
+	r->setTexture(0, _texture, SS_FILTER_BILINEAR | SS_ANISO16 | SS_ADDR_CLAMP, 0);
+	r->setGeometry(_RenderStorage->__QuadVT);
 	r->drawIndexed(PRIM_TRILIST, 0, 6, 0, 4);
 
 	_TechniquesMgr->m_UI_Texture->Unbind();
@@ -112,64 +111,70 @@ void RenderGL::RenderTexture(cvec2 _pos, uint32 _texture, cvec2 _size, const Rec
 
 //
 
-void RenderGL::RenderRectangle(cvec2 _pos, cvec2 _size, const Color& _color)
+void RenderGL::RenderRectangle(vec2 _pos, vec2 _size, const Color& _color)
 {
+	// Transform
+	_Pipeline->Clear();
+	_Pipeline->Translate(_pos.x + _size.x / 2.0f, _pos.y + _size.y / 2.0f, 0.0f);
+	_Pipeline->Scale(_size.x / 2.0f, _size.y / 2.0f, 0.0f);
+
+	// Shader
 	_TechniquesMgr->m_UI_Color->BindS();
-	_TechniquesMgr->m_UI_Color->SetProjectionMatrix(m_OrhoMatrix);
+	_TechniquesMgr->m_UI_Color->SetProjectionMatrix(m_OrhoMatrix * _Pipeline->GetWorld());
 	_TechniquesMgr->m_UI_Color->SetColor(_color);
-
-	vector<vec2> vertices;
-	vertices.push_back(vec2(_pos.x + 0.0f,       _pos.y + 0.0f));
-	vertices.push_back(vec2(_pos.x + _size.x,    _pos.y + 0.0f));
-	vertices.push_back(vec2(_pos.x + 0.0f,       _pos.y + _size.y));
-	vertices.push_back(vec2(_pos.x + _size.x,    _pos.y + _size.y));
-
-	r->updateBufferData(_RenderStorage->__vbPos2, 0, vertices.size() * sizeof(vec2), &vertices[0]);
 	
-	r->setGeometry(_RenderStorage->__geomPos2);
+	r->setGeometry(_RenderStorage->__Quad);
 	r->drawIndexed(PRIM_TRILIST, 0, 6, 0, 4);
 
 	_TechniquesMgr->m_UI_Color->Unbind();
 }
 
-void RenderGL::RenderRectangleOutline(cvec2 _pos, cvec2 _size, const Color& _color)
+void RenderGL::RenderRectangleOutline(vec2 _pos, vec2 _size, const Color& _color)
 {
-	/*_TechniquesMgr->m_UI_Color->BindS();
-	_TechniquesMgr->m_UI_Color->SetProjectionMatrix(m_OrhoMatrix);
+	// Transform
+	/*_Pipeline->Clear();
+	_Pipeline->Translate(_pos.x + _size.x / 2.0f, _pos.y + _size.y / 2.0f, 0.0f);
+	_Pipeline->Scale(_size.x / 2.0f, _size.y / 2.0f, 0.0f);
+
+	// Shader
+	_TechniquesMgr->m_UI_Color->BindS();
+	_TechniquesMgr->m_UI_Color->SetProjectionMatrix(m_OrhoMatrix * _Pipeline->GetWorld());
 	_TechniquesMgr->m_UI_Color->SetColor(_color);
 
-	vector<vec2> vertices;
-	vertices.push_back(vec2(_pos.x + 0.0f, _pos.y + 0.0f));
-	vertices.push_back(vec2(_pos.x + _size.x, _pos.y + 0.0f));
-	vertices.push_back(vec2(_pos.x + 0.0f, _pos.y + _size.y));
-	vertices.push_back(vec2(_pos.x + _size.x, _pos.y + _size.y));
+	r->setFillMode(R_FillMode::RS_FILL_WIREFRAME);
 
-	r->updateBufferData(__vbPos3, 0, vertices.size() * sizeof(vec2), &vertices[0]);
-	
-	r->setGeometry(__geomPos3);
-	r->drawIndexed(PRIM_LINES, 0, 8, 0, 4);
+	r->setGeometry(_RenderStorage->__Quad);
+	r->drawIndexed(PRIM_TRILIST, 0, 6, 0, 4);
+
+	r->setFillMode(R_FillMode::RS_FILL_SOLID);
 
 	_TechniquesMgr->m_UI_Color->Unbind();*/
+
+
+
+	r->setFillMode(R_FillMode::RS_FILL_WIREFRAME);
+	RenderRectangle(_pos, _size, _color);
+	r->setFillMode(R_FillMode::RS_FILL_SOLID);
 }
 
 //
 
-void RenderGL::RenderText(cvec2 _pos, cstring _string, const Color& _color) const
+void RenderGL::RenderText(vec2 _pos, cstring _string, const Color& _color) const
 {
 	RenderText(_pos, _string, TextAlignW::TEXT_ALIGNW_LEFT, TextAlignH::TEXT_ALIGNH_BOTTOM, _FontsMgr->GetMainFont(), _color);
 }
 
-void RenderGL::RenderText(cvec2 _pos, cstring _string, Font* _font, const Color& _color) const
+void RenderGL::RenderText(vec2 _pos, cstring _string, Font* _font, const Color& _color) const
 {
 	RenderText(_pos, _string, TextAlignW::TEXT_ALIGNW_LEFT, TextAlignH::TEXT_ALIGNH_BOTTOM, _font, _color);
 }
 
-void RenderGL::RenderText(cvec2 _pos, cstring _string, TextAlignW _alignW, TextAlignH _alignH, const Color& _color) const
+void RenderGL::RenderText(vec2 _pos, cstring _string, TextAlignW _alignW, TextAlignH _alignH, const Color& _color) const
 {
 	RenderText(_pos, _string, _alignW, _alignH, _FontsMgr->GetMainFont(), _color);
 }
 
-void RenderGL::RenderText(cvec2 _pos, cstring _string, TextAlignW _alignW, TextAlignH _alignH, Font* _font, const Color& _color) const
+void RenderGL::RenderText(vec2 _pos, cstring _string, TextAlignW _alignW, TextAlignH _alignH, Font* _font, const Color& _color) const
 {
 	auto stringWidth = _font->GetStringWidth(_string);
 	auto fontHeight = _font->GetHeight();
@@ -219,15 +224,8 @@ void RenderGL::RenderText(cvec2 _pos, cstring _string, TextAlignW _alignW, TextA
 
 void RenderGL::RenderQuad()
 {
-	vector<vec2> vertices;
-	vertices.push_back(vec2(-1.0f, -1.0f));
-	vertices.push_back(vec2( 1.0f, -1.0f));
-	vertices.push_back(vec2(-1.0f,  1.0f));
-	vertices.push_back(vec2( 1.0f,  1.0f));
+	r->setGeometry(_RenderStorage->__Quad);
 
-	r->updateBufferData(_RenderStorage->__vbPos2, 0, vertices.size() * sizeof(vec2), vertices.data());
-
-	r->setGeometry(_RenderStorage->__geomPos2);
 	r->drawIndexed(PRIM_TRILIST, 0, 6, 0, 4);
 }
 

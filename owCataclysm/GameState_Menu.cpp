@@ -30,9 +30,9 @@ bool GameState_Menu::Init()
 	backgroundModel = 0;
 	//randBackground();
 
-	/*_Map->Load_WDT(DBC_Map[1]);
-	LoadWorld(vec3(17644, 68, 17823));
-	return true;*/
+	//_Map->Load_WDT(DBC_Map[1]);
+	//LoadWorld(vec3(17644, 68, 17823));
+	//return true;
 
 	const unsigned mapsXStart = 10;
 	const unsigned mapsYStart = 10;
@@ -196,6 +196,9 @@ void GameState_Menu::RenderUI(double t, double dt)
 
 // Area and region
 
+
+		
+
 		// Area
 		DBÑ_AreaTableRecord* areaRecord = nullptr;
 		string areaName = "<unknown>";
@@ -220,16 +223,25 @@ void GameState_Menu::RenderUI(double t, double dt)
 		}
 
 
-		_Render->RenderText(vec2(5, 20), "Area: [" + areaName + "] [Area id = " + std::to_string(_Map->getAreaID()) + "]");
+		//
+		// DEBUG
+		//
+		//_Render->RenderTexture(vec2(Modules::config().windowSizeX * 2.0 / 3.0, Modules::config().windowSizeY * 2.0 / 3.0), _Render->r->getRenderBufferTex(_World->m_gbuffer->rb2, 2), vec2(Modules::config().windowSizeX / 3, Modules::config().windowSizeY / 3));
+
+
+		//
+
+
+		/*_Render->RenderText(vec2(5, 20), "Area: [" + areaName + "] [Area id = " + std::to_string(_Map->getAreaID()) + "]");
 		_Render->RenderText(vec2(5, 40), "Region: [" + regionName + "]");
-		_Render->RenderText(vec2(5, 60), "CURRX: " + to_string(_Map->GetCurrentX()) + ", CURRZ " + to_string(_Map->GetCurrentZ()));
+		_Render->RenderText(vec2(5, 60), "CURRX: " + to_string(_Map->GetCurrentX()) + ", CURRZ " + to_string(_Map->GetCurrentZ()));*/
 
 
 		///
 
 		_Perfomance->Draw(vec2(5, 100));
 
-		_Render->RenderText(vec2(5, Modules::config().windowSizeY - 66), "REAL CamPos: [" + to_string(_World->mainCamera->Position.x) + "], [" + to_string(_World->mainCamera->Position.y) + "], [" + to_string(_World->mainCamera->Position.z) + "]");
+		/*_Render->RenderText(vec2(5, Modules::config().windowSizeY - 66), "REAL CamPos: [" + to_string(_World->mainCamera->Position.x) + "], [" + to_string(_World->mainCamera->Position.y) + "], [" + to_string(_World->mainCamera->Position.z) + "]");
 		_Render->RenderText(vec2(5, Modules::config().windowSizeY - 44), "CamPos: [" + to_string(-(_World->mainCamera->Position.x - C_ZeroPoint)) + "], [" + to_string(-(_World->mainCamera->Position.z - C_ZeroPoint)) + "], [" + to_string(_World->mainCamera->Position.y) + "]");
 		_Render->RenderText(vec2(5, Modules::config().windowSizeY - 22), "CamRot: [" + to_string(_World->mainCamera->Direction.x) + "], [" + to_string(_World->mainCamera->Direction.y) + "], [" + to_string(_World->mainCamera->Direction.z) + "]");
 
@@ -261,10 +273,7 @@ void GameState_Menu::RenderUI(double t, double dt)
 				_EnvironmentManager->dayNightPhase.nightIntensity,
 				_EnvironmentManager->dayNightPhase.nightDir.x, _EnvironmentManager->dayNightPhase.nightDir.y, _EnvironmentManager->dayNightPhase.nightDir.z
 		);
-		_Render->RenderText(vec2(Modules::config().windowSizeX - 400, 60), buff);
-
-		//_Render->RenderRectangle(vec2(Modules::config().windowSizeX * 2.0 / 3.0, Modules::config().windowSizeY * 2.0 / 3.0), vec2(Modules::config().windowSizeX / 3, Modules::config().windowSizeY / 3));
-		//_Render->RenderTexture(vec2(Modules::config().windowSizeX * 2.0 / 3.0, Modules::config().windowSizeY * 2.0 / 3.0), _Map->GetMinimap()/*_Render->r->getRenderBufferTex(_World->m_gbuffer->rb2, 2)*/, vec2(Modules::config().windowSizeX / 3, Modules::config().windowSizeY / 3));
+		_Render->RenderText(vec2(Modules::config().windowSizeX - 400, 60), buff);*/
 	}
 }
 

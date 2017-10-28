@@ -17,12 +17,6 @@ bool GBuffer::Init()
 	return true;
 }
 
-void GBuffer::ClearFinalBuffer()
-{
-	_Render->r->setRenderBuffer(0);
-	_Render->r->clear(CLR_COLOR_RT0 | CLR_DEPTH);
-}
-
 void GBuffer::BindForGeomPass()
 {
 	_Render->r->setRenderBuffer(rb);

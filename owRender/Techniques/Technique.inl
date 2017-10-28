@@ -11,7 +11,7 @@ inline void Technique::BindS()
 
 inline void Technique::Unbind()
 {
-	_Render->r->bindShader(0);
+	//_Render->r->bindShader(0);
 }
 
 

@@ -46,6 +46,7 @@ inline void FatalMessageBox(const char* _title, const char* _message, ...)
 if(!(expr))\
 {\
     FatalMessageBox("Assertion failed!", "File: [%s]\nLine: [%d]\nFunction: [%s]\nExpression: [%s]\n", __FILE__, __LINE__, __FUNCTION__, #expr);\
+    abort();\
 }
 
 #define assert2(expr, message) \

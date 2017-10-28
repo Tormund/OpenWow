@@ -31,8 +31,6 @@ public:
 
 	bool Init();
 	
-	void ClearFinalBuffer();
-
 	void BindForGeomPass();
 	void BindForGeomPass2();
 	void BindForLightPass();

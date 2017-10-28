@@ -36,18 +36,18 @@ public:
 	void Set3D();
 	void Set2D();
 
-	void RenderImage(cvec2 _pos, Image* _image);
-	void RenderImage(cvec2 _pos, Image* _image, cvec2 _size);
-	void RenderTexture(cvec2 _pos, uint32 _texture, cvec2 _size, const Rect& _coords = Rect(0,0,1,1));
-	void RenderTexture(cvec2 _pos, Texture* _texture, cvec2 _size, const Rect& _coords);
+	void RenderImage(vec2 _pos, Image* _image);
+	void RenderImage(vec2 _pos, Image* _image, vec2 _size);
+	void RenderTexture(vec2 _pos, uint32 _texture, vec2 _size, const Rect& _coords = Rect(0,0,1,1));
+	void RenderTexture(vec2 _pos, Texture* _texture, vec2 _size, const Rect& _coords);
 
-	void RenderRectangle(cvec2 _pos, cvec2 _size, const Color& _color = COLOR_GREEN);
-	void RenderRectangleOutline(cvec2 _pos, cvec2 _size, const Color& _color = COLOR_GREEN);
+	void RenderRectangle(vec2 _pos, vec2 _size, const Color& _color = COLOR_GREEN);
+	void RenderRectangleOutline(vec2 _pos, vec2 _size, const Color& _color = COLOR_GREEN);
 
-	void RenderText(cvec2 _pos, cstring _string, const Color& _color = COLOR_WHITE) const;
-	void RenderText(cvec2 _pos, cstring _string, Font* _font, const Color& _color = COLOR_WHITE) const;
-	void RenderText(cvec2 _pos, cstring _string, TextAlignW _alignW, TextAlignH _alignH, const Color& _color = COLOR_WHITE) const;
-	void RenderText(cvec2 _pos, cstring _string, TextAlignW _alignW, TextAlignH _alignH, Font* _font, const Color& _color = COLOR_WHITE) const;
+	void RenderText(vec2 _pos, cstring _string, const Color& _color = COLOR_WHITE) const;
+	void RenderText(vec2 _pos, cstring _string, Font* _font, const Color& _color = COLOR_WHITE) const;
+	void RenderText(vec2 _pos, cstring _string, TextAlignW _alignW, TextAlignH _alignH, const Color& _color = COLOR_WHITE) const;
+	void RenderText(vec2 _pos, cstring _string, TextAlignW _alignW, TextAlignH _alignH, Font* _font, const Color& _color = COLOR_WHITE) const;
 
 	void RenderQuad();
 

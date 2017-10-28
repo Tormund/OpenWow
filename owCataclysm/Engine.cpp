@@ -129,6 +129,7 @@ bool Engine::Tick()
 	//
 
 	_Render->r->beginRendering();
+	_Render->r->clear();
 
 	// Render world
 	_Render->Set3D();

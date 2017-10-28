@@ -299,8 +299,8 @@ void MapChunk::init(File& f, load_phases phase)
 		}
 		else
 		{
-			strip = _Map->GetHighResolutionIndexes();
-			striplen = _Map->C_HighResStripSize;
+			strip = _Map->GetLowResolutionIndexes();
+			striplen = _Map->C_LowResStripSize;
 		}
 
 		// Index bufer
@@ -629,18 +629,6 @@ void MapChunk::Render()
 
 	_TechniquesMgr->m_MapChunk_GeometryPass->SetMCCVExists(header->flags.has_mccv && Modules::config().enableMCCV);
 	_TechniquesMgr->m_MapChunk_GeometryPass->SetMCLVExists(MCLV_exists && Modules::config().enableMCLV);
-
-
-	/*if (Modules::config().drawhighres)
-	{
-		_Render->r->setGeomIndexParams(__geom, __ibHigh, R_IndexFormat::IDXFMT_16);
-		striplen = _Map->C_HighResStripSize;
-	}
-	else
-	{
-		_Render->r->setGeomIndexParams(__geom, __ibLow, R_IndexFormat::IDXFMT_16);
-		striplen = _Map->C_LowResStripSize;
-	}*/
 
 	_Render->r->setGeometry(__geom);
 

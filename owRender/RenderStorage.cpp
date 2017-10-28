@@ -23,34 +23,34 @@ void RenderStorage::Destroy()
 
 void RenderStorage::CreateLayouts()
 {
-	R_VertexLayoutAttrib attribsPos2[1] = {
+	R_VertexLayoutAttrib attribsV2[1] = {
 		{"VertexPosition",      0, 2, 0}
 	};
-	__layoutPos2 = _Render->r->registerVertexLayout(1, attribsPos2);
+	__layoutV2 = _Render->r->registerVertexLayout(1, attribsV2);
 
 	//
 
-	R_VertexLayoutAttrib attribsModel3[2] = {
-		{"vertexPos",      0, 2, 0},
+	R_VertexLayoutAttrib attribsV2T2[2] = {
+		{"VertexPosition", 0, 2, 0},
 		{"textureCoords",  1, 2, 0}
 	};
-	__layoutFont = _Render->r->registerVertexLayout(2, attribsModel3);
+	__layoutV2T2 = _Render->r->registerVertexLayout(2, attribsV2T2);
 
 	//
 
 	R_VertexLayoutAttrib attribsSky[2] = {
-		{"vertexPos",      0, 3, 0},
+		{"VertexPosition", 0, 3, 0},
 		{"color",          1, 3, 0}
 	};
 	__layoutSky = _Render->r->registerVertexLayout(2, attribsSky);
 	//--------------------------------------------------------------------------------------------
 	R_VertexLayoutAttrib attribsMapLowResolution[1] = {
-		{"vertexPos",      0, 3, 0}
+		{"VertexPosition",      0, 3, 0}
 	};
 	__layoutMapLowResolution = _Render->r->registerVertexLayout(1, attribsMapLowResolution);
 	//--------------------------------------------------------------------------------------------
 	R_VertexLayoutAttrib attribsMapChunk[6] = {
-		{"vertexPos",            0, 3, 0},
+		{"VertexPosition",       0, 3, 0},
 		{"textureCoordsDetail",  1, 2, 0},
 		{"textureCoordsAlpha",   2, 2, 0},
 		{"normal",               3, 3, 0},
@@ -60,14 +60,14 @@ void RenderStorage::CreateLayouts()
 	__layoutMapChunk = _Render->r->registerVertexLayout(6, attribsMapChunk);
 	//--------------------------------------------------------------------------------------------
 	R_VertexLayoutAttrib attribsWMO[3] = {
-		{"vertexPos",      0, 3, 0},
+		{"VertexPosition",      0, 3, 0},
 		{"textureCoords",  1, 2, 0},
 		{"normal",         2, 3, 0}
 	};
 	__layoutWMO = _Render->r->registerVertexLayout(3, attribsWMO);
 
 	R_VertexLayoutAttrib attribsWMO_VC[4] = {
-		{"vertexPos",      0, 3, 0},
+		{"VertexPosition",      0, 3, 0},
 		{"textureCoords",  1, 2, 0},
 		{"normal",         2, 3, 0},
 		{"color",          3, 4, 0}
@@ -75,14 +75,14 @@ void RenderStorage::CreateLayouts()
 	__layoutWMO_VC = _Render->r->registerVertexLayout(4, attribsWMO_VC);
 	//--------------------------------------------------------------------------------------------
 	R_VertexLayoutAttrib attribsMDX[3] = {
-		{"vertexPos",      0, 3, 0},
+		{"VertexPosition",      0, 3, 0},
 		{"textureCoords",  1, 2, 0},
 		{"normal",         2, 3, 0}
 	};
 	__layoutMDX = _Render->r->registerVertexLayout(3, attribsMDX);
 	//--------------------------------------------------------------------------------------------
 	R_VertexLayoutAttrib attribsWater[3] = {
-		{"vertexPos",      0, 3, 0},
+		{"VertexPosition",      0, 3, 0},
 		{"textureCoords",  1, 3, 0},
 		{"normal",         2, 3, 0}
 	};
@@ -95,43 +95,38 @@ void RenderStorage::CreateGeometry()
 	uint16 indexes[6] = {0, 1, 2, 2, 1, 3};
 	uint32 __ib = _Render->r->createIndexBuffer(6 * sizeof(uint16), indexes);
 
-	//
 
-	//-- Pos2
+	//========================================================================
 
-	__vbPos2 = _Render->r->createVertexBuffer(4 * sizeof(vec2), nullptr);
-	__geomPos2 = _Render->r->beginCreatingGeometry(__layoutPos2);
+	vector<vec2> verticesQuad;
+	verticesQuad.push_back(vec2(-1.0f, -1.0f));
+	verticesQuad.push_back(vec2(1.0f, -1.0f));
+	verticesQuad.push_back(vec2(-1.0f, 1.0f));
+	verticesQuad.push_back(vec2(1.0f, 1.0f));
 
-	_Render->r->setGeomVertexParams(__geomPos2, __vbPos2, 0, 0, 0);
-	_Render->r->setGeomIndexParams(__geomPos2, __ib, R_IndexFormat::IDXFMT_16);
+	uint32 __vbQuad = _Render->r->createVertexBuffer(verticesQuad.size() * sizeof(vec2), &verticesQuad[0]);
+	__Quad = _Render->r->beginCreatingGeometry(__layoutV2);
 
-	_Render->r->finishCreatingGeometry(__geomPos2);
+	_Render->r->setGeomVertexParams(__Quad, __vbQuad, 0, 0, sizeof(vec2));
+	_Render->r->setGeomIndexParams(__Quad, __ib, R_IndexFormat::IDXFMT_16);
 
+	_Render->r->finishCreatingGeometry(__Quad);
 
-	//-- Pos3
+	//--
 
-	__vbPos3 = _Render->r->createVertexBuffer(4 * sizeof(vec2), nullptr);
-	__geomPos3 = _Render->r->beginCreatingGeometry(__layoutPos2);
+	vector<Texture_Vertex> verticesQuadVT;
+	verticesQuadVT.push_back({vec2(-1.0f, -1.0f), vec2(0.0f, 0.0f)});
+	verticesQuadVT.push_back({vec2(1.0f, -1.0f), vec2(1.0f, 0.0f)});
+	verticesQuadVT.push_back({vec2(-1.0f, 1.0f), vec2(0.0f, 1.0f)});
+	verticesQuadVT.push_back({vec2(1.0f, 1.0f), vec2(1.0f, 1.0f)});
 
-	_Render->r->setGeomVertexParams(__geomPos3, __vbPos3, 0, 0, 0);
+	uint32 __vbQuadVT = _Render->r->createVertexBuffer(verticesQuadVT.size() * sizeof(Texture_Vertex), verticesQuadVT.data());
+	__QuadVT = _Render->r->beginCreatingGeometry(__layoutV2T2);
 
-	uint16 indexes3[8] = {0, 1, 1, 2, 2, 3, 3, 0};
-	uint32 __ibPos3 = _Render->r->createIndexBuffer(8 * sizeof(uint16), indexes3);
-	_Render->r->setGeomIndexParams(__geomPos3, __ibPos3, R_IndexFormat::IDXFMT_16);
+	_Render->r->setGeomVertexParams(__QuadVT, __vbQuadVT, 0, 0,            sizeof(Texture_Vertex));
+	_Render->r->setGeomVertexParams(__QuadVT, __vbQuadVT, 1, sizeof(vec2), sizeof(Texture_Vertex));
 
-	_Render->r->finishCreatingGeometry(__geomPos3);
+	_Render->r->setGeomIndexParams(__QuadVT, __ib, R_IndexFormat::IDXFMT_16);
 
-	//
-
-	//-- Pos2 Texture2
-
-	__vb = _Render->r->createVertexBuffer(4 * sizeof(Texture_Vertex), nullptr);
-	__geom = _Render->r->beginCreatingGeometry(__layoutFont);
-
-	_Render->r->setGeomVertexParams(__geom, __vb, 0, 0, sizeof(Texture_Vertex));
-	_Render->r->setGeomVertexParams(__geom, __vb, 1, sizeof(vec2), sizeof(Texture_Vertex));
-
-	_Render->r->setGeomIndexParams(__geom, __ib, R_IndexFormat::IDXFMT_16);
-
-	_Render->r->finishCreatingGeometry(__geom);
+	_Render->r->finishCreatingGeometry(__QuadVT);
 }

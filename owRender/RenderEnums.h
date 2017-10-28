@@ -37,7 +37,6 @@ struct R_TextureFormats
 		RGBA16F,
 		RGBA32F,
 		DEPTH,
-		ALPHA,
 		R32,
 		RG32
 	};

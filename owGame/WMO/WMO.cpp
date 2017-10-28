@@ -341,7 +341,6 @@ bool WMO::draw(uint32 _doodadSet)
 	}
 
 	// Debug geometry
-
 	{
 
 		//_TechniquesMgr->m_Debug_GeometryPass->BindS();

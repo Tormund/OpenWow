@@ -138,9 +138,9 @@ bool RenderDevice::init()
 {
 	bool failed = false;
 
-	char* vendor = (char *)glGetString(GL_VENDOR);
-	char* renderer = (char *)glGetString(GL_RENDERER);
-	char* version = (char *)glGetString(GL_VERSION);
+	char* vendor = (char*)glGetString(GL_VENDOR);
+	char* renderer = (char*)glGetString(GL_RENDERER);
+	char* version = (char*)glGetString(GL_VERSION);
 
 	if (!version || !renderer || !vendor)
 	{
@@ -191,7 +191,7 @@ bool RenderDevice::init()
 	glEnable(GL_DEBUG_OUTPUT);
 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 	glDebugMessageCallback(glDebugOutput, nullptr);
-	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+	//glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
 
 	// Set capabilities
 	_caps.texFloat = true;
@@ -259,6 +259,8 @@ uint32 RenderDevice::registerVertexLayout(uint32 numAttribs, R_VertexLayoutAttri
 
 void RenderDevice::beginRendering()
 {
+	CHECK_GL_ERROR
+
 	//	Get the currently bound frame buffer object. 
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &_defaultFBO);
 	resetStates();
@@ -638,9 +640,6 @@ uint32 RenderDevice::createTexture(R_TextureTypes::List type, int width, int hei
 		case R_TextureFormats::DEPTH:
 		tex.glFmt = _depthFormat;
 		break;
-		case R_TextureFormats::ALPHA:
-		tex.glFmt = GL_ALPHA;
-		break;
 		default:
 		assert1(0);
 		break;
@@ -697,10 +696,6 @@ void RenderDevice::uploadTextureData(uint32 texObj, int slice, int mipLevel, con
 		inputType = GL_FLOAT;
 		break;
 
-		case R_TextureFormats::ALPHA:
-		inputFormat = GL_ALPHA;
-		inputType = GL_UNSIGNED_BYTE;
-		break;
 	};
 
 	// Calculate size of next mipmap using "floor" convention
@@ -896,7 +891,7 @@ void RenderDevice::bindShader(uint32 shaderId)
 {
 	if (shaderId != 0)
 	{
-		R_Shader &shader = _shaders.getRef(shaderId);
+		R_Shader& shader = _shaders.getRef(shaderId);
 		glUseProgram(shader.oglProgramObj);
 	}
 	else
@@ -1902,6 +1897,8 @@ bool RenderDevice::commitStates(uint32 filter)
 			_pendingMask &= ~PM_VIEWPORT;
 		}
 
+		CHECK_GL_ERROR
+
 		// Update render state
 		if (mask & PM_RENDERSTATES)
 		{
@@ -1909,12 +1906,16 @@ bool RenderDevice::commitStates(uint32 filter)
 			_pendingMask &= ~PM_RENDERSTATES;
 		}
 
+		CHECK_GL_ERROR
+
 		// Set scissor rect
 		if (mask & PM_SCISSOR)
 		{
 			glScissor(_scX, _scY, _scWidth, _scHeight);
 			_pendingMask &= ~PM_SCISSOR;
 		}
+
+		CHECK_GL_ERROR
 
 		// Bind textures and set sampler state
 		if (mask & PM_TEXTURES)
@@ -1961,6 +1962,8 @@ bool RenderDevice::commitStates(uint32 filter)
 			_pendingMask &= ~PM_TEXTURES;
 		}
 
+		CHECK_GL_ERROR
+
 		// Bind vertex buffers
 		if (mask & PM_GEOMETRY)
 		{
@@ -1968,14 +1971,11 @@ bool RenderDevice::commitStates(uint32 filter)
 
 			glBindVertexArray(geo.vao);
 
-			/*if (!applyVertexLayout(geo))
-			{
-				return false;
-			}*/
-			
 			m_IsIndexFormat32 = geo.indexBuf32Bit;
 			_pendingMask &= ~PM_GEOMETRY;
 		}
+
+		CHECK_GL_ERROR
 
 		// Place memory barriers
 		if (mask & PM_BARRIER)
@@ -1986,6 +1986,8 @@ bool RenderDevice::commitStates(uint32 filter)
 			}
 			_pendingMask &= ~PM_BARRIER;
 		}
+
+		CHECK_GL_ERROR
 
 		// Bind storage buffers
 		if (mask & PM_COMPUTE)
@@ -2006,6 +2008,8 @@ bool RenderDevice::commitStates(uint32 filter)
 
 void RenderDevice::resetStates()
 {
+	CHECK_GL_ERROR
+
 	_curGeometryIndex = 1;
 	_curRasterState.hash = 0xFFFFFFFF; _newRasterState.hash = 0;
 	_curBlendState.hash = 0xFFFFFFFF; _newBlendState.hash = 0;
@@ -2026,6 +2030,7 @@ void RenderDevice::resetStates()
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, _defaultFBO);
 }
@@ -2109,20 +2114,25 @@ void RenderDevice::draw(R_PrimitiveType primType, uint32 firstVert, uint32 numVe
 	{
 		assert1(_curGeometryIndex > 1);
 		glDrawArrays(primitiveTypes[(uint32)primType], firstVert, numVerts);
-	}
 
-	CHECK_GL_ERROR
+		CHECK_GL_ERROR
+	}
 }
 
-void RenderDevice::drawIndexed(R_PrimitiveType primType, uint32 firstIndex, uint32 numIndices, uint32 firstVert, uint32 numVerts)
+void RenderDevice::drawIndexed(R_PrimitiveType primType, uint32 firstIndex, uint32 numIndices, uint32 firstVert, uint32 numVerts, bool _softReset)
 {
 	if (commitStates())
 	{
-		firstIndex *= (m_IsIndexFormat32 == IDXFMT_32) ? sizeof(int) : sizeof(short);
+		firstIndex *= (m_IsIndexFormat32) ? 4u : 2u;
 
 		assert1(_curGeometryIndex > 1);
-		glDrawRangeElements(primitiveTypes[(uint32)primType], firstVert, firstVert + numVerts, numIndices, indexFormats[m_IsIndexFormat32], (char*)0 + firstIndex);
-	}
+		glDrawRangeElements(primitiveTypes[(uint32)primType], firstVert, firstVert + numVerts, numIndices, indexFormats[m_IsIndexFormat32], (char *)0 + firstIndex);
+	
+		if (_softReset)
+		{
+			glBindVertexArray(0);
+		}
 
-	CHECK_GL_ERROR
+		CHECK_GL_ERROR
+	}
 }

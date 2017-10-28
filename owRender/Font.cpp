@@ -24,14 +24,14 @@ Font::~Font()
 
 void Font::Render(cstring _string, vec2 _offset) const
 {
-	_Render->r->setTexture(0, m_Texture, 0, 0);
+	_Render->r->setTexture(0, m_Texture, SS_FILTER_BILINEAR | SS_ANISO16 | SS_ADDR_CLAMP, 0);
 
 	_Render->r->setGeometry(m_FontBuffer);
 	
 	for (uint32 i = 0; i < _string.length(); i++)
 	{
 		uint8 ch = _string.c_str()[i];
-		if (static_cast<uint32>(ch) < SPACE)
+		if (static_cast<uint32>(ch) < SPACE || static_cast<uint32>(ch) - 32 > Font::NUM_CHARS)
 		{
 			continue;
 		}

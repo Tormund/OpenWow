@@ -145,6 +145,8 @@ void Model_Skin::Draw()
 {
 	_TechniquesMgr->m_MDX_GeometryPass->BindS();
 	_TechniquesMgr->m_MDX_GeometryPass->SetPVW();
+	
+	_Render->r->setGeometry(__geom);
 
 	for (size_t i = 0; i < m_Passes.size(); i++)
 	{
@@ -152,11 +154,7 @@ void Model_Skin::Draw()
 
 		if (p->init(m_ModelObject) && showGeosets[p->geoset])
 		{
-			_Render->r->setGeometry(__geom);
-
-			_Render->r->drawIndexed(PRIM_TRILIST, p->indexStart, p->indexCount, 0, m_ModelObject->header.vertices.size);
-
-			//_Render->r->resetStates();
+			_Render->r->drawIndexed(PRIM_TRILIST, p->indexStart, p->indexCount, 0, m_ModelObject->header.vertices.size, false);
 
 			p->deinit();
 		}

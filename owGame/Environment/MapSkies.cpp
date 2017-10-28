@@ -75,7 +75,8 @@ void MapSkies::InitBuffer()
 
 
 	// Vertex buffer
-	__vb = _Render->r->createVertexBuffer(2 * __vertsSize * sizeof(vec3), vertices.data());
+	__vb = _Render->r->createVertexBuffer(2 * __vertsSize * sizeof(vec3), nullptr);
+
 	_Render->r->updateBufferData(__vb, 0, __vertsSize * sizeof(vec3), vertices.data());
 
 	//
@@ -194,60 +195,14 @@ bool MapSkies::drawSky(cvec3 pos)
 		return false;
 	}
 
-	_TechniquesMgr->m_Sky_GeometryPass->BindS();
-
 	_Pipeline->Clear();
 	_Pipeline->Translate(pos);
+
+	_TechniquesMgr->m_Sky_GeometryPass->BindS();
 	_TechniquesMgr->m_Sky_GeometryPass->SetPVW();
 
 	_Render->r->setGeometry(__geom);
-
 	_Render->r->draw(PRIM_TRILIST, 0, __vertsSize);
-
-	//_Render->r->resetStates();
-
-	/*glPushMatrix();
-	{
-		glTranslatef(pos.x, pos.y, pos.z);
-
-		// Draw sky
-		vec3 basepos1[cnum], basepos2[cnum];
-		glBegin(GL_QUADS);
-		for (int h = 0; h < C_SkySegmentsCount; h++)
-		{
-
-			for (int i = 0; i < cnum; i++)
-			{
-				basepos1[i] = basepos2[i] = vec3(cosf(C_SkyAngles[i] * DEG_TO_RAD) * rad, sinf(C_SkyAngles[i] * DEG_TO_RAD) * rad, 0);
-				rotate(0, 0, &basepos1[i].x, &basepos1[i].z, M_2_PI / C_SkySegmentsCount * (h + 0));
-				rotate(0, 0, &basepos2[i].x, &basepos2[i].z, M_2_PI / C_SkySegmentsCount * (h + 1));
-			}
-
-			for (int v = 0; v < cnum - 1; v++)
-			{
-				glColor3fv(glm::value_ptr(colorSet[skycolors[v]]));
-				glVertex3fv(glm::value_ptr(basepos2[v]));
-				glVertex3fv(glm::value_ptr(basepos1[v]));
-
-				glColor3fv(glm::value_ptr(colorSet[skycolors[v + 1]]));
-				glVertex3fv(glm::value_ptr(basepos1[v + 1]));
-				glVertex3fv(glm::value_ptr(basepos2[v + 1]));
-			}
-		}
-		glEnd();
-
-		// if it's night, draw the stars
-		//float ni = _World->dayNightPhase.nightIntensity; // BOUZI FIXME ENABLE ME
-		//if (ni > 0)
-		//{
-		//const float sc = 0.1f;
-		//glScalef(sc, sc, sc);
-		//glEnable(GL_TEXTURE_2D);
-		//stars->trans = ni;
-		//stars->draw();
-		//}
-	}
-	glPopMatrix();*/
 
 	return true;
 }

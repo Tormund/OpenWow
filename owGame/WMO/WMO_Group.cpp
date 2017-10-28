@@ -175,8 +175,7 @@ void WMOGroup::Load()
 		else if (strcmp(fourcc, "MOVI") == 0) // Vertex indices for triangles
 		{
 			m_IndicesCount = size / sizeof(uint16);
-			m_Indices = new uint16[m_IndicesCount];
-			f.ReadBytes(m_Indices, size);
+			m_Indices = (uint16*)f.GetDataFromCurrent();
 		}
 		else if (strcmp(fourcc, "MOVT") == 0) // Vertices chunk.
 		{
@@ -458,12 +457,12 @@ bool WMOGroup::Render()
 	_TechniquesMgr->m_WMO_GeometryPass->BindS();
 	_TechniquesMgr->m_WMO_GeometryPass->SetPVW();
 
+	_Render->r->setGeometry(__geom);
+
 	for (uint32 i = 0; i < m_WMOBatchIndexesCount; i++)
 	{
 		WMOBatch* batch = &m_WMOBatchIndexes[i];
 		WMOMaterial* material = m_ParentWMO->m_Materials[batch->material_id];
-
-		_Render->r->setGeometry(__geom);
 
 		// Materials settings
 		//material->setup();
@@ -473,9 +472,7 @@ bool WMOGroup::Render()
 		//_TechniquesMgr->m_WMO_GeometryPass->SetDiffuseColor(fromARGB(material->GetDiffuseColor()));
 		_TechniquesMgr->m_WMO_GeometryPass->SetHasMOCV(false);
 
-		_Render->r->drawIndexed(PRIM_TRILIST, batch->indexStart, batch->indexCount, 0, m_VertexesCount);
-
-		//_Render->r->resetStates();
+		_Render->r->drawIndexed(PRIM_TRILIST, batch->indexStart, batch->indexCount, batch->vertexStart, (batch->vertexEnd - batch->vertexStart), false);
 	}
 
 	return true;

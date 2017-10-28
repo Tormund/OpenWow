@@ -17,22 +17,16 @@ public:
 	
 	//----------------------------------------------
 
-	// Geometry 
+	// Geometry
 
-	uint32 __vbPos2;
-	uint32 __geomPos2;
-
-	uint32 __vb;
-	uint32 __geom;
-
-	uint32 __vbPos3;
-	uint32 __geomPos3;
+	uint32 __Quad;
+	uint32 __QuadVT;
 
 	//----------------------------------------------
 
 	// Layouts UI
-	uint32 __layoutPos2;
-	uint32 __layoutFont;
+	uint32 __layoutV2;
+	uint32 __layoutV2T2;
 
 	// Layouts geometry
 	uint32 __layoutSky;
