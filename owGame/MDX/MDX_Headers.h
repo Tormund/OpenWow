@@ -112,7 +112,7 @@ struct M2Vertex
 	uint8 bone_weights[4];
 	uint8 bone_indices[4];
 	vec3 normal;
-	vec2 tex_coords[2];  // two textures, depending on shader used
+	vec2 tex_coords[2];  // two m_DiffuseTextures, depending on shader used
 };
 
 //
@@ -134,7 +134,7 @@ struct M2Texture
 		uint32 M2TEXTURE_FLAGS_WRAPY : 1;
 		uint32 : 30;
 	} flags;
-	M2Array<char> filename; // for non-hardcoded textures (type != 0), this still points to a zero-sized string
+	M2Array<char> filename; // for non-hardcoded m_DiffuseTextures (type != 0), this still points to a zero-sized string
 };
 
 //
@@ -163,7 +163,7 @@ struct M2Material
 		uint16 M2MATERIAL_FLAGS_UNLIT : 1;
 		uint16 M2MATERIAL_FLAGS_UNFOGGED : 1;
 		uint16 M2MATERIAL_FLAGS_TWOSIDED : 1;
-		uint16 M2MATERIAL_FLAGS_DEPTHTESTBILLBOARD : 1;
+		uint16 M2MATERIAL_FLAGS_DEPTHTEST : 1;
 		uint16 M2MATERIAL_FLAGS_DEPTHWRITE : 1;
 		uint16 : 11;
 	} flags;
@@ -238,7 +238,7 @@ struct M2Ribbon
 	uint32 ribbonId;                  // Always (as I have seen): -1.
 	uint32 boneIndex;                 // A bone to attach to.
 	vec3 position;                 // And a position, relative to that bone.
-	M2Array<uint16> textureIndices;   // into textures
+	M2Array<uint16> textureIndices;   // into m_DiffuseTextures
 	M2Array<uint16> materialIndices;  // into materials
 
 	M2Track<vec3> colorTrack;
@@ -282,7 +282,7 @@ struct M2Particle
 
 	union
 	{
-		uint16 texture;                         // And the textures that are used. 
+		uint16 texture;                         // And the m_DiffuseTextures that are used. 
 		struct                                    // For multi-textured particles actually three ids
 		{
 			uint16 texture_0 : 5;
@@ -303,7 +303,7 @@ struct M2Particle
 	uint8 headorTail;                       // 0 - Head, 1 - Tail, 2 - Both 
 
 	uint16 textureTileRotation;             // Rotation for the texture tile. (Values: -1,0,1) -- priorityPlane
-	uint16 textureDimensions_rows;          // for tiled textures
+	uint16 textureDimensions_rows;          // for tiled m_DiffuseTextures
 	uint16 textureDimensions_columns;
 
 	M2Track<float> emissionSpeed;             // Base velocity at which particles are emitted.
@@ -424,7 +424,7 @@ struct ModelHeader
 	M2Array<M2Color> colors;                             // Color and alpha animations definitions.
 
 	M2Array<M2Texture> textures;
-	M2Array<M2TextureWeight> texture_weights;            // Transparency of textures.
+	M2Array<M2TextureWeight> texture_weights;            // Transparency of m_DiffuseTextures.
 	M2Array<M2TextureTransform> texture_transforms;
 
 	M2Array<uint16> replacable_texture_lookup;

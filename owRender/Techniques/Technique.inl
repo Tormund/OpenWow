@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../GBuffer.h"
 #include "../Pipeline.h"
 #include "../Render.h"
 
@@ -116,8 +115,8 @@ inline void Technique::SetProjectionMatrix(cmat4 WorldInverse)
 
 inline void Technique::BindToPostprocess()
 {
-	setTexture("gbuf0", GBuffer::GBUFFER_TEXTURE_TYPE_POSITION);
-	setTexture("gbuf1", GBuffer::GBUFFER_TEXTURE_TYPE_NORMAL);
-	setTexture("gbuf2", GBuffer::GBUFFER_TEXTURE_TYPE_DIFFUSE);
-	setTexture("gbuf3", GBuffer::GBUFFER_TEXTURE_TYPE_SPECULAR);
+	setTexture("gbuf0", 0);//GBuffer::GBUFFER_TEXTURE_TYPE_POSITION);
+	setTexture("gbuf1", 1);//GBuffer::GBUFFER_TEXTURE_TYPE_NORMAL);
+	setTexture("gbuf2", 2);//GBuffer::GBUFFER_TEXTURE_TYPE_DIFFUSE);
+	setTexture("gbuf3", 3);//GBuffer::GBUFFER_TEXTURE_TYPE_SPECULAR);
 }

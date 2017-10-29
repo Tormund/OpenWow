@@ -37,6 +37,22 @@ static const uint32 memoryBarrierType[3] = {GL_BUFFER_UPDATE_BARRIER_BIT | GL_SH
 
 static const uint32 bufferMappingTypes[3] = {GL_MAP_READ_BIT, GL_MAP_WRITE_BIT, GL_MAP_READ_BIT | GL_MAP_WRITE_BIT};
 
+static const uint32 oglBlendFuncs[10] = {
+	GL_ZERO, 
+	GL_ONE, 
+
+	GL_SRC_ALPHA, 
+	GL_ONE_MINUS_SRC_ALPHA, 
+	GL_DST_ALPHA, 
+	GL_ONE_MINUS_DST_ALPHA, 
+
+	
+	GL_SRC_COLOR,
+	GL_ONE_MINUS_SRC_COLOR,
+	GL_DST_COLOR, 
+	GL_ONE_MINUS_DST_COLOR, 
+};
+
 void glDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
 	if (id == 131169 || id == 131185 || id == 131218 || id == 131204) return;
@@ -1477,7 +1493,7 @@ void RenderDevice::setRenderBuffer(uint32 rbObj)
 	}
 	else
 	{
-		// Unbind all textures to make sure that no FBO attachment is bound any more
+		// Unbind all m_DiffuseTextures to make sure that no FBO attachment is bound any more
 		for (uint32 i = 0; i < 16; ++i)
 		{
 			setTexture(i, 0, 0, 0);
@@ -1823,8 +1839,14 @@ void RenderDevice::applyRenderStates()
 	// Blend state
 	if (_newBlendState.hash != _curBlendState.hash)
 	{
-		if (!_newBlendState.alphaToCoverageEnable) glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-		else glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+		if (!_newBlendState.alphaToCoverageEnable)
+		{
+			glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+		}
+		else
+		{
+			glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+		}
 
 		if (!_newBlendState.blendEnable)
 		{
@@ -1832,9 +1854,6 @@ void RenderDevice::applyRenderStates()
 		}
 		else
 		{
-			uint32 oglBlendFuncs[16] = {GL_ZERO, GL_ONE, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_DST_ALPHA, GL_ONE_MINUS_DST_ALPHA,GL_DST_COLOR, GL_SRC_COLOR,
-										   GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR, GL_ZERO, GL_ZERO, GL_ZERO, GL_ZERO, GL_ZERO, GL_ZERO};
-
 			glEnable(GL_BLEND);
 			glBlendFunc(oglBlendFuncs[_newBlendState.srcBlendFunc], oglBlendFuncs[_newBlendState.destBlendFunc]);
 		}
@@ -1917,7 +1936,7 @@ bool RenderDevice::commitStates(uint32 filter)
 
 		CHECK_GL_ERROR
 
-		// Bind textures and set sampler state
+		// Bind m_DiffuseTextures and set sampler state
 		if (mask & PM_TEXTURES)
 		{
 			for (uint32 i = 0; i < 16; ++i)

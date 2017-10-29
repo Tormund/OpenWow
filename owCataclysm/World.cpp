@@ -5,6 +5,11 @@
 
 World::World()
 {
+	rb = _Render->r->createRenderBuffer(Modules::config().windowSizeX, Modules::config().windowSizeY, R_TextureFormats::RGBA16F, true, 4, 4);
+
+	rb2 = _Render->r->createRenderBuffer(Modules::config().windowSizeX, Modules::config().windowSizeY, R_TextureFormats::RGBA16F, true, 4, 4);
+
+
 	// Main game camera
 	mainCamera = new Camera;
 	mainCamera->setupViewParams(45.0f, Modules::config().aspectRatio, 2.0f, 15000.0f);
@@ -15,11 +20,6 @@ World::World()
 	testCamera->setupViewParams(45.0f, Modules::config().aspectRatio, 2.0f, 15000.0f);
 
 	_EnvironmentManager->Init();
-
-	//----------------------------------------------------------------//
-
-	m_gbuffer = new GBuffer();
-	m_gbuffer->Init();
 
 	//----------------------------------------------------------------//
 
@@ -54,19 +54,23 @@ void World::Render()
 	
 
 	// Geometry pass
-	m_gbuffer->BindForGeomPass();
+	_Render->r->setRenderBuffer(rb);
 	_Render->r->clear();
 	RenderGeom();
 
 	// Postprocess pass
-	m_gbuffer->BindForLightPass();
+	_Render->r->setRenderBuffer(0);
+	for (uint32 i = 0; i < 4; i++)
+	{
+		_Render->r->setTexture(i, _Render->r->getRenderBufferTex(rb, i), 0, R_TextureUsage::Texture);
+	}
 	_Render->r->clear(CLR_COLOR_RT0 | CLR_DEPTH);
 	RenderPostprocess();
 
 	//
 	// SECONDS PASS
 	//
-	
+	/*
 #ifdef WMO_INCL
 	WMOInstance::reset();
 #endif
@@ -81,11 +85,11 @@ void World::Render()
 	_PipelineGlobal->SetCamera(testCamera);
 
 	// Geometry pass
-	m_gbuffer->BindForGeomPass2();
+	_Render->r->setRenderBuffer(rb2);
 	_Render->r->clear();
 	RenderGeom();
 	//_PipelineGlobal->RenderCamera(_CameraFrustum);
-
+	*/
 	_Render->r->setRenderBuffer(0);
 }
 

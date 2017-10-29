@@ -952,7 +952,7 @@ unsigned int
 		unsigned int flags
 	)
 {
-	/*	wrapper function for 2D textures	*/
+	/*	wrapper function for 2D m_DiffuseTextures	*/
 	return SOIL_internal_create_OGL_texture(
 				data, width, height, channels,
 				reuse_texture_ID, flags,
@@ -1078,7 +1078,7 @@ unsigned int
 			break;
 		}
 	}
-	/*	if the user can't support NPOT textures, make sure we force the POT option	*/
+	/*	if the user can't support NPOT m_DiffuseTextures, make sure we force the POT option	*/
 	if( (query_NPOT_capability() == SOIL_CAPABILITY_NONE) &&
 		!(flags & SOIL_FLAG_TEXTURE_RECTANGLE) )
 	{
@@ -1890,7 +1890,7 @@ int query_NPOT_capability( void )
 			has_NPOT_capability = SOIL_CAPABILITY_PRESENT;
 		}
 	}
-	/*	let the user know if we can do non-power-of-two textures or not	*/
+	/*	let the user know if we can do non-power-of-two m_DiffuseTextures or not	*/
 	return has_NPOT_capability;
 }
 

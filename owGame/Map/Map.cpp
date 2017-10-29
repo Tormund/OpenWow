@@ -495,7 +495,7 @@ void Map::Unload()
 		{
 			if (lowrestiles[i][j] != 0)
 			{
-				//glDeleteBuffers(1, &lowrestiles[i][j]);
+				_Render->r->destroyGeometry(lowrestiles[i][j], true);
 			}
 		}
 	}

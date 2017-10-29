@@ -226,7 +226,7 @@ void GameState_Menu::RenderUI(double t, double dt)
 		//
 		// DEBUG
 		//
-		//_Render->RenderTexture(vec2(Modules::config().windowSizeX * 2.0 / 3.0, Modules::config().windowSizeY * 2.0 / 3.0), _Render->r->getRenderBufferTex(_World->m_gbuffer->rb2, 2), vec2(Modules::config().windowSizeX / 3, Modules::config().windowSizeY / 3));
+		_Render->RenderTexture(vec2(Modules::config().windowSizeX * 2.0 / 3.0, Modules::config().windowSizeY * 2.0 / 3.0), _Render->r->getRenderBufferTex(_World->rb2, 2), vec2(Modules::config().windowSizeX / 3, Modules::config().windowSizeY / 3));
 
 
 		//

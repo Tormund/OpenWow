@@ -25,7 +25,7 @@ public:
 	}
 
 public:
-	uint32 indexStart, indexCount, vertexStart, vertexEnd;
+	uint32 indexStart, indexCount, vertexStart, vertexCount;
 	//Texture* texture, texture2;
 	int tex;
 	bool usetex2, useEnvMap, cull, trans, unlit, noZWrite, billboard;
@@ -35,11 +35,13 @@ public:
 	uint16 order;
 
 	// Geoset ID
-	int geoset;
+	int m2SkinIndex;
 
 	// texture wrapping
 	bool swrap, twrap;
 
 	// colours
 	vec4 ocol, ecol;
+
+	Material __material;
 };

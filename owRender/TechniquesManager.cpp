@@ -4,7 +4,7 @@
 #include "TechniquesManager.h"
 
 // Additional
-#include "Gbuffer.h"
+#include "Material.h"
 
 TechniquesMgr::TechniquesMgr()
 {
@@ -60,24 +60,24 @@ void TechniquesMgr::Init()
 
 	m_MDX_GeometryPass = new MDX_GeometryPass();
 	m_MDX_GeometryPass->BindS();
-	m_MDX_GeometryPass->SetColorTextureUnit(COLOR_TEXTURE_UNIT_INDEX);
-	m_MDX_GeometryPass->SetSpecularTextureUnit(SPECULAR_TEXTURE_UNIT_INDEX);
+	m_MDX_GeometryPass->SetColorTextureUnit(Material::C_DiffuseTextureIndex);
+	m_MDX_GeometryPass->SetSpecularTextureUnit(Material::C_SpecularTextureIndex);
 	m_WMO_GeometryPass->Unbind();
 
 	//
 
 	m_Water = new Water_Pass();
 	m_Water->BindS();
-	m_Water->SetColorTextureUnit(COLOR_TEXTURE_UNIT_INDEX);
-	m_Water->SetSpecularTextureUnit(SPECULAR_TEXTURE_UNIT_INDEX);
+	m_Water->SetColorTextureUnit(Material::C_DiffuseTextureIndex);
+	m_Water->SetSpecularTextureUnit(Material::C_SpecularTextureIndex);
 	m_Water->Unbind();
 
 	//----------------------------------------------------------------//
 
 	m_WMO_GeometryPass = new WMO_GeomertyPass();
 	m_WMO_GeometryPass->BindS();
-	m_WMO_GeometryPass->SetColorTextureUnit(COLOR_TEXTURE_UNIT_INDEX);
-	m_WMO_GeometryPass->SetSpecularTextureUnit(SPECULAR_TEXTURE_UNIT_INDEX);
+	m_WMO_GeometryPass->SetColorTextureUnit(Material::C_DiffuseTextureIndex);
+	m_WMO_GeometryPass->SetSpecularTextureUnit(Material::C_SpecularTextureIndex);
 	m_WMO_GeometryPass->Unbind();
 
 	//----------------------------------------------------------------//
@@ -120,13 +120,13 @@ void TechniquesMgr::Init()
 
 	m_UI_Font = new UI_Font();
 	m_UI_Font->BindS();
-	m_UI_Font->SetFontTexture(COLOR_TEXTURE_UNIT_INDEX);
+	m_UI_Font->SetFontTexture(Material::C_DiffuseTextureIndex);
 	m_UI_Font->Unbind();
 
 	//
 
 	m_UI_Texture = new UI_Texture();
 	m_UI_Texture->BindS();
-	m_UI_Texture->SetTexture(COLOR_TEXTURE_UNIT_INDEX);
+	m_UI_Texture->SetTexture(Material::C_DiffuseTextureIndex);
 	m_UI_Texture->Unbind();
 }

@@ -24,7 +24,7 @@ Font::~Font()
 
 void Font::Render(cstring _string, vec2 _offset) const
 {
-	_Render->r->setTexture(0, m_Texture, SS_FILTER_BILINEAR | SS_ANISO16 | SS_ADDR_CLAMP, 0);
+	_Render->r->setTexture(10, m_Texture, SS_FILTER_BILINEAR | SS_ANISO16 | SS_ADDR_CLAMP, 0);
 
 	_Render->r->setGeometry(m_FontBuffer);
 	

@@ -9,25 +9,6 @@
 // Additional
 #include "Map.h"
 
-struct MCLY
-{
-	uint32 textureIndex;
-	struct
-	{
-		uint32 animation_rotation : 3;        // each tick is 45
-		uint32 animation_speed : 3;
-		uint32 animation_enabled : 1;
-		uint32 overbright : 1;                // This will make the texture way brighter. Used for lava to make it "glow".
-		uint32 use_alpha_map : 1;             // set for every layer after the first
-		uint32 alpha_map_compressed : 1;      // see MCAL chunk description
-		uint32 use_cube_map_reflection : 1;   // This makes the layer behave like its a reflection of the skybox. See below
-		uint32 : 21;
-	} flags;
-	uint32 offsetInMCAL;
-	__DBC_FOREIGN_KEY_ID(uint16, DBC_GroundEffectTexture, effectId);
-	int16 padding;
-};
-
 bool isHole(int holes, int i, int j)
 {
 	const int holetab_h[4] = {0x1111, 0x2222, 0x4444, 0x8888};
@@ -46,7 +27,7 @@ MapChunk::MapChunk(MapTile* _parentTile) :
 	areaID(-1),
 	visible(false),
 	hasholes(false),
-	blend(0),
+	m_BlendRBGShadowATexture(0),
 	strip(0),
 	striplen(0),
 	m_Liquid(nullptr)
@@ -55,7 +36,7 @@ MapChunk::MapChunk(MapTile* _parentTile) :
 	waterlevel[0] = 0;
 	waterlevel[1] = 0;
 
-	blend = 0;
+	m_BlendRBGShadowATexture = 0;
 
 
 	colorBufferEnable = false;
@@ -77,7 +58,7 @@ MapChunk::~MapChunk()
 
 //
 
-void MapChunk::init(File& f, load_phases phase)
+void MapChunk::Load(File& f, load_phases phase)
 {
 	size_t startPosition = f.GetPos();
 
@@ -357,14 +338,14 @@ void MapChunk::init(File& f, load_phases phase)
 			}
 		}
 
-		MCLY mcly[4];
+		
 
 		//------------------------------------------- Blend buffer Init
 		uint8* blendbuf = new uint8[64 * 64 * 4];
 		memset(blendbuf, 0, 64 * 64 * 4);
 		//------------------------------------------
 
-		// MCLY sub-chunk (textures)
+		// MCLY sub-chunk (m_DiffuseTextures)
 		f.Seek(header->ofsLayer);
 		{
 			// Texture layer definitions for this map chunk. 16 bytes per layer, up to 4 layers (thus, layer count = size / 16).
@@ -380,9 +361,6 @@ void MapChunk::init(File& f, load_phases phase)
 				{
 					animated[i] = 0;
 				}
-
-				textures[i] = m_ParentTile->m_DiffuseTextures[mcly[i].textureIndex];
-				SpecularTextures[i] = m_ParentTile->m_SpecularTextures[mcly[i].textureIndex];
 			}
 		}
 
@@ -499,8 +477,8 @@ void MapChunk::init(File& f, load_phases phase)
 
 
 		//-------------------------------------------- Blend buffer Final
-		blend = _Render->r->createTexture(R_TextureTypes::Tex2D, 64, 64, 1, R_TextureFormats::RGBA8, false, false, false, false);
-		_Render->r->uploadTextureData(blend, 0, 0, blendbuf);
+		m_BlendRBGShadowATexture = _Render->r->createTexture(R_TextureTypes::Tex2D, 64, 64, 1, R_TextureFormats::RGBA8, false, false, false, false);
+		_Render->r->uploadTextureData(m_BlendRBGShadowATexture, 0, 0, blendbuf);
 		//------------------------------------------
 	}
 
@@ -509,6 +487,16 @@ void MapChunk::init(File& f, load_phases phase)
 	{
 		// MCRF sub-chunk (???)
 		f.Seek(header->ofsRefs);
+	}
+}
+
+void MapChunk::Post_Load()
+{
+	// Texture layer definitions for this map chunk. 16 bytes per layer, up to 4 layers (thus, layer count = size / 16).
+	for (uint32 i = 0; i < header->nLayers; i++)
+	{
+		m_DiffuseTextures[i] = m_ParentTile->m_DiffuseTextures[mcly[i].textureIndex];
+		m_SpecularTextures[i] = m_ParentTile->m_SpecularTextures[mcly[i].textureIndex];
 	}
 }
 
@@ -634,17 +622,17 @@ void MapChunk::Render()
 
 	//_Render->r->setFillMode(R_FillMode::RS_FILL_WIREFRAME);
 
-	// Bind textures
+	// Bind m_DiffuseTextures
 	for (uint32 i = 0; i < header->nLayers; i++)
 	{
-		_Render->r->setTexture(i, textures[i]->GetObj(), SS_FILTER_BILINEAR | SS_ANISO16 | SS_ADDR_WRAP, 0);
-		_Render->r->setTexture(5 + i, SpecularTextures[i]->GetObj(), SS_FILTER_BILINEAR | SS_ANISO16 | SS_ADDR_WRAP, 0);
+		_Render->r->setTexture(i, m_DiffuseTextures[i]->GetObj(), SS_FILTER_BILINEAR | SS_ANISO16 | SS_ADDR_WRAP, 0);
+		_Render->r->setTexture(5 + i, m_SpecularTextures[i]->GetObj(), SS_FILTER_BILINEAR | SS_ANISO16 | SS_ADDR_WRAP, 0);
 	}
 
 	// Bind blend
 	if (header->nLayers > 0)
 	{
-		_Render->r->setTexture(4, blend, SS_FILTER_BILINEAR | SS_ADDR_CLAMP, 0);
+		_Render->r->setTexture(4, m_BlendRBGShadowATexture, SS_FILTER_BILINEAR | SS_ADDR_CLAMP, 0);
 	}
 
 	// Bind shadow

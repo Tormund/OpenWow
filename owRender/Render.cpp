@@ -102,7 +102,7 @@ void RenderGL::RenderTexture(vec2 _pos, uint32 _texture, vec2 _size, const Rect&
 	_TechniquesMgr->m_UI_Texture->SetProjectionMatrix(m_OrhoMatrix * _Pipeline->GetWorld());
 
 	// State
-	r->setTexture(0, _texture, SS_FILTER_BILINEAR | SS_ANISO16 | SS_ADDR_CLAMP, 0);
+	r->setTexture(10, _texture, SS_FILTER_BILINEAR | SS_ANISO16 | SS_ADDR_CLAMP, 0);
 	r->setGeometry(_RenderStorage->__QuadVT);
 	r->drawIndexed(PRIM_TRILIST, 0, 6, 0, 4);
 

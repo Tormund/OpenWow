@@ -10,8 +10,6 @@ WMOMaterial::WMOMaterial(const WMO* _parentWMO, File& _file) : m_ParentWMO(_pare
 {
 	_file.ReadBytes(&matDef, WMOMaterialDef::__size);
 
-	//Modules::log().Info("Blend mode = [%d]", matDef.blendMode);
-
 	texture = _TexturesMgr->Add(_parentWMO->m_TexturesNames + matDef.diffuseNameIndex);
 }
 
@@ -20,47 +18,7 @@ WMOMaterial::~WMOMaterial()
 	_TexturesMgr->Delete(texture);
 }
 
-void WMOMaterial::setup()
-{
-	/*if (GetBlendMode() == 0)
-	{
-		glDisable(GL_BLEND);
-	}
-	else
-	{
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	}*/
-
-	/*if (IsTwoSided())
-	{
-		glDisable(GL_CULL_FACE);
-	}
-	else
-	{
-		glEnable(GL_CULL_FACE);
-	}*/
-
-	_Render->r->setTexture(0, texture->GetObj(), SS_FILTER_BILINEAR | SS_ANISO16 | SS_ADDR_WRAP, 0);
-}
-
-/*void GLSetBlend(bool _enable, GLenum _srcColor, GLenum _descColor, GLenum _srcAlpha, GLenum _destAlpha)
-{
-	if (_enable)
-		glEnable(GL_BLEND);
-	else
-		glDisable(GL_BLEND);
-
-	glBlendFunc(GL_SRC_COLOR, _srcColor);
-	glBlendFunc(GL_DST_COLOR, _descColor);
-
-	glBlendFunc(GL_SRC_ALPHA, _srcAlpha);
-	glBlendFunc(GL_DST_ALPHA, _destAlpha);
-}*/
-
-void WMOMaterial::SetBlendMode()
-{
-	/*switch (matDef.blendMode)
+/*switch (matDef.blendMode)
 	{
 		case 0:
 		//GxBlend_Opaque	
@@ -132,4 +90,3 @@ void WMOMaterial::SetBlendMode()
 		GLSetBlend(true, GL_ONE, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 		break;
 	}*/
-}

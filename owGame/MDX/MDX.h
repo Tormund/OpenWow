@@ -17,13 +17,13 @@
 
 enum BlendModes
 {
-	BM_OPAQUE,
-	BM_TRANSPARENT,
-	BM_ALPHA_BLEND,
-	BM_ADDITIVE,
-	BM_ADDITIVE_ALPHA,
-	BM_MODULATE,
-	BM_MODULATE2
+	M2COMBINER_OPAQUE,
+	M2COMBINER_MOD,
+	M2COMBINER_DECAL,
+	M2COMBINER_ADD,
+	M2COMBINER_MOD2X,
+	M2COMBINER_FADE,
+	M2COMBINER_MOD2X_NA
 };
 
 class MDX : public RefItemNamed
@@ -56,7 +56,6 @@ private:
 	vec3* m_Normals;
 
 	vector<Model_Skin*> m_Skins;
-
 
 public:
 	bool animated;

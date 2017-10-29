@@ -10,11 +10,11 @@ bool ModelRenderPass::init(MDX* m)
 {
 	// COLOUR
 	// Get the colour and transparency and check that we should even render
-	ocol = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	/*ocol = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	ecol = vec4(0.0f, 0.0f, 0.0f, 0.0f);
 
-	//if (m->trans == 1.0f)
-	//	return false;
+	if (m->trans == 1.0f)
+		return false;
 
 	// emissive colors
 	if (color != -1 && m->colors[color].color.uses(0))
@@ -38,7 +38,7 @@ bool ModelRenderPass::init(MDX* m)
 		}
 
 		ecol = vec4(c, ocol.w);
-	//***	glMaterialfv(GL_FRONT, GL_EMISSION, glm::value_ptr(ecol));
+	//	glMaterialfv(GL_FRONT, GL_EMISSION, glm::value_ptr(ecol));
 	}
 
 	// opacity
@@ -58,14 +58,14 @@ bool ModelRenderPass::init(MDX* m)
 	// bind to our texture
 	Texture* bindtex = nullptr;
 	if (m->specialTextures[tex] == -1)
-		bindtex = m->textures[tex];
+		bindtex = m->m_DiffuseTextures[tex];
 	else
 		bindtex = m->replaceTextures[m->specialTextures[tex]];
 
 	if (bindtex != nullptr)
 	{
-		_Render->r->setTexture(0, bindtex->GetObj(), SS_FILTER_BILINEAR | SS_ANISO16 | SS_ADDR_WRAP, 0);
-		_Render->r->setTexture(5, bindtex->GetObj(), SS_FILTER_BILINEAR | SS_ANISO16 | SS_ADDR_WRAP, 0);
+		_Render->r->setTexture(10, bindtex->GetObj(), SS_FILTER_BILINEAR | SS_ANISO16 | SS_ADDR_WRAP, 0);
+		//_Render->r->setTexture(11, bindtex->GetObj(), SS_FILTER_BILINEAR | SS_ANISO16 | SS_ADDR_WRAP, 0);
 	}
 
 	// --
@@ -75,36 +75,36 @@ bool ModelRenderPass::init(MDX* m)
 	// blend mode
 	/*switch (blendmode)
 	{
-		case BM_OPAQUE:	// 0
+		case M2COMBINER_OPAQUE:	// 0
 		glDisable(GL_BLEND);
 		break;
 
-		case BM_TRANSPARENT: // 1
+		case M2COMBINER_MOD: // 1
 		glEnable(GL_ALPHA_TEST);
 		glAlphaFunc(GL_GEQUAL, 0.7f);
 		break;
 
-		case BM_ALPHA_BLEND: // 2
+		case M2COMBINER_DECAL: // 2
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		break;
 
-		case BM_ADDITIVE: // 3
+		case M2COMBINER_ADD: // 3
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_COLOR, GL_ONE);
 		break;
 
-		case BM_ADDITIVE_ALPHA: // 4
+		case M2COMBINER_MOD2X: // 4
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 		break;
 
-		case BM_MODULATE: // 5
+		case M2COMBINER_FADE: // 5
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);
 		break;
 
-		case BM_MODULATE2: // 6
+		case M2COMBINER_MOD2X_NA: // 6
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);
 		break;
@@ -113,7 +113,7 @@ bool ModelRenderPass::init(MDX* m)
 		Modules::log().Info("Error: Unknown blendmode: %d", blendmode);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	}*/
+	}
 
 	if (cull)
 	{
@@ -125,7 +125,7 @@ bool ModelRenderPass::init(MDX* m)
 	}
 
 	// Texture wrapping around the geometry
-	/*if (swrap)
+	if (swrap)
 	{
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	}
@@ -133,28 +133,28 @@ bool ModelRenderPass::init(MDX* m)
 	if (twrap)
 	{
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	}*/
+	}
 
 	// no writing to the depth buffer.
 	//glDepthMask(noZWrite ? GL_FALSE : GL_TRUE);
 
-	/*if (texanim != -1)
+	if (texanim != -1)
 	{
 		glMatrixMode(GL_TEXTURE);
 		glPushMatrix();
 
 		m->m_TexturesAnims[texanim].setup(texanim);
-	}*/
+	}
 
 	// color
-	//**glColor4fv(glm::value_ptr(ocol));
+	//glColor4fv(glm::value_ptr(ocol));
 	//glMaterialfv(GL_FRONT, GL_SPECULAR, ocol);
 
 
 	if (blendmode <= 1 && ocol.w < 1.0f)
 	{
 		//glEnable(GL_BLEND);
-	}
+	}*/
 
 	return true;
 }
@@ -163,13 +163,13 @@ void ModelRenderPass::deinit()
 {
 	/*switch (blendmode)
 	{
-		case BM_OPAQUE:
+		case M2COMBINER_OPAQUE:
 		break;
 
-		case BM_TRANSPARENT:
+		case M2COMBINER_MOD:
 		break;
 
-		case BM_ALPHA_BLEND:
+		case M2COMBINER_DECAL:
 		//glDepthMask(GL_TRUE);
 		break;
 

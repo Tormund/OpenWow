@@ -164,12 +164,12 @@ void MDX::initCommon(File& f)
 		//if (!animGeometry)
 		//{
 		m_Vertices[i] = m_OriginalVertexes[i].pos;
-		m_Texcoords[i] = m_OriginalVertexes[i].tex_coords[0];
+		m_Texcoords[i] = m_OriginalVertexes[i].tex_coords[0];      // Fixme
 		m_Normals[i] = m_OriginalVertexes[i].normal.normalized();
 		//}
 	}
 
-	// textures
+	// m_DiffuseTextures
 	if (header.textures.size)
 	{
 		textures = new Texture*[header.textures.size];
@@ -202,7 +202,7 @@ void MDX::initCommon(File& f)
 
 				if (texdef[i].type == 3)
 				{
-					// a fix for weapons with type-3 textures.
+					// a fix for weapons with type-3 m_DiffuseTextures.
 					replaceTextures[texdef[i].type] = _TexturesMgr->Add("Item\\ObjectComponents\\Weapon\\ArmorReflect4.BLP");
 				}
 			}
@@ -236,9 +236,9 @@ void MDX::initCommon(File& f)
 	// Vertex buffer
 	__vb = _Render->r->createVertexBuffer(header.vertices.size * 8 * sizeof(float), nullptr);
 
-	_Render->r->updateBufferData(__vb, header.vertices.size * 0 * sizeof(float), header.vertices.size * 3 * sizeof(float), m_Vertices);
-	_Render->r->updateBufferData(__vb, header.vertices.size * 3 * sizeof(float), header.vertices.size * 2 * sizeof(float), m_Texcoords);
-	_Render->r->updateBufferData(__vb, header.vertices.size * 5 * sizeof(float), header.vertices.size * 3 * sizeof(float), m_Normals);
+	_Render->r->updateBufferData(__vb, header.vertices.size * 0 * sizeof(float), header.vertices.size * sizeof(vec3), m_Vertices);
+	_Render->r->updateBufferData(__vb, header.vertices.size * 3 * sizeof(float), header.vertices.size * sizeof(vec2), m_Texcoords);
+	_Render->r->updateBufferData(__vb, header.vertices.size * 5 * sizeof(float), header.vertices.size * sizeof(vec3), m_Normals);
 
 	// just use the first LOD/view
 	if (header.num_skin_profiles > 0)
@@ -268,11 +268,7 @@ void MDX::draw()
 		return;
 	}
 
-	if (!animated)
-	{
-		drawModel();
-	}
-	else
+	if (animated)
 	{
 		if (m_IsBillboard)
 		{
@@ -286,8 +282,6 @@ void MDX::draw()
 				animcalc = true;
 			}
 		}
-
-		drawModel();
 
 		// draw particle systems
 #ifdef MDX_PARTICLES_ENABLE
@@ -303,6 +297,8 @@ void MDX::draw()
 		}
 #endif
 	}
+
+	drawModel();
 }
 
 //

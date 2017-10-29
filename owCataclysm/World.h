@@ -20,10 +20,11 @@ public:
 	float l_const, l_linear, l_quadratic;
 
 public:
-	GBuffer* m_gbuffer;
-
 	Camera* mainCamera;
 	Camera* testCamera;
+
+	uint32 rb;
+	uint32 rb2;
 };
 
 #define _World World::instance()

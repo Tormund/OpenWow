@@ -31,6 +31,9 @@ public:
 	MapChunk* getChunk(uint32 x, uint32 z);
 
 public:
+	vector<string> m_TexturesNames;
+	vector<uint32> m_TexureIsCubemap;
+
 	vector<Texture*> m_DiffuseTextures;
 	vector<Texture*> m_SpecularTextures;
 

@@ -47,6 +47,8 @@ struct WMOGroupFlags
 	uint32 FLAG_UNK_0x80000000 : 1;                 // = 0x80000000
 };
 
+//-----
+
 struct WMOGroupHeader
 {
 	uint32 groupName;
@@ -61,15 +63,15 @@ struct WMOGroupHeader
 	uint16 transBatchCount;
 	uint16 intBatchCount;
 	uint16 extBatchCount;
-	uint16 padding_or_batch_type_d; // probably padding, but might be data?
+	uint16 unk0;
 
 	uint8 m_Fogs[4]; // Up to four indices into the WMO fog list
 	uint32 liquidType; // LiquidType related, see below in the MLIQ chunk.
 
 	uint32 wmoGroupId; // WMO group ID (column 4 in WMOAreaTable.dbc)
 
-	uint32 unk0;
 	uint32 unk1;
+	uint32 unk2;
 
 	//
 	static const uint32 __size = 68;
@@ -116,6 +118,9 @@ struct WMOBatch
 
 	//
 	static const uint32 __size = 24;
+
+	// Additional data
+	Material __material;
 };
 
 //---

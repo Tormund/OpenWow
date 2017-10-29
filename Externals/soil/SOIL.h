@@ -7,14 +7,14 @@
 	Simple OpenGL Image Library
 
 	A tiny c library for uploading images as
-	textures into OpenGL.  Also saving and
+	m_DiffuseTextures into OpenGL.  Also saving and
 	loading of images is supported.
 
 	I'm using Sean's Tool Box image loader as a base:
 	http://www.nothings.org/
 
 	I'm upgrading it to load TGA and DDS files, and a direct
-	path for loading DDS files straight into OpenGL textures,
+	path for loading DDS files straight into OpenGL m_DiffuseTextures,
 	when applicable.
 
 	Image Formats:

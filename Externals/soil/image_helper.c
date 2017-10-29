@@ -125,7 +125,7 @@ int
 				int v_block = block_size_y;
 				int block_area;
 				/*	do a bit of checking so we don't over-run the boundaries
-					(necessary for non-square textures!)	*/
+					(necessary for non-square m_DiffuseTextures!)	*/
 				if( block_size_x * (i+1) > width )
 				{
 					u_block = width - i*block_size_y;

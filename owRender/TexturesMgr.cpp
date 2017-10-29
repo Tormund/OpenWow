@@ -16,7 +16,7 @@ struct BLPHeader
 	uint8 magic[4];
 	uint32 type;
 
-	uint8 compression;  // Compression: 1 for uncompressed, 2 for DXTC, 3 (cataclysm) for plain A8R8G8B8 textures
+	uint8 compression;  // Compression: 1 for uncompressed, 2 for DXTC, 3 (cataclysm) for plain A8R8G8B8 m_DiffuseTextures
 	uint8 alpha_depth;  // Alpha channel bit depth: 0, 1, 4 or 8
 	uint8 alpha_type;   // 0, 1, 7, or 8
 	uint8 has_mips;     // 0 = no mips, 1 = has mips
@@ -37,8 +37,8 @@ bool TexturesMgr::Init()
 
 	RefManager1DimAssync::Init();
 
-	black = CreateAction("black.png");
-	white = CreateAction("white.png");
+	black = new Texture(0);
+	white = new Texture(0);
 
 	return true;
 }
@@ -246,9 +246,6 @@ Texture* TexturesMgr::Add(File& _textureFile)
 
 Texture* TexturesMgr::CreateAction(cstring name)
 {
-	//GLuint textureOpenglId;
-	//glGenTextures(1, &textureOpenglId);
-
 	Texture* texture = new Texture(0, vec2(16, 16));
 
 	return texture;
@@ -266,6 +263,8 @@ void TexturesMgr::LoadAction(string _name, Texture* _texture)
 		_texture = _TexturesMgr->Black();
 		return;
 	}
+
+	//Modules::log().Info("TexturesMgr[%s]: Texture loading.", f.Path_Name().c_str());
 
 	// Load texture
 	bool result;

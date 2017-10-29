@@ -106,7 +106,7 @@ bool WMO::Load()
 			f.ReadBytes(&m_Header, WMOHeaderDef::__size);
 			//Modules::log().Error("ID = [%d]", m_Header.wmoID()->Get_ID());
 		}
-		else if (strcmp(fourcc, "MOTX") == 0)               // List of textures (BLP Files) used in this map object.
+		else if (strcmp(fourcc, "MOTX") == 0)               // List of m_DiffuseTextures (BLP Files) used in this map object.
 		{
 			m_TexturesNames = new char[size + 1];
 			f.ReadBytes(m_TexturesNames, size);

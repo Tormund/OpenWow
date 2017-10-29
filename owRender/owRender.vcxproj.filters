@@ -86,13 +86,13 @@
     <ClCompile Include="GPUTimer.cpp">
       <Filter>_NEW_RENDER</Filter>
     </ClCompile>
-    <ClCompile Include="Gbuffer.cpp">
-      <Filter>_NEW_RENDER</Filter>
-    </ClCompile>
     <ClCompile Include="Render.cpp">
       <Filter>_NEW_RENDER</Filter>
     </ClCompile>
     <ClCompile Include="RenderStorage.cpp">
+      <Filter>_NEW_RENDER</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
       <Filter>_NEW_RENDER</Filter>
     </ClCompile>
   </ItemGroup>
@@ -193,13 +193,13 @@
     <ClInclude Include="RenderTypes.h">
       <Filter>_NEW_RENDER</Filter>
     </ClInclude>
-    <ClInclude Include="Gbuffer.h">
-      <Filter>_NEW_RENDER</Filter>
-    </ClInclude>
     <ClInclude Include="Render.h">
       <Filter>_NEW_RENDER</Filter>
     </ClInclude>
     <ClInclude Include="RenderStorage.h">
+      <Filter>_NEW_RENDER</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
       <Filter>_NEW_RENDER</Filter>
     </ClInclude>
   </ItemGroup>

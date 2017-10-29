@@ -189,17 +189,11 @@ bool MapTile::Load_SplitFile(cstring _filename, load_phases _phase)
 			ADT_MHDR header;
 			f.ReadBytes(&header, sizeof(ADT_MHDR));
 		}
-		else if (strncmp(fourcc, "MTEX", 4) == 0) // List of textures used for texturing the terrain in this map m_TileExists.
+		else if (strncmp(fourcc, "MTEX", 4) == 0) // List of m_DiffuseTextures used for texturing the terrain in this map m_TileExists.
 		{
 			WOWCHUNK_READ_STRINGS_BEGIN
 
-				// Preload diffuse texture
-				m_DiffuseTextures.push_back(_TexturesMgr->Add(_string));
-
-			// Preload specular texture
-			string specularTextureName = _string;
-			specularTextureName.insert(specularTextureName.length() - 4, "_s");
-			m_SpecularTextures.push_back(_TexturesMgr->Add(specularTextureName));
+				m_TexturesNames.push_back(_string);
 
 			WOWCHUNK_READ_STRINGS_END
 		}
@@ -207,8 +201,8 @@ bool MapTile::Load_SplitFile(cstring _filename, load_phases _phase)
 		{
 #ifdef MDX_INCL
 			WOWCHUNK_READ_STRINGS_BEGIN
-			//_ModelsMgr->Add(_string);
-			//m_MDXsNames.push_back(_string);
+			_ModelsMgr->Add(_string);
+			m_MDXsNames.push_back(_string);
 			WOWCHUNK_READ_STRINGS_END
 #endif
 		}
@@ -232,7 +226,7 @@ bool MapTile::Load_SplitFile(cstring _filename, load_phases _phase)
 		else if (strncmp(fourcc, "MDDF", 4) == 0) // Placement information for doodads (M2 models).
 		{
 #ifdef MDX_INCL
-			/*for (uint32 i = 0; i < size / ModelPlacementInfo::__size; i++)
+			for (uint32 i = 0; i < size / ModelPlacementInfo::__size; i++)
 			{
 				ModelInstance* inst = new ModelInstance(f);
 
@@ -241,7 +235,7 @@ bool MapTile::Load_SplitFile(cstring _filename, load_phases _phase)
 				inst->SetModel(model);
 
 				m_MDXsInstances.push_back(inst);
-			}*/
+			}
 #endif
 		}
 		else if (strncmp(fourcc, "MODF", 4) == 0) // Placement information for WMOs.
@@ -274,7 +268,7 @@ bool MapTile::Load_SplitFile(cstring _filename, load_phases _phase)
 		}
 		else if (strncmp(fourcc, "MCNK", 4) == 0)
 		{
-			m_Chunks[chunkI][chunkJ]->init(f, _phase);
+			m_Chunks[chunkI][chunkJ]->Load(f, _phase);
 			chunkJ++;
 			if (chunkJ == 16)
 			{
@@ -297,15 +291,19 @@ bool MapTile::Load_SplitFile(cstring _filename, load_phases _phase)
 		}
 		else if (strncmp(fourcc, "MTXF", 4) == 0)
 		{
-			/*
-			This chunk is an array of integers that are 1 or 0. 1 means that the texture at the same position in the MTEX array has to be handled differentely. The size of this chunk is always the same as there are entries in the MTEX chunk.
-			Simple as it is:
-			struct MTFX
+			assert1(m_TexturesNames.size() > 0);
+
+			for (uint32 i = 0; i < m_TexturesNames.size(); i++)
 			{
-			uint32 mode[nMTEX];
+				struct MTXF
+				{
+					uint32_t do_not_load_specular_or_height_texture_but_use_cubemap : 1; // probably just 'disable_all_shading'
+					uint32_t unk0 : 31;
+				} mtxf;
+				f.ReadBytes(&mtxf, sizeof(MTXF));
+
+				m_TexureIsCubemap.push_back(mtxf.do_not_load_specular_or_height_texture_but_use_cubemap);
 			}
-			The textures with this extended rendering mode are no normal ones, but skyboxes. These skyboxes are getting added as a reflection layer on the terrain. This is used for icecubes reflecting clouds etc. The layer being the reflection one needs to have the 0x400 flag in the MCLY chunk.
-			*/
 		}
 		else if (strncmp(fourcc, "MAMP", 4) == 0)
 		{
@@ -316,6 +314,37 @@ bool MapTile::Load_SplitFile(cstring _filename, load_phases _phase)
 		}
 
 		f.Seek(nextpos);
+	}
+
+	// Load m_DiffuseTextures
+	for (uint32 i = 0; i < m_TexturesNames.size(); i++)
+	{
+		if (m_TexureIsCubemap.size() > 0)
+		{
+			if (m_TexureIsCubemap[i])
+			{
+				m_DiffuseTextures.push_back(_TexturesMgr->Black());
+				m_SpecularTextures.push_back(_TexturesMgr->Black());
+				continue;
+			}
+		}
+
+		// Preload diffuse texture
+		m_DiffuseTextures.push_back(_TexturesMgr->Add(m_TexturesNames[i]));
+
+		// Preload specular texture
+		string specularTextureName = m_TexturesNames[i];
+		specularTextureName.insert(specularTextureName.length() - 4, "_s");
+		m_SpecularTextures.push_back(_TexturesMgr->Add(specularTextureName));
+	}
+
+	// Post load chunks
+	for (uint32 i = 0; i < C_ChunksInTile; i++)
+	{
+		for (uint32 j = 0; j < C_ChunksInTile; j++)
+		{
+			m_Chunks[i][j]->Post_Load();
+		}
 	}
 
 	return true;
@@ -378,8 +407,6 @@ void MapTile::drawModels()
 }
 
 //
-
-
 
 MapChunk* MapTile::getChunk(uint32 x, uint32 z)
 {

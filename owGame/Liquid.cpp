@@ -352,7 +352,7 @@ void Liquid::createBuffer(cvec3 _position)
 					h4 = layer.heights[p4];
 				}
 
-				// textures coords
+				// m_DiffuseTextures coords
 				std::pair<float, float> t1, t2, t3, t4;
 				t1 = make_pair(0.0f, 0.0f);
 				t2 = make_pair(0.0f, 1.0f);
@@ -477,7 +477,7 @@ void Liquid::draw()
 
 
 	size_t texidx = (size_t)(_EnvironmentManager->animtime / 60.0f) % textures.size();
-	_Render->r->setTexture(0, textures[texidx]->GetObj(), 0, 0);
+	_Render->r->setTexture(10, textures[texidx]->GetObj(), 0, 0);
 
 	_TechniquesMgr->m_Water->SetWaterColorLight(_EnvironmentManager->GetSkyColor(LIGHT_GLOBAL_DIFFUSE));
 	_TechniquesMgr->m_Water->SetWaterColorDark(_EnvironmentManager->GetSkyColor(LIGHT_GLOBAL_DIFFUSE));

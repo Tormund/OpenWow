@@ -197,7 +197,17 @@ void WMOGroup::Load()
 			m_WMOBatchIndexes = new WMOBatch[m_WMOBatchIndexesCount];
 			for (uint32 i = 0; i < m_WMOBatchIndexesCount; i++)
 			{
+				// Read
 				f.ReadBytes(&m_WMOBatchIndexes[i], WMOBatch::__size);
+
+				// Set material
+				WMOBatch* _batch = &m_WMOBatchIndexes[i];
+				WMOMaterial* _wmoMat = m_ParentWMO->m_Materials[_batch->material_id];
+
+				_batch->__material.SetDiffuseTexture(_wmoMat->texture->GetObj());
+
+				_batch->__material.SetBlendState(_wmoMat->GetBlendMode());
+				_batch->__material.SetRenderState(_wmoMat->IsTwoSided());
 			}
 		}
 		else if (strcmp(fourcc, "MOLR") == 0) // Light references
@@ -464,10 +474,7 @@ bool WMOGroup::Render()
 		WMOBatch* batch = &m_WMOBatchIndexes[i];
 		WMOMaterial* material = m_ParentWMO->m_Materials[batch->material_id];
 
-		// Materials settings
-		//material->setup();
-		_Render->r->setTexture(0, material->texture->GetObj(), SS_FILTER_BILINEAR | SS_ANISO16 | SS_ADDR_WRAP, 0);
-		_Render->r->setTexture(5, material->texture->GetObj(), SS_FILTER_BILINEAR | SS_ANISO16 | SS_ADDR_WRAP, 0);
+		batch->__material.Set();
 
 		//_TechniquesMgr->m_WMO_GeometryPass->SetDiffuseColor(fromARGB(material->GetDiffuseColor()));
 		_TechniquesMgr->m_WMO_GeometryPass->SetHasMOCV(false);
