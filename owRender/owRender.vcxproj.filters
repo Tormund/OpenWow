@@ -41,9 +41,6 @@
     <ClCompile Include="Techniques\MapTileLowRes_GeometryPass.cpp">
       <Filter>Techniques\Geometry</Filter>
     </ClCompile>
-    <ClCompile Include="Techniques\MDX_GeometryPass.cpp">
-      <Filter>Techniques\Geometry</Filter>
-    </ClCompile>
     <ClCompile Include="Techniques\WMO_GeomertyPass.cpp">
       <Filter>Techniques\Geometry</Filter>
     </ClCompile>
@@ -95,6 +92,9 @@
     <ClCompile Include="Material.cpp">
       <Filter>_NEW_RENDER</Filter>
     </ClCompile>
+    <ClCompile Include="Techniques\Model_Shader.cpp">
+      <Filter>Techniques\Geometry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Image.h">
@@ -137,9 +137,6 @@
       <Filter>Techniques\Geometry</Filter>
     </ClInclude>
     <ClInclude Include="Techniques\MapTileLowRes_GeometryPass.h">
-      <Filter>Techniques\Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Techniques\MDX_GeometryPass.h">
       <Filter>Techniques\Geometry</Filter>
     </ClInclude>
     <ClInclude Include="Techniques\WMO_GeomertyPass.h">
@@ -201,6 +198,9 @@
     </ClInclude>
     <ClInclude Include="Material.h">
       <Filter>_NEW_RENDER</Filter>
+    </ClInclude>
+    <ClInclude Include="Techniques\Model_Shader.h">
+      <Filter>Techniques\Geometry</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

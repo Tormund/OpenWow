@@ -2,28 +2,29 @@
 
 #include "MDX_Headers.h"
 
+#include "MDX_Part_Bone.h"
+#include "MDX_Part_Color.h"
+#include "MDX_Part_TextureAnim.h"
+#include "MDX_Part_TextureWeight.h"
+
+#include "MDX_Part_Light.h"
+#include "MDX_Part_Camera.h"
+
 #include "Particle.h"
 #include "ParticleSystem.h"
 #include "RibbonEmitter.h"
-
-#include "MDX_Part_Bone.h"
-#include "MDX_Part_Camera.h"
-#include "MDX_Part_Color.h"
-#include "MDX_Part_Light.h"
-#include "MDX_Part_TextureAnim.h"
-#include "MDX_Part_Transparency.h"
 
 #include "Model_Skin.h"
 
 enum BlendModes
 {
-	M2COMBINER_OPAQUE,
-	M2COMBINER_MOD,
-	M2COMBINER_DECAL,
-	M2COMBINER_ADD,
-	M2COMBINER_MOD2X,
-	M2COMBINER_FADE,
-	M2COMBINER_MOD2X_NA
+	M2BLEND_OPAQUE,
+	M2BLEND_ALPHA_KEY,
+	M2BLEND_ALPHA,
+	M2BLEND_NO_ALPHA_ADD,
+	M2BLEND_ADD,
+	M2BLEND_MOD,
+	M2BLEND_MOD2X
 };
 
 class MDX : public RefItemNamed
@@ -64,18 +65,15 @@ public:
 	bool forceAnim;
 	File* animfiles;
 
-	MDX_Part_Bone* m_Part_Bones;
-
-	M2Texture* texdef;
-
-	MDX_Part_TextureAnim* m_TexturesAnims;
 	M2Sequence* m_Sequences;
 	uint32* m_GlobalLoops;
-	MDX_Part_Color* colors;
 
-	uint16* transLookup;
-	MDX_Part_Transparency* transparency;
+	MDX_Part_Bone* m_Part_Bones;
 
+	MDX_Part_Color* m_Colors;
+	M2Texture* m_M2Textures;
+	MDX_Part_TextureWeight* m_TextureWeights;
+	MDX_Part_TextureAnim* m_TexturesAnims;
 
 	MDX_Part_Light* m_Lights;
 	MDX_Part_Camera* m_Cameras;
@@ -98,16 +96,16 @@ public:
 	void lightsOff(uint32 lbase);
 
 public:
-	Texture** textures;
-	int specialTextures[TEXTURE_MAX];
-	Texture* replaceTextures[TEXTURE_MAX];
-	bool useReplaceTextures[TEXTURE_MAX];
+	Texture** m_Textures;
+	int m_SpecialTextures[TEXTURE_MAX];
+	Texture* m_TextureReplaced[TEXTURE_MAX];
+	bool m_TexturesUseSpecialTexture[TEXTURE_MAX];
 
 	bool m_IsBillboard;
 
 	BoundingBox m_Bounds;
 	bool animcalc;
-	int m_CurrentAnimationIndex, animtime;
+	int m_AnimationIndex, m_AnimationTime;
 
 	friend class ModelRenderPass;
 };

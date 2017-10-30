@@ -98,6 +98,14 @@ inline void Technique::SetPVW()
 	setMat4("gWorld", _PipelineGlobal->GetWorld());
 }
 
+inline void Technique::SetPV_W()
+{
+	setMat4("gPV", _PipelineGlobal->GetPV());
+	setMat4("gWorld", _PipelineGlobal->GetWorld());
+}
+
+//--
+
 inline void Technique::SetWorldMatrix(cmat4 WorldInverse)
 {
 	setMat4("gWorld", WorldInverse);
@@ -112,6 +120,8 @@ inline void Technique::SetProjectionMatrix(cmat4 WorldInverse)
 {
 	setMat4("gProjection", WorldInverse);
 }
+
+//--
 
 inline void Technique::BindToPostprocess()
 {

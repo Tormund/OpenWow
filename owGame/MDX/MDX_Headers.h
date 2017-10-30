@@ -51,7 +51,7 @@ struct M2Sequence
 	float movespeed;               // This is the speed the character moves with in this animation.
 	uint32 flags;                // See below.
 	int16 frequency;             // This is used to determine how often the animation is played. For all animations of the same type, this adds up to 0x7FFF (32767).
-	uint16 __0;                  // Padding
+	uint16 unk0;                  // Padding
 	M2Range replay;                // May both be 0 to not repeat. Client will pick a random number of repetitions within bounds if given.
 	uint32 blendTime;
 
@@ -141,7 +141,7 @@ struct M2Texture
 
 struct M2TextureWeight
 {
-	M2Track<short> weight; // FIXED 16
+	M2Track<short> weight;
 };
 
 //
@@ -149,8 +149,7 @@ struct M2TextureWeight
 struct M2TextureTransform
 {
 	M2Track<vec3> translation;
-	// FIXME M2Track<Quaternion> rotation;    // rotation center is texture center (0.5, 0.5)
-	M2Track<vec3> rotation;    // rotation center is texture center (0.5, 0.5)
+	M2Track<Quaternion> rotation;    // rotation center is texture center (0.5, 0.5)
 	M2Track<vec3> scaling;
 };
 
@@ -167,7 +166,7 @@ struct M2Material
 		uint16 M2MATERIAL_FLAGS_DEPTHWRITE : 1;
 		uint16 : 11;
 	} flags;
-	uint16 blending_mode; // apparently a bitfield
+	uint16 blending_mode;
 };
 
 //
@@ -397,9 +396,9 @@ struct ModelHeader
 	{
 		uint32 flag_tilt_x : 1;
 		uint32 flag_tilt_y : 1;
-		uint32 __0 : 1;
+		uint32 unk0 : 1;
 		uint32 flag_has_blend_maps : 1;                  // add BlendMaps fields in header
-		uint32 __1 : 1;
+		uint32 unk1 : 1;
 		uint32 : 27;
 	} global_flags;
 	M2Array<M2Loop> global_loops;                        // Timestamps used in global looping animations.
@@ -431,7 +430,7 @@ struct ModelHeader
 	M2Array<M2Material> materials;                       // Blending modes / render flags.
 	M2Array<uint16> bone_lookup_table;
 	M2Array<uint16> texture_lookup_table;
-	M2Array<uint16> tex_unit_lookup_table;               // ≥ Cata: unused
+	M2Array<uint16> UNUSED0;
 	M2Array<uint16> transparency_lookup_table;
 	M2Array<uint16> texture_transforms_lookup_table;
 
@@ -477,11 +476,6 @@ struct ModelHeader
 ///////////////////
 ///////////////////
 ///////////////////
-
-
-
-
-#define	TEXTUREUNIT_STATIC	16
 
 #define	TEXTURE_MAX	128
 

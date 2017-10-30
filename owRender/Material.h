@@ -27,6 +27,11 @@ public:
 		m_DepthTest = _DepthTest;
 	}
 
+	void SetBlendEGxBlendIndex(int _BlendEGxBlendIndex)
+	{
+		m_BlendEGxBlendIndex = _BlendEGxBlendIndex;
+	}
+
 	void SetBlendState(bool _BlendEnabled = false, R_BlendFunc _Blend_SrcFunc = R_BlendFunc::BS_BLEND_SRC_ALPHA, R_BlendFunc _Blend_DstFunc = R_BlendFunc::BS_BLEND_INV_SRC_ALPHA)
 	{
 		m_BlendEnabled = _BlendEnabled;
@@ -50,6 +55,7 @@ private:
 	bool m_DepthTest;
 
 	// Blend
+	int m_BlendEGxBlendIndex;
 	bool m_BlendEnabled;
 	R_BlendFunc m_Blend_SrcFunc;
 	R_BlendFunc m_Blend_DstFunc;

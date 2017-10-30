@@ -25,9 +25,10 @@ Model_Skin::Model_Skin(MDX* _model, File& _mF, File& _aF) : m_ModelObject(_model
 	//------------
 
 	M2Material*    m2Materials =   (M2Material*)    (_mF.GetData() + _model->header.materials.offset);
+
 	uint16*        texlookup =     (uint16*)        (_mF.GetData() + _model->header.texture_lookup_table.offset);
 	uint16*        texanimlookup = (uint16*)        (_mF.GetData() + _model->header.texture_transforms_lookup_table.offset);
-	uint16*        texunitlookup = (uint16*)        (_mF.GetData() + _model->header.tex_unit_lookup_table.offset);
+	uint16*        texweightlookup=(uint16*)        (_mF.GetData() + _model->header.transparency_lookup_table.offset);
 
 	for (uint32 j = 0; j < view->batches.size; j++)
 	{
@@ -48,93 +49,82 @@ Model_Skin::Model_Skin(MDX* _model, File& _mF, File& _aF) : m_ModelObject(_model
 		M2Material& rf = m2Materials[skinBatch[j].materialIndex];
 
 		// Diffuse texture
-		if (_model->specialTextures[texlookup[skinBatch[j].textureComboIndex]] == -1)
+		if (_model->m_SpecialTextures[texlookup[skinBatch[j].texture_Index]] == -1)
 		{
-			pass->__material.SetDiffuseTexture(_model->textures[texlookup[skinBatch[j].textureComboIndex]]->GetObj());
+			pass->__material.SetDiffuseTexture(_model->m_Textures[texlookup[skinBatch[j].texture_Index]]->GetObj());
 		}
 		else
 		{
-			pass->__material.SetDiffuseTexture(_model->replaceTextures[_model->specialTextures[texlookup[skinBatch[j].textureComboIndex]]]->GetObj());
+			/*Texture* diffuseSpecialTexture = _model->m_TextureReplaced[_model->m_SpecialTextures[texlookup[skinBatch[j].texture_Index]]];
+
+			if (diffuseSpecialTexture != nullptr)
+			{
+				pass->__material.SetDiffuseTexture(diffuseSpecialTexture->GetObj());
+			}*/
 		}
 		
 		// Render state
-		pass->__material.SetRenderState(rf.flags.M2MATERIAL_FLAGS_TWOSIDED /*&& rf.blending_mode*/, rf.flags.M2MATERIAL_FLAGS_DEPTHWRITE == 0);
-
-		//Modules::log().Info("Blend is [%d]", rf.blending_mode);
+		pass->__material.SetRenderState(rf.flags.M2MATERIAL_FLAGS_TWOSIDED, rf.flags.M2MATERIAL_FLAGS_DEPTHWRITE == 0, rf.flags.M2MATERIAL_FLAGS_DEPTHTEST == 0);
 
 		// Blend state
+		pass->__blendMode = rf.blending_mode;
 		switch (rf.blending_mode)
 		{
 			// 1 table
-			case M2COMBINER_OPAQUE:
-			pass->__material.SetBlendState(false);
+			case M2BLEND_OPAQUE:
+			pass->__material.SetBlendEGxBlendIndex(0);
 			break;
 
-			case M2COMBINER_MOD:
-			pass->__material.SetBlendState(true, R_BlendFunc::BS_BLEND_ONE, R_BlendFunc::BS_BLEND_ZERO);
+			case M2BLEND_ALPHA_KEY:
+			pass->__material.SetBlendEGxBlendIndex(1);
 			break;
 
-			case M2COMBINER_DECAL:
-			pass->__material.SetBlendState(true, R_BlendFunc::BS_BLEND_SRC_ALPHA, R_BlendFunc::BS_BLEND_INV_SRC_ALPHA);
+			case M2BLEND_ALPHA:
+			pass->__material.SetBlendEGxBlendIndex(2);
 			break;
 
-			case M2COMBINER_ADD:
-			pass->__material.SetBlendState(true, R_BlendFunc::BS_BLEND_ONE, R_BlendFunc::BS_BLEND_ONE);
+			case M2BLEND_NO_ALPHA_ADD:
+			pass->__material.SetBlendEGxBlendIndex(10);
 			break;
 
-			case M2COMBINER_MOD2X:
-			pass->__material.SetBlendState(true, R_BlendFunc::BS_BLEND_SRC_ALPHA, R_BlendFunc::BS_BLEND_ONE);
+			case M2BLEND_ADD:
+			pass->__material.SetBlendEGxBlendIndex(3);
 			break;
 
-			case M2COMBINER_FADE:
-			pass->__material.SetBlendState(true, R_BlendFunc::BS_BLEND_DEST_COLOR, R_BlendFunc::BS_BLEND_ZERO);
+			case M2BLEND_MOD:
+			pass->__material.SetBlendEGxBlendIndex(4);
 			break;
 
-			case M2COMBINER_MOD2X_NA:
-			pass->__material.SetBlendState(true, R_BlendFunc::BS_BLEND_DEST_COLOR, R_BlendFunc::BS_BLEND_SRC_COLOR);
+			case M2BLEND_MOD2X:
+			pass->__material.SetBlendEGxBlendIndex(5);
 			break;
-
-
-			// 2 table
-			/*case M2COMBINER_OPAQUE:
-			pass->__material.SetBlendState(false);
-			break;
-
-			case M2COMBINER_MOD:
-			pass->__material.SetBlendState(true, R_BlendFunc::BS_BLEND_ONE, R_BlendFunc::BS_BLEND_ZERO);
-			break;
-
-			case M2COMBINER_DECAL:
-			pass->__material.SetBlendState(true, R_BlendFunc::BS_BLEND_SRC_ALPHA, R_BlendFunc::BS_BLEND_INV_SRC_ALPHA);
-			break;
-
-			case M2COMBINER_ADD:
-			pass->__material.SetBlendState(true, R_BlendFunc::BS_BLEND_SRC_ALPHA, R_BlendFunc::BS_BLEND_DEST_ALPHA);
-			break;
-
-			case M2COMBINER_MOD2X:
-			pass->__material.SetBlendState(true, R_BlendFunc::BS_BLEND_SRC_ALPHA, R_BlendFunc::BS_BLEND_ONE);
-			break;
-
-			case M2COMBINER_FADE:
-			pass->__material.SetBlendState(true, R_BlendFunc::BS_BLEND_SRC_ALPHA, R_BlendFunc::BS_BLEND_INV_SRC_ALPHA);
-			break;
-
-			case M2COMBINER_MOD2X_NA:
-			pass->__material.SetBlendState(true, R_BlendFunc::BS_BLEND_DEST_ALPHA, R_BlendFunc::BS_BLEND_SRC_ALPHA);
-			break;*/
 
 			default:
 			assert1(rf.blending_mode);
 		}
 		
+		pass->__colorIndex = skinBatch[j].colorIndex;
 
+		// Texture weight
+		assert1(skinBatch[j].texture_WeightIndex != -1);
+		assert1(m_ModelObject->header.texture_weights.size > 0);
+		pass->__textureWeight = texweightlookup[skinBatch[j].texture_WeightIndex];
+
+		// Anim texture
+		if (skinBatch[j].flags.Flag_TextureStatic)
+		{
+			pass->__textureAnims = -1;
+		}
+		else
+		{
+			pass->__textureAnims = texanimlookup[skinBatch[j].texture_TransformIndex];
+		}
 
 		/*pass->order = skinBatch[j].shader_id;
 
 		//Texture* texid = m_DiffuseTextures[texlookup[tex[j].textureid]];
 		//pass->texture = texid;
-		pass->tex = texlookup[skinBatch[j].textureComboIndex];
+		pass->tex = texlookup[skinBatch[j].texture_Index];
 
 		// TODO: figure out these flags properly -_-
 		
@@ -142,7 +132,7 @@ Model_Skin::Model_Skin(MDX* _model, File& _mF, File& _aF) : m_ModelObject(_model
 
 		pass->blendmode = rf.blending_mode;
 		pass->color = skinBatch[j].colorIndex;
-		pass->opacity = _model->transLookup[skinBatch[j].textureWeightComboIndex];
+		pass->opacity = _model->transLookup[skinBatch[j].texture_WeightIndex];
 
 		pass->unlit = (rf.flags.M2MATERIAL_FLAGS_UNLIT) != 0;
 		pass->cull = (rf.flags.M2MATERIAL_FLAGS_TWOSIDED) == 0 && rf.blending_mode == 0;
@@ -169,7 +159,7 @@ Model_Skin::Model_Skin(MDX* _model, File& _mF, File& _aF) : m_ModelObject(_model
 			}
 			else
 			{
-				pass->texanim = texanimlookup[skinBatch[j].textureTransformComboIndex];
+				pass->texanim = texanimlookup[skinBatch[j].texture_TransformIndex];
 			}
 		}
 		else
@@ -183,7 +173,7 @@ Model_Skin::Model_Skin(MDX* _model, File& _mF, File& _aF) : m_ModelObject(_model
 
 
 	// transparent parts come later
-	sort(m_Passes.begin(), m_Passes.end());
+	//std::sort(m_Passes.begin(), m_Passes.end());
 
 
 	showGeosets = new bool[view->submeshes.size];
@@ -201,12 +191,12 @@ Model_Skin::Model_Skin(MDX* _model, File& _mF, File& _aF) : m_ModelObject(_model
 
 	//
 
-	__geom = _Render->r->beginCreatingGeometry(_RenderStorage->__layoutMDX);
+	__geom = _Render->r->beginCreatingGeometry(_RenderStorage->__layout_GxVBF_PNT);
 
 	// Vertex params
 	_Render->r->setGeomVertexParams(__geom, m_ModelObject->__vb, 0, m_ModelObject->header.vertices.size * 0 * sizeof(float), 0);
 	_Render->r->setGeomVertexParams(__geom, m_ModelObject->__vb, 1, m_ModelObject->header.vertices.size * 3 * sizeof(float), 0);
-	_Render->r->setGeomVertexParams(__geom, m_ModelObject->__vb, 2, m_ModelObject->header.vertices.size * 5 * sizeof(float), 0);
+	_Render->r->setGeomVertexParams(__geom, m_ModelObject->__vb, 2, m_ModelObject->header.vertices.size * 6 * sizeof(float), 0);
 
 	// Index bufer
 	uint32 __ib = _Render->r->createIndexBuffer(view->indices.size * sizeof(uint16), indices);
@@ -227,22 +217,52 @@ Model_Skin::~Model_Skin()
 
 void Model_Skin::Draw()
 {
-	_TechniquesMgr->m_MDX_GeometryPass->BindS();
-	_TechniquesMgr->m_MDX_GeometryPass->SetPVW();
-	
+	_TechniquesMgr->m_Model->BindS();
+	_TechniquesMgr->m_Model->SetPV_W();
+
 	_Render->r->setGeometry(__geom);
 
 	for (size_t i = 0; i < m_Passes.size(); i++)
 	{
 		ModelRenderPass* p = m_Passes[i];
 
-		if (/*p->init(m_ModelObject) && */showGeosets[p->m2SkinIndex])
+		if (showGeosets[p->m2SkinIndex])
 		{
 			p->__material.Set();
+
+
+
+			// Color
+			if (p->__colorIndex != 65535)
+			{
+				_TechniquesMgr->m_Model->SetColor(m_ModelObject->m_Colors[p->__colorIndex].getValue());
+			}
+		    else
+			{
+				_TechniquesMgr->m_Model->SetColor(vec4(0.5f, 0.5f, 0.5f, 1.0f));
+			}
+
+			// Blend & Alpha
+			_TechniquesMgr->m_Model->SetAlpha(1.0f);
+			_TechniquesMgr->m_Model->SetBlendMode(p->__blendMode);
+
+			// Texture weight
+			_TechniquesMgr->m_Model->SetTextureWeight(m_ModelObject->m_TextureWeights[p->__textureWeight].getValue());
+
+			// Texture anim
+			_TechniquesMgr->m_Model->SetTextureAnimEnable(p->__textureAnims != -1);
+			if (p->__textureAnims != -1)
+			{
+				_TechniquesMgr->m_Model->SetTextureAnimMatrix(m_ModelObject->m_TexturesAnims[p->__textureAnims].getValue());
+			}
+			else
+			{
+				//continue;
+			}
 
 			_Render->r->drawIndexed(PRIM_TRILIST, p->indexStart, p->indexCount, p->vertexStart, p->vertexCount, false);
 		}
 	}
 
-	_TechniquesMgr->m_MDX_GeometryPass->Unbind();
+	_TechniquesMgr->m_Model->Unbind();
 }

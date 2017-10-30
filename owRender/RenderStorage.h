@@ -12,8 +12,11 @@ public:
 	DEF_MODULE(RenderStorage);
 
 	void CreateLayouts();
-
 	void CreateGeometry();
+
+	void CreateWoWLayouts();
+
+	void SetEGxBlend(uint8 _index);
 	
 	//----------------------------------------------
 
@@ -34,8 +37,10 @@ public:
 	uint32 __layoutMapChunk;
 	uint32 __layoutWMO;
 	uint32 __layoutWMO_VC;
-	uint32 __layoutMDX;
 	uint32 __layoutWater;
+
+	// Model
+	uint32 __layout_GxVBF_PNT;
 };
 
 

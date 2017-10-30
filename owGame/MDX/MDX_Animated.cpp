@@ -78,8 +78,8 @@ bool MDX::isAnimated(File& f)
 		}
 	}
 
-	// animated opacity
-	if (header.texture_weights.size && !animMisc)
+	// animated transperancy
+	if (header.texture_weights.size)
 	{
 		M2TextureWeight* trs = (M2TextureWeight*)(f.GetData() + header.texture_weights.offset);
 		for (uint32 i = 0; i < header.texture_weights.size; i++)
@@ -91,6 +91,7 @@ bool MDX::isAnimated(File& f)
 			}
 		}
 	}
+
 
 	return animGeometry || animTextures || animMisc;
 }
@@ -108,18 +109,18 @@ void MDX::initAnimated(File& f)
 		memcpy(m_Sequences, f.GetData() + header.sequences.offset, header.sequences.size * sizeof(M2Sequence));
 
 		animfiles = new File[header.sequences.size];
-		char tempname[256];
 		for (uint32 i = 0; i < header.sequences.size; i++)
 		{
-			sprintf_s(tempname, "%s%04d-%02d.anim", m_ModelName.c_str(), m_Sequences[i].id, m_Sequences[i].variationIndex);
-			if (MPQFile::GetFileSize(tempname) > 0)
+			char buf[256];
+			sprintf_s(buf, "%s%04d-%02d.anim", m_ModelName.c_str(), m_Sequences[i].id, m_Sequences[i].variationIndex);
+			if (MPQFile::GetFileSize(buf) > 0)
 			{
-				animfiles[i].SetName(tempname);
+				animfiles[i].SetName(buf);
 				animfiles[i].Open();
 			}
 			else
 			{
-				//Modules::log().Warn("MDX[%s]: Animation doesn't exists.", tempname);
+				//Modules::log().Warn("MDX[%s]: Animation doesn't exists.", buf);
 				//Modules::log().Warn("header.bones.size = [%d]", header.bones.size);
 				//assert1(animBones == false);
 			}
@@ -145,6 +146,27 @@ void MDX::initAnimated(File& f)
 			m_TexturesAnims[i].init(f, textureAnimDefs[i], m_GlobalLoops);
 		}
 	}
+
+	if (header.cameras.size)
+	{
+		m_Cameras = new MDX_Part_Camera[header.cameras.size];
+		M2Camera* cameraDefs = (M2Camera*)(f.GetData() + header.cameras.offset);
+		for (uint32 i = 0; i < header.cameras.size; i++)
+		{
+			m_Cameras[i].init(f, cameraDefs[i], m_GlobalLoops);
+		}
+	}
+
+	if (header.lights.size)
+	{
+		m_Lights = new MDX_Part_Light[header.lights.size];
+		M2Light* lightsDefs = (M2Light*)(f.GetData() + header.lights.offset);
+		for (uint32 i = 0; i < header.lights.size; i++)
+		{
+			m_Lights[i].init(f, lightsDefs[i], m_GlobalLoops);
+		}
+	}
+
 
 #ifdef MDX_PARTICLES_ENABLE
 
@@ -174,28 +196,6 @@ void MDX::initAnimated(File& f)
 
 #endif
 
-	// just use the first camera, meh
-	if (header.cameras.size)
-	{
-		m_Cameras = new MDX_Part_Camera[header.cameras.size];
-		M2Camera* cameraDefs = (M2Camera*)(f.GetData() + header.cameras.offset);
-		for (uint32 i = 0; i < header.cameras.size; i++)
-		{
-			m_Cameras[i].init(f, cameraDefs[i], m_GlobalLoops);
-		}
-	}
-
-	// init lights
-	if (header.lights.size)
-	{
-		m_Lights = new MDX_Part_Light[header.lights.size];
-		M2Light* lightsDefs = (M2Light*)(f.GetData() + header.lights.offset);
-		for (uint32 i = 0; i < header.lights.size; i++)
-		{
-			m_Lights[i].init(f, lightsDefs[i], m_GlobalLoops);
-		}
-	}
-
 	animcalc = false;
 }
 
@@ -214,19 +214,13 @@ void MDX::calcBones(uint32 _animationIndex, int time)
 
 void MDX::animate(uint32 _animationIndex)
 {
-	int tmax = m_Sequences[_animationIndex].duration;
-	if (tmax == 0) // FIXME Outland 
-	{
-		return;
-	}
+	
 
-	animtime = _EnvironmentManager->globalTime % tmax;
-
-	m_CurrentAnimationIndex = _animationIndex;
+	m_AnimationIndex = _animationIndex;
 
 	if (animBones)
 	{
-		calcBones(_animationIndex, animtime);
+		calcBones(_animationIndex, m_AnimationTime);
 	}
 
 	if (animGeometry)
@@ -254,8 +248,8 @@ void MDX::animate(uint32 _animationIndex)
 		}
 
 		// Add sub-data
-		_Render->r->updateBufferData(__vb, header.vertices.size * 0 * sizeof(float), header.vertices.size * 3 * sizeof(float), m_Vertices);
-		_Render->r->updateBufferData(__vb, header.vertices.size * 5 * sizeof(float), header.vertices.size * 3 * sizeof(float), m_Normals);
+		_Render->r->updateBufferData(__vb, header.vertices.size * 0 * sizeof(float), header.vertices.size * sizeof(vec3), m_Vertices);
+		_Render->r->updateBufferData(__vb, header.vertices.size * 3 * sizeof(float), header.vertices.size * sizeof(vec3), m_Normals);
 	}
 
 	for (uint32 i = 0; i < header.lights.size; i++)
@@ -286,7 +280,15 @@ void MDX::animate(uint32 _animationIndex)
 	{
 		for (uint32 i = 0; i < header.texture_transforms.size; i++)
 		{
-			m_TexturesAnims[i].calc(_animationIndex, animtime);
+			m_TexturesAnims[i].calc(_animationIndex, m_AnimationTime);
+		}
+	}
+
+	//if (animMisc)
+	{
+		for (uint32 i = 0; i < header.texture_weights.size; i++)
+		{
+			m_TextureWeights[i].calc(_animationIndex, m_AnimationTime);
 		}
 	}
 }

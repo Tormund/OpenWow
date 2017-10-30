@@ -25,17 +25,17 @@ MDX::MDX(cstring name) : RefItemNamed(name), m_Loaded(false)
 
 	for (int i = 0; i < TEXTURE_MAX; i++)
 	{
-		specialTextures[i] = -1;
-		replaceTextures[i] = 0;
-		useReplaceTextures[i] = false;
+		m_SpecialTextures[i] = -1;
+		m_TextureReplaced[i] = nullptr;
+		m_TexturesUseSpecialTexture[i] = false;
 	}
 
 	m_GlobalLoops = nullptr;
-	animtime = 0;
-	m_CurrentAnimationIndex = 0;
-	colors = nullptr;
+	m_AnimationTime = 0;
+	m_AnimationIndex = 0;
+	m_Colors = nullptr;
 	m_Lights = nullptr;
-	transparency = nullptr;
+	m_TextureWeights = nullptr;
 
 #ifdef MDX_PARTICLES_ENABLE
 	particleSystems = nullptr;
@@ -56,18 +56,18 @@ MDX::~MDX()
 	{
 		for (uint32 i = 0; i < header.textures.size; i++)
 		{
-			if (textures[i] != nullptr)
+			if (m_Textures[i] != nullptr)
 			{
-				_TexturesMgr->Delete(textures[i]);
+				_TexturesMgr->Delete(m_Textures[i]);
 			}
 		}
-		delete[] textures;
+		delete[] m_Textures;
 	}
 
 	delete[] m_GlobalLoops;
 
-	if (colors) delete[] colors;
-	if (transparency) delete[] transparency;
+	if (m_Colors) delete[] m_Colors;
+	if (m_TextureWeights) delete[] m_TextureWeights;
 
 	delete[] m_Vertices;
 	delete[] m_Texcoords;
@@ -172,39 +172,36 @@ void MDX::initCommon(File& f)
 	// m_DiffuseTextures
 	if (header.textures.size)
 	{
-		textures = new Texture*[header.textures.size];
-		texdef = (M2Texture*)(f.GetData() + header.textures.offset);
+		m_Textures = new Texture*[header.textures.size];
+		m_M2Textures = (M2Texture*)(f.GetData() + header.textures.offset);
 
-		char texname[256];
+		
 		for (uint32 i = 0; i < header.textures.size; i++)
 		{
-			// Error check
-			if (i > TEXTURE_MAX - 1)
+			assert1(i < TEXTURE_MAX);
+
+			if (m_M2Textures[i].type == 0) // Common texture
 			{
-				Modules::log().Error("MDX[%s]: Model Texture [%d] over [%d]", m_ModelName, header.textures.size, TEXTURE_MAX);
-				break;
+				char buff[256];
+				strncpy_s(buff, (const char*)(f.GetData() + m_M2Textures[i].filename.offset), m_M2Textures[i].filename.size);
+				buff[m_M2Textures[i].filename.size] = '\0';
+				m_Textures[i] = _TexturesMgr->Add(buff);
 			}
-
-			if (texdef[i].type == 0)
+			else // special texture - only on characters and such...
 			{
-				strncpy_s(texname, (const char*)(f.GetData() + texdef[i].filename.offset), texdef[i].filename.size);
-				texname[texdef[i].filename.size] = 0;
-				textures[i] = _TexturesMgr->Add(texname);
-			}
-			else
-			{
-				// special texture - only on characters and such...
-				textures[i] = 0;
-				specialTextures[i] = texdef[i].type;
+				/*m_Textures[i] = nullptr;
+				m_SpecialTextures[i] = m_M2Textures[i].type;
 
-				if (texdef[i].type < TEXTURE_MAX)
-					useReplaceTextures[texdef[i].type] = true;
-
-				if (texdef[i].type == 3)
+				if (m_M2Textures[i].type < TEXTURE_MAX)
 				{
-					// a fix for weapons with type-3 m_DiffuseTextures.
-					replaceTextures[texdef[i].type] = _TexturesMgr->Add("Item\\ObjectComponents\\Weapon\\ArmorReflect4.BLP");
+					m_TexturesUseSpecialTexture[m_M2Textures[i].type] = true;
 				}
+
+				// a fix for weapons with type-3 m_DiffuseTextures.
+				if (m_M2Textures[i].type == 3)
+				{
+					m_TextureReplaced[m_M2Textures[i].type] = _TexturesMgr->Add("Item\\ObjectComponents\\Weapon\\ArmorReflect4.BLP");
+				}*/
 			}
 		}
 	}
@@ -212,24 +209,20 @@ void MDX::initCommon(File& f)
 	// init colors
 	if (header.colors.size)
 	{
-		colors = new MDX_Part_Color[header.colors.size];
-		M2Color* colorDefs = (M2Color*)(f.GetData() + header.colors.offset);
+		m_Colors = new MDX_Part_Color[header.colors.size];
 		for (uint32 i = 0; i < header.colors.size; i++)
 		{
-			colors[i].init(f, colorDefs[i], m_GlobalLoops);
+			m_Colors[i].init(f, ((M2Color*)(f.GetData() + header.colors.offset))[i], m_GlobalLoops);
 		}
 	}
 
 	// init transparency
 	if (header.texture_weights.size)
 	{
-		transLookup = (uint16*)(f.GetData() + header.transparency_lookup_table.offset);
-
-		transparency = new MDX_Part_Transparency[header.texture_weights.size];
-		M2TextureWeight* trDefs = (M2TextureWeight*)(f.GetData() + header.texture_weights.offset);
+		m_TextureWeights = new MDX_Part_TextureWeight[header.texture_weights.size];
 		for (uint32 i = 0; i < header.texture_weights.size; i++)
 		{
-			transparency[i].init(f, trDefs[i], m_GlobalLoops);
+			m_TextureWeights[i].init(f, ((M2TextureWeight*)(f.GetData() + header.texture_weights.offset))[i], m_GlobalLoops);
 		}
 	}
 	
@@ -237,8 +230,9 @@ void MDX::initCommon(File& f)
 	__vb = _Render->r->createVertexBuffer(header.vertices.size * 8 * sizeof(float), nullptr);
 
 	_Render->r->updateBufferData(__vb, header.vertices.size * 0 * sizeof(float), header.vertices.size * sizeof(vec3), m_Vertices);
-	_Render->r->updateBufferData(__vb, header.vertices.size * 3 * sizeof(float), header.vertices.size * sizeof(vec2), m_Texcoords);
-	_Render->r->updateBufferData(__vb, header.vertices.size * 5 * sizeof(float), header.vertices.size * sizeof(vec3), m_Normals);
+	_Render->r->updateBufferData(__vb, header.vertices.size * 3 * sizeof(float), header.vertices.size * sizeof(vec3), m_Normals);
+	_Render->r->updateBufferData(__vb, header.vertices.size * 6 * sizeof(float), header.vertices.size * sizeof(vec2), m_Texcoords);
+	
 
 	// just use the first LOD/view
 	if (header.num_skin_profiles > 0)
@@ -255,6 +249,12 @@ void MDX::initCommon(File& f)
 
 void MDX::drawModel()
 {
+	for (uint32 i = 0; i < header.colors.size; i++)
+	{
+		m_Colors[i].calc(m_AnimationIndex, m_AnimationTime);
+	}
+
+
 	for (auto it = m_Skins.begin(); it != m_Skins.end(); ++it)
 	{
 		(*it)->Draw();
@@ -270,6 +270,10 @@ void MDX::draw()
 
 	if (animated)
 	{
+		if (m_Sequences[m_AnimationIndex].duration == 0) return; // FIXME Outland 
+		m_AnimationTime = _EnvironmentManager->globalTime % m_Sequences[m_AnimationIndex].duration;
+
+
 		if (m_IsBillboard)
 		{
 			animate(0);
@@ -313,7 +317,7 @@ void MDX::lightsOn(uint32 lbase)
 	// setup lights
 	for (uint32 i = 0, l = lbase; i < header.lights.size; i++)
 	{
-		m_Lights[i].setup(animtime, l++);
+		m_Lights[i].setup(m_AnimationTime, l++);
 	}
 }
 

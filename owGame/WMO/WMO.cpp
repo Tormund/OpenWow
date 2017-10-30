@@ -378,9 +378,6 @@ bool WMO::drawSkybox()
 	_Pipeline->Translate(_Camera->Position);
 	_Pipeline->Scale(2.0f);
 
-	_TechniquesMgr->m_MDX_GeometryPass->BindS();
-	_TechniquesMgr->m_MDX_GeometryPass->SetPVW();
-
 	m_Skybox->draw();
 
 	_EnvironmentManager->m_HasSky = true;

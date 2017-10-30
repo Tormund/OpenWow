@@ -46,11 +46,10 @@ static const uint32 oglBlendFuncs[10] = {
 	GL_DST_ALPHA, 
 	GL_ONE_MINUS_DST_ALPHA, 
 
-	
 	GL_SRC_COLOR,
 	GL_ONE_MINUS_SRC_COLOR,
 	GL_DST_COLOR, 
-	GL_ONE_MINUS_DST_COLOR, 
+	GL_ONE_MINUS_DST_COLOR
 };
 
 void glDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
@@ -240,6 +239,8 @@ bool RenderDevice::init()
 	}
 
 	resetStates();
+
+	glBlendFuncSeparate(GL_SRC_ALPHA, GL_SRC_ALPHA, GL_SRC_ALPHA, GL_SRC_ALPHA);
 
 	return true;
 }
@@ -1855,7 +1856,8 @@ void RenderDevice::applyRenderStates()
 		else
 		{
 			glEnable(GL_BLEND);
-			glBlendFunc(oglBlendFuncs[_newBlendState.srcBlendFunc], oglBlendFuncs[_newBlendState.destBlendFunc]);
+			glBlendFuncSeparate(oglBlendFuncs[_newBlendState.srcRGBBlendFunc], oglBlendFuncs[_newBlendState.destRGBBlendFunc], 
+								oglBlendFuncs[_newBlendState.srcABlendFunc],   oglBlendFuncs[_newBlendState.destABlendFunc]);
 		}
 
 		_curBlendState.hash = _newBlendState.hash;

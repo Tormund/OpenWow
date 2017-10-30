@@ -27,7 +27,15 @@ struct M2SkinSection
 
 struct M2SkinBatch
 {
-	uint8 flags;                       // Usually 16 for static m_DiffuseTextures, and 0 for animated m_DiffuseTextures. &0x1: materials invert something; &0x2: transform &0x4: projected texture; &0x10: something batch compatible; &0x20: projected texture?; &0x40: use textureWeights
+	struct  // Usually 16 for static m_DiffuseTextures, and 0 for animated m_DiffuseTextures. &0x1: materials invert something; &0x2: transform &0x4: projected texture; &0x10: something batch compatible; &0x20: projected texture?; &0x40: use textureWeights
+	{
+		uint8 Flag_InvertSomething : 1;
+		uint8 Flag_Transform : 1;
+		uint8 Flag_Projected : 1;
+		uint8 unk0 : 1;
+		uint8 Flag_TextureStatic : 1;
+		uint8 : 3;
+	} flags;
 	int8 priorityPlane;
 	
 	uint16 shader_id;                  // See below.
@@ -39,10 +47,10 @@ struct M2SkinBatch
 	uint16 materialLayer;              // Capped at 7 (see CM2Scene::BeginDraw)
 	uint16 textureCount;               // 1 to 4. Also seems to be the number of m_DiffuseTextures to load, starting at the texture lookup in the next field (0x10).
 	
-	uint16 textureComboIndex;          // Index into Texture lookup table
-	uint16 textureCoordComboIndex;     // Index into the texture unit lookup table.
-	uint16 textureWeightComboIndex;    // Index into transparency lookup table.
-	uint16 textureTransformComboIndex; // Index into uvanimation lookup table. 
+	uint16 texture_Index;          // Index into Texture lookup table
+	uint16 UNUSED0;
+	uint16 texture_WeightIndex;    // Index into transparency lookup table.
+	uint16 texture_TransformIndex; // Index into uvanimation lookup table. 
 };
 
 struct M2ShadowBatch

@@ -193,7 +193,7 @@
     <ClCompile Include="Techniques\ds_point_light_pass_tech.cpp" />
     <ClCompile Include="Techniques\MapChunk_GeometryPass.cpp" />
     <ClCompile Include="Techniques\MapTileLowRes_GeometryPass.cpp" />
-    <ClCompile Include="Techniques\MDX_GeometryPass.cpp" />
+    <ClCompile Include="Techniques\Model_Shader.cpp" />
     <ClCompile Include="Techniques\SimpleRenderGBuffer.cpp" />
     <ClCompile Include="Techniques\Sky_GeometryPass.cpp" />
     <ClCompile Include="Techniques\Technique.cpp" />
@@ -236,7 +236,7 @@
     <ClInclude Include="Techniques\ds_point_light_pass_tech.h" />
     <ClInclude Include="Techniques\MapChunk_GeometryPass.h" />
     <ClInclude Include="Techniques\MapTileLowRes_GeometryPass.h" />
-    <ClInclude Include="Techniques\MDX_GeometryPass.h" />
+    <ClInclude Include="Techniques\Model_Shader.h" />
     <ClInclude Include="Techniques\SimpleRenderGBuffer.h" />
     <ClInclude Include="Techniques\Sky_GeometryPass.h" />
     <ClInclude Include="Techniques\Technique.h" />

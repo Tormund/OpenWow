@@ -6,9 +6,11 @@
 // Additional
 #include "Render.h"
 #include "RenderDevice.h"
+#include "RenderStorage.h"
 
 Material::Material()
 {
+	m_BlendEGxBlendIndex = -1;
 	m_BlendEnabled = false;
 	m_Blend_SrcFunc = BS_BLEND_SRC_ALPHA;
 	m_Blend_DstFunc = BS_BLEND_INV_SRC_ALPHA;
@@ -25,7 +27,14 @@ Material::Material()
 void Material::Set()
 {
 	//_Render->r->setAlphaToCoverage(true);
-	_Render->r->setBlendMode(m_BlendEnabled, m_Blend_SrcFunc, m_Blend_DstFunc);
+	if (m_BlendEGxBlendIndex != -1)
+	{
+		_RenderStorage->SetEGxBlend(m_BlendEGxBlendIndex);
+	}
+	else
+	{
+		_Render->r->setBlendMode(m_BlendEnabled, m_Blend_SrcFunc, m_Blend_DstFunc);
+	}
 	_Render->r->setCullMode(m_IsTwoSided ? R_CullMode::RS_CULL_NONE : R_CullMode::RS_CULL_BACK);
 	_Render->r->setDepthTest(m_DepthTest);
 	_Render->r->setDepthMask(m_DepthWrite);

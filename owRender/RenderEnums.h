@@ -180,8 +180,10 @@ struct R_BlendState
 		{
 			uint32  alphaToCoverageEnable : 1;
 			uint32  blendEnable : 1;
-			uint32  srcBlendFunc : 4;
-			uint32  destBlendFunc : 4;
+			uint32  srcRGBBlendFunc : 4;
+			uint32  destRGBBlendFunc : 4;
+			uint32  srcABlendFunc : 4;
+			uint32  destABlendFunc : 4;
 		};
 	};
 };

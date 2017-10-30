@@ -12,39 +12,28 @@ void MDX_Part_TextureAnim::init(File& f, M2TextureTransform& mta, uint32 * globa
 
 void MDX_Part_TextureAnim::calc(int anim, int time)
 {
+	matrix = Matrix4f();
+	
 	if (trans.uses(anim))
 	{
 		tval = trans.getValue(anim, time);
+		matrix.translate(tval);
 	}
 
 	if (roll.uses(anim))
 	{
+		matrix.translate(vec3(0.5f, 0.5f, 0.5f));
+
 		rval = roll.getValue(anim, time);
+		matrix.rotate(rval);
+
+		matrix.translate(vec3(-0.5f, -0.5f, -0.5f));
 	}
 
 	if (scale.uses(anim))
 	{
 		sval = scale.getValue(anim, time);
-	}
-}
-
-void MDX_Part_TextureAnim::setup(int anim)
-{
-	//glLoadIdentity();
-
-	if (trans.uses(anim))
-	{
-		//glTranslatef(tval.x, tval.y, tval.z);
-	}
-
-	if (roll.uses(anim))
-	{
-		//glRotatef(rval.x, 0, 0, 1.0f); // this is wrong, I have no idea what I'm doing here ;)
-	}
-
-	if (scale.uses(anim))
-	{
-		//glScalef(sval.x, sval.y, sval.z);
+		matrix.scale(sval);
 	}
 }
 

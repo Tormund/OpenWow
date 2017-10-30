@@ -17,7 +17,7 @@ void RibbonEmitter::init(File& f, M2Ribbon& mta, uint32 * globals)
 	parent = model->m_Part_Bones + mta.boneIndex;
 	int *texlist = (int*)(f.GetData() + mta.textureIndices.offset);
 	// just use the first texture for now; most models I've checked only had one
-	texture = model->textures[texlist[0]];
+	texture = model->m_Textures[texlist[0]];
 
 	tpos = pos = From_XYZ_To_XZminusY_RET(mta.position);
 

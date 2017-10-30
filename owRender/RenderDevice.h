@@ -265,18 +265,35 @@ public:
 		enabled = _newBlendState.alphaToCoverageEnable;
 	}
 
-	void setBlendMode(bool enabled, R_BlendFunc srcBlendFunc = BS_BLEND_ZERO, R_BlendFunc destBlendFunc = BS_BLEND_ZERO)
+	void setBlendMode(bool enabled, R_BlendFunc srcRGBBlendFunc = BS_BLEND_ZERO, R_BlendFunc destRGBBlendFunc = BS_BLEND_ZERO)
 	{
 		_newBlendState.blendEnable = enabled;
-		_newBlendState.srcBlendFunc = srcBlendFunc;
-		_newBlendState.destBlendFunc = destBlendFunc;
+
+		_newBlendState.srcRGBBlendFunc = srcRGBBlendFunc;
+		_newBlendState.destRGBBlendFunc = destRGBBlendFunc;
+
+		_newBlendState.srcABlendFunc = srcRGBBlendFunc;
+		_newBlendState.destABlendFunc = destRGBBlendFunc;
+
 		_pendingMask |= PM_RENDERSTATES;
 	}
-	void getBlendMode(bool &enabled, R_BlendFunc &srcBlendFunc, R_BlendFunc &destBlendFunc) const
+	void setBlendModeEx(bool enabled, R_BlendFunc srcRGBBlendFunc = BS_BLEND_ZERO, R_BlendFunc destRGBBlendFunc = BS_BLEND_ZERO, R_BlendFunc srcABlendFunc = BS_BLEND_ZERO, R_BlendFunc destABlendFunc = BS_BLEND_ZERO)
+	{
+		_newBlendState.blendEnable = enabled;
+
+		_newBlendState.srcRGBBlendFunc = srcRGBBlendFunc;
+		_newBlendState.destRGBBlendFunc = destRGBBlendFunc;
+
+		_newBlendState.srcABlendFunc = srcABlendFunc;
+		_newBlendState.destABlendFunc = destABlendFunc;
+
+		_pendingMask |= PM_RENDERSTATES;
+	}
+	void getBlendMode(bool &enabled, R_BlendFunc &srcRGBBlendFunc, R_BlendFunc &destRGBBlendFunc) const
 	{
 		enabled = _newBlendState.blendEnable;
-		srcBlendFunc = (R_BlendFunc)_newBlendState.srcBlendFunc;
-		destBlendFunc = (R_BlendFunc)_newBlendState.destBlendFunc;
+		srcRGBBlendFunc = (R_BlendFunc)_newBlendState.srcRGBBlendFunc;
+		destRGBBlendFunc = (R_BlendFunc)_newBlendState.destRGBBlendFunc;
 	}
 
 	void setDepthMask(bool enabled)

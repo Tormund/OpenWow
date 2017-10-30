@@ -43,5 +43,9 @@ public:
 	// colours
 	vec4 ocol, ecol;
 
-	Material __material;
+	uint16    __colorIndex;
+	uint16    __textureWeight;
+	int16     __textureAnims;
+	int       __blendMode;
+	Material  __material;
 };

@@ -34,6 +34,7 @@ protected:
 
 public:
 	inline void SetPVW();
+	inline void SetPV_W();
 
 	inline void SetWorldMatrix(cmat4 WorldInverse);
 	inline void SetViewMatrix(cmat4 WorldInverse);

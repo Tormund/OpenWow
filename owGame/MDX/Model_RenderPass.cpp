@@ -70,59 +70,6 @@ bool ModelRenderPass::init(MDX* m)
 
 	// --
 
-	// TODO: Add proper support for multi-texturing.
-
-	// blend mode
-	/*switch (blendmode)
-	{
-		case M2COMBINER_OPAQUE:	// 0
-		glDisable(GL_BLEND);
-		break;
-
-		case M2COMBINER_MOD: // 1
-		glEnable(GL_ALPHA_TEST);
-		glAlphaFunc(GL_GEQUAL, 0.7f);
-		break;
-
-		case M2COMBINER_DECAL: // 2
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		break;
-
-		case M2COMBINER_ADD: // 3
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_COLOR, GL_ONE);
-		break;
-
-		case M2COMBINER_MOD2X: // 4
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-		break;
-
-		case M2COMBINER_FADE: // 5
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);
-		break;
-
-		case M2COMBINER_MOD2X_NA: // 6
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);
-		break;
-
-		default:
-		Modules::log().Info("Error: Unknown blendmode: %d", blendmode);
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	}
-
-	if (cull)
-	{
-		//glEnable(GL_CULL_FACE);
-	}
-	else
-	{
-		//glDisable(GL_CULL_FACE);
-	}
 
 	// Texture wrapping around the geometry
 	if (swrap)
@@ -134,9 +81,6 @@ bool ModelRenderPass::init(MDX* m)
 	{
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	}
-
-	// no writing to the depth buffer.
-	//glDepthMask(noZWrite ? GL_FALSE : GL_TRUE);
 
 	if (texanim != -1)
 	{
@@ -163,13 +107,13 @@ void ModelRenderPass::deinit()
 {
 	/*switch (blendmode)
 	{
-		case M2COMBINER_OPAQUE:
+		case M2BLEND_OPAQUE:
 		break;
 
-		case M2COMBINER_MOD:
+		case M2BLEND_ALPHA_KEY:
 		break;
 
-		case M2COMBINER_DECAL:
+		case M2BLEND_ALPHA:
 		//glDepthMask(GL_TRUE);
 		break;
 

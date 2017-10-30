@@ -10,7 +10,6 @@ TechniquesMgr::TechniquesMgr()
 {
 	m_MapChunk_GeometryPass = nullptr;
 	m_MapTileLowRes_GeometryPass = nullptr;
-	m_MDX_GeometryPass = nullptr;
 	m_WMO_GeometryPass = nullptr;
 	m_SimpleRender = nullptr;
 }
@@ -19,7 +18,6 @@ TechniquesMgr::~TechniquesMgr()
 {
 	delete m_MapChunk_GeometryPass;
 	delete m_MapTileLowRes_GeometryPass;
-	delete m_MDX_GeometryPass;
 	delete m_WMO_GeometryPass;
 
 	delete m_SimpleRender;
@@ -56,14 +54,6 @@ void TechniquesMgr::Init()
 
 	m_MapTileLowRes_GeometryPass = new MapTileLowRes_GeometryPass();
 
-	//----------------------------------------------------------------//
-
-	m_MDX_GeometryPass = new MDX_GeometryPass();
-	m_MDX_GeometryPass->BindS();
-	m_MDX_GeometryPass->SetColorTextureUnit(Material::C_DiffuseTextureIndex);
-	m_MDX_GeometryPass->SetSpecularTextureUnit(Material::C_SpecularTextureIndex);
-	m_WMO_GeometryPass->Unbind();
-
 	//
 
 	m_Water = new Water_Pass();
@@ -82,7 +72,14 @@ void TechniquesMgr::Init()
 
 	//----------------------------------------------------------------//
 
+	m_Model = new Model_Shader();
+	m_Model->BindS();
+	m_Model->SetDiffuseTexture(Material::C_DiffuseTextureIndex);
+	m_Model->SetSpecularTexture(Material::C_SpecularTextureIndex);
+	m_Model->Unbind();
+
 	//----------------------------------------------------------------//
+
 	m_DSDirLightPassTech = new DSDirLightPassTech();
 	m_DSDirLightPassTech->BindS();
 

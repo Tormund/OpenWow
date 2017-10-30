@@ -84,7 +84,6 @@ WMOGroup::WMOGroup(const WMO* _parentWMO, const uint32 _groupIndex, File& f) : m
 
 WMOGroup::~WMOGroup()
 {
-	delete[] m_Indices;
 	delete[] m_WMOBatchIndexes;
 	delete[] m_DoodadsIndexes;
 

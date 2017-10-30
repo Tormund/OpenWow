@@ -50,7 +50,7 @@
     <ClCompile Include="MDX\MDX_Part_Color.cpp" />
     <ClCompile Include="MDX\MDX_Part_Light.cpp" />
     <ClCompile Include="MDX\MDX_Part_TextureAnim.cpp" />
-    <ClCompile Include="MDX\MDX_Part_Transparency.cpp" />
+    <ClCompile Include="MDX\MDX_Part_TextureWeight.cpp" />
     <ClCompile Include="MDX\ModelsManager.cpp" />
     <ClCompile Include="MDX\Model_RenderPass.cpp" />
     <ClCompile Include="MDX\Model_Skin.cpp" />
@@ -122,7 +122,7 @@
     <ClInclude Include="MDX\MDX_Part_Color.h" />
     <ClInclude Include="MDX\MDX_Part_Light.h" />
     <ClInclude Include="MDX\MDX_Part_TextureAnim.h" />
-    <ClInclude Include="MDX\MDX_Part_Transparency.h" />
+    <ClInclude Include="MDX\MDX_Part_TextureWeight.h" />
     <ClInclude Include="MDX\ModelsManager.h" />
     <ClInclude Include="MDX\Model_RenderPass.h" />
     <ClInclude Include="MDX\Model_Skin.h" />

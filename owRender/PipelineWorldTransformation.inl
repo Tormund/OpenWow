@@ -27,16 +27,10 @@ inline void PipelineWorldTransformation::RotateZ(float _roll)
 }
 inline void PipelineWorldTransformation::Rotate(float _yaw, float _pitch, float _roll)
 {
-	//worldTransformation = worldTransformation * Matrix4f::RotMat(vec3(1.0f, 0.0f, 0.0f), _yaw);
-	//worldTransformation = worldTransformation * Matrix4f::RotMat(vec3(0.0f, 1.0f, 0.0f), _pitch);
-	//worldTransformation = worldTransformation * Matrix4f::RotMat(vec3(0.0f, 0.0f, 1.0f), _roll);
 	worldTransformation.rotate(_yaw, _pitch, _roll);
 }
 inline void PipelineWorldTransformation::Rotate(cvec3 _rotation)
 {
-	//worldTransformation = worldTransformation * Matrix4f::RotMat(vec3(1.0f, 0.0f, 0.0f), _rotation.x);
-	//worldTransformation = worldTransformation * Matrix4f::RotMat(vec3(0.0f, 1.0f, 0.0f), _rotation.y);
-	//worldTransformation = worldTransformation * Matrix4f::RotMat(vec3(0.0f, 0.0f, 1.0f), _rotation.z);
 	worldTransformation.rotate(_rotation);
 }
 

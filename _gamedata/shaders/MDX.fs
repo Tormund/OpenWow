@@ -22,4 +22,9 @@ void main(void)
 	setNormal(normalize(VSout.Normal));
 	setAlbedo(texture(gColorMap, VSout.TexCoord).rgb);
 	setSpecParams(texture(gSpecularMap, VSout.TexCoord).rgb, 1.0);
+	
+	fragData2.a = texture(gColorMap, VSout.TexCoord).a;
+	
+	if(fragData2.a < 0.5)
+		discard;
 };

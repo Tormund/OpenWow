@@ -88,9 +88,6 @@
     <ClCompile Include="MDX\MDX_Part_TextureAnim.cpp">
       <Filter>MDX\Parts</Filter>
     </ClCompile>
-    <ClCompile Include="MDX\MDX_Part_Transparency.cpp">
-      <Filter>MDX\Parts</Filter>
-    </ClCompile>
     <ClCompile Include="MDX\Particle.cpp">
       <Filter>MDX\Particles</Filter>
     </ClCompile>
@@ -196,6 +193,9 @@
     <ClCompile Include="RenderableItem.cpp">
       <Filter>General\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="MDX\MDX_Part_TextureWeight.cpp">
+      <Filter>MDX\Parts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameState.h">
@@ -237,9 +237,6 @@
       <Filter>MDX\Parts</Filter>
     </ClInclude>
     <ClInclude Include="MDX\MDX_Part_TextureAnim.h">
-      <Filter>MDX\Parts</Filter>
-    </ClInclude>
-    <ClInclude Include="MDX\MDX_Part_Transparency.h">
       <Filter>MDX\Parts</Filter>
     </ClInclude>
     <ClInclude Include="MDX\Particle.h">
@@ -395,6 +392,9 @@
     </ClInclude>
     <ClInclude Include="RenderableItem.h">
       <Filter>General\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="MDX\MDX_Part_TextureWeight.h">
+      <Filter>MDX\Parts</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

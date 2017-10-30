@@ -59,7 +59,7 @@ void ParticleSystem::init(File& f, M2Particle& mta, uint32* globals)
 	slowdown = mta.slowdown; // FIXME
 	rotation = mta.rotation; // FIXME
 	pos = From_XYZ_To_XZminusY_RET(mta.Position);
-	texture = model->textures[mta.texture];
+	texture = model->m_Textures[mta.texture];
 	blend = mta.blendingType;
 	rows = mta.textureDimensions_rows;
 	cols = mta.textureDimensions_columns;

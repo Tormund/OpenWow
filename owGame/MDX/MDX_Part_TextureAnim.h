@@ -7,13 +7,20 @@ class MDX_Part_TextureAnim
 public:
 	void init(File& f, M2TextureTransform& mta, uint32* global);
 	void calc(int anim, int time);
-	void setup(int anim);
+
+	Matrix4f getValue()
+	{
+		return matrix;
+	}
 
 private:
-	vec3 tval, rval, sval;
+	vec3 tval, sval;
+	Quaternion rval;
 
-	Animated<vec3> trans, roll, scale;
+	Animated<vec3> trans, scale;
+	Animated<Quaternion> roll;
 
+	Matrix4f matrix;
 	//
 
 	friend class MDX;

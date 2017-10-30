@@ -10,8 +10,9 @@
 bool RenderStorage::Init()
 {
 	CreateLayouts();
-
 	CreateGeometry();
+
+	CreateWoWLayouts();
 
 	return true;
 }
@@ -74,13 +75,6 @@ void RenderStorage::CreateLayouts()
 	};
 	__layoutWMO_VC = _Render->r->registerVertexLayout(4, attribsWMO_VC);
 	//--------------------------------------------------------------------------------------------
-	R_VertexLayoutAttrib attribsMDX[3] = {
-		{"VertexPosition",      0, 3, 0},
-		{"textureCoords",  1, 2, 0},
-		{"normal",         2, 3, 0}
-	};
-	__layoutMDX = _Render->r->registerVertexLayout(3, attribsMDX);
-	//--------------------------------------------------------------------------------------------
 	R_VertexLayoutAttrib attribsWater[3] = {
 		{"VertexPosition",      0, 3, 0},
 		{"textureCoords",  1, 3, 0},
@@ -123,10 +117,182 @@ void RenderStorage::CreateGeometry()
 	uint32 __vbQuadVT = _Render->r->createVertexBuffer(verticesQuadVT.size() * sizeof(Texture_Vertex), verticesQuadVT.data());
 	__QuadVT = _Render->r->beginCreatingGeometry(__layoutV2T2);
 
-	_Render->r->setGeomVertexParams(__QuadVT, __vbQuadVT, 0, 0,            sizeof(Texture_Vertex));
+	_Render->r->setGeomVertexParams(__QuadVT, __vbQuadVT, 0, 0, sizeof(Texture_Vertex));
 	_Render->r->setGeomVertexParams(__QuadVT, __vbQuadVT, 1, sizeof(vec2), sizeof(Texture_Vertex));
 
 	_Render->r->setGeomIndexParams(__QuadVT, __ib, R_IndexFormat::IDXFMT_16);
 
 	_Render->r->finishCreatingGeometry(__QuadVT);
+}
+
+void RenderStorage::CreateWoWLayouts()
+{
+	R_VertexLayoutAttrib attribs_GxVBF_P[1] = { // 12
+		{"position",    0, 3, 0}
+	};
+
+	//--
+
+	R_VertexLayoutAttrib attribs_GxVBF_PN[2] = { // 24
+		{"position",    0, 3, 0},
+		{"normal",      1, 3, 0}
+	};
+
+	R_VertexLayoutAttrib attribs_GxVBF_PNC[3] = { // 28
+		{"position",    0, 3, 0},
+		{"normal",      1, 3, 0},
+		{"color",       2, 1, 0}
+	};
+
+	//--
+
+	R_VertexLayoutAttrib attribs_GxVBF_PNT[3] = { // 32
+		{"position",    0, 3, 0},
+		{"normal",      1, 3, 0},
+		{"tc",          2, 2, 0}
+	};
+	__layout_GxVBF_PNT = _Render->r->registerVertexLayout(3, attribs_GxVBF_PNT);
+
+	R_VertexLayoutAttrib attribs_GxVBF_PNCT[4] = { // 36
+		{"position",    0, 3, 0},
+		{"normal",      1, 3, 0},
+		{"color",       2, 1, 0},
+		{"tc",          3, 2, 0}
+	};
+
+	//--
+
+	R_VertexLayoutAttrib attribs_GxVBF_PNT2[4] = { // 40
+		{"position",    0, 3, 0},
+		{"normal",      1, 3, 0},
+		{"tc0",         2, 2, 0},
+		{"tc1",         3, 2, 0}
+	};
+
+	R_VertexLayoutAttrib attribs_GxVBF_PNCT2[5] = { // 44
+		{"position",    0, 3, 0},
+		{"normal",      1, 3, 0},
+		{"color",       2, 1, 0},
+		{"tc0",         3, 2, 0},
+		{"tc1",         4, 2, 0}
+	};
+
+	//--
+
+	R_VertexLayoutAttrib attribs_GxVBF_PC[2] = { // 16
+		{"position",    0, 3, 0},
+		{"color",       1, 1, 0}
+	};
+
+	R_VertexLayoutAttrib attribs_GxVBF_PCT[3] = { // 24
+		{"position",    0, 3, 0},
+		{"color",       1, 1, 0},
+		{"tc",          2, 2, 0}
+	};
+
+	R_VertexLayoutAttrib attribs_GxVBF_PCT2[4] = { // 32
+		{"position",    0, 3, 0},
+		{"color",       1, 1, 0},
+		{"tc0",         2, 2, 0},
+		{"tc1",         3, 2, 0}
+	};
+
+	//--
+
+	R_VertexLayoutAttrib attribs_GxVBF_PT[2] = { // 20
+		{"position",    0, 3, 0},
+		{"tc",          1, 2, 0}
+	};
+
+	R_VertexLayoutAttrib attribs_GxVBF_PT2[3] = { // 28
+		{"position",    0, 3, 0},
+		{"tc0",         1, 2, 0},
+		{"tc0",         2, 2, 0}
+	};
+
+	//--
+
+	R_VertexLayoutAttrib attribs_GxVBF_PBNT2[6] = { // 48
+		{"position",    0, 3, 0},
+		{"blendWeight", 1, 1, 0},
+		{"blendIndices",2, 1, 0},
+		{"normal",      3, 3, 0},
+		{"tc0",         4, 2, 0},
+		{"tc1",         5, 2, 0}
+	};
+
+	R_VertexLayoutAttrib attribs_GxVBF_PNC2T2[6] = { // 48
+		{"position",    0, 3, 0},
+		{"normal",      1, 3, 0},
+		{"color0",      2, 1, 0},
+		{"color1",      3, 1, 0},
+		{"tc0",         4, 2, 0},
+		{"tc1",         5, 2, 0}
+	};
+}
+
+void RenderStorage::SetEGxBlend(uint8 _index)
+{
+	switch (_index)
+	{
+		case 0: // Opaque
+		_Render->r->setBlendMode(false, BS_BLEND_ONE,             BS_BLEND_ZERO);
+		break;
+
+		case 1: // AlphaKey
+		_Render->r->setBlendMode(false, BS_BLEND_ONE,             BS_BLEND_ZERO);
+		break;
+
+		case 2: // Alpha
+		_Render->r->setBlendModeEx(false, BS_BLEND_SRC_ALPHA,     BS_BLEND_INV_SRC_ALPHA,   BS_BLEND_ONE,              BS_BLEND_INV_SRC_ALPHA);
+		break;
+
+		case 3: // Add
+		_Render->r->setBlendModeEx(true, BS_BLEND_SRC_ALPHA,      BS_BLEND_ONE,             BS_BLEND_ZERO,             BS_BLEND_ONE);
+		break;
+
+		case 4: // Mod
+		_Render->r->setBlendModeEx(true, BS_BLEND_DEST_COLOR,     BS_BLEND_ZERO,            BS_BLEND_DEST_ALPHA,       BS_BLEND_ZERO);
+		break;
+
+		case 5: // Mod2x
+		_Render->r->setBlendModeEx(true, BS_BLEND_DEST_COLOR,     BS_BLEND_SRC_COLOR,       BS_BLEND_DEST_ALPHA,       BS_BLEND_SRC_ALPHA);
+		break;
+
+		case 6: // ModAdd
+		_Render->r->setBlendModeEx(true, BS_BLEND_DEST_COLOR,     BS_BLEND_ONE,             BS_BLEND_DEST_ALPHA,       BS_BLEND_ONE);
+		break;
+
+		case 7: // InvSrcAlphaAdd
+		_Render->r->setBlendModeEx(true, BS_BLEND_INV_SRC_ALPHA,  BS_BLEND_ONE,             BS_BLEND_INV_SRC_ALPHA,    BS_BLEND_ONE);
+		break;
+
+		case 8: // InvSrcAlphaOpaque
+		_Render->r->setBlendModeEx(true, BS_BLEND_INV_SRC_ALPHA,  BS_BLEND_ZERO,            BS_BLEND_INV_SRC_ALPHA,    BS_BLEND_ZERO);
+		break;
+
+		case 9: // SrcAlphaOpaque
+		_Render->r->setBlendModeEx(true, BS_BLEND_SRC_ALPHA,      BS_BLEND_ZERO,            BS_BLEND_SRC_ALPHA,        BS_BLEND_ZERO);
+		break;
+
+		case 10: // NoAlphaAdd
+		_Render->r->setBlendModeEx(true, BS_BLEND_ONE,            BS_BLEND_ONE,             BS_BLEND_ZERO,             BS_BLEND_ONE);
+		break;
+
+		case 11: // ConstantAlpha
+		//GLSetBlend(true, GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA, GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA);
+		fail1("Not implemented!!!");
+		break;
+
+		case 12: // Screen
+		_Render->r->setBlendModeEx(true, BS_BLEND_INV_DEST_COLOR, BS_BLEND_ONE,             BS_BLEND_ONE,              BS_BLEND_ZERO);
+		break;
+
+		case 13: // BlendAdd
+		_Render->r->setBlendModeEx(true, BS_BLEND_ONE,            BS_BLEND_INV_SRC_ALPHA,   BS_BLEND_ONE,              BS_BLEND_INV_SRC_ALPHA);
+		break;
+
+		default:
+		fail2(std::to_string(_index).c_str());
+	}
 }

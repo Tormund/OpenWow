@@ -28,12 +28,7 @@ bool Sky_Model::Draw()
 	_Pipeline->Translate(_Camera->Position);
 	_Pipeline->Scale(2.0f);
 
-	_TechniquesMgr->m_MDX_GeometryPass->BindS();
-	_TechniquesMgr->m_MDX_GeometryPass->SetPVW();
-
 	m_MDX->draw();
-
-	_TechniquesMgr->m_MDX_GeometryPass->Unbind();
 
 	return true;
 }
