@@ -44,7 +44,6 @@ Model_Skin::Model_Skin(MDX* _model, File& _mF, File& _aF) : m_ModelObject(_model
 		pass->vertexStart = skins[m2SkinIndex].vertexStart;
 		pass->vertexCount = skins[m2SkinIndex].vertexCount;
 
-
 		// Get classes
 		M2Material& rf = m2Materials[skinBatch[j].materialIndex];
 
@@ -218,7 +217,7 @@ Model_Skin::~Model_Skin()
 void Model_Skin::Draw()
 {
 	_TechniquesMgr->m_Model->BindS();
-	_TechniquesMgr->m_Model->SetPV_W();
+	_TechniquesMgr->m_Model->SetPVW();
 
 	_Render->r->setGeometry(__geom);
 
@@ -229,8 +228,6 @@ void Model_Skin::Draw()
 		if (showGeosets[p->m2SkinIndex])
 		{
 			p->__material.Set();
-
-
 
 			// Color
 			if (p->__colorIndex != 65535)
@@ -248,6 +245,9 @@ void Model_Skin::Draw()
 
 			// Texture weight
 			_TechniquesMgr->m_Model->SetTextureWeight(m_ModelObject->m_TextureWeights[p->__textureWeight].getValue());
+
+			// Billboard
+			_TechniquesMgr->m_Model->SetBillboard(m_ModelObject->m_IsBillboard);
 
 			// Texture anim
 			_TechniquesMgr->m_Model->SetTextureAnimEnable(p->__textureAnims != -1);

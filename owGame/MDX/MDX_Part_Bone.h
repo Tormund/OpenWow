@@ -9,10 +9,25 @@ public:
 	void calcMatrix(MDX_Part_Bone* allbones, int anim, int time);
 
 private:
+	
+		struct BillboardType
+		{
+			enum List
+			{
+				BILLBOARD_DISABLED,
+				BILLBOARD_SPHERICAL,
+				BILLBOARD_CYLINDRICAL_X,
+				BILLBOARD_CYLINDRICAL_Y,
+				BILLBOARD_CYLINDRICAL_Z
+			};
+		};
+	
+private:
 	vec3 pivot, transPivot;
 	int16 parent;
 
-	bool billboard;
+	uint8 m_BillboardType;
+
 	Matrix4f m_TransformMatrix;
 	Matrix4f m_RotationMatrix;
 

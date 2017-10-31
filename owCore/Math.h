@@ -39,6 +39,8 @@ namespace Math
 	const float PiHalf = 1.570796327f;
 
 	const float Epsilon = 0.000001f;
+	const float Epsilon100 = 0.0001f;
+	const float Epsilon10000 = 0.01f;
 	const float ZeroEpsilon = 32.0f * MinPosFloat;  // Very small epsilon for checking against 0.0f
 	const float NaN = *(float*)&MaxUInt32;
 

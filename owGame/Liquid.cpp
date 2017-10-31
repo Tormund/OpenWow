@@ -23,8 +23,6 @@ struct MH2O_Instance
 {
 	__DBC_FOREIGN_KEY_ID(uint16, DBC_LiquidType, liquidType);
 	__DBC_FOREIGN_KEY_ID(uint16, DBC_LiquidObject, liquidObjectOrLVF);
-	//uint16 liquidType;
-	//uint16 liquidObjectOrLVF;
 
 	/*
 	float min;
@@ -474,7 +472,6 @@ void Liquid::draw()
 
 	_TechniquesMgr->m_Water->BindS();
 	_TechniquesMgr->m_Water->SetPVW();
-
 
 	size_t texidx = (size_t)(_EnvironmentManager->animtime / 60.0f) % textures.size();
 	_Render->r->setTexture(10, textures[texidx]->GetObj(), 0, 0);

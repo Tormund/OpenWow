@@ -44,6 +44,13 @@ public:
 		setFloat("gTextureWeight", _weight);
 	}
 
+
+	// Billboard
+	inline void SetBillboard(int _flag)
+	{
+		setInt("gBillboard", _flag);
+	}
+
 	// TextureAnim
 	inline void SetTextureAnimEnable(int _flag)
 	{

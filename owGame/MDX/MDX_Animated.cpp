@@ -23,9 +23,9 @@ bool MDX::isAnimated(File& f)
 			if (verts[i].bone_weights[b] > 0)
 			{
 				M2CompBone& bb = bo[verts[i].bone_indices[b]];
-				if (bb.translation.interpolation_type || bb.rotation.interpolation_type || bb.scale.interpolation_type || (bb.flags.spherical_billboard))
+				if (bb.translation.interpolation_type || bb.rotation.interpolation_type || bb.scale.interpolation_type || (bb.flags.spherical_billboard) || (bb.flags.cylindrical_billboard_lock_y) || (bb.flags.cylindrical_billboard_lock_z))
 				{
-					if (bb.flags.spherical_billboard)
+					if (bb.flags.spherical_billboard || bb.flags.cylindrical_billboard_lock_x || bb.flags.cylindrical_billboard_lock_y || bb.flags.cylindrical_billboard_lock_z)
 					{
 						m_IsBillboard = true;
 					}
@@ -214,8 +214,6 @@ void MDX::calcBones(uint32 _animationIndex, int time)
 
 void MDX::animate(uint32 _animationIndex)
 {
-	
-
 	m_AnimationIndex = _animationIndex;
 
 	if (animBones)

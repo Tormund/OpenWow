@@ -14,9 +14,14 @@ layout(location = 2) in vec2 tc;
 
 
 // Uniforms
-uniform mat4 gPV;
+uniform mat4 gProjection;
+uniform mat4 gView;
 uniform mat4 gWorld;
 
+// Billboard
+uniform bool gBillboard;
+
+// Texture animating
 uniform int gTextureAnimEnable;
 uniform mat4 gTextureAnimMatrix;
 
@@ -25,8 +30,32 @@ out VSOutput VSout;
 
 void main(void)
 {
-	gl_Position = gPV * gWorld * vec4(position, 1.0);
+	/*if (gBillboard)
+	{
+		mat4 VW = gView * gWorld;
+			
+		// Column 0:
+	    VW[0][0] = 1;
+		VW[0][1] = 0;
+		VW[0][2] = 0;
 
+		// Column 1:
+		VW[1][0] = 0;
+	    VW[1][1] = 1;
+		VW[1][2] = 0;
+
+		// Column 2:
+		VW[2][0] = 0;
+		VW[2][1] = 0;
+	    VW[2][2] = 1;
+		
+		gl_Position = gProjection * VW * vec4(position, 1.0);
+	}
+	else*/
+	//{
+		gl_Position = gProjection * gView * gWorld * vec4(position, 1.0);
+	//}
+	
 	VSout.position = (gWorld * vec4(position, 1.0)).xyz;
 	VSout.normal = (gWorld * vec4(normal, 0.0)).xyz;
 	
