@@ -3,7 +3,10 @@
 // General
 #include "File.h"
 
-FileLocation File::m_DefaultFileLocation = FL_Any;;
+// Additional
+#include "MPQArchiveStorage.h"
+
+FileLocation File::m_DefaultFileLocation = FL_Any;
 CRITICAL_SECTION File::cs;
 
 File::File() : BaseFile()
@@ -95,11 +98,6 @@ string File::FullPath()
 	return LocalFile::gamedata + path + name;
 }
 
-/*mpq_archive* File::MPQArchive()
-{
-	return nullptr;
-}*/
-
 void File::SetDefaultFileLocation(FileLocation _fileLocation)
 {
 	m_DefaultFileLocation = _fileLocation;
@@ -162,6 +160,8 @@ bool File::Open()
 
 	return result;
 }
+
+//--
 
 bool File::OpenLocalFile()
 {
@@ -235,7 +235,7 @@ bool File::OpenLocalFile()
 
 bool File::OpenMPQFile()
 {
-	MPQFileLocation location = GetFileLocation(Path_Name());
+	MPQFileLocation location = MPQArchiveStorage::GetFileLocation(Path_Name());
 
 	if (location.exists)
 	{

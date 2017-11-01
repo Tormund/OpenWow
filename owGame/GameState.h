@@ -2,7 +2,7 @@
 
 class InputListener;
 
-class GameState : public InputListener
+class GameState : public RenderableUIObject, public InputListener
 {
 public:
 	GameState() : m_inited(false) {};
@@ -13,7 +13,6 @@ public:
 	virtual void InputPhase(double t, double dt) = 0;
 	virtual void UpdatePhase(double t, double dt) = 0;
 	virtual void Render(double t, double dt) = 0;
-	virtual void RenderUI(double t, double dt) = 0;
 
 	bool IsInited() const { return m_inited; }
 

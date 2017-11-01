@@ -2,9 +2,12 @@
 
 // Common includes
 #include "../owRender/Common.h"
+#include "../owRender/RenderableUIObject.h"
+#include "../owRender/RenderableUIObjectCollection.h"
 
 // Render
 #include "../owRender/Camera.h"
+#include "../owRender/ConsoleOpenGL.h"
 #include "../owRender/FontsMgr.h"
 #include "../owRender/Material.h"
 #include "../owRender/Pipeline.h"

@@ -37,9 +37,9 @@ void main(void)
 	
 	if (gBlendMode == 0) // Opacity
 	{
+		if (resultColor.a < (128.0 / 255.0))
+			discard;
 		resultColor.a = 1.0;
-		//if (resultColor.a < (128.0 / 255.0))
-		//	discard;
 	}
 	else if(gBlendMode == 1)
 	{

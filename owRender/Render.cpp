@@ -57,10 +57,6 @@ void RenderGL::Set3D()
 
 void RenderGL::Set2D()
 {
-	//wglMakeCurrent(dc, glrc1);
-
-	//-----------
-
 	// Cull face
 	r->setCullMode(R_CullMode::RS_CULL_NONE);
 

@@ -5,13 +5,11 @@
 
 Input::Input()
 {
-	// Inits keystates
 	for (int i = 0; i < OW_KEYSCOUNT; i++)
 	{
 		keyState[i] = false;
 	}
 
-	// Inits mousebuttons states
 	for (int i = 0; i < OW_MOUSEBUTTONSCOUNT; i++)
 	{
 		mouseButtonState[i] = false;

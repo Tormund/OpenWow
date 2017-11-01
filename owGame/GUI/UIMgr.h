@@ -5,7 +5,8 @@ class InputListener;
 class UIElement;
 class UIWindow;
 
-class UIMgr : public Module, public InputListener {
+class UIMgr : public RenderableUIObject, public Module, public InputListener
+{
 	friend UIElement;
 	friend UIWindow;
 public:
@@ -13,12 +14,12 @@ public:
 
 	//
 
-	 void Attach(UIElement* _element);
+	void Attach(UIElement* _element);
 
 	// Common functional
 
-	 void Update();
-	 void RenderUI();
+	void Update();
+	void RenderUI() override;
 
 	// Focus
 

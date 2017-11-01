@@ -16,12 +16,14 @@ bool UIMgr::Init()
 
 	focusedElement = nullptr;
 
-	return true;
+	return RenderableUIObject::Register(500);
 }
 
 void UIMgr::Destroy()
 {
 	baseWindow->Delete();
+
+	RenderableUIObject::Unregister();
 }
 
 void UIMgr::Attach(UIElement* _element)

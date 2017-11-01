@@ -38,5 +38,3 @@ private:
 
 	static Input*            m_Input;
 };
-
-#define _Modules Modules::instance()

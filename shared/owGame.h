@@ -3,34 +3,12 @@
 //---------------------------------------------------------//
 //--                    Common                           --//
 //---------------------------------------------------------//
-#include "../owGame/common.h"
-
-#include "../owGame/ConsoleOpenGL.h"
+#include "../owGame/Engine.h"
+#include "../owGame/OpenGLAdapter.h"
 #include "../owGame/GameState.h"
 
-
-
-//---------------------------------------------------------//
-//--               World of warcraft                     --//
-//---------------------------------------------------------//
-
-// MDX
-#include "../owGame/MDX/MDX.h"
-#include "../owGame/MDX/ModelsManager.h"
-
-// WMO
-#include "../owGame/WMO/WMO.h"
-#include "../owGame/WMO/WMO_Manager.h"
-
-// Map
-#include "../owGame/Map/Map.h"
-
-// Environment
-#include "../owGame/Environment/DayNightCycle.h"
-#include "../owGame/Environment/MapSkies.h"
-#include "../owGame/Environment/EnvironmentManager.h"
-
-
+#include "../owGame/SceneNode.h"
+#include "../owGame/RenderableItem.h"
 
 //---------------------------------------------------------//
 //--                    Interface                        --//

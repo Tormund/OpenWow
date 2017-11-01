@@ -69,7 +69,7 @@
       <Filter>Techniques\UI</Filter>
     </ClCompile>
     <ClCompile Include="OpenGL.cpp">
-      <Filter>_NEW_RENDER</Filter>
+      <Filter>Render</Filter>
     </ClCompile>
     <ClCompile Include="Techniques\SimpleRenderGBuffer.cpp">
       <Filter>Techniques\Postprocess</Filter>
@@ -78,22 +78,31 @@
       <Filter>Techniques\Postprocess</Filter>
     </ClCompile>
     <ClCompile Include="RenderDevice.cpp">
-      <Filter>_NEW_RENDER</Filter>
+      <Filter>Render</Filter>
     </ClCompile>
     <ClCompile Include="GPUTimer.cpp">
-      <Filter>_NEW_RENDER</Filter>
+      <Filter>Render</Filter>
     </ClCompile>
     <ClCompile Include="Render.cpp">
-      <Filter>_NEW_RENDER</Filter>
+      <Filter>Render</Filter>
     </ClCompile>
     <ClCompile Include="RenderStorage.cpp">
-      <Filter>_NEW_RENDER</Filter>
+      <Filter>Render</Filter>
     </ClCompile>
     <ClCompile Include="Material.cpp">
-      <Filter>_NEW_RENDER</Filter>
+      <Filter>Render</Filter>
     </ClCompile>
     <ClCompile Include="Techniques\Model_Shader.cpp">
       <Filter>Techniques\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="ConsoleOpenGL.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderableUIObject.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderableUIObjectCollection.cpp">
+      <Filter>Render</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -167,7 +176,7 @@
       <Filter>Techniques\UI</Filter>
     </ClInclude>
     <ClInclude Include="OpenGL.h">
-      <Filter>_NEW_RENDER</Filter>
+      <Filter>Render</Filter>
     </ClInclude>
     <ClInclude Include="Techniques\UI_Color.h">
       <Filter>Techniques\UI</Filter>
@@ -179,28 +188,37 @@
       <Filter>Techniques\Postprocess</Filter>
     </ClInclude>
     <ClInclude Include="RenderDevice.h">
-      <Filter>_NEW_RENDER</Filter>
+      <Filter>Render</Filter>
     </ClInclude>
     <ClInclude Include="GPUTimer.h">
-      <Filter>_NEW_RENDER</Filter>
+      <Filter>Render</Filter>
     </ClInclude>
     <ClInclude Include="RenderEnums.h">
-      <Filter>_NEW_RENDER</Filter>
+      <Filter>Render</Filter>
     </ClInclude>
     <ClInclude Include="RenderTypes.h">
-      <Filter>_NEW_RENDER</Filter>
+      <Filter>Render</Filter>
     </ClInclude>
     <ClInclude Include="Render.h">
-      <Filter>_NEW_RENDER</Filter>
+      <Filter>Render</Filter>
     </ClInclude>
     <ClInclude Include="RenderStorage.h">
-      <Filter>_NEW_RENDER</Filter>
+      <Filter>Render</Filter>
     </ClInclude>
     <ClInclude Include="Material.h">
-      <Filter>_NEW_RENDER</Filter>
+      <Filter>Render</Filter>
     </ClInclude>
     <ClInclude Include="Techniques\Model_Shader.h">
       <Filter>Techniques\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsoleOpenGL.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderableUIObject.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderableUIObjectCollection.h">
+      <Filter>Render</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -234,11 +252,11 @@
     <Filter Include="Perfomance">
       <UniqueIdentifier>{2a08d97b-3b8b-4165-a0ac-b16dacad43da}</UniqueIdentifier>
     </Filter>
-    <Filter Include="_NEW_RENDER">
-      <UniqueIdentifier>{83e27261-1695-4e85-a7fe-099ead28f2d2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Techniques\Postprocess">
       <UniqueIdentifier>{3bbd68ab-1670-40fe-b4d5-46393853cd68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render">
+      <UniqueIdentifier>{83e27261-1695-4e85-a7fe-099ead28f2d2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

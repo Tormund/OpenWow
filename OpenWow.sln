@@ -29,7 +29,19 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "soil", "Externals\soil\soil
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "owCataclysm", "owCataclysm\owCataclysm.vcxproj", "{645797A4-A484-4D99-A130-88BD45546BD5}"
 	ProjectSection(ProjectDependencies) = postProject
+		{2893AD39-0E91-4249-B2B8-D58116F11DBD} = {2893AD39-0E91-4249-B2B8-D58116F11DBD}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "owGamePlatformWindows", "owGamePlatformWindows\owGamePlatformWindows.vcxproj", "{2893AD39-0E91-4249-B2B8-D58116F11DBD}"
+	ProjectSection(ProjectDependencies) = postProject
 		{25E4827B-D0DD-4758-B70F-DEA7217E7E70} = {25E4827B-D0DD-4758-B70F-DEA7217E7E70}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "owWoW", "owWoW\owWoW.vcxproj", "{C29C7FEE-86D9-4EEF-965F-68B89C516FAE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A4E6F769-0036-4128-A409-495D9207F587} = {A4E6F769-0036-4128-A409-495D9207F587}
+		{25E4827B-D0DD-4758-B70F-DEA7217E7E70} = {25E4827B-D0DD-4758-B70F-DEA7217E7E70}
+		{E722B6DA-F485-4EAA-8E72-205CE3D4CEB5} = {E722B6DA-F485-4EAA-8E72-205CE3D4CEB5}
 	EndProjectSection
 EndProject
 Global
@@ -88,6 +100,22 @@ Global
 		{645797A4-A484-4D99-A130-88BD45546BD5}.Release|x64.Build.0 = Release|x64
 		{645797A4-A484-4D99-A130-88BD45546BD5}.Release|x86.ActiveCfg = Release|Win32
 		{645797A4-A484-4D99-A130-88BD45546BD5}.Release|x86.Build.0 = Release|Win32
+		{2893AD39-0E91-4249-B2B8-D58116F11DBD}.Debug|x64.ActiveCfg = Debug|x64
+		{2893AD39-0E91-4249-B2B8-D58116F11DBD}.Debug|x64.Build.0 = Debug|x64
+		{2893AD39-0E91-4249-B2B8-D58116F11DBD}.Debug|x86.ActiveCfg = Debug|Win32
+		{2893AD39-0E91-4249-B2B8-D58116F11DBD}.Debug|x86.Build.0 = Debug|Win32
+		{2893AD39-0E91-4249-B2B8-D58116F11DBD}.Release|x64.ActiveCfg = Release|x64
+		{2893AD39-0E91-4249-B2B8-D58116F11DBD}.Release|x64.Build.0 = Release|x64
+		{2893AD39-0E91-4249-B2B8-D58116F11DBD}.Release|x86.ActiveCfg = Release|Win32
+		{2893AD39-0E91-4249-B2B8-D58116F11DBD}.Release|x86.Build.0 = Release|Win32
+		{C29C7FEE-86D9-4EEF-965F-68B89C516FAE}.Debug|x64.ActiveCfg = Debug|x64
+		{C29C7FEE-86D9-4EEF-965F-68B89C516FAE}.Debug|x64.Build.0 = Debug|x64
+		{C29C7FEE-86D9-4EEF-965F-68B89C516FAE}.Debug|x86.ActiveCfg = Debug|Win32
+		{C29C7FEE-86D9-4EEF-965F-68B89C516FAE}.Debug|x86.Build.0 = Debug|Win32
+		{C29C7FEE-86D9-4EEF-965F-68B89C516FAE}.Release|x64.ActiveCfg = Release|x64
+		{C29C7FEE-86D9-4EEF-965F-68B89C516FAE}.Release|x64.Build.0 = Release|x64
+		{C29C7FEE-86D9-4EEF-965F-68B89C516FAE}.Release|x86.ActiveCfg = Release|Win32
+		{C29C7FEE-86D9-4EEF-965F-68B89C516FAE}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

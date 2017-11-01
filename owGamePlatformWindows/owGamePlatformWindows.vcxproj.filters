@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="..\shared\owGamePlatformWindows.h" />
+    <ClInclude Include="DebugOutput_ConsoleWindows.h" />
+    <ClInclude Include="DebugOutput_Log.h" />
+    <ClInclude Include="OpenGLAdapter_GLFW.h" />
+    <ClInclude Include="PlatformWindows.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="DebugOutput_ConsoleWindows.cpp" />
+    <ClCompile Include="DebugOutput_Log.cpp" />
+    <ClCompile Include="OpenGLAdapter_GLFW.cpp" />
+    <ClCompile Include="PlatformWindows.cpp" />
+  </ItemGroup>
+</Project>

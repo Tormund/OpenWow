@@ -77,7 +77,7 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize)
 	if (!(face->face_flags & FT_FACE_FLAG_SCALABLE) || !(face->face_flags & FT_FACE_FLAG_HORIZONTAL))
 	{
 		Modules::log().Error("FontsMgr[%s]: Error while loading font. Error setting font size.", f.Path_Name().c_str());
-		
+
 		// Unload
 		FT_Done_Face(face);
 		FT_Done_FreeType(ftLibrary);
@@ -129,8 +129,8 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize)
 
 	// Step 3: Generation of the actual texture //
 
-	CArgb* image = new CArgb[imageHeight * imageWidth];
-	memset(image, 0x00, imageHeight * imageWidth * sizeof(CArgb));
+	uint32* image = new uint32[imageHeight * imageWidth];
+	memset(image, 0x00, imageHeight * imageWidth * sizeof(uint32));
 
 	// These are the cameraPosition at which to draw the next glyph
 	size_t x = 0;
@@ -165,12 +165,16 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize)
 		fontVertices.push_back({vec2(0.0f,          charHeight), vec2(texX1, texY2)});
 		fontVertices.push_back({vec2(charWidth[ch], 0.0f),       vec2(texX2, texY1)});
 		fontVertices.push_back({vec2(charWidth[ch], charHeight), vec2(texX2, texY2)});
-		
+
 		for (uint32 row = 0; row < face->glyph->bitmap.rows; ++row)
 		{
 			for (uint32 pixel = 0; pixel < face->glyph->bitmap.width; ++pixel)
 			{
-				image[(x + face->glyph->bitmap_left + pixel) + (y - face->glyph->bitmap_top + row) * imageWidth].a = face->glyph->bitmap.buffer[pixel + row * face->glyph->bitmap.pitch];
+				uint8* p = (uint8*)&(image[(x + face->glyph->bitmap_left + pixel) + (y - face->glyph->bitmap_top + row) * imageWidth]);
+				p[0] = 0;
+				p[1] = 0;
+				p[2] = 0;
+				p[3] = (face->glyph->bitmap.buffer[pixel + row * face->glyph->bitmap.pitch]);
 			}
 		}
 

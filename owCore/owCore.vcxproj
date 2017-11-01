@@ -22,6 +22,7 @@
     <ClCompile Include="BaseFile.cpp" />
     <ClCompile Include="ContainerAssync.cpp" />
     <ClCompile Include="File.cpp" />
+    <ClCompile Include="MPQArchiveStorage.cpp" />
     <ClCompile Include="MPQFile.cpp" />
     <ClCompile Include="Primitives.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -48,7 +49,6 @@
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="UtilsConvert.cpp" />
-    <ClCompile Include="WowChunkUtils.cpp" />
     <ClCompile Include="XMLFile.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -59,6 +59,7 @@
     <ClInclude Include="InputKeys.h" />
     <ClInclude Include="Macros.h" />
     <ClInclude Include="Math.h" />
+    <ClInclude Include="MPQArchiveStorage.h" />
     <ClInclude Include="MPQFile.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="Primitives.h">
@@ -95,10 +96,6 @@
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="Utils.h" />
-    <ClInclude Include="WowChunkUtils.h" />
-    <ClInclude Include="WowConsts.h" />
-    <ClInclude Include="WowTime.h" />
-    <ClInclude Include="WowTypes.h" />
     <ClInclude Include="XMLFile.h" />
   </ItemGroup>
   <ItemGroup>

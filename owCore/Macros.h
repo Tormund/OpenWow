@@ -22,13 +22,13 @@ static _className* instance()\
 	return &instance;\
 }
 
-/*#define CLASS_INSTANCE_API(_className, _dllApi)\
+#define CLASS_INSTANCE_API(_className, _dllApi)\
 public:\
 static _dllApi _className* instance()\
 {\
 	static _className instance;\
 	return &instance;\
-}*/
+}
 
 #define ERASE_VECTOR(_name) \
 for (auto it = _name.begin(); it != _name.end();) \

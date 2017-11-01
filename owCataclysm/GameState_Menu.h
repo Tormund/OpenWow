@@ -1,6 +1,6 @@
 #pragma once
 
-#include "world.h"
+#include "World.h"
 
 enum Commands2
 {
@@ -21,7 +21,7 @@ public:
 	void InputPhase(double t, double dt);
 	void UpdatePhase(double t, double dt);
 	void Render(double t, double dt);
-	void RenderUI(double t, double dt);
+	void RenderUI() override;
 
 	//
 

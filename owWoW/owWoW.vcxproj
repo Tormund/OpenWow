@@ -1,0 +1,275 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Common\WowChunkUtils.cpp" />
+    <ClCompile Include="DBC__Storage.cpp" />
+    <ClCompile Include="Environment\DayNightCycle.cpp" />
+    <ClCompile Include="Environment\DayNightPhase.cpp" />
+    <ClCompile Include="Environment\EnvironmentManager.cpp" />
+    <ClCompile Include="Environment\MapSkies.cpp" />
+    <ClCompile Include="Environment\Sky.cpp" />
+    <ClCompile Include="Liquid.cpp" />
+    <ClCompile Include="Map\Map.cpp" />
+    <ClCompile Include="Map\Map_Chunk.cpp" />
+    <ClCompile Include="Map\Map_Tile.cpp" />
+    <ClCompile Include="Map\Model_Instance.cpp" />
+    <ClCompile Include="Map\WMO_Instance.cpp" />
+    <ClCompile Include="MDX\Animated.cpp" />
+    <ClCompile Include="MDX\MDX.cpp" />
+    <ClCompile Include="MDX\MDX_Animated.cpp" />
+    <ClCompile Include="MDX\MDX_Part_Bone.cpp" />
+    <ClCompile Include="MDX\MDX_Part_Camera.cpp" />
+    <ClCompile Include="MDX\MDX_Part_Color.cpp" />
+    <ClCompile Include="MDX\MDX_Part_Light.cpp" />
+    <ClCompile Include="MDX\MDX_Part_TextureAnim.cpp" />
+    <ClCompile Include="MDX\MDX_Part_TextureWeight.cpp" />
+    <ClCompile Include="MDX\ModelsManager.cpp" />
+    <ClCompile Include="MDX\Model_RenderPass.cpp" />
+    <ClCompile Include="MDX\Model_Skin.cpp" />
+    <ClCompile Include="MDX\Model_Static.cpp" />
+    <ClCompile Include="MDX\Particle.cpp" />
+    <ClCompile Include="MDX\ParticleEmitters.cpp" />
+    <ClCompile Include="MDX\ParticleSystem.cpp" />
+    <ClCompile Include="MDX\RibbonEmitter.cpp" />
+    <ClCompile Include="MDX\Sky_Model.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="WMO\DoodadInstance.cpp" />
+    <ClCompile Include="WMO\WMO.cpp" />
+    <ClCompile Include="WMO\WMO_Fog.cpp" />
+    <ClCompile Include="WMO\WMO_Group.cpp" />
+    <ClCompile Include="WMO\WMO_Light.cpp" />
+    <ClCompile Include="WMO\WMO_Manager.cpp" />
+    <ClCompile Include="WMO\WMO_Material.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\shared\owWoW.h" />
+    <ClInclude Include="common.h" />
+    <ClInclude Include="Common\WowChunkUtils.h" />
+    <ClInclude Include="Common\WowConsts.h" />
+    <ClInclude Include="Common\WowTime.h" />
+    <ClInclude Include="Common\WowTypes.h" />
+    <ClInclude Include="DBC_AreaTable.h" />
+    <ClInclude Include="DBC_GroundEffectDoodad.h" />
+    <ClInclude Include="DBC_GroundEffectTexture.h" />
+    <ClInclude Include="DBC_Light.h" />
+    <ClInclude Include="DBC_LightFloatBand.h" />
+    <ClInclude Include="DBC_LightIntBand.h" />
+    <ClInclude Include="DBC_LightParams.h" />
+    <ClInclude Include="DBC_LightSkyBox.h" />
+    <ClInclude Include="DBC_LiquidMaterial.h" />
+    <ClInclude Include="DBC_LiquidObject.h" />
+    <ClInclude Include="DBC_LiquidType.h" />
+    <ClInclude Include="DBC_LoadingScreen.h" />
+    <ClInclude Include="DBC_Map.h" />
+    <ClInclude Include="DBC_WMOAreaTable.h" />
+    <ClInclude Include="DBC__File.h" />
+    <ClInclude Include="DBC__Storage.h" />
+    <ClInclude Include="Environment\DayNightCycle.h" />
+    <ClInclude Include="Environment\DayNightPhase.h" />
+    <ClInclude Include="Environment\EnvironmentManager.h" />
+    <ClInclude Include="Environment\MapSkies.h" />
+    <ClInclude Include="Environment\Sky.h" />
+    <ClInclude Include="Liquid.h" />
+    <ClInclude Include="Map\Map.h" />
+    <ClInclude Include="Map\Map_Chunk.h" />
+    <ClInclude Include="Map\Map_Chunk_Types.h" />
+    <ClInclude Include="Map\Map_Tile.h" />
+    <ClInclude Include="Map\Model_Instance.h" />
+    <ClInclude Include="Map\WMO_Instance.h" />
+    <ClInclude Include="MDX\Animated.h" />
+    <ClInclude Include="MDX\Animated_Types.h" />
+    <ClInclude Include="MDX\MDX.h" />
+    <ClInclude Include="MDX\MDX_Headers.h" />
+    <ClInclude Include="MDX\MDX_Part_Bone.h" />
+    <ClInclude Include="MDX\MDX_Part_Camera.h" />
+    <ClInclude Include="MDX\MDX_Part_Color.h" />
+    <ClInclude Include="MDX\MDX_Part_Light.h" />
+    <ClInclude Include="MDX\MDX_Part_TextureAnim.h" />
+    <ClInclude Include="MDX\MDX_Part_TextureWeight.h" />
+    <ClInclude Include="MDX\ModelsManager.h" />
+    <ClInclude Include="MDX\Model_RenderPass.h" />
+    <ClInclude Include="MDX\Model_Skin.h" />
+    <ClInclude Include="MDX\Particle.h" />
+    <ClInclude Include="MDX\ParticleSystem.h" />
+    <ClInclude Include="MDX\RibbonEmitter.h" />
+    <ClInclude Include="MDX\Sky_Model.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="WMO\DoodadInstance.h" />
+    <ClInclude Include="WMO\WMO.h" />
+    <ClInclude Include="WMO\WMO_Fog.h" />
+    <ClInclude Include="WMO\WMO_Group.h" />
+    <ClInclude Include="WMO\WMO_Light.h" />
+    <ClInclude Include="WMO\WMO_Manager.h" />
+    <ClInclude Include="WMO\WMO_Material.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DBC__File.inl" />
+    <None Include="Map\Map.inl" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{C29C7FEE-86D9-4EEF-965F-68B89C516FAE}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>owWoW</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)\bin_x64\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)\bin_x64\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;OW_GAME_DLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\Externals\glew-2.1.0\include;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <SDLCheck>false</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\bin\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;OW_GAME_DLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>false</SDLCheck>
+      <AdditionalIncludeDirectories>..\Externals\glew-2.1.0\include;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\bin_x64\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;OW_GAME_DLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\Externals\glew-2.1.0\include;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <SDLCheck>false</SDLCheck>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\bin\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;OW_GAME_DLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>false</SDLCheck>
+      <AdditionalIncludeDirectories>..\Externals\glew-2.1.0\include;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\bin_x64\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

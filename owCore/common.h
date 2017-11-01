@@ -31,15 +31,9 @@ using namespace std;
 #include "DebugOutput.h"
 #include "Random.h"
 
-// Wow types
-#include "WowTypes.h"
-#include "WowConsts.h"
-#include "WowTime.h"
-
 // Additional types
 #include "Function.h"
 //#include "Timer.h"
 
 // Utils
 #include "Utils.h"
-#include "WowChunkUtils.h"

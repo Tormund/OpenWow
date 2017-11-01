@@ -3,16 +3,12 @@
 // General
 #include "GameState_Menu.h"
 
-// Additional
-#include "GLFWBackend.h"
-#include "Engine.h"
-
 bool GameState_Menu::Init()
 {
-	Modules::input().AddInputListener(this);
-
 	_ModelsMgr->Init();
 	_WMOsMgr->Init();
+
+	OpenDBs();
 
 	enableFreeCamera = false;
 	cameraSprint = false;
@@ -78,7 +74,8 @@ bool GameState_Menu::Init()
 		mapsY[record->Get_ExpansionID()] += mapsYdelta;
 	}
 
-	return true;
+	Modules::input().AddInputListener(this);
+	return RenderableUIObject::Register(100);
 }
 
 void GameState_Menu::Destroy()
@@ -100,16 +97,16 @@ void GameState_Menu::InputPhase(double t, double dt)
 	if (cameraSprint)
 		speed *= 3.0f;
 
-	if (Modules::input().IsKeyPressed(GLFW_KEY_W))
+	if (Modules::input().IsKeyPressed(OW_KEY_W))
 		_World->mainCamera->ProcessKeyboard(FORWARD, speed);
 
-	if (Modules::input().IsKeyPressed(GLFW_KEY_S))
+	if (Modules::input().IsKeyPressed(OW_KEY_S))
 		_World->mainCamera->ProcessKeyboard(BACKWARD, speed);
 
-	if (Modules::input().IsKeyPressed(GLFW_KEY_A))
+	if (Modules::input().IsKeyPressed(OW_KEY_A))
 		_World->mainCamera->ProcessKeyboard(LEFT, speed);
 
-	if (Modules::input().IsKeyPressed(GLFW_KEY_D))
+	if (Modules::input().IsKeyPressed(OW_KEY_D))
 		_World->mainCamera->ProcessKeyboard(RIGHT, speed);
 }
 
@@ -141,7 +138,7 @@ void GameState_Menu::Render(double t, double dt)
 	}
 }
 
-void GameState_Menu::RenderUI(double t, double dt)
+void GameState_Menu::RenderUI()
 {
 	//if (_World->loading)
 	//{
@@ -308,7 +305,7 @@ MOUSE_MOVED_(GameState_Menu)
 
 		_World->mainCamera->ProcessMouseMovement(mouseDelta.x, -mouseDelta.y);
 
-		_GLFW->SetMousePosition(lastMousePos);
+		_Engine->GetAdapter()->SetMousePosition(lastMousePos);
 	}
 }
 
@@ -341,11 +338,11 @@ MOUSE_PRESSED(GameState_Menu)
 		return true;
 	}
 
-	if (cmd == CMD_IN_WORLD2 && _button == GLFW_MOUSE_BUTTON_LEFT)
+	if (cmd == CMD_IN_WORLD2 && _button == OW_MOUSE_BUTTON_LEFT)
 	{
 		enableFreeCamera = true;
 		lastMousePos = _mousePos;
-		_GLFW->HideCursor();
+		_Engine->GetAdapter()->HideCursor();
 		return true;
 	}
 
@@ -354,11 +351,11 @@ MOUSE_PRESSED(GameState_Menu)
 
 MOUSE_RELEASE(GameState_Menu)
 {
-	if (cmd == CMD_IN_WORLD2 && _button == GLFW_MOUSE_BUTTON_LEFT)
+	if (cmd == CMD_IN_WORLD2 && _button == OW_MOUSE_BUTTON_LEFT)
 	{
 		enableFreeCamera = false;
 		lastMousePos = VECTOR_ZERO;
-		_GLFW->ShowCursor();
+		_Engine->GetAdapter()->ShowCursor();
 		return true;
 	}
 
@@ -372,7 +369,7 @@ MOUSE_WHEEL(GameState_Menu)
 
 KEYBD_PRESSED(GameState_Menu)
 {
-	if (_key == GLFW_KEY_ESCAPE)
+	if (_key == OW_KEY_ESCAPE)
 	{
 		if (cmd == CMD_SELECT2)
 		{
@@ -390,35 +387,35 @@ KEYBD_PRESSED(GameState_Menu)
 		}
 	}
 
-	if (_key == GLFW_KEY_X)
+	if (_key == OW_KEY_X)
 	{
 		cameraSprint = true;
 		return true;
 	}
 
-	if (_key == GLFW_KEY_Z)
+	if (_key == OW_KEY_Z)
 	{
 		cameraSlow = true;
 		return true;
 	}
 
-	if (_key == GLFW_KEY_KP_1)
+	if (_key == OW_KEY_KP_1)
 	{
 		Modules::config().draw_map_chunk = !Modules::config().draw_map_chunk;
 		return true;
 	}
-	if (_key == GLFW_KEY_KP_2)
+	if (_key == OW_KEY_KP_2)
 	{
 		Modules::config().draw_map_wmo = !Modules::config().draw_map_wmo;
 		return true;
 	}
-	if (_key == GLFW_KEY_KP_3)
+	if (_key == OW_KEY_KP_3)
 	{
 		Modules::config().draw_map_wmo_doodads = !Modules::config().draw_map_wmo_doodads;
 		return true;
 	}
 
-	if (_key == GLFW_KEY_KP_4)
+	if (_key == OW_KEY_KP_4)
 	{
 		Modules::config().draw_map_mdx = !Modules::config().draw_map_mdx;
 		return true;
@@ -426,39 +423,39 @@ KEYBD_PRESSED(GameState_Menu)
 
 
 
-	if (_key == GLFW_KEY_KP_7)
+	if (_key == OW_KEY_KP_7)
 	{
 		Modules::config().disable_pipeline = !Modules::config().disable_pipeline;
 		return true;
 	}
 
 
-	if (_key == GLFW_KEY_C)
+	if (_key == OW_KEY_C)
 	{
 		Modules::config().enableMCCV = !Modules::config().enableMCCV;
 		return true;
 	}
 
-	if (_key == GLFW_KEY_V)
+	if (_key == OW_KEY_V)
 	{
 		Modules::config().enableMCLV = !Modules::config().enableMCLV;
 		return true;
 	}
 
-	if (_key == GLFW_KEY_H)
+	if (_key == OW_KEY_H)
 	{
 		Modules::config().drawhighres = !Modules::config().drawhighres;
 		return true;
 	}
 
-	if (_key == GLFW_KEY_F)
+	if (_key == OW_KEY_F)
 	{
 		Modules::config().drawfog = !Modules::config().drawfog;
 		return true;
 	}
 
 	// minimap
-	if (_key == GLFW_KEY_M)
+	if (_key == OW_KEY_M)
 	{
 		minimapActive = !minimapActive;
 		return true;
@@ -469,13 +466,13 @@ KEYBD_PRESSED(GameState_Menu)
 
 KEYBD_RELEASE(GameState_Menu)
 {
-	if (_key == GLFW_KEY_X)
+	if (_key == OW_KEY_X)
 	{
 		cameraSprint = false;
 		return true;
 	}
 
-	if (_key == GLFW_KEY_Z)
+	if (_key == OW_KEY_Z)
 	{
 		cameraSlow = false;
 		return true;
