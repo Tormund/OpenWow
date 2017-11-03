@@ -3,12 +3,12 @@
 // General
 #include "Console.h"
 
-
 void Test(vector<string>& _args)
 {
 	Modules::log().Print("00000000Args size[%d]", _args.size());
-	for (auto it = _args.begin(); it != _args.end(); ++it)
-		Modules::log().Print("000000000Arg [%s]", (*it).c_str());
+
+	for (auto it : _args)
+		Modules::log().Print("000000000Arg [%s]", it.c_str());
 }
 
 void Test1(int _argInt)
@@ -34,7 +34,7 @@ void Console::AddCommonCommands()
 	//ADDCONSOLECOMMAND("test2_with_0", Test2);
 }
 
-bool Console::AddConsoleCommand(ConsoleCommandBase* _command)
+bool Console::AddConsoleCommand(ConsoleCommand* _command)
 {
 	if (_command == nullptr)
 	{
@@ -49,9 +49,9 @@ bool Console::AddConsoleCommand(ConsoleCommandBase* _command)
 	}
 
 	// Already exists
-	for (auto it = consoleCommands.begin(); it != consoleCommands.end(); ++it)
+	for (auto it : consoleCommands)
 	{
-		if ((*it)->GetName() == _command->GetName())
+		if (it->GetName() == _command->GetName())
 		{
 			Modules::log().Error("Command [%s] already exists.", _command->GetName().c_str());
 			return false;
@@ -64,18 +64,18 @@ bool Console::AddConsoleCommand(ConsoleCommandBase* _command)
 	return true;
 }
 
-ConsoleCommandBase* Console::GetConsoleCommandByName(cstring _commandName)
+ConsoleCommand* Console::GetConsoleCommandByName(cstring _commandName)
 {
 	if (_commandName.empty())
 	{
 		return nullptr;
 	}
 
-	for (auto it = consoleCommands.begin(); it != consoleCommands.end(); ++it)
+	for (auto it : consoleCommands)
 	{
-		if ((*it)->GetName() == _commandName)
+		if (it->GetName() == _commandName)
 		{
-			return *it;
+			return it;
 		}
 	}
 
@@ -92,15 +92,15 @@ Console::ConsoleCommands Console::GetConsoleCommandHelp(string _input)
 	}
 
 	Console::ConsoleCommands commands;
-	for (auto it = consoleCommands.begin(); it != consoleCommands.end(); ++it)
+	for (auto it : consoleCommands)
 	{
-		auto consoleCommandName = (*it)->GetName();
+		auto consoleCommandName = it->GetName();
 
 		consoleCommandName = consoleCommandName.substr(0, _input.length());
 
 		if (consoleCommandName == _input)
 		{
-			commands.push_back(*it);
+			commands.push_back(it);
 		}
 
 		if (commands.size() == consoleCommandHelpMaxSize)
@@ -138,7 +138,7 @@ bool Console::ProcessConsoleCommand(string _line)
 	}
 
 	// Find command in array
-	ConsoleCommandBase* consoleCommand = GetConsoleCommandByName(command);
+	ConsoleCommand* consoleCommand = GetConsoleCommandByName(command);
 
 	if (consoleCommand == nullptr)
 	{

@@ -52,11 +52,11 @@ private:
 		}
 		else
 		{
-			for (auto it = objects.begin(); it != objects.end(); ++it)
+			for (auto it : objects)
 			{
-				if (it->second == item)
+				if (it.second == item)
 				{
-					itemName = it->first;
+					itemName = it.first;
 					break;
 				}
 			}

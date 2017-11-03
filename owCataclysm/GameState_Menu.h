@@ -1,14 +1,9 @@
 #pragma once
 
-#include "World.h"
-
 enum Commands2
 {
 	CMD_NONE2,
-	CMD_SELECT2,
-	CMD_LOAD_WORLD2,
-	CMD_DO_LOAD_WORLD2,
-	CMD_IN_WORLD2
+	CMD_SELECT2
 };
 
 class GameState_Menu : public GameState
@@ -18,49 +13,43 @@ public:
 
 	bool Init();
 	void Destroy();
-	void InputPhase(double t, double dt);
-	void UpdatePhase(double t, double dt);
+    void InputPhase(double t, double dt);
+	void Update(double t, double dt) override;
 	void Render(double t, double dt);
 	void RenderUI() override;
 
 	//
 
-	void OnBtn(DBC_MapRecord* _e)
-	{
-		Modules::log().Green("Load level %s [%d]", _e->Get_Directory(), _e->Get_ID());
-
-		_Map->Load_WDT(_e);
-		cmd = CMD_SELECT2;
-		window->Detach();
-	}
+    void OnBtn(DBC_MapRecord* _e);
 
 	bool LoadWorld(cvec3 _pos);
 
 	//
 
-	V_MOUSE_MOVED;
-	V_MOUSE_PRESSED;
-	V_MOUSE_RELEASE;
-	V_MOUSE_WHEEL;
-	V_KEYBD_PRESSED;
-	V_KEYBD_RELEASE;
-	V_CHAR_INPUT{return false; }
+    V_MOUSE_MOVED;
+    V_MOUSE_PRESSED;
+    V_MOUSE_RELEASE;
+
+    V_KEYBD_PRESSED;
 
 private:
-	// Camera moving
-	bool enableFreeCamera;
-	bool cameraSprint;
-	bool cameraSlow;
-	vec2 lastMousePos;
-
 	UIWindow* window;
+    Texture* m_MinimapTexture;
+    Image* m_MinimapImage;
+    UIElement* m_MinimapUI;
 
 	Commands2 cmd;
-
-	bool minimapActive;
 
 	MDX *backgroundModel;
 	float mt;
 
 	void randBackground();
+
+
+
+    // Camera moving
+    bool enableFreeCamera;
+    bool cameraSprint;
+    bool cameraSlow;
+    vec2 lastMousePos;
 };

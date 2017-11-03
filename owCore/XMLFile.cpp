@@ -14,11 +14,11 @@ XMLNode::XMLNode(cstring _name, XMLNode* _parent)
 
 void XMLNode::DeleteChilds()
 {
-	for (auto it = childs.begin(); it != childs.end(); ++it)
-		if ((*it) != nullptr)
+	for (auto it : childs)
+		if (it != nullptr)
 		{
-			(*it)->DeleteAll();
-			delete *it;
+			it->DeleteAll();
+			delete it;
 		}
 
 	childs.clear();
@@ -151,8 +151,8 @@ void XMLFile::Print(XMLNode* _startNode, int _level) const
 	line += spaces + '<' + _startNode->GetName() + '>';
 	//Modules::log().Print(line);
 
-	//for (auto it = _startNode->GetData().begin(); it != _startNode->GetData().end(); ++it)
-	//	Modules::log().Print(spaces + "[" + (*it).first + "=\"" + (*it).second + "\"]");
+	//for (auto it : _startNode->GetData())
+	//	Modules::log().Print(spaces + "[" + it.first + "=\"" + it.second + "\"]");
 
 	Modules::log().Print("");
 

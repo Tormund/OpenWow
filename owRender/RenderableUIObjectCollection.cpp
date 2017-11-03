@@ -3,8 +3,8 @@
 // General
 #include "RenderableUIObjectCollection.h"
 
-vector<RenderableUIObject*> RenderableUIObjectCollection::m_UIObjects;
-bool                        RenderableUIObjectCollection::m_UIObjectsNeedSort;
+vector<RenderableUIObject*> RenderableUIObjectCollection::m_Objects;
+bool                        RenderableUIObjectCollection::m_ObjectsNeedSort;
 
 struct RenderableUIObjectCompare
 {
@@ -16,25 +16,26 @@ struct RenderableUIObjectCompare
 
 bool RenderableUIObjectCollection::RegisterObject(RenderableUIObject* _uiObject)
 {
-	m_UIObjects.push_back(_uiObject);
-	m_UIObjectsNeedSort = true;
+	m_Objects.push_back(_uiObject);
+	m_ObjectsNeedSort = true;
 
 	return true;
 }
 
 void RenderableUIObjectCollection::UnregisterObject(RenderableUIObject * _uiObject)
 {
+    m_Objects.erase(std::remove(m_Objects.begin(), m_Objects.end(), _uiObject), m_Objects.end());
 }
 
 void RenderableUIObjectCollection::RenderUI()
 {
-	if (m_UIObjectsNeedSort)
+	if (m_ObjectsNeedSort)
 	{
-		std::sort(m_UIObjects.begin(), m_UIObjects.end(), RenderableUIObjectCompare());
-		m_UIObjectsNeedSort = false;
+		std::sort(m_Objects.begin(), m_Objects.end(), RenderableUIObjectCompare());
+		m_ObjectsNeedSort = false;
 	}
 
-	for (auto it : m_UIObjects)
+	for (auto it : m_Objects)
 	{
 		it->RenderUI();
 	}

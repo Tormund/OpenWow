@@ -11,6 +11,6 @@ public:
 	static void RenderUI();
 
 private:
-	static vector<RenderableUIObject*>   m_UIObjects;
-	static bool                          m_UIObjectsNeedSort;
+	static vector<RenderableUIObject*>   m_Objects;
+	static bool                          m_ObjectsNeedSort;
 };

@@ -32,3 +32,4 @@
 // Input
 
 #include "../owCore/Input.h"
+#include "../owCore/InputListener.h"

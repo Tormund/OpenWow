@@ -31,19 +31,24 @@ Camera::Camera(float posX, float posY, float posZ, float upX, float upY, float u
 	Update();
 }
 
-void Camera::Update()
+void Camera::Update(bool _dontUseAngles)
 {
-	// Calculate the new Front vector
-	vec3 front;
-	/*front.x = -(sinf(degToRad(Roll)) * cos(degToRad(Pitch)));
-	front.y = sin(degToRad(Pitch));
-	front.z = -(cosf(degToRad(Roll)) * cos(degToRad(Pitch)));*/
+    if (!_dontUseAngles)
+    {
+        // Calculate the new Front vector
+        vec3 front;
+        /*front.x = -(sinf(degToRad(Roll)) * cos(degToRad(Pitch)));
+        front.y = sin(degToRad(Pitch));
+        front.z = -(cosf(degToRad(Roll)) * cos(degToRad(Pitch)));*/
 
-	front.x = cos(degToRad(Roll)) * cos(degToRad(Pitch));
-	front.y = sin(degToRad(Pitch));
-	front.z = sin(degToRad(Roll)) * cos(degToRad(Pitch));
+        front.x = cos(degToRad(Roll)) * cos(degToRad(Pitch));
+        front.y = sin(degToRad(Pitch));
+        front.z = sin(degToRad(Roll)) * cos(degToRad(Pitch));
 
-	Direction = front.normalized();
+        Direction = front.normalized();
+    }
+
+    Direction = Direction.normalized();
 
 	// Also re-calculate the Right and Up vector
 	CameraRight = Direction.cross(Vec3f(0.0f, 1.0f, 0.0f)).normalized();  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.

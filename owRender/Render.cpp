@@ -36,6 +36,14 @@ bool RenderGL::Init()
 
 	_RenderStorage->Init();
 
+    rb = r->createRenderBuffer(Modules::config().windowSizeX, Modules::config().windowSizeY, R_TextureFormats::RGBA16F, true, 4, 4);
+
+
+    // Main game camera
+    mainCamera = new Camera;
+    mainCamera->setupViewParams(45.0f, Modules::config().aspectRatio, 2.0f, 15000.0f);
+    _PipelineGlobal->SetCamera(mainCamera);
+
 	return true;
 }
 

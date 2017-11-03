@@ -130,9 +130,9 @@ void EngineLog::PushMessageToAllDebugOutputs(const char* _message, int _type, va
 		return;
 	}
 
-	for (auto it = debugOutputs.begin(); it != debugOutputs.end(); ++it)
+	for (auto it : debugOutputs)
 	{
-		(*it)->PushMessage(static_cast<DebugOutput::DebugMessageType>(_type), _message, _vaList);
+		it->PushMessage(static_cast<DebugOutput::DebugMessageType>(_type), _message, _vaList);
 	}
 
 	LeaveCriticalSection(&debugCS); // THREAD

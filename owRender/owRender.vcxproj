@@ -190,21 +190,11 @@
     <ClCompile Include="Pipeline.cpp" />
     <ClCompile Include="Render.cpp" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="Techniques\Debug_GeometryPass.cpp" />
     <ClCompile Include="Techniques\ds_dir_light_pass_tech.cpp" />
     <ClCompile Include="Techniques\ds_light_pass_tech.cpp" />
     <ClCompile Include="Techniques\ds_point_light_pass_tech.cpp" />
-    <ClCompile Include="Techniques\MapChunk_GeometryPass.cpp" />
-    <ClCompile Include="Techniques\MapTileLowRes_GeometryPass.cpp" />
-    <ClCompile Include="Techniques\Model_Shader.cpp" />
     <ClCompile Include="Techniques\SimpleRenderGBuffer.cpp" />
-    <ClCompile Include="Techniques\Sky_GeometryPass.cpp" />
     <ClCompile Include="Techniques\Technique.cpp" />
-    <ClCompile Include="Techniques\UI_Color.cpp" />
-    <ClCompile Include="Techniques\UI_Font.cpp" />
-    <ClCompile Include="Techniques\UI_Texture.cpp" />
-    <ClCompile Include="Techniques\WMO_GeomertyPass.cpp" />
-    <ClCompile Include="Techniques\Water_Pass.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TexturesMgr.cpp" />
   </ItemGroup>

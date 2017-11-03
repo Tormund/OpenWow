@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="UIButton.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="UIButton3t.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="UICheckBox.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="UIFile.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="UIInput.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="UIScrollBar.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="UIWindow.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="UIMgr.cpp" />
+    <ClCompile Include="UIWoWMinimapSelector.cpp">
+      <Filter>WoW</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="..\shared\owGUI.h" />
+    <ClInclude Include="UIButton.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="UIButton3t.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="UICheckBox.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="UIFile.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="UIInput.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="UIScrollBar.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="UIWindow.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="UIMgr.h" />
+    <ClInclude Include="UIWoWMinimapSelector.h">
+      <Filter>WoW</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Common">
+      <UniqueIdentifier>{8ad53313-6640-4da1-abfb-734bbf62771f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WoW">
+      <UniqueIdentifier>{a204841a-3b03-4cfa-ba5b-a976f988ccf3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

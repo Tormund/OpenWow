@@ -8,7 +8,7 @@
 
 #define CHECK_GL_ERROR checkError();
 
-	// EngineLog shaders
+// EngineLog shaders
 static const char *defaultShaderVS =
 "#version 330\n"
 "uniform mat4 viewProjMat;\n"

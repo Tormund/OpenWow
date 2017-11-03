@@ -19,8 +19,6 @@ void MDX_Part_Camera::init(File& f, M2Camera& mcd, uint32* global)
 
 	tRoll.init(mcd.roll, f, global);
 	tFov.init(mcd.FoV, f, global);
-
-	camera = new Camera();
 }
 
 void MDX_Part_Camera::setup(int time)
@@ -33,9 +31,11 @@ void MDX_Part_Camera::setup(int time)
 
 	roll = tRoll.getValue(0, time) / PI * 180.0f;
 
-	camera->setupViewParams(fov, Modules::config().aspectRatio, nearclip, farclip);
-	camera->Position = p;
-	camera->Direction = t;
-	camera->CameraUp = u;
-	camera->onPostUpdate();
+	camera.setupViewParams(fov, Modules::config().aspectRatio, nearclip, farclip);
+
+	camera.Position = p;
+	camera.Direction = t;
+	camera.CameraUp = u;
+
+    camera.Update(true);
 }

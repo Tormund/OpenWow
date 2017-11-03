@@ -19,11 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GameState_InWorld.h" />
     <ClInclude Include="GameState_Menu.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="GameState_InWorld.cpp" />
     <ClCompile Include="GameState_Menu.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="World.cpp" />

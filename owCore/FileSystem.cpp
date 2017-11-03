@@ -241,9 +241,9 @@ bool FileSystem::KeyExists(SectionData* _sectionData, cstring _keyName)  const
 
 FileSystem::SectionData* FileSystem::GetSectionData(const fsDataType& _data, cstring _sectionName) const
 {
-	for (auto it = _data.begin(); it != _data.end(); ++it)
-		if ((*it).first == _sectionName)
-			return (*it).second;
+	for (auto it : _data)
+		if (it.first == _sectionName)
+			return it.second;
 
 	return nullptr;
 }

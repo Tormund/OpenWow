@@ -12,9 +12,9 @@ struct SectionStruct
 
 	string GetValue(string _keyName)
 	{
-		for (auto it = data.begin(); it != data.end(); ++it)
-			if ((*it).key == _keyName)
-				return (*it).value;
+		for (auto it : data)
+			if (it.key == _keyName)
+				return it.value;
 
 		return "";
 	}
@@ -57,9 +57,9 @@ inline bool INIFile::Assign(T& addr, string _section, string _keyName)
 	if (section.data.size() == 0)
 		return false;
 
-	for (auto it = section.data.begin(); it != section.data.end(); ++it)
-		if ((*it).key == _keyName)
-			return Utils::TryParse(typeid(addr), (*it).value, (void*)&addr);
+	for (auto it : section.data)
+		if (it.key == _keyName)
+			return Utils::TryParse(typeid(addr), it.value, (void*)&addr);
 
 	Modules::log().Warn("INIFile[%s]: Can't load key[%s] in section[%s]", iniFilename.c_str(), _keyName.c_str(), _section.c_str());
 

@@ -7,8 +7,8 @@
     <Filter Include="General\Scene">
       <UniqueIdentifier>{1d5a6f0a-304b-4a06-b799-c1ee3e3099c9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GUI">
-      <UniqueIdentifier>{06f89fe1-a51e-46c1-a215-a45bb5e706f8}</UniqueIdentifier>
+    <Filter Include="General\Objects bindings">
+      <UniqueIdentifier>{8e429606-52b8-4c95-9bfd-c8d669612772}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -16,33 +16,6 @@
       <Filter>General</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="GUI\UIButton.cpp">
-      <Filter>GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI\UIButton3t.cpp">
-      <Filter>GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI\UICheckBox.cpp">
-      <Filter>GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI\UIElement.cpp">
-      <Filter>GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI\UIFile.cpp">
-      <Filter>GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI\UIInput.cpp">
-      <Filter>GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI\UIMgr.cpp">
-      <Filter>GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI\UIScrollBar.cpp">
-      <Filter>GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI\UIWindow.cpp">
-      <Filter>GUI</Filter>
-    </ClCompile>
     <ClCompile Include="SceneNode.cpp">
       <Filter>General\Scene</Filter>
     </ClCompile>
@@ -55,6 +28,12 @@
     <ClCompile Include="Engine.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="UpdatableObject.cpp">
+      <Filter>General\Objects bindings</Filter>
+    </ClCompile>
+    <ClCompile Include="UpdatableObjectCollection.cpp">
+      <Filter>General\Objects bindings</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameState.h">
@@ -62,33 +41,6 @@
     </ClInclude>
     <ClInclude Include="..\shared\owGame.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="GUI\UIButton.h">
-      <Filter>GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\UIButton3t.h">
-      <Filter>GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\UICheckBox.h">
-      <Filter>GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\UIElement.h">
-      <Filter>GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\UIFile.h">
-      <Filter>GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\UIInput.h">
-      <Filter>GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\UIMgr.h">
-      <Filter>GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\UIScrollBar.h">
-      <Filter>GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\UIWindow.h">
-      <Filter>GUI</Filter>
-    </ClInclude>
     <ClInclude Include="SceneNode.h">
       <Filter>General\Scene</Filter>
     </ClInclude>
@@ -100,6 +52,12 @@
     </ClInclude>
     <ClInclude Include="Engine.h">
       <Filter>General</Filter>
+    </ClInclude>
+    <ClInclude Include="UpdatableObject.h">
+      <Filter>General\Objects bindings</Filter>
+    </ClInclude>
+    <ClInclude Include="UpdatableObjectCollection.h">
+      <Filter>General\Objects bindings</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -5,7 +5,7 @@
 
 // Additional
 #include <ctime>
-#include "GUI\UIMgr.h"
+#include "UpdatableObjectCollection.h"
 
 void shutdown(int _errCode)
 {
@@ -45,9 +45,6 @@ bool Engine::Init()
 	assert1(_Render->Init());
 	assert1(_TexturesMgr->Init());
 	assert1(_FontsMgr->Init());
-	assert1(_UIMgr->Init());
-
-	Modules::input().AddInputListener(_UIMgr);
 
 	needExit = false;
 	currentGameState = nullptr;
@@ -126,12 +123,10 @@ bool Engine::Tick()
 		currentGameState->InputPhase(dTime, dDtTime);
 	}
 
-	// Update
-	if (currentGameState != nullptr)
-	{
-		currentGameState->UpdatePhase(dTime, dDtTime);
-	}
-	_UIMgr->Update();
+    //------------------------------------------------
+	//-- Update
+    //------------------------------------------------
+    UpdatableObjectCollection::Update(dTime, dDtTime);
 
 	//
 
@@ -145,9 +140,9 @@ bool Engine::Tick()
 		currentGameState->Render(dTime, dDtTime);
 	}
 
-	//
-
-	// Render UI
+    //------------------------------------------------
+    //-- RenderUI
+    //------------------------------------------------
 	_Render->Set2D();
 	RenderableUIObjectCollection::RenderUI();
 

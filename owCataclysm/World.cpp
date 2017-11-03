@@ -5,21 +5,11 @@
 
 World::World()
 {
-	rb = _Render->r->createRenderBuffer(Modules::config().windowSizeX, Modules::config().windowSizeY, R_TextureFormats::RGBA16F, true, 4, 4);
-
 	rb2 = _Render->r->createRenderBuffer(Modules::config().windowSizeX, Modules::config().windowSizeY, R_TextureFormats::RGBA16F, true, 4, 4);
-
-
-	// Main game camera
-	mainCamera = new Camera;
-	mainCamera->setupViewParams(45.0f, Modules::config().aspectRatio, 2.0f, 15000.0f);
-	_PipelineGlobal->SetCamera(mainCamera);
 
 	// Test camera
 	testCamera = new Camera;
 	testCamera->setupViewParams(45.0f, Modules::config().aspectRatio, 2.0f, 15000.0f);
-
-	_EnvironmentManager->Init();
 
 	//----------------------------------------------------------------//
 
@@ -29,8 +19,6 @@ World::World()
 	l_const = 0.0f;
 	l_linear = 0.7f;
 	l_quadratic = 0.03f;
-
-	_TechniquesMgr->Init();
 }
 
 void World::Render()
@@ -43,18 +31,18 @@ void World::Render()
 	_ModelsMgr->resetAnim();
 #endif
 
-	_PipelineGlobal->SetCamera(mainCamera);
-	_PipelineGlobal->SetCameraFrustum(mainCamera);
+	_PipelineGlobal->SetCamera(_Render->mainCamera);
+	_PipelineGlobal->SetCameraFrustum(_Render->mainCamera);
 
 	_Perfomance->FrameBegin();
 	_EnvironmentManager->BeforeDraw();
-	mainCamera->onPostUpdate();
+    _Render->mainCamera->onPostUpdate();
 		
 	// Main frame
 	
 
 	// Geometry pass
-	_Render->r->setRenderBuffer(rb);
+	_Render->r->setRenderBuffer(_Render->rb);
 	_Render->r->clear();
 	RenderGeom();
 
@@ -62,7 +50,7 @@ void World::Render()
 	_Render->r->setRenderBuffer(0);
 	for (uint32 i = 0; i < 4; i++)
 	{
-		_Render->r->setTexture(i, _Render->r->getRenderBufferTex(rb, i), 0, R_TextureUsage::Texture);
+		_Render->r->setTexture(i, _Render->r->getRenderBufferTex(_Render->rb, i), 0, R_TextureUsage::Texture);
 	}
 	_Render->r->clear(CLR_COLOR_RT0 | CLR_DEPTH);
 	RenderPostprocess();

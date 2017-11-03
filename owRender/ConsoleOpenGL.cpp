@@ -26,7 +26,11 @@ bool ConsoleOpenGL::Init()
 
 	AddCommonCommands();
 
-	return RenderableUIObject::Register(1000);
+    //
+
+    RenderableUIObject::Register(1000);
+    InputListenerObject::Register();
+    return true;
 }
 
 void ConsoleOpenGL::Destroy()
@@ -34,6 +38,7 @@ void ConsoleOpenGL::Destroy()
 	_FontsMgr->Delete(consoleFont);
 
 	RenderableUIObject::Unregister();
+    InputListenerObject::Unregister();
 }
 
 void ConsoleOpenGL::RenderUI()

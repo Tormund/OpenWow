@@ -4,6 +4,8 @@ class RenderableUIObject
 {
 public:
 	virtual void RenderUI() = 0;
+    
+    //
 
 	void SetDrawOrder(uint32 _order)
 	{

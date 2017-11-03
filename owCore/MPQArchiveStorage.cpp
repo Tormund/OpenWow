@@ -100,9 +100,9 @@ MPQFileLocation MPQArchiveStorage::GetFileLocation(cstring filename)
 
 void MPQArchiveStorage::ClearArchives()
 {
-	for (auto it = m_OpenArchives.begin(); it != m_OpenArchives.end(); ++it)
+	for (auto it : m_OpenArchives)
 	{
-		libmpq__archive_close(*it);
+		libmpq__archive_close(it);
 	}
 }
 

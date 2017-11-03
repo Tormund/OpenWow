@@ -50,7 +50,6 @@ private:
 	uint32 _time;
 
 	OpenGLAdapter* m_OpenGLAdapter;
-	//ConsoleOpenGL* consoleOpenGL;
 };
 
 #define _Engine Engine::instance()

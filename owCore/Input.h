@@ -1,7 +1,5 @@
 #pragma once
 
-// Includes
-#include "InputListener.h"
 #include "InputKeys.h"
 
 class Input
@@ -9,9 +7,6 @@ class Input
 public:
 	Input();
 	~Input();
-
-	void AddInputListener(InputListener* _inputListener);
-	void DeleteInputListener(InputListener* _inputListener);
 
 	vec2 GetMouse() const { return mousePos; }
 	bool IsKeyPressed(int key) { return keyState[key]; }
@@ -28,6 +23,4 @@ private:
 	bool keyState[OW_KEYSCOUNT];
 	bool mouseButtonState[OW_MOUSEBUTTONSCOUNT];
 	vec2 mousePos;
-
-	vector<InputListener*> inputListeners;
 };

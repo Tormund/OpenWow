@@ -64,6 +64,12 @@
     <Filter Include="Module\Modules\Input">
       <UniqueIdentifier>{99cc3793-975f-4c86-9eee-6ca69f13a6d3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Module\Modules\Input\Objects bindings">
+      <UniqueIdentifier>{6e2425d8-a04f-4c17-9af9-7b1fa9d8175b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Functions">
+      <UniqueIdentifier>{e1452d17-0e18-4f20-9cac-ed75a9caee9f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Input.cpp">
@@ -149,6 +155,12 @@
     <ClCompile Include="MPQArchiveStorage.cpp">
       <Filter>Files\MPQFile</Filter>
     </ClCompile>
+    <ClCompile Include="InputListenerCollection.cpp">
+      <Filter>Module\Modules\Input\Objects bindings</Filter>
+    </ClCompile>
+    <ClCompile Include="InputListener.cpp">
+      <Filter>Module\Modules\Input\Objects bindings</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Rect.h">
@@ -161,9 +173,6 @@
       <Filter>Common\Types</Filter>
     </ClInclude>
     <ClInclude Include="Input.h">
-      <Filter>Module\Modules\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="InputListener.h">
       <Filter>Module\Modules\Input</Filter>
     </ClInclude>
     <ClInclude Include="ByteBuffer.h">
@@ -230,9 +239,6 @@
     <ClInclude Include="SmartItemPtr.h">
       <Filter>RefManager\Items</Filter>
     </ClInclude>
-    <ClInclude Include="Function.h">
-      <Filter>Common</Filter>
-    </ClInclude>
     <ClInclude Include="Macros.h">
       <Filter>Common</Filter>
     </ClInclude>
@@ -271,6 +277,21 @@
     </ClInclude>
     <ClInclude Include="MPQArchiveStorage.h">
       <Filter>Files\MPQFile</Filter>
+    </ClInclude>
+    <ClInclude Include="InputListenerCollection.h">
+      <Filter>Module\Modules\Input\Objects bindings</Filter>
+    </ClInclude>
+    <ClInclude Include="InputListener.h">
+      <Filter>Module\Modules\Input\Objects bindings</Filter>
+    </ClInclude>
+    <ClInclude Include="Function.h">
+      <Filter>Common\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="FunctionWA.h">
+      <Filter>Common\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="FunctionSA.h">
+      <Filter>Common\Functions</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -57,14 +57,14 @@ bool INIFile::Open(cstring _filename)
 
 void INIFile::Clear()
 {
-	for (auto it = data.begin(); it != data.end(); ++it)
+	for (auto it : data)
 	{
-		for (auto it2 = (*it).data.begin(); it2 != (*it).data.end(); ++it2)
+		for (auto it2 : it.data)
 		{
-			(*it2).key.clear();
-			(*it2).value.clear();
+			it2.key.clear();
+			it2.value.clear();
 		}
-		(*it).data.clear();
+		it.data.clear();
 	}
 	data.clear();
 }
@@ -73,18 +73,18 @@ vector<SectionStruct> INIFile::GetSections(string _sectionName)
 {
 	vector<SectionStruct> myMap;
 
-	for (auto it = data.begin(); it != data.end(); ++it)
-		if (_sectionName == (*it).section)
-			myMap.push_back((*it));
+	for (auto it : data)
+		if (_sectionName == it.section)
+			myMap.push_back(it);
 
 	return myMap;
 }
 
 SectionStruct* INIFile::GetFirstSection(string _sectionName)
 {
-	for (auto it = data.begin(); it != data.end(); ++it)
-		if (_sectionName == (*it).section)
-			return &(*it);
+	for (auto it : data)
+		if (_sectionName == it.section)
+			return &it;
 
 	return nullptr;
 }

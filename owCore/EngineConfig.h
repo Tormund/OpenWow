@@ -99,5 +99,5 @@ public:
 	bool enableMCLV;
 
 	// Perfomance
-	bool disable_pipeline;
+
 };

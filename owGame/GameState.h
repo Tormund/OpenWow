@@ -1,8 +1,10 @@
 #pragma once
 
-class InputListener;
+#include "UpdatableObject.h"
+class RenderableUIObject;
+class InputListenerObject;
 
-class GameState : public RenderableUIObject, public InputListener
+class GameState : public UpdatableObject, public RenderableUIObject, public InputListenerObject
 {
 public:
 	GameState() : m_inited(false) {};
@@ -10,9 +12,8 @@ public:
 	virtual bool Init() = 0;
 	virtual void Destroy() = 0;
 
-	virtual void InputPhase(double t, double dt) = 0;
-	virtual void UpdatePhase(double t, double dt) = 0;
-	virtual void Render(double t, double dt) = 0;
+    virtual void InputPhase(double t, double dt) {};
+    virtual void Render(double t, double dt) {};
 
 	bool IsInited() const { return m_inited; }
 

@@ -21,17 +21,10 @@
   <ItemGroup>
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="GameState.cpp" />
-    <ClCompile Include="GUI\UIButton.cpp" />
-    <ClCompile Include="GUI\UIButton3t.cpp" />
-    <ClCompile Include="GUI\UICheckBox.cpp" />
-    <ClCompile Include="GUI\UIElement.cpp" />
-    <ClCompile Include="GUI\UIFile.cpp" />
-    <ClCompile Include="GUI\UIInput.cpp" />
-    <ClCompile Include="GUI\UIMgr.cpp" />
-    <ClCompile Include="GUI\UIScrollBar.cpp" />
-    <ClCompile Include="GUI\UIWindow.cpp" />
     <ClCompile Include="OpenGLAdapter.cpp" />
     <ClCompile Include="RenderableItem.cpp" />
+    <ClCompile Include="UpdatableObject.cpp" />
+    <ClCompile Include="UpdatableObjectCollection.cpp" />
     <ClCompile Include="SceneNode.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
@@ -39,17 +32,10 @@
     <ClInclude Include="..\shared\owGame.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="GameState.h" />
-    <ClInclude Include="GUI\UIButton.h" />
-    <ClInclude Include="GUI\UIButton3t.h" />
-    <ClInclude Include="GUI\UICheckBox.h" />
-    <ClInclude Include="GUI\UIElement.h" />
-    <ClInclude Include="GUI\UIFile.h" />
-    <ClInclude Include="GUI\UIInput.h" />
-    <ClInclude Include="GUI\UIMgr.h" />
-    <ClInclude Include="GUI\UIScrollBar.h" />
-    <ClInclude Include="GUI\UIWindow.h" />
     <ClInclude Include="OpenGLAdapter.h" />
     <ClInclude Include="RenderableItem.h" />
+    <ClInclude Include="UpdatableObject.h" />
+    <ClInclude Include="UpdatableObjectCollection.h" />
     <ClInclude Include="SceneNode.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
@@ -132,11 +118,6 @@
       <AdditionalIncludeDirectories>..\Externals\glew-2.1.0\include;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <SDLCheck>false</SDLCheck>
     </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\bin\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -148,11 +129,6 @@
       <SDLCheck>false</SDLCheck>
       <AdditionalIncludeDirectories>..\Externals\glew-2.1.0\include;..\shared;..\Externals;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\bin_x64\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -168,13 +144,6 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\bin\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -190,15 +159,6 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\bin_x64\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-    </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
 </Project>

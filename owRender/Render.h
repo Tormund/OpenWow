@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Camera.h"
 #include "RenderDevice.h"
 
 class GLFWBackend;
@@ -59,6 +60,8 @@ private:
 
 public:
 	RenderDevice* r;
+    uint32 rb;
+    Camera* mainCamera;
 };
 
 #define _Render RenderGL::instance()

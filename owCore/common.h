@@ -33,6 +33,8 @@ using namespace std;
 
 // Additional types
 #include "Function.h"
+#include "FunctionWA.h"
+#include "FunctionSA.h"
 //#include "Timer.h"
 
 // Utils

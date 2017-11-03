@@ -35,38 +35,11 @@
     <ClCompile Include="Techniques\ds_point_light_pass_tech.cpp">
       <Filter>Techniques\Lights</Filter>
     </ClCompile>
-    <ClCompile Include="Techniques\MapChunk_GeometryPass.cpp">
-      <Filter>Techniques\Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="Techniques\MapTileLowRes_GeometryPass.cpp">
-      <Filter>Techniques\Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="Techniques\WMO_GeomertyPass.cpp">
-      <Filter>Techniques\Geometry</Filter>
-    </ClCompile>
     <ClCompile Include="Techniques\Technique.cpp">
       <Filter>Techniques\Common</Filter>
     </ClCompile>
-    <ClCompile Include="Techniques\Sky_GeometryPass.cpp">
-      <Filter>Techniques\Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="Techniques\UI_Font.cpp">
-      <Filter>Techniques\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="Techniques\Debug_GeometryPass.cpp">
-      <Filter>Techniques\Geometry</Filter>
-    </ClCompile>
     <ClCompile Include="PipelineWorldTransformation.cpp">
       <Filter>Pipeline</Filter>
-    </ClCompile>
-    <ClCompile Include="Techniques\Water_Pass.cpp">
-      <Filter>Techniques\Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="Techniques\UI_Texture.cpp">
-      <Filter>Techniques\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="Techniques\UI_Color.cpp">
-      <Filter>Techniques\UI</Filter>
     </ClCompile>
     <ClCompile Include="OpenGL.cpp">
       <Filter>Render</Filter>
@@ -92,17 +65,14 @@
     <ClCompile Include="Material.cpp">
       <Filter>Render</Filter>
     </ClCompile>
-    <ClCompile Include="Techniques\Model_Shader.cpp">
-      <Filter>Techniques\Geometry</Filter>
-    </ClCompile>
     <ClCompile Include="ConsoleOpenGL.cpp">
       <Filter>Render</Filter>
     </ClCompile>
     <ClCompile Include="RenderableUIObject.cpp">
-      <Filter>Render</Filter>
+      <Filter>Objects bindings</Filter>
     </ClCompile>
     <ClCompile Include="RenderableUIObjectCollection.cpp">
-      <Filter>Render</Filter>
+      <Filter>Objects bindings</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -215,10 +185,10 @@
       <Filter>Render</Filter>
     </ClInclude>
     <ClInclude Include="RenderableUIObject.h">
-      <Filter>Render</Filter>
+      <Filter>Objects bindings</Filter>
     </ClInclude>
     <ClInclude Include="RenderableUIObjectCollection.h">
-      <Filter>Render</Filter>
+      <Filter>Objects bindings</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -257,6 +227,9 @@
     </Filter>
     <Filter Include="Render">
       <UniqueIdentifier>{83e27261-1695-4e85-a7fe-099ead28f2d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects bindings">
+      <UniqueIdentifier>{c514dd30-227f-4857-9720-f5294f6da0c1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

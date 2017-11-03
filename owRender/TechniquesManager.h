@@ -1,7 +1,7 @@
 #pragma once
 
 // EngineLog
-#include "Techniques\Debug_GeometryPass.h"
+#include "Techniques/Debug_GeometryPass.h"
 
 #include "Techniques/Sky_GeometryPass.h"
 #include "Techniques/MapTileLowRes_GeometryPass.h"

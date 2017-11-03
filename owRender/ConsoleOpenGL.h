@@ -1,7 +1,7 @@
 #pragma once
 
 class Console;
-class InputListener;
+class InputListenerObject;
 class DebugOutput;
 
 //
@@ -22,7 +22,7 @@ struct ConsoleMessage
 
 #include "RenderableUIObject.h"
 
-class ConsoleOpenGL : public Console, public RenderableUIObject, public InputListener, public DebugOutput
+class ConsoleOpenGL : public Console, public RenderableUIObject, public InputListenerObject, public DebugOutput
 {
 	typedef vector<ConsoleMessage*> ConsoleMessages;
 public:
@@ -30,7 +30,7 @@ public:
 	bool Init();
 	void Destroy();
 
-	void RenderUI();
+	void RenderUI() override;
 
 	V_MOUSE_WHEEL;
 	V_KEYBD_PRESSED;
@@ -55,7 +55,7 @@ private:
 	string inputString;
 
 	// Help commands
-	vector<ConsoleCommandBase*> commandsHelper;
+	vector<ConsoleCommand*> commandsHelper;
 	vec2 helperOffset;
 	int helperSelected;
 };

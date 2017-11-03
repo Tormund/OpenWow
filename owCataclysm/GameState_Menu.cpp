@@ -3,6 +3,9 @@
 // General
 #include "GameState_Menu.h"
 
+// Additional
+#include "GameState_InWorld.h"
+
 bool GameState_Menu::Init()
 {
 	_ModelsMgr->Init();
@@ -10,21 +13,26 @@ bool GameState_Menu::Init()
 
 	OpenDBs();
 
-	enableFreeCamera = false;
-	cameraSprint = false;
-
-	minimapActive = false;
-
 	window = new UIWindow();
 	window->Init(VECTOR_ZERO, vec2(Modules::config().windowSizeX, Modules::config().windowSizeY), nullptr);
 	_UIMgr->Attach(window);
 
+    m_MinimapTexture = new Texture();
+
+    m_MinimapImage = new Image();
+
+    m_MinimapUI = new UIElement();
+    m_MinimapUI->Init(vec2(200, 0), vec2(512, 512), m_MinimapImage, COLOR_WHITE);
+    m_MinimapUI->Disable();
+
+    _EnvironmentManager->Init();
+    _TechniquesMgr->Init();
 	_EnvironmentManager->globalTime = 0;
 	_EnvironmentManager->animtime = 0;
 
 	cmd = CMD_NONE2;
 	backgroundModel = 0;
-	//randBackground();
+	randBackground();
 
 	//_Map->Load_WDT(DBC_Map[1]);
 	//LoadWorld(vec3(17644, 68, 17823));
@@ -74,48 +82,57 @@ bool GameState_Menu::Init()
 		mapsY[record->Get_ExpansionID()] += mapsYdelta;
 	}
 
-	Modules::input().AddInputListener(this);
-	return RenderableUIObject::Register(100);
+    //
+    enableFreeCamera = false;
+    cameraSprint = false;
+    //
+
+    UpdatableObject::Register();
+    RenderableUIObject::Register(100);
+    InputListenerObject::Register();
+
+    return true;
 }
 
 void GameState_Menu::Destroy()
 {
-	//window->Delete();
-
 	m_inited = false;
 
-	Modules::input().DeleteInputListener(this);
+    UpdatableObject::Unregister();
+    RenderableUIObject::Unregister();
+    InputListenerObject::Unregister();
 }
+
+
+//
 
 void GameState_Menu::InputPhase(double t, double dt)
 {
-	float speed = 4.5f;
+    float speed = 4.5f;
 
-	if (cameraSlow)
-		speed *= 0.2f;
+    if (cameraSlow)
+        speed *= 0.2f;
 
-	if (cameraSprint)
-		speed *= 3.0f;
+    if (cameraSprint)
+        speed *= 3.0f;
 
-	if (Modules::input().IsKeyPressed(OW_KEY_W))
-		_World->mainCamera->ProcessKeyboard(FORWARD, speed);
+    if (Modules::input().IsKeyPressed(OW_KEY_W))
+        _Render->mainCamera->ProcessKeyboard(FORWARD, speed);
 
-	if (Modules::input().IsKeyPressed(OW_KEY_S))
-		_World->mainCamera->ProcessKeyboard(BACKWARD, speed);
+    if (Modules::input().IsKeyPressed(OW_KEY_S))
+        _Render->mainCamera->ProcessKeyboard(BACKWARD, speed);
 
-	if (Modules::input().IsKeyPressed(OW_KEY_A))
-		_World->mainCamera->ProcessKeyboard(LEFT, speed);
+    if (Modules::input().IsKeyPressed(OW_KEY_A))
+        _Render->mainCamera->ProcessKeyboard(LEFT, speed);
 
-	if (Modules::input().IsKeyPressed(OW_KEY_D))
-		_World->mainCamera->ProcessKeyboard(RIGHT, speed);
+    if (Modules::input().IsKeyPressed(OW_KEY_D))
+        _Render->mainCamera->ProcessKeyboard(RIGHT, speed);
 }
 
-void GameState_Menu::UpdatePhase(double t, double dt)
+void GameState_Menu::Update(double t, double dt)
 {
 	_EnvironmentManager->animtime += (dt * 1000.0f);
 	_EnvironmentManager->globalTime = (int)_EnvironmentManager->animtime;
-
-	_World->tick(dt);
 
 	if (backgroundModel)
 	{
@@ -125,55 +142,69 @@ void GameState_Menu::UpdatePhase(double t, double dt)
 
 void GameState_Menu::Render(double t, double dt)
 {
-	if (cmd == CMD_IN_WORLD2 && !minimapActive)
-	{
-		_World->Render();
-	}
-
 	if (backgroundModel != nullptr)
 	{
-		backgroundModel->m_Cameras[0].setup(_EnvironmentManager->globalTime);
+        //_ModelsMgr->resetAnim();
+
+        _Render->r->setRenderBuffer(_Render->rb);
+        _Render->r->clear();
+
+        // Camera
+        _Pipeline->Clear();
+		/*backgroundModel->m_Cameras[0].setup(_EnvironmentManager->globalTime);
 		_PipelineGlobal->SetCamera(backgroundModel->m_Cameras[0].GetCamera());
+        _PipelineGlobal->SetCameraFrustum(backgroundModel->m_Cameras[0].GetCamera());*/
+
+        _PipelineGlobal->SetCamera(_Render->mainCamera);
+        _PipelineGlobal->SetCameraFrustum(_Render->mainCamera);
+        
+        
+        // Geom
 		backgroundModel->draw();
+
+        // Postprocess pass
+        _Render->r->setRenderBuffer(0);
+        for (uint32 i = 0; i < 4; i++) _Render->r->setTexture(i, _Render->r->getRenderBufferTex(_Render->rb, i), 0, R_TextureUsage::Texture);
+        _Render->r->clear(CLR_COLOR_RT0 | CLR_DEPTH);
+
+        // Simple pass
+        _TechniquesMgr->m_SimpleRender->BindS();
+        _TechniquesMgr->m_SimpleRender->SetScreenSize(Modules::config().windowSizeX, Modules::config().windowSizeY);
+
+        _Render->r->setDepthTest(false);
+        _Render->r->setBlendMode(true, R_BlendFunc::BS_BLEND_ONE, R_BlendFunc::BS_BLEND_ONE);
+
+        _Render->RenderQuad();
+
+        _Render->r->setBlendMode(false);
+        _Render->r->setDepthTest(true);
+
+        _TechniquesMgr->m_SimpleRender->Unbind();
 	}
 }
 
 void GameState_Menu::RenderUI()
 {
-	//if (_World->loading)
-	//{
-	//	_Render->RenderText(vec2(_Render->GetWindowSize().x / 2, 200), _World->GetMap()->IsOutOfBounds() ? "Out of bounds" : "Loading...");
-	//}
-
-	if (minimapActive || cmd == CMD_SELECT2)
+	if (cmd == CMD_SELECT2)
 	{
-		int basex = 200;
-		int basey = 0;
 
 		if (_Map->GetMinimap() != 0)
 		{
-			const int len = 768;
+            m_MinimapTexture->SetObj(_Map->GetMinimap());
 
-			_Render->RenderTexture(vec2(basex, basey), _Map->GetMinimap(), vec2(len, len));
+            m_MinimapImage->texture = m_MinimapTexture;
+            m_MinimapImage->size = m_MinimapTexture->GetSize();
+            m_MinimapImage->CalculateCoords();
 
-			// Player position
-			/*glBegin(GL_LINES);
-			float fx, fz;
-			fx = basex + _World->mainCamera->Position.x / C_TileSize * 12.0f;
-			fz = basey + _World->mainCamera->Position.z / C_TileSize * 12.0f;
-			glVertex2f(fx, fz);
-			glColor4f(1, 1, 1, 0);
-			glVertex2f(fx + 10.0f * cosf(degToRad(_World->mainCamera->Roll)), fz + 10.0f * sinf(degToRad(_World->mainCamera->Roll)));
-			glEnd();*/
+            m_MinimapUI->Enable();
 		}
-	}
+        else
+        {
+            m_MinimapUI->Disable();
+        }
+	}   
 
-	if (cmd == CMD_LOAD_WORLD2)
-	{
-		_Render->RenderText(vec2(Modules::config().windowSizeX / 2, 20 / 2), "Loading...");
-		cmd = CMD_DO_LOAD_WORLD2;
-	}
-	else if (cmd == CMD_SELECT2)
+	if (cmd == CMD_SELECT2)
 	{
 		if (_Map->MapHasTiles())
 		{
@@ -184,111 +215,33 @@ void GameState_Menu::RenderUI()
 			_Render->RenderText(vec2(400, 360), "Click to enter");
 		}
 	}
-	else if (cmd == CMD_IN_WORLD2)
-	{ // HUD
-// Skyname
-//char* sn = _World->skies->getSkyName();
-//if(sn)
-//	_Render->RenderText(vec2(200, 0), string(sn));
-
-// Area and region
-
-
-		
-
-		// Area
-		DBÑ_AreaTableRecord* areaRecord = nullptr;
-		string areaName = "<unknown>";
-
-		areaRecord = DBÑ_AreaTable[_Map->getAreaID()];
-		if (areaRecord != nullptr)
-		{
-			areaName = areaRecord->Get_Name();
-		}
-
-		// Region
-		DBÑ_AreaTableRecord* regionRecord = nullptr;
-		string regionName = "<unknown>";
-
-		if (areaRecord != nullptr)
-		{
-			regionRecord = areaRecord->Get_ParentAreaID();
-			if (regionRecord != nullptr)
-			{
-				regionName = regionRecord->Get_Name();
-			}
-		}
-
-
-		//
-		// DEBUG
-		//
-		_Render->RenderTexture(vec2(Modules::config().windowSizeX * 2.0 / 3.0, Modules::config().windowSizeY * 2.0 / 3.0), _Render->r->getRenderBufferTex(_World->rb2, 2), vec2(Modules::config().windowSizeX / 3, Modules::config().windowSizeY / 3));
-
-
-		//
-
-
-		/*_Render->RenderText(vec2(5, 20), "Area: [" + areaName + "] [Area id = " + std::to_string(_Map->getAreaID()) + "]");
-		_Render->RenderText(vec2(5, 40), "Region: [" + regionName + "]");
-		_Render->RenderText(vec2(5, 60), "CURRX: " + to_string(_Map->GetCurrentX()) + ", CURRZ " + to_string(_Map->GetCurrentZ()));*/
-
-
-		///
-
-		_Perfomance->Draw(vec2(5, 100));
-
-		/*_Render->RenderText(vec2(5, Modules::config().windowSizeY - 66), "REAL CamPos: [" + to_string(_World->mainCamera->Position.x) + "], [" + to_string(_World->mainCamera->Position.y) + "], [" + to_string(_World->mainCamera->Position.z) + "]");
-		_Render->RenderText(vec2(5, Modules::config().windowSizeY - 44), "CamPos: [" + to_string(-(_World->mainCamera->Position.x - C_ZeroPoint)) + "], [" + to_string(-(_World->mainCamera->Position.z - C_ZeroPoint)) + "], [" + to_string(_World->mainCamera->Position.y) + "]");
-		_Render->RenderText(vec2(5, Modules::config().windowSizeY - 22), "CamRot: [" + to_string(_World->mainCamera->Direction.x) + "], [" + to_string(_World->mainCamera->Direction.y) + "], [" + to_string(_World->mainCamera->Direction.z) + "]");
-
-		// Time
-		_Render->RenderText(vec2(Modules::config().windowSizeX - 150, 0), "TIME [" + to_string(_EnvironmentManager->m_GameTime.GetHour()) + "." + to_string(_EnvironmentManager->m_GameTime.GetMinute()) + "]");
-		char buff[256];
-
-		// Ambient
-
-		sprintf(buff, "Amb[c=[%0.2f %0.2f %0.2f] i=[%f]]",
-				_EnvironmentManager->dayNightPhase.ambientColor.x, _EnvironmentManager->dayNightPhase.ambientColor.y, _EnvironmentManager->dayNightPhase.ambientColor.z,
-				_EnvironmentManager->dayNightPhase.ambientIntensity
-		);
-		_Render->RenderText(vec2(Modules::config().windowSizeX - 400, 20), buff);
-
-		// Day
-
-		sprintf(buff, "Day[c=[%0.2f %0.2f %0.2f] i=[%f] d=[%0.2f %0.2f %0.2f]]",
-				_EnvironmentManager->dayNightPhase.dayColor.x, _EnvironmentManager->dayNightPhase.dayColor.y, _EnvironmentManager->dayNightPhase.dayColor.z,
-				_EnvironmentManager->dayNightPhase.dayIntensity,
-				_EnvironmentManager->dayNightPhase.dayDir.x, _EnvironmentManager->dayNightPhase.dayDir.y, _EnvironmentManager->dayNightPhase.dayDir.z
-		);
-		_Render->RenderText(vec2(Modules::config().windowSizeX - 400, 40), buff);
-
-		// Night
-
-		sprintf(buff, "Nig[c=[%0.2f %0.2f %0.2f] i=[%f] d=[%0.2f %0.2f %0.2f]]\0",
-				_EnvironmentManager->dayNightPhase.nightColor.x, _EnvironmentManager->dayNightPhase.nightColor.y, _EnvironmentManager->dayNightPhase.nightColor.z,
-				_EnvironmentManager->dayNightPhase.nightIntensity,
-				_EnvironmentManager->dayNightPhase.nightDir.x, _EnvironmentManager->dayNightPhase.nightDir.y, _EnvironmentManager->dayNightPhase.nightDir.z
-		);
-		_Render->RenderText(vec2(Modules::config().windowSizeX - 400, 60), buff);*/
-	}
 }
 
 //
+
+void GameState_Menu::OnBtn(DBC_MapRecord* _e)
+{
+    Modules::log().Green("Load level %s [%d]", _e->Get_Directory(), _e->Get_ID());
+
+    _Map->Load_WDT(_e);
+    cmd = CMD_SELECT2;
+
+    m_MinimapUI->Attach(window);
+}
 
 bool GameState_Menu::LoadWorld(cvec3 _pos)
 {
 	_Map->enterTile(_pos.x / C_TileSize, _pos.z / C_TileSize);
 
-	_World->mainCamera->Position = _pos;
-	_World->mainCamera->Update();
+    _Render->mainCamera->Position = _pos;
+    _Render->mainCamera->Update();
 
 	if (backgroundModel != nullptr)
 	{
 		delete backgroundModel;
 	}
 
-	cmd = CMD_IN_WORLD2;
+    _Engine->SetGameState(new GameState_InWorld());
 
 	return true;
 }
@@ -299,18 +252,26 @@ bool GameState_Menu::LoadWorld(cvec3 _pos)
 
 MOUSE_MOVED_(GameState_Menu)
 {
-	if (cmd == CMD_IN_WORLD2 && enableFreeCamera)
-	{
-		vec2 mouseDelta = (_mousePos - lastMousePos) / Modules::config().GetWindowSize();
+    if (enableFreeCamera)
+    {
+        vec2 mouseDelta = (_mousePos - lastMousePos) / Modules::config().GetWindowSize();
 
-		_World->mainCamera->ProcessMouseMovement(mouseDelta.x, -mouseDelta.y);
+        _Render->mainCamera->ProcessMouseMovement(mouseDelta.x, -mouseDelta.y);
 
-		_Engine->GetAdapter()->SetMousePosition(lastMousePos);
-	}
+        _Engine->GetAdapter()->SetMousePosition(lastMousePos);
+    }
 }
 
 MOUSE_PRESSED(GameState_Menu)
 {
+    if (_button == OW_MOUSE_BUTTON_LEFT)
+    {
+        enableFreeCamera = true;
+        lastMousePos = _mousePos;
+        _Engine->GetAdapter()->HideCursor();
+        return true;
+    }
+
 	// Select point
 	if (cmd == CMD_SELECT2 && _mousePos.x >= 200 && _mousePos.x < 200 + 12 * 64 && _mousePos.y < 12 * 64)
 	{
@@ -338,33 +299,19 @@ MOUSE_PRESSED(GameState_Menu)
 		return true;
 	}
 
-	if (cmd == CMD_IN_WORLD2 && _button == OW_MOUSE_BUTTON_LEFT)
-	{
-		enableFreeCamera = true;
-		lastMousePos = _mousePos;
-		_Engine->GetAdapter()->HideCursor();
-		return true;
-	}
-
 	return false;
 }
 
 MOUSE_RELEASE(GameState_Menu)
 {
-	if (cmd == CMD_IN_WORLD2 && _button == OW_MOUSE_BUTTON_LEFT)
-	{
-		enableFreeCamera = false;
-		lastMousePos = VECTOR_ZERO;
-		_Engine->GetAdapter()->ShowCursor();
-		return true;
-	}
 
-	return false;
-}
+        enableFreeCamera = false;
+        lastMousePos = VECTOR_ZERO;
+        _Engine->GetAdapter()->ShowCursor();
+        return true;
 
-MOUSE_WHEEL(GameState_Menu)
-{
-	return false;
+
+    return false;
 }
 
 KEYBD_PRESSED(GameState_Menu)
@@ -374,29 +321,14 @@ KEYBD_PRESSED(GameState_Menu)
 		if (cmd == CMD_SELECT2)
 		{
 			cmd = CMD_NONE2;
-			_UIMgr->Attach(window);
-		}
-		else if (cmd == CMD_IN_WORLD2)
-		{
-			cmd = CMD_SELECT2;
-			_UIMgr->Attach(window);
+
+            m_MinimapUI->Detach();
+			//_UIMgr->Attach(window);
 		}
 		else
 		{
 			_Engine->Destroy();
 		}
-	}
-
-	if (_key == OW_KEY_X)
-	{
-		cameraSprint = true;
-		return true;
-	}
-
-	if (_key == OW_KEY_Z)
-	{
-		cameraSlow = true;
-		return true;
 	}
 
 	if (_key == OW_KEY_KP_1)
@@ -414,21 +346,11 @@ KEYBD_PRESSED(GameState_Menu)
 		Modules::config().draw_map_wmo_doodads = !Modules::config().draw_map_wmo_doodads;
 		return true;
 	}
-
 	if (_key == OW_KEY_KP_4)
 	{
 		Modules::config().draw_map_mdx = !Modules::config().draw_map_mdx;
 		return true;
 	}
-
-
-
-	if (_key == OW_KEY_KP_7)
-	{
-		Modules::config().disable_pipeline = !Modules::config().disable_pipeline;
-		return true;
-	}
-
 
 	if (_key == OW_KEY_C)
 	{
@@ -454,30 +376,6 @@ KEYBD_PRESSED(GameState_Menu)
 		return true;
 	}
 
-	// minimap
-	if (_key == OW_KEY_M)
-	{
-		minimapActive = !minimapActive;
-		return true;
-	}
-
-	return false;
-}
-
-KEYBD_RELEASE(GameState_Menu)
-{
-	if (_key == OW_KEY_X)
-	{
-		cameraSprint = false;
-		return true;
-	}
-
-	if (_key == OW_KEY_Z)
-	{
-		cameraSlow = false;
-		return true;
-	}
-
 	return false;
 }
 
@@ -492,9 +390,9 @@ void GameState_Menu::randBackground()
 
 	char* randui = ui[Random::GenerateMax(7)];
 	char path[256];
-	//sprintf_s(path, "Interface\\Glues\\Models\\UI_%s\\UI_%s.m2", randui, randui);
+	sprintf_s(path, "Interface\\Glues\\Models\\UI_%s\\UI_%s.m2", randui, randui);
 
-	backgroundModel = new MDX("Interface\\Glues\\Models\\UI_Scourge\\UI_Scourge.m2");
+	backgroundModel = new MDX(path);
 	backgroundModel->Init();
 	backgroundModel->m_IsBillboard = true;
 }

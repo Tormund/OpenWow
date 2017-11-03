@@ -20,10 +20,8 @@ public:
 	float l_const, l_linear, l_quadratic;
 
 public:
-	Camera* mainCamera;
 	Camera* testCamera;
 
-	uint32 rb;
 	uint32 rb2;
 };
 

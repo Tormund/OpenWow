@@ -1,54 +1,57 @@
 #pragma once
 
-class ConsoleCommandBase
+class ConsoleCommand
 {
 public:
-	ConsoleCommandBase(cstring _commandName, bool _hasArgs = false) : commandName(Utils::ToLower(_commandName)), hasArgs(_hasArgs) {}
+	ConsoleCommand(cstring _commandName, Function* _function) : m_Name(Utils::ToLower(_commandName)), m_Function(_function), m_HasArgs(false) {}
 
-	virtual void Execute() = 0;
-	virtual void Execute(cstring _args) = 0;
+    //
+
+    void Execute()
+    {
+        m_Function->operator()();
+    }
+
+    virtual void Execute(cstring _args)
+    {
+        fail2("Unable to call ConsoleCommand::Execute(cstring _args) in base class!");
+    }
 
 	// Get functional
 
-	inline const string GetName() const { return commandName; }
-	inline bool HasArgs() const { return hasArgs; }
+	const string GetName() const { return m_Name; }
+	bool HasArgs() const { return m_HasArgs; }
 
 protected:
-	string commandName;
-	bool hasArgs;
+	string     m_Name;
+	bool       m_HasArgs;
+    Function*  m_Function;
 };
 
-//
-
-template <class T>
-class ConsoleCommand : public ConsoleCommandBase
+template <class ARGTYPE>
+class ConsoleCommand_WA : public ConsoleCommand
 {
 public:
-	ConsoleCommand(cstring _commandName, Function<T>* _function, bool _hasArgs = false) : ConsoleCommandBase(_commandName, _hasArgs), function(_function) {}
+	ConsoleCommand_WA(cstring _commandName, Function* _function) : ConsoleCommand(_commandName, _function), m_HasArgs(true) {}
 
-	void Execute() override
-	{
-		function->operator()();
-	}
+    //
 
 	void Execute(cstring _args) override
 	{
-		T* value = new T;
+		ARGTYPE value;
 
-		if (Utils::TryParse(typeid(T), _args, value))
+		if (Utils::TryParse(typeid(ARGTYPE), _args, &value))
 		{
-			function->operator()(T(*(&value[0])));
+            Function_WA<ARGTYPE>* funcWA = dynamic_cast<Function_WA<ARGTYPE>*>(m_Function);
+            assert1(funcWA != nullptr);
+
+            funcWA->operator()(ARGTYPE(value));
 		}
 		else
 		{
-			Modules::log().Error("ConsoleCommand[%s]: Can't parse argument [%s] to [%s].", commandName.c_str(), _args.c_str(), typeid(T).name());
+			Modules::log().Error("ConsoleCommand_WA[%s]: Can't parse argument [%s] to [%s].", m_Name.c_str(), _args.c_str(), typeid(ARGTYPE).name());
 		}
-
-		delete value;
 	}
-
-private:
-	Function<T>* function;
 };
 
 //
@@ -56,15 +59,15 @@ private:
 class Console
 {
 public:
-	typedef vector<ConsoleCommandBase*> ConsoleCommands;
+	typedef vector<ConsoleCommand*> ConsoleCommands;
 
 public:
 	static void AddCommonCommands();
 
 	//
 
-	static bool AddConsoleCommand(ConsoleCommandBase* _command);
-	static ConsoleCommandBase* GetConsoleCommandByName(cstring _commandName);
+	static bool AddConsoleCommand(ConsoleCommand* _command);
+	static ConsoleCommand* GetConsoleCommandByName(cstring _commandName);
 
 protected:
 	static ConsoleCommands GetConsoleCommandHelp(string _input);
@@ -76,11 +79,11 @@ private:
 };
 
 // With args
-#define ADDCONSOLECOMMAND_WITHARGS(commandName, func, argType)                         Console::AddConsoleCommand(new ConsoleCommand<argType>(commandName, FUNCTION_WITHARGS(func, argType), true));
-#define ADDCONSOLECOMMAND_STATIC_CLASS_WITHARGS(commandName, className, func, argType) Console::AddConsoleCommand(new ConsoleCommand<argType>(commandName, STATIC_FUNCTION_WITHARGS(className, func, argType), true));
-#define ADDCONSOLECOMMAND_CLASS_WITHARGS(commandName, className, func, argType)        Console::AddConsoleCommand(new ConsoleCommand<argType>(commandName, CLASS_FUNCTION_WITHARGS(className, this, func, argType), true));
+#define ADDCONSOLECOMMAND_WITHARGS(commandName, func, argType)                      Console::AddConsoleCommand(new ConsoleCommand_WA<argType>(commandName, FUNCTION_WA_Builder(func, argType)));
+#define ADDCONSOLECOMMAND_STATIC_WITHARGS(commandName, className, func, argType)    Console::AddConsoleCommand(new ConsoleCommand_WA<argType>(commandName, FUNCTION_STATIC_WA_Builder(className, func, argType)));
+#define ADDCONSOLECOMMAND_CLASS_WITHARGS(commandName, className, func, argType)     Console::AddConsoleCommand(new ConsoleCommand_WA<argType>(commandName, FUNCTION_CLASS_WA_Builder(className, this, func, argType)));
 
 // Without args
-#define ADDCONSOLECOMMAND(commandName, func)                                           Console::AddConsoleCommand(new ConsoleCommand<void*>(commandName, FUNCTION(func)));
-#define ADDCONSOLECOMMAND_STATIC_CLASS(commandName, className, func)                   Console::AddConsoleCommand(new ConsoleCommand<void*>(commandName, STATIC_FUNCTION(className, func)));
-#define ADDCONSOLECOMMAND_CLASS(commandName, className, func)                          Console::AddConsoleCommand(new ConsoleCommand<void*>(commandName, CLASS_FUNCTION(className, this, func)));
+#define ADDCONSOLECOMMAND(commandName, func)                    Console::AddConsoleCommand(new ConsoleCommand(commandName, FUNCTION_Builder(func)));
+#define ADDCONSOLECOMMAND_STATIÑ(commandName, className, func)  Console::AddConsoleCommand(new ConsoleCommand(commandName, FUNCTION_STATIC_Builder(className, func)));
+#define ADDCONSOLECOMMAND_CLASS(commandName, className, func)   Console::AddConsoleCommand(new ConsoleCommand(commandName, FUNCTION_CLASS_Builder(className, this, func)));

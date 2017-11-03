@@ -28,7 +28,7 @@ EngineConfig::EngineConfig()
 	enableMCLV = true;
 
 	// Perfomance
-	disable_pipeline = false;
+
 }
 
 EngineConfig::~EngineConfig()
