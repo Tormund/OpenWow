@@ -3,7 +3,6 @@
 class Module;
 class InputListenerObject;
 class UIElement;
-class UIWindow;
 
 class UIMgr : public UpdatableObject, public RenderableUIObject, public Module, public InputListenerObject
 {
@@ -12,17 +11,25 @@ public:
 
 	//
 
-	void Attach(UIElement* _element);
+	void AttachToRoot(UIElement* _element);
+    void DetachFromRoot(UIElement* _element, bool _checkChilds = false);
+
+    void AttachElementToParent(UIElement* _element, UIElement* _parent);
 
 	// Common functional
 
 	void Update(double t, double dt) override;
 	void RenderUI() override;
 
+    // Root element
+
+    UIElement* GetRootElement() const { return m_RootElement; }
+    void SetRootElement(UIElement* _element) { m_RootElement = _element; }
+
 	// Focus
 
-	inline UIElement* GetFocus() const { return focusedElement; }
-	inline void SetFocus(UIElement* _element) { focusedElement = _element; }
+	UIElement* GetFocus() const { return m_FocusedElement; }
+	void SetFocus(UIElement* _element) { m_FocusedElement = _element; }
 
 	// Input functional
 
@@ -42,18 +49,16 @@ private:
 	void DeleteUIElement(UIElement* _element);
 
 private:
-	vec2 screenSize;
-	unsigned long long idCounter;
-	UIWindow* baseWindow;
+	uint32              m_IDCounter;
+    UIElement*          m_RootElement;
+    UIElement*          m_FocusedElement;
 
-	vector<UIElement*> objectsToDetach;
-	vector<UIElement*> objectsToDelete;
-	UIElement* focusedElement;
-
+	vector<UIElement*>  m_ObjectsToDetach;
+	vector<UIElement*>  m_ObjectsToDelete;
+	
     //
 
     friend UIElement;
-    friend UIWindow;
 };
 
 #define _UIMgr UIMgr::instance()

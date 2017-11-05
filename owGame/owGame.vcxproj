@@ -21,10 +21,9 @@
   <ItemGroup>
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="GameState.cpp" />
+    <ClCompile Include="GameStateManager.cpp" />
     <ClCompile Include="OpenGLAdapter.cpp" />
     <ClCompile Include="RenderableItem.cpp" />
-    <ClCompile Include="UpdatableObject.cpp" />
-    <ClCompile Include="UpdatableObjectCollection.cpp" />
     <ClCompile Include="SceneNode.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
@@ -32,10 +31,9 @@
     <ClInclude Include="..\shared\owGame.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="GameState.h" />
+    <ClInclude Include="GameStateManager.h" />
     <ClInclude Include="OpenGLAdapter.h" />
     <ClInclude Include="RenderableItem.h" />
-    <ClInclude Include="UpdatableObject.h" />
-    <ClInclude Include="UpdatableObjectCollection.h" />
     <ClInclude Include="SceneNode.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>

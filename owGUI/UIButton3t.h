@@ -11,7 +11,7 @@ public:
 
     void Init(cvec2 _position, cstring _textureName);
 
-    virtual void Render();
+    virtual void OnRenderUI() override;
 
 protected:
     Image* buttonsImages[4];

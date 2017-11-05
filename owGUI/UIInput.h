@@ -12,15 +12,15 @@ public:
 
     //
 
-    void SetInputString(cstring _inputString) { text = _inputString; }
+    void SetInputString(cstring _inputString) { m_Text = _inputString; }
     void SetInputMaxLenght(int _inputStringMaxLenght) { inputStringMaxLenght = _inputStringMaxLenght; }
     void SetInputMode(InputMode _inputMode) { inputMode = _inputMode; }
 
-    string Data() const { return text; }
+    string Data() const { return m_Text; }
 
     //
 
-    virtual void Render();
+    virtual void OnRenderUI();
 
     V_MOUSE_PRESSED;
     V_KEYBD_PRESSED;

@@ -5,6 +5,7 @@
 class UIButton : public UIElement
 {
     typedef UIElement base;
+
 public:
     UIButton();
     virtual ~UIButton();
@@ -14,14 +15,13 @@ public:
     void SetAction(Function* _onPress);
     void CallAction(int _button, int _mods, cvec2 _mousePos);
 
-    virtual void Enable();
-    virtual void Disable();
+    virtual void Show();
+    virtual void Hide();
 
     V_MOUSE_MOVED;
+    virtual void OnMouseLeaved();
     V_MOUSE_PRESSED;
     V_MOUSE_RELEASE;
-
-    virtual void OnMouseLeaved();
 
 protected:
     Function* onPressFunction;
@@ -42,7 +42,7 @@ protected:
     if(_uielement != nullptr){\
         UIButton* elemAsBtn = dynamic_cast<UIButton*>(_uielement);\
         if (elemAsBtn != nullptr) { \
-            elemAsBtn->SetAction(MACRO_FUNCTION(_funcName));\
+            elemAsBtn->SetAction(FUNCTION_CLASS_SA_Builder(_funcName));\
         }\
     }\
 }*/

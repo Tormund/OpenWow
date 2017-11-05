@@ -11,15 +11,15 @@ UIInput::UIInput() : base()
 	inputStringMaxLenght = 15;
 	inputMode = InputMode::MODE_ANY;
 
-	textEnable = true;
-	text = "";
+	m_IsTextEnable = true;
+	m_Text = "";
 }
 
 void UIInput::Init(cvec2 _position, cvec2 _size, InputMode _inputMode)
 {
-	textOffset = vec2(6, _size.y / 2);
-	textAlignW = TextAlignW::TEXT_ALIGNW_LEFT;
-	textAlignH = TextAlignH::TEXT_ALIGNH_CENTER;
+	m_TextOffset = vec2(6, _size.y / 2);
+	m_TextAlignW = TextAlignW::TEXT_ALIGNW_LEFT;
+	m_TextAlignH = TextAlignH::TEXT_ALIGNH_CENTER;
 
 	inputMode = _inputMode;
 
@@ -28,15 +28,15 @@ void UIInput::Init(cvec2 _position, cvec2 _size, InputMode _inputMode)
 	base::Init(_position, _size, new Image(inputTexture));
 }
 
-void UIInput::Render()
+void UIInput::OnRenderUI()
 {
-	base::Render();
+	base::OnRenderUI();
 
 	if (_UIMgr->GetFocus() == this)
-		_Render->RenderRectangleOutline(GetPosition() + vec2(2, 2), size - vec2(4, 4), COLOR_WHITE);
+		_Render->RenderRectangleOutline(GetPosition() + vec2(2, 2), m_Size - vec2(4, 4), COLOR_WHITE);
 }
 
-MOUSE_PRESSED(UIInput)
+On_Mouse_Pressed(UIInput)
 {
 	if (_UIMgr->GetFocus() == this)
 		_UIMgr->SetFocus(nullptr);
@@ -46,14 +46,14 @@ MOUSE_PRESSED(UIInput)
 	return true;
 }
 
-KEYBD_PRESSED(UIInput)
+On_Keyboard_Pressed(UIInput)
 {
 	if (_UIMgr->GetFocus() != this)
 		return false;
 
-	if (_key == OW_KEY_BACKSPACE && text.length() > 0)
+	if (_key == OW_KEY_BACKSPACE && m_Text.length() > 0)
 	{
-		text.pop_back();
+		m_Text.pop_back();
 
 		return true;
 	}
@@ -61,12 +61,12 @@ KEYBD_PRESSED(UIInput)
 	return false;
 }
 
-CHAR_INPUT(UIInput)
+On_Character_Printed(UIInput)
 {
 	if (_UIMgr->GetFocus() != this)
 		return false;
 
-	if (text.length() > inputStringMaxLenght - 1)
+	if (m_Text.length() > inputStringMaxLenght - 1)
 		return true;
 
 	if (inputMode == MODE_CHARACTERS && (_char < 'a' || _char > 'z') && (_char < 'A' || _char > 'Z'))
@@ -75,7 +75,7 @@ CHAR_INPUT(UIInput)
 	if (inputMode == MODE_NUMBERS && (_char < '0' || _char > '9'))
 		return true;
 
-	text += char(_char);
+	m_Text += char(_char);
 
 	return true;
 }

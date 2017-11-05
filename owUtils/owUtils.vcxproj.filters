@@ -1,0 +1,222 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Files">
+      <UniqueIdentifier>{51b84f54-cbb0-4a65-9203-96380aca6299}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RefManager">
+      <UniqueIdentifier>{1e0aa16e-9a5d-41ce-ba51-305029359e7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RefManager\2 Dim">
+      <UniqueIdentifier>{d7879282-8d68-4c32-8b0b-ca4948a9fc99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RefManager\2 Dim\Simple">
+      <UniqueIdentifier>{86fc22ef-41b0-4b34-846f-8e0e94f08f04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RefManager\1 Dim">
+      <UniqueIdentifier>{364d279b-b6fe-4433-9fa9-0e522f3e1221}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RefManager\Items">
+      <UniqueIdentifier>{cd89c663-5455-491b-b7bb-ff5790697a69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils &amp; Helpers">
+      <UniqueIdentifier>{ef01fae2-1fd7-4937-ab5c-8763ec202dd6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files\LocalFile">
+      <UniqueIdentifier>{c5843f27-a998-440f-b88d-9826bb29194f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files\MPQFile">
+      <UniqueIdentifier>{07300169-73f9-4809-8663-0e8fbdb3589c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files\XMLFile">
+      <UniqueIdentifier>{2d4c8544-c710-4346-8de2-c547f9f5db3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files\INIFile">
+      <UniqueIdentifier>{bb2177ab-e922-4b42-878d-49a18a36fc63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RefManager\1 Dim Assync">
+      <UniqueIdentifier>{5c44a7fc-a9a9-4eb0-91bf-99900a34046c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common">
+      <UniqueIdentifier>{d3676bbf-d093-460e-875e-6d61fb171ed1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Types">
+      <UniqueIdentifier>{de8a75b4-8f47-4cf8-90f6-6e82895a1cb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Functions">
+      <UniqueIdentifier>{e1452d17-0e18-4f20-9cac-ed75a9caee9f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ByteBuffer.cpp">
+      <Filter>Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="RefSimpleManagers.cpp">
+      <Filter>RefManager\2 Dim\Simple</Filter>
+    </ClCompile>
+    <ClCompile Include="RefManager1Dim.cpp">
+      <Filter>RefManager\1 Dim</Filter>
+    </ClCompile>
+    <ClCompile Include="RefItem.cpp">
+      <Filter>RefManager\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="RefItemNamed.cpp">
+      <Filter>RefManager\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Utils &amp; Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="UtilsConvert.cpp">
+      <Filter>Utils &amp; Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="Random.cpp">
+      <Filter>Utils &amp; Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="File.cpp">
+      <Filter>Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseFile.cpp">
+      <Filter>Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LocalFile.cpp">
+      <Filter>Files\LocalFile</Filter>
+    </ClCompile>
+    <ClCompile Include="MPQFile.cpp">
+      <Filter>Files\MPQFile</Filter>
+    </ClCompile>
+    <ClCompile Include="XMLFile.cpp">
+      <Filter>Files\XMLFile</Filter>
+    </ClCompile>
+    <ClCompile Include="INIFile.cpp">
+      <Filter>Files\INIFile</Filter>
+    </ClCompile>
+    <ClCompile Include="RefManager2Dim.cpp">
+      <Filter>RefManager\2 Dim</Filter>
+    </ClCompile>
+    <ClCompile Include="ContainerAssync.cpp">
+      <Filter>RefManager</Filter>
+    </ClCompile>
+    <ClCompile Include="RefManager1DimAssync.cpp">
+      <Filter>RefManager\1 Dim Assync</Filter>
+    </ClCompile>
+    <ClCompile Include="Primitives.cpp">
+      <Filter>Common\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="SmartItemPtr.cpp">
+      <Filter>RefManager\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="MPQArchiveStorage.cpp">
+      <Filter>Files\MPQFile</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Rect.h">
+      <Filter>Common\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Color.h">
+      <Filter>Common\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="ByteBuffer.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Types.h">
+      <Filter>Common\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="common.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="RefSimpleManagers.h">
+      <Filter>RefManager\2 Dim\Simple</Filter>
+    </ClInclude>
+    <ClInclude Include="RefManager1Dim.h">
+      <Filter>RefManager\1 Dim</Filter>
+    </ClInclude>
+    <ClInclude Include="RefItem.h">
+      <Filter>RefManager\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="RefItemNamed.h">
+      <Filter>RefManager\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Utils &amp; Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Random.h">
+      <Filter>Utils &amp; Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="File.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseFile.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LocalFile.h">
+      <Filter>Files\LocalFile</Filter>
+    </ClInclude>
+    <ClInclude Include="MPQFile.h">
+      <Filter>Files\MPQFile</Filter>
+    </ClInclude>
+    <ClInclude Include="XMLFile.h">
+      <Filter>Files\XMLFile</Filter>
+    </ClInclude>
+    <ClInclude Include="INIFile.h">
+      <Filter>Files\INIFile</Filter>
+    </ClInclude>
+    <ClInclude Include="RefManager2Dim.h">
+      <Filter>RefManager\2 Dim</Filter>
+    </ClInclude>
+    <ClInclude Include="ContainerAssync.h">
+      <Filter>RefManager</Filter>
+    </ClInclude>
+    <ClInclude Include="RefManager1DimAssync.h">
+      <Filter>RefManager\1 Dim Assync</Filter>
+    </ClInclude>
+    <ClInclude Include="Primitives.h">
+      <Filter>Common\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>Common\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="SmartItemPtr.h">
+      <Filter>RefManager\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Macros.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Math.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Consts.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="MPQArchiveStorage.h">
+      <Filter>Files\MPQFile</Filter>
+    </ClInclude>
+    <ClInclude Include="Function.h">
+      <Filter>Common\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="FunctionWA.h">
+      <Filter>Common\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="FunctionSA.h">
+      <Filter>Common\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\shared\owUtils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="RefManager1Dim.inl">
+      <Filter>RefManager\1 Dim</Filter>
+    </None>
+    <None Include="RefManager2Dim.inl">
+      <Filter>RefManager\2 Dim</Filter>
+    </None>
+    <None Include="RefManager1DimAssync.inl">
+      <Filter>RefManager\1 Dim Assync</Filter>
+    </None>
+  </ItemGroup>
+</Project>

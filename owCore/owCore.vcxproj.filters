@@ -1,308 +1,136 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Files">
-      <UniqueIdentifier>{51b84f54-cbb0-4a65-9203-96380aca6299}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Module">
       <UniqueIdentifier>{0aac1f61-7524-4d73-a6d5-ac5839c221d8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="RefManager">
-      <UniqueIdentifier>{1e0aa16e-9a5d-41ce-ba51-305029359e7a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="RefManager\2 Dim">
-      <UniqueIdentifier>{d7879282-8d68-4c32-8b0b-ca4948a9fc99}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="RefManager\2 Dim\Simple">
-      <UniqueIdentifier>{86fc22ef-41b0-4b34-846f-8e0e94f08f04}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="RefManager\1 Dim">
-      <UniqueIdentifier>{364d279b-b6fe-4433-9fa9-0e522f3e1221}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="RefManager\Items">
-      <UniqueIdentifier>{cd89c663-5455-491b-b7bb-ff5790697a69}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Utils &amp; Helpers">
-      <UniqueIdentifier>{ef01fae2-1fd7-4937-ab5c-8763ec202dd6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Files\LocalFile">
-      <UniqueIdentifier>{c5843f27-a998-440f-b88d-9826bb29194f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Files\MPQFile">
-      <UniqueIdentifier>{07300169-73f9-4809-8663-0e8fbdb3589c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Files\XMLFile">
-      <UniqueIdentifier>{2d4c8544-c710-4346-8de2-c547f9f5db3b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Files\INIFile">
-      <UniqueIdentifier>{bb2177ab-e922-4b42-878d-49a18a36fc63}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="RefManager\1 Dim Assync">
-      <UniqueIdentifier>{5c44a7fc-a9a9-4eb0-91bf-99900a34046c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Common">
-      <UniqueIdentifier>{d3676bbf-d093-460e-875e-6d61fb171ed1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Common\Types">
-      <UniqueIdentifier>{de8a75b4-8f47-4cf8-90f6-6e82895a1cb0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Module\Modules">
+    <Filter Include="Modules">
       <UniqueIdentifier>{4aa1f860-699a-4d6b-8666-bec8a72cc459}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Module\Modules\Engine Config">
+    <Filter Include="Modules\Engine Config">
       <UniqueIdentifier>{35b2f0fd-f641-4615-afb4-a501e7934900}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Module\Modules\Engine Log">
+    <Filter Include="Modules\Engine Log">
       <UniqueIdentifier>{ef746966-5439-4659-9eaa-b5406a1f5be7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Module\Modules\Engine Log\Common">
+    <Filter Include="Modules\Engine Log\Common">
       <UniqueIdentifier>{154efe91-d5a0-4a4d-9b1d-d053b1d5228b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Module\Modules\Resource Manager">
+    <Filter Include="Modules\Resource Manager">
       <UniqueIdentifier>{c7b2f916-0dad-48d0-b7f5-33e8dc424232}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Module\Modules\Input">
+    <Filter Include="Modules\Input">
       <UniqueIdentifier>{99cc3793-975f-4c86-9eee-6ca69f13a6d3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Module\Modules\Input\Objects bindings">
-      <UniqueIdentifier>{6e2425d8-a04f-4c17-9af9-7b1fa9d8175b}</UniqueIdentifier>
+    <Filter Include="Objects bindings">
+      <UniqueIdentifier>{680fac37-3ad8-4dee-8e50-970c2b108e10}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Common\Functions">
-      <UniqueIdentifier>{e1452d17-0e18-4f20-9cac-ed75a9caee9f}</UniqueIdentifier>
+    <Filter Include="Files">
+      <UniqueIdentifier>{781db389-d5b3-4a55-adb5-b3932aa0f29d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects bindings\InputListener">
+      <UniqueIdentifier>{f400cd3d-efd4-46f3-8112-839652569195}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects bindings\RenderableUI">
+      <UniqueIdentifier>{ad7d491c-30d8-4ae5-87a9-05c22024d8b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects bindings\Updatable">
+      <UniqueIdentifier>{fff12d46-8046-4520-a392-ec2dd7cea339}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Input.cpp">
-      <Filter>Module\Modules\Input</Filter>
+      <Filter>Modules\Input</Filter>
     </ClCompile>
-    <ClCompile Include="ByteBuffer.cpp">
-      <Filter>Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FileSystem.cpp" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="RefSimpleManagers.cpp">
-      <Filter>RefManager\2 Dim\Simple</Filter>
+    <ClCompile Include="EngineConfig.cpp">
+      <Filter>Modules\Engine Config</Filter>
     </ClCompile>
-    <ClCompile Include="RefManager1Dim.cpp">
-      <Filter>RefManager\1 Dim</Filter>
+    <ClCompile Include="EngineLog.cpp">
+      <Filter>Modules\Engine Log</Filter>
     </ClCompile>
-    <ClCompile Include="RefItem.cpp">
-      <Filter>RefManager\Items</Filter>
+    <ClCompile Include="Console.cpp">
+      <Filter>Modules\Engine Log\Common</Filter>
     </ClCompile>
-    <ClCompile Include="RefItemNamed.cpp">
-      <Filter>RefManager\Items</Filter>
+    <ClCompile Include="DebugOutput.cpp">
+      <Filter>Modules\Engine Log\Common</Filter>
     </ClCompile>
-    <ClCompile Include="Utils.cpp">
-      <Filter>Utils &amp; Helpers</Filter>
-    </ClCompile>
-    <ClCompile Include="UtilsConvert.cpp">
-      <Filter>Utils &amp; Helpers</Filter>
-    </ClCompile>
-    <ClCompile Include="Random.cpp">
-      <Filter>Utils &amp; Helpers</Filter>
-    </ClCompile>
-    <ClCompile Include="File.cpp">
-      <Filter>Files</Filter>
-    </ClCompile>
-    <ClCompile Include="BaseFile.cpp">
-      <Filter>Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LocalFile.cpp">
-      <Filter>Files\LocalFile</Filter>
-    </ClCompile>
-    <ClCompile Include="MPQFile.cpp">
-      <Filter>Files\MPQFile</Filter>
-    </ClCompile>
-    <ClCompile Include="XMLFile.cpp">
-      <Filter>Files\XMLFile</Filter>
-    </ClCompile>
-    <ClCompile Include="INIFile.cpp">
-      <Filter>Files\INIFile</Filter>
-    </ClCompile>
-    <ClCompile Include="RefManager2Dim.cpp">
-      <Filter>RefManager\2 Dim</Filter>
-    </ClCompile>
-    <ClCompile Include="ContainerAssync.cpp">
-      <Filter>RefManager</Filter>
-    </ClCompile>
-    <ClCompile Include="RefManager1DimAssync.cpp">
-      <Filter>RefManager\1 Dim Assync</Filter>
-    </ClCompile>
-    <ClCompile Include="Primitives.cpp">
-      <Filter>Common\Types</Filter>
-    </ClCompile>
-    <ClCompile Include="SmartItemPtr.cpp">
-      <Filter>RefManager\Items</Filter>
+    <ClCompile Include="ResourcesManager.cpp">
+      <Filter>Modules\Resource Manager</Filter>
     </ClCompile>
     <ClCompile Include="Modules.cpp">
       <Filter>Module</Filter>
     </ClCompile>
-    <ClCompile Include="EngineConfig.cpp">
-      <Filter>Module\Modules\Engine Config</Filter>
-    </ClCompile>
-    <ClCompile Include="EngineLog.cpp">
-      <Filter>Module\Modules\Engine Log</Filter>
-    </ClCompile>
-    <ClCompile Include="Console.cpp">
-      <Filter>Module\Modules\Engine Log\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="DebugOutput.cpp">
-      <Filter>Module\Modules\Engine Log\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="ResourcesManager.cpp">
-      <Filter>Module\Modules\Resource Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="MPQArchiveStorage.cpp">
-      <Filter>Files\MPQFile</Filter>
-    </ClCompile>
-    <ClCompile Include="InputListenerCollection.cpp">
-      <Filter>Module\Modules\Input\Objects bindings</Filter>
+    <ClCompile Include="Module.cpp">
+      <Filter>Module</Filter>
     </ClCompile>
     <ClCompile Include="InputListener.cpp">
-      <Filter>Module\Modules\Input\Objects bindings</Filter>
+      <Filter>Objects bindings\InputListener</Filter>
+    </ClCompile>
+    <ClCompile Include="InputListenerCollection.cpp">
+      <Filter>Objects bindings\InputListener</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderableUIObject.cpp">
+      <Filter>Objects bindings\RenderableUI</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderableUIObjectCollection.cpp">
+      <Filter>Objects bindings\RenderableUI</Filter>
+    </ClCompile>
+    <ClCompile Include="UpdatableObject.cpp">
+      <Filter>Objects bindings\Updatable</Filter>
+    </ClCompile>
+    <ClCompile Include="UpdatableObjectCollection.cpp">
+      <Filter>Objects bindings\Updatable</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Rect.h">
-      <Filter>Common\Types</Filter>
+    <ClInclude Include="Input.h">
+      <Filter>Modules\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\shared\owCore.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="InputKeys.h">
+      <Filter>Modules\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineConfig.h">
+      <Filter>Modules\Engine Config</Filter>
+    </ClInclude>
+    <ClInclude Include="Console.h">
+      <Filter>Modules\Engine Log\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugOutput.h">
+      <Filter>Modules\Engine Log\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourcesManager.h">
+      <Filter>Modules\Resource Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineLog.h">
+      <Filter>Modules\Engine Log</Filter>
     </ClInclude>
     <ClInclude Include="Module.h">
       <Filter>Module</Filter>
     </ClInclude>
-    <ClInclude Include="Color.h">
-      <Filter>Common\Types</Filter>
-    </ClInclude>
-    <ClInclude Include="Input.h">
-      <Filter>Module\Modules\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="ByteBuffer.h">
-      <Filter>Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FileSystem.h" />
-    <ClInclude Include="Types.h">
-      <Filter>Common\Types</Filter>
-    </ClInclude>
-    <ClInclude Include="common.h" />
-    <ClInclude Include="..\shared\owCore.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="RefSimpleManagers.h">
-      <Filter>RefManager\2 Dim\Simple</Filter>
-    </ClInclude>
-    <ClInclude Include="RefManager1Dim.h">
-      <Filter>RefManager\1 Dim</Filter>
-    </ClInclude>
-    <ClInclude Include="RefItem.h">
-      <Filter>RefManager\Items</Filter>
-    </ClInclude>
-    <ClInclude Include="RefItemNamed.h">
-      <Filter>RefManager\Items</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils.h">
-      <Filter>Utils &amp; Helpers</Filter>
-    </ClInclude>
-    <ClInclude Include="Random.h">
-      <Filter>Utils &amp; Helpers</Filter>
-    </ClInclude>
-    <ClInclude Include="File.h">
-      <Filter>Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BaseFile.h">
-      <Filter>Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LocalFile.h">
-      <Filter>Files\LocalFile</Filter>
-    </ClInclude>
-    <ClInclude Include="MPQFile.h">
-      <Filter>Files\MPQFile</Filter>
-    </ClInclude>
-    <ClInclude Include="XMLFile.h">
-      <Filter>Files\XMLFile</Filter>
-    </ClInclude>
-    <ClInclude Include="INIFile.h">
-      <Filter>Files\INIFile</Filter>
-    </ClInclude>
-    <ClInclude Include="RefManager2Dim.h">
-      <Filter>RefManager\2 Dim</Filter>
-    </ClInclude>
-    <ClInclude Include="ContainerAssync.h">
-      <Filter>RefManager</Filter>
-    </ClInclude>
-    <ClInclude Include="RefManager1DimAssync.h">
-      <Filter>RefManager\1 Dim Assync</Filter>
-    </ClInclude>
-    <ClInclude Include="Primitives.h">
-      <Filter>Common\Types</Filter>
-    </ClInclude>
-    <ClInclude Include="Timer.h">
-      <Filter>Common\Types</Filter>
-    </ClInclude>
-    <ClInclude Include="SmartItemPtr.h">
-      <Filter>RefManager\Items</Filter>
-    </ClInclude>
-    <ClInclude Include="Macros.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Math.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Platform.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Consts.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="InputKeys.h">
-      <Filter>Module\Modules\Input</Filter>
-    </ClInclude>
     <ClInclude Include="Modules.h">
       <Filter>Module</Filter>
     </ClInclude>
-    <ClInclude Include="EngineConfig.h">
-      <Filter>Module\Modules\Engine Config</Filter>
-    </ClInclude>
-    <ClInclude Include="Console.h">
-      <Filter>Module\Modules\Engine Log\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="DebugOutput.h">
-      <Filter>Module\Modules\Engine Log\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="ResourcesManager.h">
-      <Filter>Module\Modules\Resource Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="EngineLog.h">
-      <Filter>Module\Modules\Engine Log</Filter>
-    </ClInclude>
-    <ClInclude Include="Debug.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="MPQArchiveStorage.h">
-      <Filter>Files\MPQFile</Filter>
+    <ClInclude Include="common.h" />
+    <ClInclude Include="InputListener.h">
+      <Filter>Objects bindings\InputListener</Filter>
     </ClInclude>
     <ClInclude Include="InputListenerCollection.h">
-      <Filter>Module\Modules\Input\Objects bindings</Filter>
+      <Filter>Objects bindings\InputListener</Filter>
     </ClInclude>
-    <ClInclude Include="InputListener.h">
-      <Filter>Module\Modules\Input\Objects bindings</Filter>
+    <ClInclude Include="RenderableUIObjectCollection.h">
+      <Filter>Objects bindings\RenderableUI</Filter>
     </ClInclude>
-    <ClInclude Include="Function.h">
-      <Filter>Common\Functions</Filter>
+    <ClInclude Include="RenderableUIObject.h">
+      <Filter>Objects bindings\RenderableUI</Filter>
     </ClInclude>
-    <ClInclude Include="FunctionWA.h">
-      <Filter>Common\Functions</Filter>
+    <ClInclude Include="UpdatableObject.h">
+      <Filter>Objects bindings\Updatable</Filter>
     </ClInclude>
-    <ClInclude Include="FunctionSA.h">
-      <Filter>Common\Functions</Filter>
+    <ClInclude Include="UpdatableObjectCollection.h">
+      <Filter>Objects bindings\Updatable</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="RefManager1Dim.inl">
-      <Filter>RefManager\1 Dim</Filter>
-    </None>
-    <None Include="RefManager2Dim.inl">
-      <Filter>RefManager\2 Dim</Filter>
-    </None>
-    <None Include="RefManager1DimAssync.inl">
-      <Filter>RefManager\1 Dim Assync</Filter>
-    </None>
   </ItemGroup>
 </Project>

@@ -79,22 +79,49 @@ void RenderGL::Set2D()
 
 void RenderGL::RenderImage(vec2 _pos, Image* _image)
 {
-	RenderTexture(_pos - _image->offset, _image->texture, _image->size, _image->coords);
+    RenderImage(_pos, _image, _image->GetSize());
 }
 
 void RenderGL::RenderImage(vec2 _pos, Image* _image, vec2 _size)
 {
-	RenderTexture(_pos - _image->offset, _image->texture, _size, _image->coords);
+    // Transform
+    _Pipeline->Clear();
+    _Pipeline->Translate(_pos.x + _size.x / 2.0f, _pos.y + _size.y / 2.0f, 0.0f);
+    _Pipeline->Scale(_size.x / 2.0f, _size.y / 2.0f, 0.0f);
+
+    // Update buffer
+    vector<vec2> texCoordsQuad;
+    texCoordsQuad.push_back(vec2(_image->GetCoords().p0.x, _image->GetCoords().p0.y));
+    texCoordsQuad.push_back(vec2(_image->GetCoords().p1.x, _image->GetCoords().p0.y));
+    texCoordsQuad.push_back(vec2(_image->GetCoords().p0.x, _image->GetCoords().p1.y));
+    texCoordsQuad.push_back(vec2(_image->GetCoords().p1.x, _image->GetCoords().p1.y));
+    _Render->r->updateBufferData(_RenderStorage->__vbQuadVTDynamic, 4 * sizeof(vec2), 4 * sizeof(vec2), texCoordsQuad.data());
+
+    // Shader
+    _TechniquesMgr->m_UI_Texture->BindS();
+    _TechniquesMgr->m_UI_Texture->SetProjectionMatrix(m_OrhoMatrix * _Pipeline->GetWorld());
+
+    // State
+    r->setTexture(10, _image->GetTexture()->GetObj(), SS_FILTER_BILINEAR | SS_ANISO16 | SS_ADDR_CLAMP, 0);
+    r->setGeometry(_RenderStorage->__QuadVTDynamic);
+    r->drawIndexed(PRIM_TRILIST, 0, 6, 0, 4);
+
+    _TechniquesMgr->m_UI_Texture->Unbind();
 }
 
 //
 
-void RenderGL::RenderTexture(vec2 _pos, Texture* _texture, vec2 _size, const Rect& _coords)
+void RenderGL::RenderTexture(vec2 _pos, Texture* _texture)
 {
-	RenderTexture(_pos, _texture->GetObj(), _size, _coords);
+    RenderTexture(_pos, _texture->GetObj(), _texture->GetSize());
 }
 
-void RenderGL::RenderTexture(vec2 _pos, uint32 _texture, vec2 _size, const Rect& _coords)
+void RenderGL::RenderTexture(vec2 _pos, Texture* _texture, vec2 _size)
+{
+	RenderTexture(_pos, _texture->GetObj(), _size);
+}
+
+void RenderGL::RenderTexture(vec2 _pos, uint32 _texture, vec2 _size)
 {
 	// Transform
 	_Pipeline->Clear();

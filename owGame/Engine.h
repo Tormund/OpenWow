@@ -1,6 +1,5 @@
 #pragma once
 
-#include "GameState.h"
 #include "OpenGLAdapter.h"
 
 class Engine
@@ -14,9 +13,6 @@ public:
 
 	bool SetAdapter(OpenGLAdapter* _openGLAdapter);
 	OpenGLAdapter* GetAdapter() { return m_OpenGLAdapter; }
-
-	bool SetGameState(GameState* _newGameState);
-	GameState* GetGameState() const { return currentGameState; }
 
 	bool Tick();
 
@@ -40,7 +36,7 @@ public:
 private:
 	vector<string> m_Arguments;
 	bool needExit;
-	GameState* currentGameState;
+
 
 	uint32 framesCounter, framesPerSecond;
 	double framesTimer;

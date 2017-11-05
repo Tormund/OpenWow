@@ -2,8 +2,6 @@
 
 // Common includes
 #include "../owRender/Common.h"
-#include "../owRender/RenderableUIObject.h"
-#include "../owRender/RenderableUIObjectCollection.h"
 
 // Render
 #include "../owRender/Camera.h"

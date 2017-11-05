@@ -80,9 +80,9 @@ void UIFile::Show() const
 {
 	assert1(rootElement != nullptr);
 	if (parent != nullptr)
-		rootElement->Attach(parent);
+		rootElement->AttachTo(parent);
 	else
-		_UIMgr->Attach(rootElement);
+		_UIMgr->AttachToRoot(rootElement);
 }
 
 void UIFile::Hide() const
@@ -116,7 +116,7 @@ bool UIFile::ProcessXMLNode(XMLNode* _node, UIElement* _parent)
 			Modules::log().Error("UIFile[%s]: Can't attach node [%s] to parent node (is not UIWindow).", nodeClassType.c_str());
 			return false;
 		}
-		element->Attach(parentAsUIWindow);
+		element->AttachTo(parentAsUIWindow);
 	}
 
 	UIWindow* elementAsUIWindow = dynamic_cast<UIWindow*>(element);
@@ -322,5 +322,5 @@ Image* UIFile::GetImage(XMLNode* _node)
 	buff = imageNode->GetKeyValue("offset");
 	vec2 imageRenderOffset = Utils::ToPoint(buff);
 
-	return new Image(texture, imageStart, imageSize, imageRenderOffset);
+	return new Image(texture, imageStart, imageSize);
 }

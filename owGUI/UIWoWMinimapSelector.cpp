@@ -17,9 +17,7 @@ void UIWoWMinimapSelector::Init(cvec2 _position, cvec2 _size, Texture* _texture)
     base::Init(_position, m_MinimapImage);
 }
 
-void UIWoWMinimapSelector::Render()
+void UIWoWMinimapSelector::OnRenderUI()
 {
-
-
-    base::Render();
+    base::OnRenderUI();
 }

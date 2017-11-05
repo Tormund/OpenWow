@@ -39,8 +39,8 @@ void UIScrollBar::Init(cvec2 _position, cvec2 _size) {
 	base::Init(_position, _size, new Image(buttonTexture, VECTOR_ZERO, imageSize));
 }
 
-void UIScrollBar::Render() {
-	base::Render();
+void UIScrollBar::OnRenderUI() {
+	base::OnRenderUI();
 
 	begunokPoint = vec2(begunokBounds.x + value * begunokBoundsSize, begunokYOffset) - vec2(begunokSize.x / 2, 0);
 
@@ -50,7 +50,7 @@ void UIScrollBar::Render() {
 	_Render->RenderImage(GetPosition() + begunokPoint, begunokImage, begunokSize);
 }
 
-MOUSE_MOVED_(UIScrollBar) {
+On_Mouse_Moved(UIScrollBar) {
 	begunokSelected = Utils::PointInRectangle(_mousePos, begunokPoint, begunokPoint + begunokSize);
 
 	if (begunokPressed) {
@@ -65,20 +65,20 @@ void UIScrollBar::OnMouseLeaved() {
 	begunokSelected = false;
 }
 
-MOUSE_PRESSED(UIScrollBar) {
+On_Mouse_Pressed(UIScrollBar) {
 	if (begunokSelected)
 		begunokPressed = true;
 
 	return true;
 }
 
-MOUSE_RELEASE(UIScrollBar) {
+On_Mouse_Released(UIScrollBar) {
 	begunokPressed = false;
 
 	return true;
 }
 
-MOUSE_WHEEL(UIScrollBar) {
+On_Mouse_WScrolled(UIScrollBar) {
 	value += static_cast<double>(_yoffset) / 100.0;
 	clamp(value, 0.0, 1.0);
 

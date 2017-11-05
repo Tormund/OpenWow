@@ -30,9 +30,11 @@
     <ClCompile Include="UIScrollBar.cpp" />
     <ClCompile Include="UIWindow.cpp" />
     <ClCompile Include="UIWoWMinimapSelector.cpp" />
+    <ClCompile Include="UIWoWWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\shared\owGUI.h" />
+    <ClInclude Include="UIWoWWindow.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="UIButton.h" />
     <ClInclude Include="UIButton3t.h" />

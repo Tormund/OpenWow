@@ -5,7 +5,7 @@
 
 UIButton::UIButton() : base()
 {
-	textEnable = false;
+	m_IsTextEnable = false;
 
 	onPressFunction = nullptr;
 	buttonStatus = BUTTON_NORMAL;
@@ -21,11 +21,11 @@ UIButton::~UIButton()
 
 void UIButton::Init(cvec2 _position, Image* _image)
 {
-	textOffset = vec2(_image->size.x / 2, _image->size.y / 2);
-	textAlignW = TextAlignW::TEXT_ALIGNW_CENTER;
-	textAlignH = TextAlignH::TEXT_ALIGNH_CENTER;
+    m_TextOffset = _image->GetSize() / 2.0f;
+	m_TextAlignW = TextAlignW::TEXT_ALIGNW_CENTER;
+	m_TextAlignH = TextAlignH::TEXT_ALIGNH_CENTER;
 
-	base::Init(_position, _image->size, _image);
+	base::Init(_position, _image->GetSize(), _image);
 }
 
 void UIButton::SetAction(Function* _onPress)
@@ -47,21 +47,21 @@ void UIButton::CallAction(int _button, int _mods, cvec2 _mousePos)
     }
 }
 
-void UIButton::Enable()
+void UIButton::Show()
 {
-	UIElement::Enable();
+	UIElement::Show();
 
 	buttonStatus = BUTTON_NORMAL;
 }
 
-void UIButton::Disable()
+void UIButton::Hide()
 {
-	UIElement::Disable();
+	UIElement::Hide();
 
 	buttonStatus = BUTTON_DISABLED;
 }
 
-MOUSE_MOVED_(UIButton)
+On_Mouse_Moved(UIButton)
 {
 	if (buttonStatus == BUTTON_NORMAL)
 	{
@@ -69,16 +69,24 @@ MOUSE_MOVED_(UIButton)
 	}
 }
 
-MOUSE_PRESSED(UIButton)
+void UIButton::OnMouseLeaved()
+{
+    if (buttonStatus == BUTTON_HOVER)
+    {
+        buttonStatus = BUTTON_NORMAL;
+    }
+}
+
+On_Mouse_Pressed(UIButton)
 {
 	buttonStatus = BUTTON_PRESSED;
 
 	return true;
 }
 
-MOUSE_RELEASE(UIButton)
+On_Mouse_Released(UIButton)
 {
-	if (IsMouseHover())
+	if (IsSelected())
 	{
 		if (buttonStatus == BUTTON_PRESSED)
 		{
@@ -94,12 +102,4 @@ MOUSE_RELEASE(UIButton)
 	}
 
 	return false;
-}
-
-void UIButton::OnMouseLeaved()
-{
-	if (buttonStatus == BUTTON_HOVER)
-	{
-		buttonStatus = BUTTON_NORMAL;
-	}
 }

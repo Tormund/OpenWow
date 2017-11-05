@@ -25,6 +25,10 @@ public:
 	uint32 __Quad;
 	uint32 __QuadVT;
 
+    uint32 __vbQuadVTDynamic;
+    uint32 __QuadVTDynamic;
+
+
 	//----------------------------------------------
 
 	// Layouts UI

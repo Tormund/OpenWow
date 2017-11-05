@@ -20,8 +20,6 @@ struct ConsoleMessage
 
 //
 
-#include "RenderableUIObject.h"
-
 class ConsoleOpenGL : public Console, public RenderableUIObject, public InputListenerObject, public DebugOutput
 {
 	typedef vector<ConsoleMessage*> ConsoleMessages;

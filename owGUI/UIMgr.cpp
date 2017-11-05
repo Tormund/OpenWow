@@ -2,19 +2,15 @@
 
 // Common
 #include "UIElement.h"
-#include "UIWindow.h"
 
 // General
 #include "UIMgr.h"
 
 bool UIMgr::Init()
 {
-	screenSize = Modules::config().GetWindowSize();
-	idCounter = 0;
-	baseWindow = new UIWindow();
-	baseWindow->Init(VECTOR_ZERO, screenSize, nullptr);
-
-	focusedElement = nullptr;
+    m_IDCounter = 0;
+    m_RootElement = nullptr;
+    m_FocusedElement = nullptr;
 
     //
 
@@ -26,161 +22,199 @@ bool UIMgr::Init()
 
 void UIMgr::Destroy()
 {
-	baseWindow->Delete();
+    assert1(m_RootElement != nullptr);
+    m_RootElement->Delete();
 
     //
 
     UpdatableObject::Unregister();
-	RenderableUIObject::Unregister();
+    RenderableUIObject::Unregister();
     InputListenerObject::Unregister();
 }
 
-void UIMgr::Attach(UIElement* _element)
+//
+
+void UIMgr::AttachToRoot(UIElement* _element)
 {
-	_element->Attach(baseWindow);
+    assert1(m_RootElement != nullptr);
+    AttachElementToParent(_element, m_RootElement);
 }
+
+void UIMgr::DetachFromRoot(UIElement * _element, bool _checkChilds)
+{
+
+}
+
+void UIMgr::AttachElementToParent(UIElement* _element, UIElement* _parent)
+{
+    // If element already has a parent
+    if (_element->m_Parent != nullptr)
+    {
+        Modules::log().Error("UIElement: Can't attach element [%s], because element already have a parent [%s]!", _element->GetName().c_str(), _element->m_Parent->GetName().c_str());
+        return;
+    }
+
+    // Attach to root case
+    if (_parent == nullptr)
+    {
+        _UIMgr->AttachToRoot(_element);
+        return;
+    }
+
+    // Add element in parent childs
+    _parent->m_Childs.push_back(_element);
+
+    // Set element parent
+    _element->m_Parent = _parent;
+}
+
+//
 
 void UIMgr::Update(double t, double dt)
 {
-	// Detach from parent
-	for (auto it = objectsToDetach.begin(); it != objectsToDetach.end(); )
-	{
-		DetachFromParent(*it);
+    // Detach from parent
+    for (auto it = m_ObjectsToDetach.begin(); it != m_ObjectsToDetach.end(); )
+    {
+        DetachFromParent(*it);
 
-		it = objectsToDetach.erase(it);
-	}
+        it = m_ObjectsToDetach.erase(it);
+    }
 
-	// Delete
-	for (auto it = objectsToDelete.begin(); it != objectsToDelete.end(); )
-	{
-		DetachFromParent(*it);
+    // Delete
+    for (auto it = m_ObjectsToDelete.begin(); it != m_ObjectsToDelete.end(); )
+    {
+        DetachFromParent(*it);
 
-        if (auto thisAsUIWindow = dynamic_cast<UIWindow*>(*it))
-        {
-            thisAsUIWindow->DeleteChilds();
-        }
+        (*it)->DeleteChilds();
 
-		Modules::log().Info("UI: Element [%s] deleted", (*it)->GetName().c_str());
-		DeleteUIElement(*it);
+        Modules::log().Info("UI: Element [%s] deleted", (*it)->GetName().c_str());
+        DeleteUIElement(*it);
 
-		it = objectsToDelete.erase(it);
-	}
+        it = m_ObjectsToDelete.erase(it);
+    }
+
+    // Update window
+    assert1(m_RootElement != nullptr);
+    m_RootElement->Update();
 }
 
 void UIMgr::RenderUI()
 {
-	baseWindow->Render();
+    // Update window
+    assert1(m_RootElement != nullptr);
+    m_RootElement->RenderUI();
 }
 
 //
 
 string UIMgr::GetNewName()
 {
-	string _name = "UIElement" + to_string(idCounter);
-	idCounter++;
-	return _name;
+    string name = "UIElement_" + to_string(m_IDCounter);
+    m_IDCounter++;
+    return name;
 }
 
 void UIMgr::SetForDetach(UIElement* _element)
 {
-	if (find(objectsToDetach.begin(), objectsToDetach.end(), _element) != objectsToDetach.end())
-	{
-		Modules::log().Warn("UI: Element [%s] already set for detaching.", _element->GetName().c_str());
-		return;
-	}
+    if (find(m_ObjectsToDetach.begin(), m_ObjectsToDetach.end(), _element) != m_ObjectsToDetach.end())
+    {
+        Modules::log().Warn("UI: Element [%s] already set for detaching.", _element->GetName().c_str());
+        return;
+    }
 
-	objectsToDetach.push_back(_element);
+    m_ObjectsToDetach.push_back(_element);
 }
 
 void UIMgr::SetForDelete(UIElement* _element)
 {
-	if (find(objectsToDelete.begin(), objectsToDelete.end(), _element) != objectsToDelete.end())
-	{
-		Modules::log().Warn("UI: Element [%s] already set for deletion.", _element->GetName().c_str());
-		return;
-	}
+    if (find(m_ObjectsToDelete.begin(), m_ObjectsToDelete.end(), _element) != m_ObjectsToDelete.end())
+    {
+        Modules::log().Warn("UI: Element [%s] already set for deletion.", _element->GetName().c_str());
+        return;
+    }
 
-	objectsToDelete.push_back(_element);
+    m_ObjectsToDelete.push_back(_element);
 }
 
 void UIMgr::DetachFromParent(UIElement* _element)
 {
-	auto& parent = _element->parent;
+    auto& parent = _element->m_Parent;
 
-	if (parent == nullptr)
-	{
-		Modules::log().Error("UI: Element [%s] parent is nullptr.", _element->GetName().c_str());
-		return;
-	}
+    if (parent == nullptr)
+    {
+        Modules::log().Error("UI: Element [%s] parent is nullptr.", _element->GetName().c_str());
+        return;
+    }
 
-	auto& elementInParentChildsIt = find(parent->childs.begin(), parent->childs.end(), _element);
+    auto& elementInParentChildsIt = find(parent->m_Childs.begin(), parent->m_Childs.end(), _element);
+    if (*elementInParentChildsIt != _element)
+    {
+        Modules::log().Error("UI: Element [%s] not finded in parent [%s] childs.", _element->GetName().c_str(), parent->GetName().c_str());
+        return;
+    }
 
-	if (*elementInParentChildsIt != _element)
-	{
-		Modules::log().Error("UI: Element [%s] not finded in parent [%s] childs.", _element->GetName().c_str(), parent->GetName().c_str());
-		return;
-	}
-
-	parent->childs.erase(elementInParentChildsIt);
-	Modules::log().Info("UI: Element [%s] detached from parent [%s].", _element->GetName().c_str(), parent->GetName().c_str());
-
-	parent = nullptr;
+    parent->m_Childs.erase(elementInParentChildsIt);
+    Modules::log().Info("UI: Element [%s] detached from parent [%s].", _element->GetName().c_str(), parent->GetName().c_str());
 }
 
 void UIMgr::DeleteUIElement(UIElement* _element)
 {
-	if (focusedElement == _element)
-		focusedElement = nullptr;
+    if (m_FocusedElement == _element)
+    {
+        m_FocusedElement = nullptr;
+    }
 
-	delete _element;
+    delete _element;
 }
 
 //
 
 #pragma region Input functional
 
-MOUSE_MOVED_(UIMgr)
+On_Mouse_Moved(UIMgr)
 {
-	baseWindow->OnMouseMoved(_mousePos);
+    assert1(m_RootElement != nullptr);
+    m_RootElement->OnMouseMoved(_mousePos);
 }
 
-MOUSE_PRESSED(UIMgr)
+On_Mouse_Pressed(UIMgr)
 {
-	if (baseWindow->CheckMouseHover())
-		return baseWindow->OnMouseButtonPressed(_button, _mods, _mousePos);
-
-	return false;
+    assert1(m_RootElement != nullptr);
+    return m_RootElement->OnMouseButtonPressed(_button, _mods, _mousePos);
 }
 
-MOUSE_RELEASE(UIMgr)
+On_Mouse_Released(UIMgr)
 {
-	return baseWindow->OnMouseButtonReleased(_button, _mods, _mousePos);
+    assert1(m_RootElement != nullptr);
+    return m_RootElement->OnMouseButtonReleased(_button, _mods, _mousePos);
 }
 
-MOUSE_WHEEL(UIMgr)
+On_Mouse_WScrolled(UIMgr)
 {
-	if (baseWindow->CheckMouseHover())
-		return baseWindow->OnMouseWheel(_yoffset);
-
-	return false;
+    assert1(m_RootElement != nullptr);
+    return m_RootElement->OnMouseWheel(_yoffset);
 }
 
-KEYBD_PRESSED(UIMgr)
+On_Keyboard_Pressed(UIMgr)
 {
-	return baseWindow->OnKeyboardPressed(_key, _scancode, _mods);
+    assert1(m_RootElement != nullptr);
+    return m_RootElement->OnKeyboardPressed(_key, _scancode, _mods);
 }
 
-KEYBD_RELEASE(UIMgr)
+On_Keyboard_Released(UIMgr)
 {
-	return baseWindow->OnKeyboardReleased(_key, _scancode, _mods);
+    assert1(m_RootElement != nullptr);
+    return m_RootElement->OnKeyboardReleased(_key, _scancode, _mods);
 }
 
-CHAR_INPUT(UIMgr)
+On_Character_Printed(UIMgr)
 {
-	if (focusedElement != nullptr)
-		return focusedElement->OnCharInput(_char);
+    if (m_FocusedElement != nullptr)
+    {
+        return m_FocusedElement->OnCharInput(_char);
+    }
 
-	return false;
+    return false;
 }
 
 #pragma endregion

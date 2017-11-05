@@ -10,7 +10,7 @@ UICheckBox::UICheckBox() : base() {
 UICheckBox::~UICheckBox() {
 	for (int i = 0; i < 2; i++)
 		delete checkBoxImages[i];
-	image = nullptr;
+	m_Image = nullptr;
 }
 
 void UICheckBox::Init(cvec2 _position) {
@@ -23,16 +23,16 @@ void UICheckBox::Init(cvec2 _position) {
 	base::Init(_position, checkBoxSize, checkBoxImages[0]);
 }
 
-void UICheckBox::Render() {
+void UICheckBox::OnRenderUI() {
 	if (isChecked)
-		image = checkBoxImages[1];
+		m_Image = checkBoxImages[1];
 	else
-		image = checkBoxImages[0];
+		m_Image = checkBoxImages[0];
 
-	base::Render();
+	base::OnRenderUI();
 }
 
-MOUSE_PRESSED(UICheckBox) {
+On_Mouse_Pressed(UICheckBox) {
 	isChecked = !isChecked;
 
 	return true;

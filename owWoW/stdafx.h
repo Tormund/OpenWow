@@ -1,13 +1,9 @@
 #pragma once
 
+#include <owUtils.h>
 #include <owCore.h>
-#pragma comment(lib, "owCore.lib")
-
 #include <owRender.h>
-#pragma comment(lib, "owRender.lib")
-
 #include <owGame.h>
-#pragma comment(lib, "owGame.lib")
 
 //-- Common --//
 #include "common.h"

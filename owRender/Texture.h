@@ -12,14 +12,6 @@ public:
 	Texture(uint32 _Object, cvec2 _size) : RefItem(), m_Object(_Object), size(_size)
 	{}
 
-	~Texture()
-	{
-		// _Render->r->delete
-	}
-
-	//
-
-	bool IsZeroSized() const { return (size == VECTOR_ZERO); }
 
 	cvec2 GetSize() const { return size; }
 	void SetSize(cvec2 _value) { size = _value; }

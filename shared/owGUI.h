@@ -5,7 +5,7 @@
 //---------------------------------------------------------//
 
 #include "../owGUI/UIMgr.h"
-#include "../owGUI/UIFile.h"
+//#include "../owGUI/UIFile.h"
 
 #include "../owGUI/UIElement.h"
 #include "../owGUI/UIWindow.h"

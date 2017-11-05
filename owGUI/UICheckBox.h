@@ -12,7 +12,8 @@ public:
 
 	bool IsChecked() const { return isChecked; }
 
-	virtual void Render();
+	virtual void OnRenderUI();
+
 	V_MOUSE_PRESSED;
 
 protected:

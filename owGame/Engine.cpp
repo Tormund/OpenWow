@@ -5,7 +5,7 @@
 
 // Additional
 #include <ctime>
-#include "UpdatableObjectCollection.h"
+#include "GameStateManager.h"
 
 void shutdown(int _errCode)
 {
@@ -47,7 +47,6 @@ bool Engine::Init()
 	assert1(_FontsMgr->Init());
 
 	needExit = false;
-	currentGameState = nullptr;
 
 	framesCounter = 0;
 	framesPerSecond = 0;
@@ -62,11 +61,6 @@ void Engine::Destroy(uint32 _errorCode)
 {
 	Modules::log().Green("Engine[]: Destroy engine.");
 
-	if (currentGameState != nullptr)
-	{
-		currentGameState->Destroy();
-	}
-
 	MPQArchiveStorage::ClearArchives();
 	Modules::Destroy();
 
@@ -80,33 +74,6 @@ bool Engine::SetAdapter(OpenGLAdapter * _openGLAdapter)
 	return true;
 }
 
-bool Engine::SetGameState(GameState* _newGameState)
-{
-	Modules::log().Print("Engine[]: Setting new GameState.");
-
-	if (_newGameState == nullptr)
-	{
-		Modules::log().Error("Engine[]: New GameState in null.");
-		return false;
-	}
-
-	if (currentGameState != nullptr)
-	{
-		currentGameState->Destroy();
-		delete currentGameState;
-		Modules::log().Print("Engine[]: Current GameState destroyed.");
-	}
-
-	currentGameState = _newGameState;
-	if (!currentGameState->IsInited())
-	{
-		Modules::log().Warn("Engine[]: New GameState in not inited. Initializating.");
-		currentGameState->Init();
-	}
-
-	return true;
-}
-
 bool Engine::Tick()
 {
 	last_t = t;
@@ -116,12 +83,6 @@ bool Engine::Tick()
 
 	double dTime = static_cast<double>(_time) / 1000.0;
 	double dDtTime = static_cast<double>(dt) / 1000.0;
-
-	// Input
-	if (currentGameState != nullptr)
-	{
-		currentGameState->InputPhase(dTime, dDtTime);
-	}
 
     //------------------------------------------------
 	//-- Update
@@ -133,11 +94,13 @@ bool Engine::Tick()
 	_Render->r->beginRendering();
 	_Render->r->clear();
 
-	// Render world
+    //------------------------------------------------
+    //-- Render3D
+    //------------------------------------------------
 	_Render->Set3D();
-	if (currentGameState != nullptr)
+	if (GameStateManager::GetGameState() != nullptr)
 	{
-		currentGameState->Render(dTime, dDtTime);
+        GameStateManager::GetGameState()->Render(dTime, dDtTime);
 	}
 
     //------------------------------------------------

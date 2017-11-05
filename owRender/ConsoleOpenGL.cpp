@@ -105,7 +105,7 @@ void ConsoleOpenGL::RenderUI()
 
 //
 
-MOUSE_WHEEL(ConsoleOpenGL)
+On_Mouse_WScrolled(ConsoleOpenGL)
 {
 	if (!opened)
 		return false;
@@ -119,7 +119,7 @@ MOUSE_WHEEL(ConsoleOpenGL)
 	return true;
 }
 
-KEYBD_PRESSED(ConsoleOpenGL)
+On_Keyboard_Pressed(ConsoleOpenGL)
 {
 	if (_key == OW_KEY_GRAVE_ACCENT)
 	{
@@ -178,7 +178,7 @@ KEYBD_PRESSED(ConsoleOpenGL)
 	return false;
 }
 
-CHAR_INPUT(ConsoleOpenGL)
+On_Character_Printed(ConsoleOpenGL)
 {
 	if (!opened)
 		return false;

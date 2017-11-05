@@ -89,14 +89,25 @@ void RenderStorage::CreateGeometry()
 	uint16 indexes[6] = {0, 1, 2, 2, 1, 3};
 	uint32 __ib = _Render->r->createIndexBuffer(6 * sizeof(uint16), indexes);
 
+    vector<vec2> verticesQuad;
+    verticesQuad.push_back(vec2(-1.0f, -1.0f));
+    verticesQuad.push_back(vec2(1.0f, -1.0f));
+    verticesQuad.push_back(vec2(-1.0f, 1.0f));
+    verticesQuad.push_back(vec2(1.0f, 1.0f));
 
-	//========================================================================
+    vector<vec2> texCoordsQuad;
+    texCoordsQuad.push_back(vec2(0.0f, 0.0f));
+    texCoordsQuad.push_back(vec2(1.0f, 0.0f));
+    texCoordsQuad.push_back(vec2(0.0f, 1.0f));
+    texCoordsQuad.push_back(vec2(1.0f, 1.0f));
 
-	vector<vec2> verticesQuad;
-	verticesQuad.push_back(vec2(-1.0f, -1.0f));
-	verticesQuad.push_back(vec2(1.0f, -1.0f));
-	verticesQuad.push_back(vec2(-1.0f, 1.0f));
-	verticesQuad.push_back(vec2(1.0f, 1.0f));
+    vector<Texture_Vertex> verticesQuadVT;
+    verticesQuadVT.push_back({vec2(-1.0f, -1.0f), vec2(0.0f, 0.0f)});
+    verticesQuadVT.push_back({vec2(1.0f, -1.0f), vec2(1.0f, 0.0f)});
+    verticesQuadVT.push_back({vec2(-1.0f, 1.0f), vec2(0.0f, 1.0f)});
+    verticesQuadVT.push_back({vec2(1.0f, 1.0f), vec2(1.0f, 1.0f)});
+
+	// -- Simple vertex Geom
 
 	uint32 __vbQuad = _Render->r->createVertexBuffer(verticesQuad.size() * sizeof(vec2), &verticesQuad[0]);
 	__Quad = _Render->r->beginCreatingGeometry(__layoutV2);
@@ -106,13 +117,7 @@ void RenderStorage::CreateGeometry()
 
 	_Render->r->finishCreatingGeometry(__Quad);
 
-	//--
-
-	vector<Texture_Vertex> verticesQuadVT;
-	verticesQuadVT.push_back({vec2(-1.0f, -1.0f), vec2(0.0f, 0.0f)});
-	verticesQuadVT.push_back({vec2(1.0f, -1.0f), vec2(1.0f, 0.0f)});
-	verticesQuadVT.push_back({vec2(-1.0f, 1.0f), vec2(0.0f, 1.0f)});
-	verticesQuadVT.push_back({vec2(1.0f, 1.0f), vec2(1.0f, 1.0f)});
+	//-- Vertex + TextureCoords
 
 	uint32 __vbQuadVT = _Render->r->createVertexBuffer(verticesQuadVT.size() * sizeof(Texture_Vertex), verticesQuadVT.data());
 	__QuadVT = _Render->r->beginCreatingGeometry(__layoutV2T2);
@@ -123,6 +128,21 @@ void RenderStorage::CreateGeometry()
 	_Render->r->setGeomIndexParams(__QuadVT, __ib, R_IndexFormat::IDXFMT_16);
 
 	_Render->r->finishCreatingGeometry(__QuadVT);
+
+    //-- Vertex + TextureCoords Dynamic
+
+    __vbQuadVTDynamic = _Render->r->createVertexBuffer(verticesQuad.size() * sizeof(Texture_Vertex), nullptr);
+    _Render->r->updateBufferData(__vbQuadVTDynamic, 4 * 0 * sizeof(float), 4 * sizeof(vec2), verticesQuad.data());
+    _Render->r->updateBufferData(__vbQuadVTDynamic, 4 * 2 * sizeof(float), 4 * sizeof(vec2), texCoordsQuad.data());
+
+    __QuadVTDynamic = _Render->r->beginCreatingGeometry(__layoutV2T2);
+
+    _Render->r->setGeomVertexParams(__QuadVTDynamic, __vbQuadVTDynamic, 0, 0,                0);
+    _Render->r->setGeomVertexParams(__QuadVTDynamic, __vbQuadVTDynamic, 1, 4 * sizeof(vec2), 0);
+
+    _Render->r->setGeomIndexParams(__QuadVTDynamic, __ib, R_IndexFormat::IDXFMT_16);
+
+    _Render->r->finishCreatingGeometry(__QuadVTDynamic);
 }
 
 void RenderStorage::CreateWoWLayouts()
@@ -230,6 +250,8 @@ void RenderStorage::CreateWoWLayouts()
 		{"tc1",         5, 2, 0}
 	};
 }
+
+//
 
 void RenderStorage::SetEGxBlend(uint8 _index)
 {

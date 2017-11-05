@@ -14,9 +14,6 @@
     <ClCompile Include="UIElement.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="UIFile.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
     <ClCompile Include="UIInput.cpp">
       <Filter>Common</Filter>
     </ClCompile>
@@ -30,6 +27,10 @@
     <ClCompile Include="UIWoWMinimapSelector.cpp">
       <Filter>WoW</Filter>
     </ClCompile>
+    <ClCompile Include="UIWoWWindow.cpp">
+      <Filter>WoW</Filter>
+    </ClCompile>
+    <ClCompile Include="UIFile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -46,9 +47,6 @@
     <ClInclude Include="UIElement.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="UIFile.h">
-      <Filter>Common</Filter>
-    </ClInclude>
     <ClInclude Include="UIInput.h">
       <Filter>Common</Filter>
     </ClInclude>
@@ -62,6 +60,10 @@
     <ClInclude Include="UIWoWMinimapSelector.h">
       <Filter>WoW</Filter>
     </ClInclude>
+    <ClInclude Include="UIWoWWindow.h">
+      <Filter>WoW</Filter>
+    </ClInclude>
+    <ClInclude Include="UIFile.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Common">

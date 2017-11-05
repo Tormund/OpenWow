@@ -39,8 +39,10 @@ public:
 
 	void RenderImage(vec2 _pos, Image* _image);
 	void RenderImage(vec2 _pos, Image* _image, vec2 _size);
-	void RenderTexture(vec2 _pos, uint32 _texture, vec2 _size, const Rect& _coords = Rect(0,0,1,1));
-	void RenderTexture(vec2 _pos, Texture* _texture, vec2 _size, const Rect& _coords);
+
+    void RenderTexture(vec2 _pos, Texture* _texture);
+    void RenderTexture(vec2 _pos, Texture* _texture, vec2 _size);
+	void RenderTexture(vec2 _pos, uint32 _texture, vec2 _size);
 
 	void RenderRectangle(vec2 _pos, vec2 _size, const Color& _color = COLOR_GREEN);
 	void RenderRectangleOutline(vec2 _pos, vec2 _size, const Color& _color = COLOR_GREEN);

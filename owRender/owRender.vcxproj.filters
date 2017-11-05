@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Image.cpp">
-      <Filter>Types</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="TexturesMgr.cpp">
       <Filter>Textures</Filter>
@@ -68,17 +65,11 @@
     <ClCompile Include="ConsoleOpenGL.cpp">
       <Filter>Render</Filter>
     </ClCompile>
-    <ClCompile Include="RenderableUIObject.cpp">
-      <Filter>Objects bindings</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderableUIObjectCollection.cpp">
-      <Filter>Objects bindings</Filter>
+    <ClCompile Include="Image.cpp">
+      <Filter>Textures</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Image.h">
-      <Filter>Types</Filter>
-    </ClInclude>
     <ClInclude Include="common.h" />
     <ClInclude Include="..\shared\owRender.h" />
     <ClInclude Include="stdafx.h" />
@@ -184,17 +175,11 @@
     <ClInclude Include="ConsoleOpenGL.h">
       <Filter>Render</Filter>
     </ClInclude>
-    <ClInclude Include="RenderableUIObject.h">
-      <Filter>Objects bindings</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderableUIObjectCollection.h">
-      <Filter>Objects bindings</Filter>
+    <ClInclude Include="Image.h">
+      <Filter>Textures</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Types">
-      <UniqueIdentifier>{04374022-e70a-4f96-b887-0198fcdcd1c3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Textures">
       <UniqueIdentifier>{6cc0d5a6-0295-4c2b-9463-2f1164bc7b27}</UniqueIdentifier>
     </Filter>
@@ -227,9 +212,6 @@
     </Filter>
     <Filter Include="Render">
       <UniqueIdentifier>{83e27261-1695-4e85-a7fe-099ead28f2d2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Objects bindings">
-      <UniqueIdentifier>{c514dd30-227f-4857-9720-f5294f6da0c1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

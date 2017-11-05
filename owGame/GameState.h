@@ -1,22 +1,30 @@
 #pragma once
 
-#include "UpdatableObject.h"
-class RenderableUIObject;
-class InputListenerObject;
+class GameStateManager;
+class UIWindow;
 
 class GameState : public UpdatableObject, public RenderableUIObject, public InputListenerObject
 {
 public:
-	GameState() : m_inited(false) {};
+    GameState();
 
-	virtual bool Init() = 0;
-	virtual void Destroy() = 0;
+	virtual bool Init();
+	virtual void Destroy();
 
-    virtual void InputPhase(double t, double dt) {};
+    virtual bool Set();
+    virtual void Unset();
+
     virtual void Render(double t, double dt) {};
 
-	bool IsInited() const { return m_inited; }
+	bool IsInited() const { return m_IsInited; }
+    bool IsCurrent() const { return m_IsCurrent; }
 
 protected:
-	bool m_inited;
+	bool      m_IsInited;
+    bool      m_IsCurrent;
+    UIWindow* m_Window;
+
+    //
+
+    friend GameStateManager;
 };

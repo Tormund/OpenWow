@@ -7,14 +7,11 @@
     <Filter Include="General\Scene">
       <UniqueIdentifier>{1d5a6f0a-304b-4a06-b799-c1ee3e3099c9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="General\Objects bindings">
-      <UniqueIdentifier>{8e429606-52b8-4c95-9bfd-c8d669612772}</UniqueIdentifier>
+    <Filter Include="GameState">
+      <UniqueIdentifier>{b37442df-879c-44da-953a-882457a73e27}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GameState.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="SceneNode.cpp">
       <Filter>General\Scene</Filter>
@@ -28,17 +25,14 @@
     <ClCompile Include="Engine.cpp">
       <Filter>General</Filter>
     </ClCompile>
-    <ClCompile Include="UpdatableObject.cpp">
-      <Filter>General\Objects bindings</Filter>
+    <ClCompile Include="GameState.cpp">
+      <Filter>GameState</Filter>
     </ClCompile>
-    <ClCompile Include="UpdatableObjectCollection.cpp">
-      <Filter>General\Objects bindings</Filter>
+    <ClCompile Include="GameStateManager.cpp">
+      <Filter>GameState</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GameState.h">
-      <Filter>General</Filter>
-    </ClInclude>
     <ClInclude Include="..\shared\owGame.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="SceneNode.h">
@@ -53,11 +47,11 @@
     <ClInclude Include="Engine.h">
       <Filter>General</Filter>
     </ClInclude>
-    <ClInclude Include="UpdatableObject.h">
-      <Filter>General\Objects bindings</Filter>
+    <ClInclude Include="GameState.h">
+      <Filter>GameState</Filter>
     </ClInclude>
-    <ClInclude Include="UpdatableObjectCollection.h">
-      <Filter>General\Objects bindings</Filter>
+    <ClInclude Include="GameStateManager.h">
+      <Filter>GameState</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

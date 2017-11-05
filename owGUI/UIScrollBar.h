@@ -16,7 +16,7 @@ public:
 
 	//
 
-	void Render();
+	void OnRenderUI();
 
 	V_MOUSE_MOVED;
 	virtual void OnMouseLeaved();

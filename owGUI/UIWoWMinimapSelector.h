@@ -13,7 +13,7 @@ public:
 
     void Init(cvec2 _position, cvec2 _size, Texture* _texture);
 
-    virtual void Render();
+    virtual void OnRenderUI() override;
 
 private:
     Image* m_MinimapImage;
