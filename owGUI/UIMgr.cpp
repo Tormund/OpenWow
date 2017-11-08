@@ -66,6 +66,20 @@ void UIMgr::AttachElementToParent(UIElement* _element, UIElement* _parent)
 
     // Set element parent
     _element->m_Parent = _parent;
+    _element->m_Deep = _parent->m_Deep + 1;
+    _element->m_Deep += _element->m_DeepAdding;
+}
+
+//
+
+void UIMgr::SetFocus(UIElement* _element) 
+{
+    assert1(_element != nullptr);
+
+    if (_element->m_Deep > m_FocusedElement->m_Deep)
+    {
+        m_FocusedElement = _element;
+    }
 }
 
 //
@@ -95,6 +109,7 @@ void UIMgr::Update(double t, double dt)
 
     // Update window
     assert1(m_RootElement != nullptr);
+    m_FocusedElement = m_RootElement;
     m_RootElement->Update();
 }
 
@@ -103,6 +118,12 @@ void UIMgr::RenderUI()
     // Update window
     assert1(m_RootElement != nullptr);
     m_RootElement->RenderUI();
+
+    // Render debug
+    if (m_FocusedElement != nullptr)
+    {
+        _Render->RenderRectangleOutline(m_FocusedElement->GetPosition(), m_FocusedElement->GetSize(), COLOR_BLUE);
+    }
 }
 
 //
@@ -179,8 +200,13 @@ On_Mouse_Moved(UIMgr)
 
 On_Mouse_Pressed(UIMgr)
 {
-    assert1(m_RootElement != nullptr);
-    return m_RootElement->OnMouseButtonPressed(_button, _mods, _mousePos);
+    if (m_FocusedElement != nullptr)
+    {
+        return m_FocusedElement->OnMouseButtonPressed(_button, _mods, _mousePos);
+    }
+
+    //assert1(m_RootElement != nullptr);
+    //return m_RootElement->OnMouseButtonPressed(_button, _mods, _mousePos);
 }
 
 On_Mouse_Released(UIMgr)

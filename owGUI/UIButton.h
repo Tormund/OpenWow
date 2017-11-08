@@ -18,8 +18,8 @@ public:
     virtual void Show();
     virtual void Hide();
 
-    V_MOUSE_MOVED;
-    virtual void OnMouseLeaved();
+    On_Mouse_Entered_V;
+    On_Mouse_Leaved_V;
     V_MOUSE_PRESSED;
     V_MOUSE_RELEASE;
 

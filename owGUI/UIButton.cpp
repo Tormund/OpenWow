@@ -3,7 +3,7 @@
 // General
 #include "UIButton.h"
 
-UIButton::UIButton() : base()
+UIButton::UIButton()
 {
 	m_IsTextEnable = false;
 
@@ -61,7 +61,7 @@ void UIButton::Hide()
 	buttonStatus = BUTTON_DISABLED;
 }
 
-On_Mouse_Moved(UIButton)
+On_Mouse_Entered(UIButton)
 {
 	if (buttonStatus == BUTTON_NORMAL)
 	{
@@ -69,7 +69,7 @@ On_Mouse_Moved(UIButton)
 	}
 }
 
-void UIButton::OnMouseLeaved()
+On_Mouse_Leaved(UIButton)
 {
     if (buttonStatus == BUTTON_HOVER)
     {

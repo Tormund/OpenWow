@@ -69,9 +69,9 @@ MDX::~MDX()
 	if (m_Colors) delete[] m_Colors;
 	if (m_TextureWeights) delete[] m_TextureWeights;
 
-	delete[] m_Vertices;
-	delete[] m_Texcoords;
-	delete[] m_Normals;
+	//delete[] m_Vertices;
+	//delete[] m_Texcoords;
+	//delete[] m_Normals;
 
 	if (animated)
 	{
@@ -147,26 +147,11 @@ void MDX::Init(bool forceAnim)
 
 void MDX::initCommon(File& f)
 {
-	// assume: m_OriginalVertexes already set
-	//if (!animGeometry)
-	//{
-	m_Vertices = new vec3[header.vertices.size];
-	m_Texcoords = new vec2[header.vertices.size];
-	m_Normals = new vec3[header.vertices.size];
-	//}
-
-	// vertices, m_Normals
+	// Convert vertices
 	for (uint32 i = 0; i < header.vertices.size; i++)
 	{
-		m_OriginalVertexes[i].pos = From_XYZ_To_XZminusY_RET(m_OriginalVertexes[i].pos);
-		m_OriginalVertexes[i].normal = From_XYZ_To_XZminusY_RET(m_OriginalVertexes[i].normal);
-
-		//if (!animGeometry)
-		//{
-		m_Vertices[i] = m_OriginalVertexes[i].pos;
-		m_Texcoords[i] = m_OriginalVertexes[i].tex_coords[0];      // Fixme
-		m_Normals[i] = m_OriginalVertexes[i].normal.normalized();
-		//}
+		From_XYZ_To_XZminusY(m_OriginalVertexes[i].pos);
+		From_XYZ_To_XZminusY(m_OriginalVertexes[i].normal);
 	}
 
 	// m_DiffuseTextures
@@ -227,12 +212,7 @@ void MDX::initCommon(File& f)
 	}
 	
 	// Vertex buffer
-	__vb = _Render->r->createVertexBuffer(header.vertices.size * 8 * sizeof(float), nullptr);
-
-	_Render->r->updateBufferData(__vb, header.vertices.size * 0 * sizeof(float), header.vertices.size * sizeof(vec3), m_Vertices);
-	_Render->r->updateBufferData(__vb, header.vertices.size * 3 * sizeof(float), header.vertices.size * sizeof(vec3), m_Normals);
-	_Render->r->updateBufferData(__vb, header.vertices.size * 6 * sizeof(float), header.vertices.size * sizeof(vec2), m_Texcoords);
-	
+	__vb = _Render->r->createVertexBuffer(header.vertices.size * 12 * sizeof(float), m_OriginalVertexes);
 
 	// just use the first LOD/view
 	if (header.num_skin_profiles > 0)

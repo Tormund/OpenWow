@@ -37,8 +37,10 @@ struct MCNK_Header
 	uint32 areaid;
 	uint32 nMapObjRefs;
 
-	uint32 holes;
-	
+	uint16 holes;
+
+    uint16 unk0;
+
 	uint8 unused[20];
 
 	uint32 nEffectDoodad;
@@ -58,12 +60,6 @@ struct MCNK_Header
 
 	uint32 effectId;
 };
-
-//
-
-
-
-//
 
 enum load_phases
 {

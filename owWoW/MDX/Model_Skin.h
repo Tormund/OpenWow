@@ -14,7 +14,7 @@ struct M2SkinSection
 	uint16 indexCount;          // Number of triangle indices.
 	
 	uint16 boneCount;           // Number of elements in the bone lookup table.
-	uint16 boneComboIndex;      // Starting index in the bone lookup table.
+	uint16 bonesStartIndex;     // Starting index in the bone lookup table.
 	uint16 boneInfluences;      // <= 4	 // from <=BC documentation: Highest number of bones needed at one time in this Submesh --Tinyn (wowdev.org) 
 								// In 2.x this is the amount of of bones up the parent-chain affecting the submesh --NaK
 	uint16 centerBoneIndex;
@@ -60,7 +60,7 @@ struct M2ShadowBatch
 								//                  | (!renderFlag[i].blendingmode ? 0x02 : 0x00)
 								//                  | (renderFlag[i].flags & 0x80 ? 0x04 : 0x00)
 								//                  | (renderFlag[i].flags & 0x400 ? 0x06 : 0x00)
-	uint16 _unknown1;
+	uint16 unk0;
 	uint16 submesh_id;
 	uint16 texture_id;        // already looked-up
 	uint16 color_id;
@@ -74,11 +74,13 @@ struct M2SkinProfile
 	char magic[4];                         // 'SKIN'
 	M2Array<uint16> vertices;
 	M2Array<uint16> indices;
-	M2Array<uint8> bones;                 // uint4t FIXME
+	M2Array<uint32> bones;
 	M2Array<M2SkinSection> submeshes;
 	M2Array<M2SkinBatch> batches;
+
 	uint32 boneCountMax;
-	M2Array<M2ShadowBatch> shadow_batches;
+
+	//M2Array<M2ShadowBatch> shadow_batches;
 };
 
 //

@@ -17,3 +17,9 @@ void UIWindow::Init(cvec2 _position, cvec2 _size, Image* _image, Color _color)
 
 	base::Init(_position, _size, _image, _color);
 }
+
+void UIWindow::AddContent(UIElement* _element)
+{
+    m_Content.push_back(_element);
+    _element->AttachTo(this);
+}

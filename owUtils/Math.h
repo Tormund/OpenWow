@@ -28,11 +28,14 @@
 
 namespace Math
 {
+    const int MinInt32 = 0x80000000;
+    const int MaxInt32 = 0x7FFFFFFF;
+
+    const unsigned int MinUInt32 = 0x00000000;
 	const unsigned int MaxUInt32 = 0xFFFFFFFF;
-	const int MinInt32 = 0x80000000;
-	const int MaxInt32 = 0x7FFFFFFF;
+	
+    const float MinFloat = 1.175494351e-38F;
 	const float MaxFloat = 3.402823466e+38F;
-	const float MinPosFloat = 1.175494351e-38F;
 
 	const float Pi = 3.141592654f;
 	const float TwoPi = 6.283185307f;
@@ -41,7 +44,7 @@ namespace Math
 	const float Epsilon = 0.000001f;
 	const float Epsilon100 = 0.0001f;
 	const float Epsilon10000 = 0.01f;
-	const float ZeroEpsilon = 32.0f * MinPosFloat;  // Very small epsilon for checking against 0.0f
+	const float ZeroEpsilon = 32.0f * MinFloat;  // Very small epsilon for checking against 0.0f
 	const float NaN = *(float*)&MaxUInt32;
 
 	enum NoInitHint
@@ -518,9 +521,7 @@ static inline Vec3f From_XYZ_To_XZY_RET(const Vec3f& _vec)
 
 static inline void From_XYZ_To_XZY(Vec3f& _vec)
 {
-	float temp = _vec.y;
-	_vec.y = _vec.z;
-	_vec.z = temp;
+    _vec = From_XYZ_To_XZY_RET(_vec);
 }
 
 static inline Vec3f From_XYZ_To_XZminusY_RET(const Vec3f& _vec)
@@ -530,9 +531,7 @@ static inline Vec3f From_XYZ_To_XZminusY_RET(const Vec3f& _vec)
 
 static inline void From_XYZ_To_XZminusY(Vec3f& _vec)
 {
-	float temp = -_vec.y;
-	_vec.y = _vec.z;
-	_vec.z = temp;
+    _vec = From_XYZ_To_XZminusY_RET(_vec);
 }
 
 class Vec4f

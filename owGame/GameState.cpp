@@ -17,7 +17,8 @@ bool GameState::Init()
 }
 
 void GameState::Destroy()
-{}
+{
+}
 
 bool GameState::Set()
 {
@@ -32,8 +33,6 @@ bool GameState::Set()
 
 void GameState::Unset()
 {
-    //m_Window->Detach();
-
     UpdatableObject::Unregister();
     RenderableUIObject::Unregister();
     InputListenerObject::Unregister();

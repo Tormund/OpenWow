@@ -7,9 +7,25 @@ class UIWoWWindow : public UIWindow
     typedef UIWindow base;
 
 public:
-    void Init(cvec2 _position, cvec2 _size, Image* _image, Color _color = COLOR_EMPTY);
+    void Init(cvec2 _position, cvec2 _size);
+
+    void OnRenderUI() override;
 
 private:
-    Image* m_Corners[4];
-    Image* m_Sides[4];
+    Texture*  m_Background;
+    Image*    m_Images[8];
+    enum Images
+    {
+        IMG_LEFT,
+        IMG_RIGHT,
+        IMG_TOP,
+        IMG_BOT,
+
+        IMG_CORNER_TOP_LEFT,
+        IMG_CORNER_TOP_RIGHT,
+        IMG_CORNER_BOT_LEFT,
+        IMG_CORNER_BOT_RIGHT
+    };
+
+    const float C_ImgSize = 32.0f;
 };

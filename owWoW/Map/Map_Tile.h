@@ -28,7 +28,11 @@ public:
 
 	//
 
-	MapChunk* getChunk(uint32 x, uint32 z);
+	MapChunk* getChunk(uint32 x, uint32 z)
+    {
+        assert1(x < C_ChunksInTile && z < C_ChunksInTile);
+        return m_Chunks[x][z];
+    }
 
 public:
 	vector<string> m_TexturesNames;
@@ -37,15 +41,11 @@ public:
 	vector<Texture*> m_DiffuseTextures;
 	vector<Texture*> m_SpecularTextures;
 
-#ifdef WMO_INCL
 	vector<string> m_WMOsNames;
 	vector<WMOInstance*> m_WMOsInstances;
-#endif
 
-#ifdef MDX_INCL
 	vector<string> m_MDXsNames;
 	vector<ModelInstance*> m_MDXsInstances;
-#endif
 
 	int m_IndexX, m_IndexZ;
 	float m_GamePositionX, m_GamePositionZ;

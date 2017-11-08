@@ -45,6 +45,7 @@ public:
 
 	// Model
 	uint32 __layout_GxVBF_PNT;
+    uint32 __layout_GxVBF_PBNT2;
 };
 
 

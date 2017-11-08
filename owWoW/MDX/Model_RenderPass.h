@@ -25,7 +25,7 @@ public:
 	}
 
 public:
-	uint32 indexStart, indexCount, vertexStart, vertexCount;
+	
 	//Texture* texture, texture2;
 	int tex;
 	bool usetex2, useEnvMap, cull, trans, unlit, noZWrite, billboard;
@@ -42,6 +42,10 @@ public:
 
 	// colours
 	vec4 ocol, ecol;
+
+    uint32 indexStart, indexCount;
+    uint32 vertexStart, vertexCount;
+    uint16 bonesStartIndex, bonesCount, boneInfluences;
 
 	uint16    __colorIndex;
 	uint16    __textureWeight;

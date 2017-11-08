@@ -5,7 +5,7 @@
 
 World::World()
 {
-	rb2 = _Render->r->createRenderBuffer(Modules::config().windowSizeX, Modules::config().windowSizeY, R_TextureFormats::RGBA16F, true, 4, 4);
+	rb2 = _Render->r->createRenderBuffer(Modules::config().windowSizeX, Modules::config().windowSizeY, R_TextureFormats::RGBA16F, true, 4, 0);
 
 	// Test camera
 	testCamera = new Camera;
@@ -23,13 +23,9 @@ World::World()
 
 void World::Render()
 {
-#ifdef WMO_INCL
 	WMOInstance::reset();
-#endif
 
-#ifdef MDX_INCL
 	_ModelsMgr->resetAnim();
-#endif
 
 	_PipelineGlobal->SetCamera(_Render->mainCamera);
 	_PipelineGlobal->SetCameraFrustum(_Render->mainCamera);
@@ -59,9 +55,7 @@ void World::Render()
 	// SECONDS PASS
 	//
 	/*
-#ifdef WMO_INCL
 	WMOInstance::reset();
-#endif
 	
 	// Conf test camera
 	testCamera->Position = mainCamera->Position + vec3(0, 1, 0) * 1000.0f;
@@ -107,12 +101,8 @@ void World::RenderGeom()
 	_Render->r->setDepthTest(true);
 	if (_Map->MapHasGlobalWMO() && !_EnvironmentManager->m_HasSky)
 	{
-#ifdef WMO_INCL
-#ifdef MDX_INCL
 		_Map->SetOutOfBounds(false);
 		_Map->GetGlobalWMOInstance()->GetWMO()->drawSkybox();
-#endif
-#endif
 	}
 
 	//
@@ -154,6 +144,8 @@ void World::RenderGeom()
 		_Pipeline->Clear();
 		_TechniquesMgr->m_MapChunk_GeometryPass->SetPVW();
 
+        _Render->r->setCullMode(R_CullMode::RS_CULL_FRONT);
+
 		_Map->RenderTiles();
 
 		_TechniquesMgr->m_MapChunk_GeometryPass->Unbind();
@@ -187,10 +179,8 @@ void World::RenderGeom()
 	PERF_START(PERF_MAP_MODELS_WMO_GLOBAL);
 	if (_Map->MapHasGlobalWMO())
 	{
-#ifdef WMO_INCL
 		_Map->SetOutOfBounds(false);
 		_Map->GetGlobalWMOInstance()->Render();
-#endif
 	}
 	PERF_STOP(PERF_MAP_MODELS_WMO_GLOBAL);
 
@@ -234,7 +224,6 @@ void World::tick(float dt)
 
 	_Map->Tick();
 
-#ifdef MDX_INCL
 	while (dt > 0.1f)
 	{
 		_ModelsMgr->updateEmitters(0.1f);
@@ -242,7 +231,6 @@ void World::tick(float dt)
 	}
 
 	_ModelsMgr->updateEmitters(dt);
-#endif
 }
 
 void World::DSDirectionalLightPass(DirectionalLight& _light)

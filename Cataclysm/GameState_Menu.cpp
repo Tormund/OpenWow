@@ -19,7 +19,7 @@ bool GameState_Menu::Init()
 
     m_MinimapTexture = new Texture();
 
-    m_MinimapUI = new UIElement();
+    m_MinimapUI = new UIElement(100);
     m_MinimapUI->Init(vec2(200, 0), vec2(768, 768), m_MinimapTexture, COLOR_WHITE);
     m_MinimapUI->Hide();
 
@@ -288,9 +288,7 @@ On_Mouse_Pressed(GameState_Menu)
 		}
 		else if (_Map->MapHasGlobalWMO())
 		{
-#ifdef WMO_INCL
 			pointInWorld = _Map->GetGlobalWMOPlacementInfo()->position;
-#endif
 		}
 
 		delete backgroundModel;

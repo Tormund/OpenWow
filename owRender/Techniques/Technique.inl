@@ -3,6 +3,13 @@
 #include "../Pipeline.h"
 #include "../Render.h"
 
+inline void Technique::InitBaseUniforms()
+{
+    gProjection = getLocation("gProjection");
+    gView = getLocation("gView");
+    gWorld = getLocation("gWorld");
+}
+
 inline void Technique::BindS()
 {
 	_Render->r->bindShader(shaderId);
@@ -10,7 +17,7 @@ inline void Technique::BindS()
 
 inline void Technique::Unbind()
 {
-	//_Render->r->bindShader(0);
+	_Render->r->bindShader(0);
 }
 
 
@@ -27,6 +34,11 @@ inline void Technique::setTexture(const char* name, uint32 value) const
 	_Render->r->setShaderSampler(getLocation(name), value);
 }
 
+inline void Technique::setTexture(int32 _loc, uint32 value) const
+{
+    _Render->r->setShaderSampler(_loc, value);
+}
+
 //
 
 inline void Technique::setInt(const char* name, int32 value) const
@@ -41,7 +53,7 @@ inline void Technique::setFloat(const char* name, float value) const
 
 //
 
-inline void Technique::setVec2(const char* name, vec2 value) const
+inline void Technique::setVec2(const char* name, cvec2 value) const
 {
 	_Render->r->setShaderConst(getLocation(name), CONST_FLOAT2, &value.x);
 }
@@ -52,7 +64,7 @@ inline void Technique::setVec2(const char* name, float x, float y) const
 
 //
 
-inline void Technique::setVec3(const char* name, vec3 value) const
+inline void Technique::setVec3(const char* name, cvec3 value) const
 {
 	_Render->r->setShaderConst(getLocation(name), CONST_FLOAT3, &value.x);
 }
@@ -63,7 +75,7 @@ inline void Technique::setVec3(const char* name, float x, float y, float z) cons
 
 //
 
-inline void Technique::setVec4(const char* name, vec4 value) const
+inline void Technique::setVec4(const char* name, cvec4 value) const
 {
 	_Render->r->setShaderConst(getLocation(name), CONST_FLOAT4, &value.x);
 }
@@ -84,18 +96,33 @@ inline void Technique::setMat3(const char* name, const mat3& mat) const
 	glUniformMatrix3fv(glGetUniformLocation(programOglObj, name), 1, GL_FALSE, &mat[0][0]);
 }*/
 
-inline void Technique::setMat4(const char* name, mat4 mat) const
+inline void Technique::setMat4(const char* name, cmat4 mat) const
 {
-	_Render->r->setShaderConst(getLocation(name), CONST_FLOAT44, &mat.x[0]);
+    setMat4(getLocation(name), mat);
+}
+
+/*inline void Technique::setMat2(int32 _loc, const mat2& mat) const
+{
+glUniformMatrix2fv(glGetUniformLocation(programOglObj, name), 1, GL_FALSE, &mat[0][0]);
+}
+
+inline void Technique::setMat3(int32 _loc, const mat3& mat) const
+{
+glUniformMatrix3fv(glGetUniformLocation(programOglObj, name), 1, GL_FALSE, &mat[0][0]);
+}*/
+
+inline void Technique::setMat4(int32 _loc, cmat4 mat) const
+{
+    _Render->r->setShaderConst(_loc, CONST_FLOAT44, &mat.x[0]);
 }
 
 //
 
 inline void Technique::SetPVW()
 {
-	setMat4("gProjection", _PipelineGlobal->GetProjection());
-	setMat4("gView", _PipelineGlobal->GetView());
-	setMat4("gWorld", _PipelineGlobal->GetWorld());
+    _Render->r->setShaderConst(gProjection, CONST_FLOAT44, &_PipelineGlobal->GetProjection().x[0]);
+    _Render->r->setShaderConst(gView, CONST_FLOAT44, &_PipelineGlobal->GetView().x[0]);
+    _Render->r->setShaderConst(gWorld, CONST_FLOAT44, &_PipelineGlobal->GetWorld().x[0]);
 }
 
 inline void Technique::SetPV_W()
@@ -108,17 +135,17 @@ inline void Technique::SetPV_W()
 
 inline void Technique::SetWorldMatrix(cmat4 WorldInverse)
 {
-	setMat4("gWorld", WorldInverse);
+    _Render->r->setShaderConst(gWorld, CONST_FLOAT44, &WorldInverse.x[0]);
 }
 
 inline void Technique::SetViewMatrix(cmat4 WorldInverse)
 {
-	setMat4("gView", WorldInverse);
+    _Render->r->setShaderConst(gView, CONST_FLOAT44, &WorldInverse.x[0]);
 }
 
 inline void Technique::SetProjectionMatrix(cmat4 WorldInverse)
 {
-	setMat4("gProjection", WorldInverse);
+    _Render->r->setShaderConst(gProjection, CONST_FLOAT44, &WorldInverse.x[0]);
 }
 
 //--

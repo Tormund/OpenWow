@@ -41,6 +41,7 @@ private:
 	//
 
 	friend class MDX;
+    friend class Model_Skin;
 	friend class PlaneParticleEmitter;
 	friend class SphereParticleEmitter;
 	friend class RibbonEmitter;

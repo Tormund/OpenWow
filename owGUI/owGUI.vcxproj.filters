@@ -31,6 +31,9 @@
       <Filter>WoW</Filter>
     </ClCompile>
     <ClCompile Include="UIFile.cpp" />
+    <ClCompile Include="UIElementInput.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />

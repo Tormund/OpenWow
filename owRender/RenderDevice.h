@@ -95,10 +95,10 @@ public:
 	void destroyGeometry(uint32 &geoObj, bool destroyBindedBuffers);
 
 	// Buffers
-	uint32 createVertexBuffer(uint32 size, const void *data);
-	uint32 createIndexBuffer(uint32 size, const void *data);
-	uint32 createTextureBuffer(R_TextureFormats::List format, uint32 bufSize, const void *data);
-	uint32 createShaderStorageBuffer(uint32 size, const void *data);
+	uint32 createVertexBuffer(uint32 size, const void *data, bool _isDynamic = true);
+	uint32 createIndexBuffer(uint32 size, const void *data, bool _isDynamic = true);
+	uint32 createTextureBuffer(R_TextureFormats::List format, uint32 bufSize, const void *data, bool _isDynamic = true);
+	uint32 createShaderStorageBuffer(uint32 size, const void *data, bool _isDynamic = true);
 	void destroyBuffer(uint32 &bufObj);
 	void destroyTextureBuffer(uint32& bufObj);
 	void updateBufferData(uint32 bufObj, uint32 offset, uint32 size, const void *data);
@@ -128,7 +128,7 @@ public:
 	int getShaderConstLoc(uint32 shaderId, const char *name);
 	int getShaderSamplerLoc(uint32 shaderId, const char *name);
 	int getShaderBufferLoc(uint32 shaderId, const char *name);
-	void setShaderConst(int loc, R_ShaderConstType type, void *values, uint32 count = 1);
+	void setShaderConst(int loc, R_ShaderConstType type, const void *values, uint32 count = 1);
 	void setShaderSampler(int loc, uint32 texUnit);
 	const char* getDefaultVSCode();
 	const char* getDefaultFSCode();
@@ -350,11 +350,11 @@ public:
 	const R_Buffer& getBuffer(uint32 bufObj) { return _buffers.getRef(bufObj); }
 	const R_Texture& getTexture(uint32 texObj) { return _textures.getRef(texObj); }
 	const R_RenderBuffer& getRenderBuffer(uint32 rbObj) { return _rendBufs.getRef(rbObj); }
-	const DeviceCaps &getCaps() const { return _caps; }
+	const DeviceCaps& getCaps() const { return _caps; }
 
 protected:
 	// Buffer helper
-	inline uint32 createBuffer(uint32 type, uint32 size, const void *data);
+	inline uint32 createBuffer(uint32 type, uint32 size, const void *data, bool _isDynamic = true);
 	inline void	decreaseBufferRefCount(uint32 bufObj);
 
 	// Shader helper

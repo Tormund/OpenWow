@@ -3,6 +3,11 @@
 // General
 #include "GameState_Tests.h"
 
+void DeleteElement(UIElement* _elem)
+{
+    _elem->Delete();
+}
+
 bool GameState_Tests::Init()
 {
     GameState::Init();
@@ -19,11 +24,15 @@ bool GameState_Tests::Init()
 
     UIElement* m_ElementTest2 = new UIElement();
     m_ElementTest2->Init(vec2(20, 140), vec2(100, 100), (Texture*)nullptr, COLOR_RED);
-    //m_ElementTest2->AttachTo(m_ElementTest);
+    m_ElementTest2->AttachTo(m_ElementTest);
 
     UIElement* m_ElementTest3 = new UIElement();
     m_ElementTest3->Init(vec2(140, 20), vec2(100, 100), (Texture*)nullptr, COLOR_GRAY);
-    //m_ElementTest3->AttachTo(m_ElementTest);
+    m_ElementTest3->AttachTo(m_ElementTest);
+
+    UIWoWWindow* wowDialog = new UIWoWWindow();
+    wowDialog->Init(vec2(260, 20), vec2(400, 400));
+    wowDialog->AttachTo(m_ElementTest);
 
     //
 

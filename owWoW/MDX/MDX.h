@@ -52,10 +52,6 @@ private:
 private:
 	M2Vertex* m_OriginalVertexes;
 
-	vec3* m_Vertices;
-	vec2* m_Texcoords;
-	vec3* m_Normals;
-
 	vector<Model_Skin*> m_Skins;
 
 public:

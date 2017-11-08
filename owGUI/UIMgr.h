@@ -9,17 +9,15 @@ class UIMgr : public UpdatableObject, public RenderableUIObject, public Module, 
 public:
 	DEF_MODULE(UIMgr);
 
+    void Update(double t, double dt) override;
+    void RenderUI() override;
+
 	//
 
 	void AttachToRoot(UIElement* _element);
     void DetachFromRoot(UIElement* _element, bool _checkChilds = false);
 
     void AttachElementToParent(UIElement* _element, UIElement* _parent);
-
-	// Common functional
-
-	void Update(double t, double dt) override;
-	void RenderUI() override;
 
     // Root element
 
@@ -29,7 +27,7 @@ public:
 	// Focus
 
 	UIElement* GetFocus() const { return m_FocusedElement; }
-	void SetFocus(UIElement* _element) { m_FocusedElement = _element; }
+    void SetFocus(UIElement* _element);
 
 	// Input functional
 

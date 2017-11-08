@@ -451,9 +451,9 @@ void Liquid::createBuffer(cvec3 _position)
 	__geom = _Render->r->beginCreatingGeometry(_RenderStorage->__layoutWater);
 
 	// Vertex params
-	_Render->r->setGeomVertexParams(__geom, __vb, 0, mh2oVertices.size() * 0 * sizeof(float), sizeof(MH2O_Vertex));
-	_Render->r->setGeomVertexParams(__geom, __vb, 1, mh2oVertices.size() * 3 * sizeof(float), sizeof(MH2O_Vertex));
-	_Render->r->setGeomVertexParams(__geom, __vb, 2, mh2oVertices.size() * 6 * sizeof(float), sizeof(MH2O_Vertex));
+	_Render->r->setGeomVertexParams(__geom, __vb, 0, 0 * sizeof(float), sizeof(MH2O_Vertex));
+	_Render->r->setGeomVertexParams(__geom, __vb, 1, 3 * sizeof(float), sizeof(MH2O_Vertex));
+	_Render->r->setGeomVertexParams(__geom, __vb, 2, 6 * sizeof(float), sizeof(MH2O_Vertex));
 
 	// Index bufer
 	//uint32 __ib = _Render->r->createIndexBuffer(m_IndicesCount, m_Indices);

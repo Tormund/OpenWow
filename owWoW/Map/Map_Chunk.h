@@ -33,9 +33,6 @@ public:
 	void Load(File& f, load_phases _phase);
 	void Post_Load();
 
-
-	void initStrip(int holes);
-
 	void Render();
 	void drawPass(int anim);
 
@@ -63,21 +60,17 @@ public:
 
 	uint32 m_BlendRBGShadowATexture;
 
-	
-
 	uint32 __geom;
-	uint32 __ibLow;
-	uint32 __ibHigh;
 
-	short* strip;
-	int striplen;
+	uint16* m_Indexes;
+	uint16  m_IndexesCount;
 
 	Liquid* m_Liquid;
 
 	BoundingBox m_Bounds;
 
 private:
-	MCNK_Header* header;
+	MCNK_Header header;
 	bool MCLV_exists;
 	bool colorBufferEnable;
 };

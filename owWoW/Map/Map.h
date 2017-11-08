@@ -6,20 +6,20 @@
 
 struct WDT_MPHD_Flags
 {
-	uint32 ONLY_GLOBAL_WMO : 1;				// Use global map object definition.
-	uint32 ALL_MCNK_HAS_MCCV : 1;				// Use vertex shading (ADT.MCNK.MCCV)
-	uint32 ALL_MCNK_MCAL_BIGALPHA : 1;	// Decides whether to use _env terrain shaders or not: funky and if MCAL has 4096 instead of 2048(?)
-	uint32 Map_Disable_Something : 1;			// Disables something. No idea what. Another rendering thing. Someone may check all them in wild life..
-	uint32 ALL_MCNK_HAS_MCLV : 1;				// vertexBufferFormat = PNC2. (adds second color: ADT.MCNK.MCLV)
-	uint32 Map_FlipGroundDisplay : 1;		// Flips the ground display upside down to create a ceiling (Cataclysm)
+	uint32 Flag_GlobalWMO : 1;  // Use global map object definition.
+	uint32 Flag_UseMCCV : 1;    // Use vertex shading (ADT.MCNK.MCCV)
+    uint32 Flag_8bitMCAL : 1;   // Decides whether to use _env terrain shaders or not: funky and if MCAL has 4096 instead of 2048(?)
+    uint32 Flag_Unk0 : 1;       // Disables something. No idea what. Another rendering thing. Someone may check all them in wild life..
+    uint32 Flag_HasMCLV : 1;    // vertexBufferFormat = PNC2. (adds second color: ADT.MCNK.MCLV)
+	uint32 Flag_FlipGround : 1; // Flips the ground display upside down to create a ceiling (Cataclysm)
 	uint32 : 26;
 };
 
 struct WDT_MAIN_Flags
 {
-	uint32 HasADT : 1;
-	uint32 AllWater : 1;
-	uint32 Loaded : 1;
+	uint32 Flag_HasTerrain : 1;
+	uint32 Flag_IsOcean : 1;
+	uint32 Flag_IsLoaded : 1;
 	uint32 : 29;
 };
 
@@ -33,6 +33,7 @@ class Map
 	~Map();
 
 	void CreateMapArrays();
+    vector<uint16> GenarateMapArray(uint16 _holes = 0);
 	void InitGlobalsWMOs();
 
 	void Load_WDT(DBC_MapRecord* _map);
@@ -59,10 +60,8 @@ public: // Getters
 	string GetFolder() { return m_MapFolder; }
 	DBC_MapRecord* GetDBCMap() { return m_DBC_Map; }
 
-#ifdef WMO_INCL
 	WMOInstance* GetGlobalWMOInstance() { return globalWMO; }
 	WMOPlacementInfo* GetGlobalWMOPlacementInfo() { return globalWMOplacementInfo; }
-#endif
 
 	bool MapHasTiles() { return m_IsTileBased; }
 	bool MapHasGlobalWMO() { return globalWMOExists; }
@@ -85,16 +84,6 @@ public: // Getters
 	const vec2* GetTextureCoordAlpha()
 	{
 		return &dataAlpha[0];
-	}
-
-	int16* GetLowResolutionIndexes()
-	{
-		return mapstrip;
-	}
-
-	int16* GetHighResolutionIndexes()
-	{
-		return mapstrip2;
 	}
 
 private:
@@ -132,12 +121,8 @@ private: // Low-resolution WMOs
 private: // Index buffer
 	vec2 dataDetail[C_MapBufferSize];
 	vec2 dataAlpha[C_MapBufferSize];
-	int16* mapstrip;
-	int16* mapstrip2;
-
-public: // Consts
-	const uint32 C_LowResStripSize = 8 * 18 + 7 * 2;
-	const uint32 C_HighResStripSize = 16 * 18 + 7 * 2 + 8 * 2;
+    vector<uint16> m_DefaultMapStrip;
+    vector<uint16> m_LowResMapStrip;
 };
 
 #define _Map Map::instance()

@@ -1,7 +1,7 @@
 #version 330
 #include "lib/fragDeferredWrite.glsl"
 
-struct VSOutput
+struct VSOutputType
 {
 	vec3 WorldSpacePos;
 	vec2 TexCoordDetail;
@@ -12,7 +12,7 @@ struct VSOutput
 };
 
 // In
-in VSOutput VSout;
+in VSOutputType VSInput;
 
 // Layers
 uniform int gLayersCount;
@@ -42,59 +42,59 @@ uniform bool gMCLVExists;
 
 void main()
 {
-	vec3 resultColor = vec3(0.0, 0.0, 0.0);
 	float alphaSumma = 0.0;
-	float alphaCurrent;
-
 	float specularAlpha = 0.0;
-
+	
+	vec3 layersColor = vec3(0);
 	if (gLayersCount > 1)
 	{
-		alphaCurrent = texture(gBlend, VSout.TexCoordAlpha).r;
+		float alphaCurrent = texture(gBlend, VSInput.TexCoordAlpha).r;
 		alphaSumma += alphaCurrent;
-		resultColor += texture(gColorMap1, VSout.TexCoordDetail).rgb * alphaCurrent;
-		specularAlpha += alphaCurrent * texture(gSpecularMap1, VSout.TexCoordDetail).a;
+		layersColor += texture(gColorMap1, VSInput.TexCoordDetail).rgb * alphaCurrent;
+		specularAlpha += alphaCurrent * texture(gSpecularMap1, VSInput.TexCoordDetail).a;
 	}
 
 	if (gLayersCount > 2)
 	{
-		alphaCurrent = texture(gBlend, VSout.TexCoordAlpha).g;
+		float alphaCurrent = texture(gBlend, VSInput.TexCoordAlpha).g;
 		alphaSumma += alphaCurrent;
-		resultColor += texture(gColorMap2, VSout.TexCoordDetail).rgb * alphaCurrent;
-		specularAlpha += alphaCurrent * texture(gSpecularMap2, VSout.TexCoordDetail).a;
+		layersColor += texture(gColorMap2, VSInput.TexCoordDetail).rgb * alphaCurrent;
+		specularAlpha += alphaCurrent * texture(gSpecularMap2, VSInput.TexCoordDetail).a;
 	}
 
 	if (gLayersCount > 3)
 	{
-		alphaCurrent = texture(gBlend, VSout.TexCoordAlpha).b;
+		float alphaCurrent = texture(gBlend, VSInput.TexCoordAlpha).b;
 		alphaSumma += alphaCurrent;
-		resultColor += texture(gColorMap3, VSout.TexCoordDetail).rgb * alphaCurrent;
-		specularAlpha += alphaCurrent * texture(gSpecularMap3, VSout.TexCoordDetail).a;
+		layersColor += texture(gColorMap3, VSInput.TexCoordDetail).rgb * alphaCurrent;
+		specularAlpha += alphaCurrent * texture(gSpecularMap3, VSInput.TexCoordDetail).a;
 	}
 
-	resultColor += texture(gColorMap0, VSout.TexCoordDetail).rgb * (1.0 - alphaSumma);
-	specularAlpha += texture(gSpecularMap0, VSout.TexCoordDetail).a * (1.0 - alphaSumma);
+	vec3 resultColor = texture(gColorMap0, VSInput.TexCoordDetail).rgb * (1.0 - alphaSumma) + layersColor;
+	
+	//resultColor += 
+	//specularAlpha += texture(gSpecularMap0, VSInput.TexCoordDetail).a * (1.0 - alphaSumma);
 
 	if (gShadowMapExists)
 	{
-		alphaCurrent = texture(gBlend, VSout.TexCoordAlpha).a;
-		resultColor = resultColor * (1.0 - alphaCurrent) + gShadowColor * alphaCurrent;
+		//float alphaCurrent = texture(gBlend, VSInput.TexCoordAlpha).a;
+		//resultColor = resultColor * (1.0 - alphaCurrent) + gShadowColor * alphaCurrent;
 	}
 
 	if (gMCLVExists)
 	{
-		resultColor += (VSout.VertexColorMCLV.rgb * specularAlpha);
+		resultColor += (VSInput.VertexColorMCLV.rgb * specularAlpha);
 	}
 
 	if (gMCCVExists)
 	{
-		resultColor *= VSout.VertexColorMCCV;
+		resultColor *= VSInput.VertexColorMCCV;
 	}
 
 	//
 	setMatID(1.0);
-	setPos(VSout.WorldSpacePos);
-	setNormal(normalize(VSout.Normal));
+	setPos(VSInput.WorldSpacePos);
+	setNormal(normalize(VSInput.Normal));
 	setAlbedo(resultColor);
-	setSpecParams(texture(gSpecularMap0, VSout.TexCoordDetail).rgb, 1.0);
+	setSpecParams(texture(gSpecularMap0, VSInput.TexCoordDetail).rgb, 1.0);
 };

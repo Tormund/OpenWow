@@ -327,6 +327,9 @@
     <ClInclude Include="Common\WowTypes.h">
       <Filter>Common</Filter>
     </ClInclude>
+    <ClInclude Include="_unused.h">
+      <Filter>Map</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Map\Map.inl">

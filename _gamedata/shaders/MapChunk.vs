@@ -1,6 +1,6 @@
 #version 330
 
-struct VSOutput
+struct VSOutputType
 {
 	vec3 WorldSpacePos;
 	vec2 TexCoordDetail;
@@ -24,17 +24,17 @@ uniform mat4 gView;
 uniform mat4 gWorld;
 
 // Out
-out VSOutput VSout;
+out VSOutputType VSInput;
 
 void main(void)
 {
 	mat4 PVW = gProjection * gView * gWorld;
 	gl_Position = PVW * vec4(VertexPosition, 1.0);
 
-	VSout.WorldSpacePos = (gWorld * vec4(VertexPosition, 1.0)).xyz;
-	VSout.TexCoordDetail = TexCoordDetail;
-	VSout.TexCoordAlpha = TexCoordAlpha;
-	VSout.Normal = (gWorld * vec4(Normal, 0.0)).xyz;
-	VSout.VertexColorMCCV = VertexColorMCCV;
-	VSout.VertexColorMCLV = VertexColorMCLV;
+	VSInput.WorldSpacePos = (gWorld * vec4(VertexPosition, 1.0)).xyz;
+	VSInput.TexCoordDetail = TexCoordDetail;
+	VSInput.TexCoordAlpha = TexCoordAlpha;
+	VSInput.Normal = (gWorld * vec4(Normal, 0.0)).xyz;
+	VSInput.VertexColorMCCV = VertexColorMCCV;
+	VSInput.VertexColorMCLV = VertexColorMCLV;
 };

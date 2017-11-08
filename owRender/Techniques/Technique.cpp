@@ -56,6 +56,8 @@ Technique::Technique(cstring _fileName)
 
 	Modules::log().Error("SH %s", _Render->r->getShaderLog().c_str());
 	Modules::log().Error("ID == %d", shaderId);
+
+    InitBaseUniforms();
 }
 
 Technique::Technique(cstring _fileNameVS, cstring _fileNameFS)
@@ -67,6 +69,22 @@ Technique::Technique(cstring _fileNameVS, cstring _fileNameFS)
 
 	Modules::log().Error("SH %s", _Render->r->getShaderLog().c_str());
 	Modules::log().Error("ID == %d", shaderId);
+
+    InitBaseUniforms();
+}
+
+Technique::Technique(cstring _fileNameVS, cstring _fileNameFS, cstring _fileNameGS)
+{
+    string shVS = ProcessShader(File(_fileNameVS));
+    string shFS = ProcessShader(File(_fileNameFS));
+    string shGS = ProcessShader(File(_fileNameGS));
+
+    shaderId = _Render->r->createShader(shVS.c_str(), shFS.c_str(), shGS.c_str(), nullptr, nullptr, nullptr);
+
+    Modules::log().Error("SH %s", _Render->r->getShaderLog().c_str());
+    Modules::log().Error("ID == %d", shaderId);
+
+    InitBaseUniforms();
 }
 
 Technique::~Technique()

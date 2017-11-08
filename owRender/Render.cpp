@@ -36,7 +36,7 @@ bool RenderGL::Init()
 
 	_RenderStorage->Init();
 
-    rb = r->createRenderBuffer(Modules::config().windowSizeX, Modules::config().windowSizeY, R_TextureFormats::RGBA16F, true, 4, 4);
+    rb = r->createRenderBuffer(Modules::config().windowSizeX, Modules::config().windowSizeY, R_TextureFormats::RGBA16F, true, 4, 0);
 
 
     // Main game camera
@@ -91,10 +91,10 @@ void RenderGL::RenderImage(vec2 _pos, Image* _image, vec2 _size)
 
     // Update buffer
     vector<vec2> texCoordsQuad;
-    texCoordsQuad.push_back(vec2(_image->GetCoords().p0.x, _image->GetCoords().p0.y));
-    texCoordsQuad.push_back(vec2(_image->GetCoords().p1.x, _image->GetCoords().p0.y));
-    texCoordsQuad.push_back(vec2(_image->GetCoords().p0.x, _image->GetCoords().p1.y));
-    texCoordsQuad.push_back(vec2(_image->GetCoords().p1.x, _image->GetCoords().p1.y));
+    texCoordsQuad.push_back(_image->GetP0());
+    texCoordsQuad.push_back(_image->GetP1());
+    texCoordsQuad.push_back(_image->GetP3());
+    texCoordsQuad.push_back(_image->GetP2());
     _Render->r->updateBufferData(_RenderStorage->__vbQuadVTDynamic, 4 * sizeof(vec2), 4 * sizeof(vec2), texCoordsQuad.data());
 
     // Shader

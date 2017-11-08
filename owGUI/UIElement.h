@@ -13,7 +13,7 @@ class UIWindow;
 class UIElement
 {
 public:
-	UIElement();
+	UIElement(uint32 _DeepAdding = 0);
 	virtual ~UIElement();
 
 	//
@@ -46,7 +46,7 @@ public:
 
 	// Mouse hover functional
 
-	bool CheckSelection();
+	bool CheckSelection(cvec2 _mousePos);
 	bool IsSelected() const { return m_IsSelected; }
 
 	// Position & size functional
@@ -78,7 +78,7 @@ public:
     virtual bool OnMouseWheel(int _yoffset);
     virtual bool OnKeyboardPressed(int _key, int _scancode, int _mods);
     virtual bool OnKeyboardReleased(int _key, int _scancode, int _mods);
-    virtual bool OnCharInput(uint32 _char);
+    virtual bool OnCharInput(uint32 _char) { return false; }
 	
 private:
     void Update();
@@ -104,6 +104,8 @@ protected:
 
 private:
 	string      m_Name;
+    uint32      m_Deep;
+    uint32      m_DeepAdding;
     UIElement*  m_Parent;
     vector<UIElement*> m_Childs;
 

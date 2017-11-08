@@ -24,6 +24,7 @@
     <ClCompile Include="UIButton3t.cpp" />
     <ClCompile Include="UICheckBox.cpp" />
     <ClCompile Include="UIElement.cpp" />
+    <ClCompile Include="UIElementInput.cpp" />
     <ClCompile Include="UIFile.cpp" />
     <ClCompile Include="UIInput.cpp" />
     <ClCompile Include="UIMgr.cpp" />

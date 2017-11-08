@@ -206,7 +206,6 @@ bool RenderDevice::init()
 	glEnable(GL_DEBUG_OUTPUT);
 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 	glDebugMessageCallback(glDebugOutput, nullptr);
-	//glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
 
 	// Set capabilities
 	_caps.texFloat = true;
@@ -240,9 +239,7 @@ bool RenderDevice::init()
 
 	resetStates();
 
-	glBlendFuncSeparate(GL_SRC_ALPHA, GL_SRC_ALPHA, GL_SRC_ALPHA, GL_SRC_ALPHA);
-
-	return true;
+    return true;
 }
 
 
@@ -414,21 +411,21 @@ void RenderDevice::destroyGeometry(uint32& geoObj, bool destroyBindedBuffers)
 }
 
 
-uint32 RenderDevice::createVertexBuffer(uint32 size, const void *data)
+uint32 RenderDevice::createVertexBuffer(uint32 size, const void *data, bool _isDynamic)
 {
-	return createBuffer(GL_ARRAY_BUFFER, size, data);
+	return createBuffer(GL_ARRAY_BUFFER, size, data, _isDynamic);
 }
 
-uint32 RenderDevice::createIndexBuffer(uint32 size, const void *data)
+uint32 RenderDevice::createIndexBuffer(uint32 size, const void *data, bool _isDynamic)
 {
-	return createBuffer(GL_ELEMENT_ARRAY_BUFFER, size, data);
+	return createBuffer(GL_ELEMENT_ARRAY_BUFFER, size, data, _isDynamic);
 }
 
-uint32 RenderDevice::createShaderStorageBuffer(uint32 size, const void *data)
+uint32 RenderDevice::createShaderStorageBuffer(uint32 size, const void *data, bool _isDynamic)
 {
 	if (_caps.computeShaders)
 	{
-		return createBuffer(GL_SHADER_STORAGE_BUFFER, size, data);
+		return createBuffer(GL_SHADER_STORAGE_BUFFER, size, data, _isDynamic);
 	}
 	else
 	{
@@ -438,11 +435,11 @@ uint32 RenderDevice::createShaderStorageBuffer(uint32 size, const void *data)
 	}
 }
 
-uint32 RenderDevice::createTextureBuffer(R_TextureFormats::List format, uint32 bufSize, const void *data)
+uint32 RenderDevice::createTextureBuffer(R_TextureFormats::List format, uint32 bufSize, const void *data, bool _isDynamic)
 {
 	R_TextureBuffer buf;
 
-	buf.bufObj = createBuffer(GL_TEXTURE_BUFFER, bufSize, data);
+	buf.bufObj = createBuffer(GL_TEXTURE_BUFFER, bufSize, data, _isDynamic);
 
 	glGenTextures(1, &buf.glTexID);
 	glActiveTexture(GL_TEXTURE15);
@@ -519,7 +516,8 @@ void RenderDevice::destroyTextureBuffer(uint32& bufObj)
 
 void RenderDevice::updateBufferData(uint32 bufObj, uint32 offset, uint32 size, const void *data)
 {
-	const R_Buffer &buf = _buffers.getRef(bufObj);
+	const R_Buffer& buf = _buffers.getRef(bufObj);
+    assert1(buf.isDynamic);
 	assert1(offset + size <= buf.size);
 
 	glBindBuffer(buf.type, buf.glObj);
@@ -537,7 +535,8 @@ void RenderDevice::updateBufferData(uint32 bufObj, uint32 offset, uint32 size, c
 
 void* RenderDevice::mapBuffer(uint32 geoObj, uint32 bufObj, uint32 offset, uint32 size, R_BufferMappingTypes mapType)
 {
-	const R_Buffer &buf = _buffers.getRef(bufObj);
+	const R_Buffer& buf = _buffers.getRef(bufObj);
+    assert1(buf.isDynamic);
 	assert1(offset + size <= buf.size);
 
 	glBindBuffer(buf.type, buf.glObj);
@@ -552,7 +551,8 @@ void* RenderDevice::mapBuffer(uint32 geoObj, uint32 bufObj, uint32 offset, uint3
 
 void RenderDevice::unmapBuffer(uint32 geoObj, uint32 bufObj)
 {
-	const R_Buffer &buf = _buffers.getRef(bufObj);
+	const R_Buffer& buf = _buffers.getRef(bufObj);
+    assert1(buf.isDynamic);
 
 	// multiple buffers can be mapped at the same time, so bind the one that needs to be unmapped
 	glBindBuffer(buf.type, buf.glObj);
@@ -562,15 +562,17 @@ void RenderDevice::unmapBuffer(uint32 geoObj, uint32 bufObj)
 
 // Helpers
 
-uint32 RenderDevice::createBuffer(uint32 bufType, uint32 size, const void *data)
+uint32 RenderDevice::createBuffer(uint32 bufType, uint32 size, const void *data, bool _isDynamic)
 {
 	R_Buffer buf;
 
 	buf.type = bufType;
 	buf.size = size;
+    buf.isDynamic = _isDynamic;
+
 	glGenBuffers(1, &buf.glObj);
 	glBindBuffer(buf.type, buf.glObj);
-	glBufferData(buf.type, size, data, GL_DYNAMIC_DRAW);
+	glBufferData(buf.type, size, data, _isDynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
 	glBindBuffer(buf.type, 0);
 
 	_bufferMem += size;
@@ -953,30 +955,30 @@ int RenderDevice::getShaderBufferLoc(uint32 shaderId, const char *name)
 	}
 }
 
-void RenderDevice::setShaderConst(int loc, R_ShaderConstType type, void *values, uint32 count)
+void RenderDevice::setShaderConst(int loc, R_ShaderConstType type, const void *values, uint32 count)
 {
 	switch (type)
 	{
 		case CONST_INT:
-		glUniform1iv(loc, count, (int *)values);
+		glUniform1iv(loc, count, (const int *)values);
 		break;
 		case CONST_FLOAT:
-		glUniform1fv(loc, count, (float *)values);
+		glUniform1fv(loc, count, (const float *)values);
 		break;
 		case CONST_FLOAT2:
-		glUniform2fv(loc, count, (float *)values);
+		glUniform2fv(loc, count, (const float *)values);
 		break;
 		case CONST_FLOAT3:
-		glUniform3fv(loc, count, (float *)values);
+		glUniform3fv(loc, count, (const float *)values);
 		break;
 		case CONST_FLOAT4:
-		glUniform4fv(loc, count, (float *)values);
+		glUniform4fv(loc, count, (const float *)values);
 		break;
 		case CONST_FLOAT44:
-		glUniformMatrix4fv(loc, count, false, (float *)values);
+		glUniformMatrix4fv(loc, count, false, (const float *)values);
 		break;
 		case CONST_FLOAT33:
-		glUniformMatrix3fv(loc, count, false, (float *)values);
+		glUniformMatrix3fv(loc, count, false, (const float *)values);
 		break;
 	}
 }

@@ -19,8 +19,13 @@ Model_Skin::Model_Skin(MDX* _model, File& _mF, File& _aF) : m_ModelObject(_model
 	// Skin data
 	uint16*        vertexesIndex = (uint16*)        (_aF.GetData() + view->vertices.offset);
 	uint16*        indexesIndex  = (uint16*)        (_aF.GetData() + view->indices.offset);
+    uint32*        bonesIndex    = (uint32*)        (_aF.GetData() + view->bones.offset);
 	M2SkinSection* skins         = (M2SkinSection*) (_aF.GetData() + view->submeshes.offset);
 	M2SkinBatch*   skinBatch     = (M2SkinBatch*)   (_aF.GetData() + view->batches.offset);
+    uint32         bonesMax      = view->boneCountMax;
+
+    if(bonesMax > 0)
+    Modules::log().Error("Max bones = %d", bonesMax);
 
 	//------------
 
@@ -43,6 +48,11 @@ Model_Skin::Model_Skin(MDX* _model, File& _mF, File& _aF) : m_ModelObject(_model
 		pass->indexCount = skins[m2SkinIndex].indexCount;
 		pass->vertexStart = skins[m2SkinIndex].vertexStart;
 		pass->vertexCount = skins[m2SkinIndex].vertexCount;
+        pass->boneInfluences = skins[m2SkinIndex].boneInfluences;
+
+        // Bones
+        pass->bonesStartIndex = skins[m2SkinIndex].bonesStartIndex;
+        pass->bonesCount = skins[m2SkinIndex].boneCount;
 
 		// Get classes
 		M2Material& rf = m2Materials[skinBatch[j].materialIndex];
@@ -190,12 +200,15 @@ Model_Skin::Model_Skin(MDX* _model, File& _mF, File& _aF) : m_ModelObject(_model
 
 	//
 
-	__geom = _Render->r->beginCreatingGeometry(_RenderStorage->__layout_GxVBF_PNT);
-
+	__geom = _Render->r->beginCreatingGeometry(_RenderStorage->__layout_GxVBF_PBNT2);
+    
 	// Vertex params
-	_Render->r->setGeomVertexParams(__geom, m_ModelObject->__vb, 0, m_ModelObject->header.vertices.size * 0 * sizeof(float), 0);
-	_Render->r->setGeomVertexParams(__geom, m_ModelObject->__vb, 1, m_ModelObject->header.vertices.size * 3 * sizeof(float), 0);
-	_Render->r->setGeomVertexParams(__geom, m_ModelObject->__vb, 2, m_ModelObject->header.vertices.size * 6 * sizeof(float), 0);
+	_Render->r->setGeomVertexParams(__geom, m_ModelObject->__vb, 0, 0 * sizeof(float), sizeof(M2Vertex)); // pos 0-2
+	_Render->r->setGeomVertexParams(__geom, m_ModelObject->__vb, 1, 3 * sizeof(float), sizeof(M2Vertex)); // blend 3
+	_Render->r->setGeomVertexParams(__geom, m_ModelObject->__vb, 2, 4 * sizeof(float), sizeof(M2Vertex)); // index 4
+    _Render->r->setGeomVertexParams(__geom, m_ModelObject->__vb, 3, 5 * sizeof(float), sizeof(M2Vertex)); // normal 5-7
+    _Render->r->setGeomVertexParams(__geom, m_ModelObject->__vb, 4, 8 * sizeof(float), sizeof(M2Vertex)); // tc0 8-9
+    _Render->r->setGeomVertexParams(__geom, m_ModelObject->__vb, 5, 10 * sizeof(float), sizeof(M2Vertex)); // tc1 10-11
 
 	// Index bufer
 	uint32 __ib = _Render->r->createIndexBuffer(view->indices.size * sizeof(uint16), indices);
@@ -218,6 +231,21 @@ void Model_Skin::Draw()
 {
 	_TechniquesMgr->m_Model->BindS();
 	_TechniquesMgr->m_Model->SetPVW();
+    _TechniquesMgr->m_Model->SetAnimated(false);
+
+    /*_TechniquesMgr->m_Model->SetAnimated(m_ModelObject->animBones && m_ModelObject->animated);
+    if (m_ModelObject->animBones && m_ModelObject->animated)
+    {
+        //_TechniquesMgr->m_Model->SetBoneStartIndex(p->bonesStartIndex); FIXME
+        //_TechniquesMgr->m_Model->SetBoneMaxCount(p->boneInfluences);
+
+        vector<mat4> bones;
+        for (uint32 i = 0; i < m_ModelObject->header.bones.size; i++)
+        {
+            bones.push_back(m_ModelObject->m_Part_Bones[i].m_TransformMatrix);
+        }
+        _TechniquesMgr->m_Model->SetBones(bones);
+    }*/
 
 	_Render->r->setGeometry(__geom);
 

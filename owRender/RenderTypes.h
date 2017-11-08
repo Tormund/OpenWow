@@ -29,6 +29,7 @@ struct R_Buffer
 		type(0),
 		glObj(0),
 		size(0),
+        isDynamic(true),
 		geometryRefCount(0)
 	{}
 
@@ -37,6 +38,7 @@ struct R_Buffer
 	uint32  type;
 	uint32  glObj;
 	uint32  size;
+    bool    isDynamic;
 	int		geometryRefCount;
 };
 

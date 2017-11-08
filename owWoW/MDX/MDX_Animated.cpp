@@ -221,7 +221,7 @@ void MDX::animate(uint32 _animationIndex)
 		calcBones(_animationIndex, m_AnimationTime);
 	}
 
-	if (animGeometry)
+	/*if (animGeometry)
 	{
 		M2Vertex* ov = m_OriginalVertexes;
 		for (uint32 i = 0, k = 0; i < header.vertices.size; ++i, ++ov)
@@ -233,11 +233,8 @@ void MDX::animate(uint32 _animationIndex)
 			{
 				if (ov->bone_weights[b] > 0)
 				{
-					vec3 tv = m_Part_Bones[ov->bone_indices[b]].m_TransformMatrix * ov->pos;
-					vec3 tn = m_Part_Bones[ov->bone_indices[b]].m_RotationMatrix * ov->normal;
-
-					vertex += tv * ((float)ov->bone_weights[b] / 255.0f);
-					normal += tn * ((float)ov->bone_weights[b] / 255.0f);
+					vertex += m_Part_Bones[ov->bone_indices[b]].m_TransformMatrix * ov->pos * ((float)ov->bone_weights[b] / 255.0f);
+					normal += m_Part_Bones[ov->bone_indices[b]].m_RotationMatrix * ov->normal * ((float)ov->bone_weights[b] / 255.0f);
 				}
 			}
 
@@ -248,7 +245,7 @@ void MDX::animate(uint32 _animationIndex)
 		// Add sub-data
 		_Render->r->updateBufferData(__vb, header.vertices.size * 0 * sizeof(float), header.vertices.size * sizeof(vec3), m_Vertices);
 		_Render->r->updateBufferData(__vb, header.vertices.size * 3 * sizeof(float), header.vertices.size * sizeof(vec3), m_Normals);
-	}
+	}*/
 
 	for (uint32 i = 0; i < header.lights.size; i++)
 	{

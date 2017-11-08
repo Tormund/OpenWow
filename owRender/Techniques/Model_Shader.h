@@ -4,8 +4,13 @@
 
 class Model_Shader : public Technique
 {
+    int32 gBones;
+
 public:
-	Model_Shader() : Technique("shaders/Models/Model") {}
+	Model_Shader() : Technique("shaders/Models/Model") 
+    {
+        gBones = getLocation("gBones");
+    }
 
 	// Colors
 
@@ -13,6 +18,31 @@ public:
 	{
 		setVec4("gColor", _color);
 	}
+
+    inline void SetAnimated(int32 animated)
+    {
+        setInt("gIsAnimated", animated);
+    }
+
+    inline void SetBoneStartIndex(uint32 animated)
+    {
+        setInt("gBoneStartIndex", animated);
+    }
+
+    inline void SetBoneMaxCount(uint32 animated)
+    {
+        setInt("gBoneMaxCount", animated);
+    }
+
+    inline void SetBones(vector<mat4>& _bones)
+    {
+        if (_bones.empty())
+        {
+            fail1();
+        }
+
+        _Render->r->setShaderConst(gBones, CONST_FLOAT44, _bones.data(), _bones.size());
+    }
 
 	// Textures
  
