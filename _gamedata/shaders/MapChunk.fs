@@ -4,11 +4,11 @@
 struct VSOutputType
 {
 	vec3 WorldSpacePos;
+	vec3 Normal;
+	vec4 VertexColorMCCV;
+	vec4 VertexColorMCLV;
 	vec2 TexCoordDetail;
 	vec2 TexCoordAlpha;
-	vec3 Normal;
-	vec3 VertexColorMCCV;
-	vec4 VertexColorMCLV;
 };
 
 // In
@@ -88,7 +88,7 @@ void main()
 
 	if (gMCCVExists)
 	{
-		resultColor *= VSInput.VertexColorMCCV;
+		resultColor *= VSInput.VertexColorMCCV.rgb;
 	}
 
 	//

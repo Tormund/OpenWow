@@ -1,18 +1,6 @@
-// *************************************************************************************************
-// Horde3D Shader Utility Library
-// --------------------------------------
-//		- Common functions -
-//
-// Copyright (C) 2006-2016 Nicolas Schulz and Horde3D team
-//
-// You may use the following code in projects based on the Horde3D graphics engine.
-//
-// *************************************************************************************************
-
 uniform mat4 viewMat;
 uniform mat4 worldMat;
 uniform	mat3 worldNormalMat;
-
 
 vec4 calcWorldPos( const vec4 pos )
 {

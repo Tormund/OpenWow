@@ -78,7 +78,7 @@ void MapChunk::Load(File& f, load_phases phase)
 
         vec3 tempVertexes[C_MapBufferSize];
         vec3 tempNormals[C_MapBufferSize];
-        vec3 mccvColors[C_MapBufferSize];
+        vec4 mccvColors[C_MapBufferSize];
         vec4 mclvColors[C_MapBufferSize];
 
         // MCVT sub-chunk (height's)
@@ -135,32 +135,32 @@ void MapChunk::Load(File& f, load_phases phase)
         f.Seek(startPosition + header.ofsSndEmitters);
 
         // MCLQ sub-chunk (liquids)
-        f.Seek(startPosition + header.ofsLiquid); // DEPRECATED
+        f.Seek(startPosition + header.ofsLiquid);
         {
             if (header.sizeLiquid)
             {
-                Modules::log().Green("MapChunk[%d, %d]: Contain liquid!!!!", m_ParentTile->m_IndexX, m_ParentTile->m_IndexZ);
-                fail1();
+                Log::Green("MapChunk[%d, %d]: Contain liquid!!!!", m_ParentTile->m_IndexX, m_ParentTile->m_IndexZ);
+                fail2("Not implemented");
 
-                CRange height;
-                f.ReadBytes(&height, 8);
-
-                m_Liquid = new Liquid(8, 8, vec3(m_GamePositionX, height.min, m_GamePositionZ));
-                m_Liquid->initFromTerrainMCLQ(f, GetLiquidType());
+                //CRange height;
+                //f.ReadBytes(&height, 8);
+                // m_Liquid = new Liquid(8, 8, vec3(m_GamePositionX, height.min, m_GamePositionZ));
+                //m_Liquid->initFromTerrainMCLQ(f, GetLiquidType());
             }
         }
 
         // MCCV sub-chunk (vertex shading)
         f.Seek(startPosition + header.ofsMCCV);
         {
-            vec3* ttn = mccvColors;
+            vec4* ttn = mccvColors;
             for (int j = 0; j < 17; j++)
             {
                 for (uint32 i = 0; i < ((j % 2u) ? 8u : 9u); i++)
                 {
                     uint8 nor[4];
-                    f.ReadBytes(nor, 4);
-                    *ttn++ = vec3((float)nor[2] / 127.0f, (float)nor[1] / 127.0f, (float)nor[0] / 127.0f);
+                    f.ReadBytes(&nor, sizeof(uint32));
+
+                    *ttn++ = vec4((float)nor[2] / 127.0f, (float)nor[1] / 127.0f, (float)nor[0] / 127.0f, (float)nor[3] / 127.0f);
                 }
             }
         }
@@ -180,14 +180,13 @@ void MapChunk::Load(File& f, load_phases phase)
 
             MCLV_exists = strncmp(blockName, "MCLV", 4) == 0;
 
-            CArgb color;
             vec4* ttn = mclvColors;
             for (int j = 0; j < 17; j++)
             {
                 for (int i = 0; i < ((j % 2) ? 8 : 9); i++)
                 {
-                    uint8 nor[4];
-                    f.ReadBytes(nor, 4);
+                    int8 nor[4];
+                    f.ReadBytes(&nor, 4);
                     *ttn++ = vec4((float)nor[2] / 255.0f, (float)nor[1] / 255.0f, (float)nor[0] / 255.0f, (float)nor[3] / 255.0f);
                 }
             }
@@ -198,25 +197,26 @@ void MapChunk::Load(File& f, load_phases phase)
         uint32 t = C_MapBufferSize * sizeof(float);
 
         // Vertex buffer
-        uint32 __vb = _Render->r->createVertexBuffer(17 * t, nullptr);
+        uint32 __vb = _Render->r->createVertexBuffer(18 * t, nullptr);
 
         _Render->r->updateBufferData(__vb, 0 * t, C_MapBufferSize * sizeof(vec3), tempVertexes);
-        _Render->r->updateBufferData(__vb, 3 * t, C_MapBufferSize * sizeof(vec2), _Map->GetTextureCoordDetail());
-        _Render->r->updateBufferData(__vb, 5 * t, C_MapBufferSize * sizeof(vec2), _Map->GetTextureCoordAlpha());
-        _Render->r->updateBufferData(__vb, 7 * t, C_MapBufferSize * sizeof(vec3), tempNormals);
-        _Render->r->updateBufferData(__vb, 10 * t, C_MapBufferSize * sizeof(vec3), mccvColors);
-        _Render->r->updateBufferData(__vb, 13 * t, C_MapBufferSize * sizeof(vec4), mclvColors);
+        _Render->r->updateBufferData(__vb, 3 * t, C_MapBufferSize * sizeof(vec3), tempNormals);
+        _Render->r->updateBufferData(__vb, 6 * t, C_MapBufferSize * sizeof(vec4), mccvColors);
+        _Render->r->updateBufferData(__vb, 10 * t, C_MapBufferSize * sizeof(vec4), mclvColors);
+        _Render->r->updateBufferData(__vb, 14 * t, C_MapBufferSize * sizeof(vec2), _Map->GetTextureCoordDetail());
+        _Render->r->updateBufferData(__vb, 16 * t, C_MapBufferSize * sizeof(vec2), _Map->GetTextureCoordAlpha());
+        
 
         //
 
-        __geom = _Render->r->beginCreatingGeometry(_RenderStorage->__layoutMapChunk);
+        __geom = _Render->r->beginCreatingGeometry(_RenderStorage->__layout_GxVBF_PNC2T2);
 
-        _Render->r->setGeomVertexParams(__geom, __vb, 0, 0 * t, 0);
-        _Render->r->setGeomVertexParams(__geom, __vb, 1, 3 * t, 0);
-        _Render->r->setGeomVertexParams(__geom, __vb, 2, 5 * t, 0);
-        _Render->r->setGeomVertexParams(__geom, __vb, 3, 7 * t, 0);
-        _Render->r->setGeomVertexParams(__geom, __vb, 4, 10 * t, 0);
-        _Render->r->setGeomVertexParams(__geom, __vb, 5, 13 * t, 0);
+        _Render->r->setGeomVertexParams(__geom, __vb, R_DataType::T_FLOAT, 0 * t, 0);
+        _Render->r->setGeomVertexParams(__geom, __vb, R_DataType::T_FLOAT, 3 * t, 0);
+        _Render->r->setGeomVertexParams(__geom, __vb, R_DataType::T_FLOAT, 6 * t, 0);
+        _Render->r->setGeomVertexParams(__geom, __vb, R_DataType::T_FLOAT, 10 * t, 0);
+        _Render->r->setGeomVertexParams(__geom, __vb, R_DataType::T_FLOAT, 14 * t, 0);
+        _Render->r->setGeomVertexParams(__geom, __vb, R_DataType::T_FLOAT, 16 * t, 0);
 
         vector<uint16>& mapArray = _Map->GenarateMapArray(header.holes);
         m_Indexes = mapArray.data();
@@ -292,7 +292,7 @@ void MapChunk::Load(File& f, load_phases phase)
                 if (mcly[i].flags.animation_enabled)
                 {
                     //animated[i] = mcly[i].flags;
-                    Modules::log().Error("ANIMATED!!!");
+                    Log::Error("ANIMATED!!!");
                 }
                 else
                 {
@@ -493,14 +493,14 @@ void MapChunk::Render()
     // Bind m_DiffuseTextures
     for (uint32 i = 0; i < header.nLayers; i++)
     {
-        _Render->r->setTexture(i, m_DiffuseTextures[i]->GetObj(), SS_FILTER_BILINEAR | SS_ANISO16 | SS_ADDR_WRAP, 0);
-        _Render->r->setTexture(5 + i, m_SpecularTextures[i]->GetObj(), SS_FILTER_BILINEAR | SS_ANISO16 | SS_ADDR_WRAP, 0);
+        _Render->r->setTexture(i, m_DiffuseTextures[i]->GetObj(), SS_ADDR_WRAP, 0);
+        _Render->r->setTexture(5 + i, m_SpecularTextures[i]->GetObj(), SS_ADDR_WRAP, 0);
     }
 
     // Bind blend
     if (header.nLayers > 0)
     {
-        _Render->r->setTexture(4, m_BlendRBGShadowATexture, SS_FILTER_BILINEAR | SS_ADDR_CLAMP, 0);
+        _Render->r->setTexture(4, m_BlendRBGShadowATexture, SS_ADDR_CLAMP, 0);
     }
 
     // Bind shadow

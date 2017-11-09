@@ -8,7 +8,7 @@ DayNightCycle::DayNightCycle()
 	File f = "World\\dnc.db";
 	if (!f.Open())
 	{
-		Modules::log().Error("DayNightCycle[]: Can't init day-night cycle.");
+		Log::Error("DayNightCycle[]: Can't init day-night cycle.");
 		return;
 	}
 

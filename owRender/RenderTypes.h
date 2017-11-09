@@ -46,21 +46,24 @@ struct R_VertexBufferSlot
 {
 	R_VertexBufferSlot() :
 		vbObj(0),
+        type(R_DataType::T_FLOAT),
 		offset(0),
 		stride(0)
 	{}
 
-	R_VertexBufferSlot(uint32 vbObj, uint32 offset, uint32 stride) :
+	R_VertexBufferSlot(uint32 vbObj, R_DataType type, uint32 offset, uint32 stride) :
 		vbObj(vbObj),
+        type(type),
 		offset(offset),
 		stride(stride)
 	{}
 
 	//
 
-	uint32  vbObj;
-	uint32  offset;
-	uint32  stride;
+	uint32      vbObj;
+    R_DataType  type;
+	uint32      offset;
+	uint32      stride;
 };
 
 struct R_GeometryInfo

@@ -49,7 +49,7 @@ public:
 		}
 		else
 		{
-			Modules::log().Error("ConsoleCommand_WA[%s]: Can't parse argument [%s] to [%s].", m_Name.c_str(), _args.c_str(), typeid(ARGTYPE).name());
+			Log::Error("ConsoleCommand_WA[%s]: Can't parse argument [%s] to [%s].", m_Name.c_str(), _args.c_str(), typeid(ARGTYPE).name());
 		}
 	}
 };

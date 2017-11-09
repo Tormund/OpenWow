@@ -37,7 +37,7 @@ Sky::Sky(DBC_LightRecord* data)
 		auto rec = DBC_LightIntBand[ParamsClear + i];
 		if (rec == nullptr)
 		{
-			Modules::log().Error("Sky NOT FOUND!!!!!!");
+			Log::Error("Sky NOT FOUND!!!!!!");
 			continue;
 		}
 

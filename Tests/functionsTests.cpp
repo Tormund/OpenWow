@@ -17,35 +17,35 @@ class TestClass
 public:
     void TestClassMethod()
     {
-        Modules::log().Error("TestClassMethod Call \n");
+        Log::Error("TestClassMethod Call \n");
     }
 
     static void TestClassStaticMethod()
     {
-        Modules::log().Error("TestClassStaticMethod Call \n");
+        Log::Error("TestClassStaticMethod Call \n");
     }
 
     //---------
 
     void TestClassMethodWA(int x)
     {
-        Modules::log().Error("TestClassMethod CallWA [%d] \n", x);
+        Log::Error("TestClassMethod CallWA [%d] \n", x);
     }
 
     static void TestClassStaticMethodWA(int x)
     {
-        Modules::log().Error("TestClassStaticMethodWA [%d] Call \n", x);
+        Log::Error("TestClassStaticMethodWA [%d] Call \n", x);
     }
 };
 
 void TestMethod()
 {
-    Modules::log().Error("TestMethod Call \n");
+    Log::Error("TestMethod Call \n");
 }
 
 void TestMethodWA(int x)
 {
-    Modules::log().Error("TestMethod [%d] Call \n", x);
+    Log::Error("TestMethod [%d] Call \n", x);
 }
 
 int functionsTests()

@@ -9,14 +9,14 @@ bool INIFile::Open(cstring _filename)
 
 	if (_filename.empty())
 	{
-		//Modules::log().Error("INIFile[%s]: No such file or directory!", _filename.c_str());
+		//Log::Error("INIFile[%s]: No such file or directory!", _filename.c_str());
 		return false;
 	}
 
 	iniStream.open(iniFilename.c_str(), ios::in);
 	if (!iniStream.is_open())
 	{
-		//Modules::log().Error("INIFile[%s]: Can not open file!", _filename.c_str());
+		//Log::Error("INIFile[%s]: Can not open file!", _filename.c_str());
 		return false;
 	}
 

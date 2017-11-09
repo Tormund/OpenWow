@@ -6,7 +6,7 @@ bool DBCFile<RECORD_T>::Open()
 	// Try open file
 	if (!File::Open())
 	{
-		Modules::log().Error("DBCFile[%s]: Can't open file.", Path_Name().c_str());
+		Log::Error("DBCFile[%s]: Can't open file.", Path_Name().c_str());
 		return false;
 	}
 
@@ -25,11 +25,11 @@ bool DBCFile<RECORD_T>::Open()
 	}
 	else
 	{
-		Modules::log().Error("DBCFile[%s]: File corrupt. Header [%s]", Path_Name().c_str(), header);
+		Log::Error("DBCFile[%s]: File corrupt. Header [%s]", Path_Name().c_str(), header);
 		return false;
 	}
 
-	Modules::log().Print("DBCFile[%s]: File header [%s]. Type [%d].", Path_Name().c_str(), header, db_type);
+	Log::Print("DBCFile[%s]: File header [%s]. Type [%d].", Path_Name().c_str(), header, db_type);
 
 	ByteBuffer::ReadBytes(&recordCount, 4);// Number of records
 	ByteBuffer::ReadBytes(&fieldCount, 4); // Number of fields

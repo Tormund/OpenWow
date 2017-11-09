@@ -61,7 +61,7 @@ inline bool INIFile::Assign(T& addr, string _section, string _keyName)
 		if (it.key == _keyName)
 			return Utils::TryParse(typeid(addr), it.value, (void*)&addr);
 
-	Modules::log().Warn("INIFile[%s]: Can't load key[%s] in section[%s]", iniFilename.c_str(), _keyName.c_str(), _section.c_str());
+	Log::Warn("INIFile[%s]: Can't load key[%s] in section[%s]", iniFilename.c_str(), _keyName.c_str(), _section.c_str());
 
 	return false;
 }

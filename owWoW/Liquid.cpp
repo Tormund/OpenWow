@@ -134,9 +134,9 @@ void Liquid::initFromTerrainMH2O(File& f, MH2O_Header * _header)
 
 		if (mh2o_instance->minHeightLevel - mh2o_instance->maxHeightLevel > 0.001f)
 		{
-			Modules::log().Green("MinHeight %f:", mh2o_instance->minHeightLevel);
-			Modules::log().Green("MaxHeight %f:", mh2o_instance->maxHeightLevel);
-			Modules::log().Error("MIN WATER != MAX_WATER!!!!");
+			Log::Green("MinHeight %f:", mh2o_instance->minHeightLevel);
+			Log::Green("MaxHeight %f:", mh2o_instance->maxHeightLevel);
+			Log::Error("MIN WATER != MAX_WATER!!!!");
 			fail1();
 		}
 
@@ -145,7 +145,7 @@ void Liquid::initFromTerrainMH2O(File& f, MH2O_Header * _header)
 		assert1(liquidType != nullptr);
 		uint32 vertexFormat = liquidType->Get_LiquidMaterialID()->Get_LiquidVertexFormat();
 		InitTextures(liquidType);
-		//Modules::log().Warn("Liquid is [%s]", liquidType->Get_Name());
+		//Log::Warn("Liquid is [%s]", liquidType->Get_Name());
 
 		// Fix ocean shit
 		if (mh2o_instance->liquidType()->Get_ID() == 2) 
@@ -369,10 +369,10 @@ void Liquid::createBuffer(cvec3 _position)
 				a1 = a2 = a3 = a4 = 1.0f;
 				if (layer.depths.size() > 0)
 				{
-					a1 = (float)layer.depths[p1] / 255.f * 4.0f + 0.0f; // whats the magic formular here ???
-					a2 = (float)layer.depths[p2] / 255.f * 4.0f + 0.0f;
-					a3 = (float)layer.depths[p3] / 255.f * 4.0f + 0.0f;
-					a4 = (float)layer.depths[p4] / 255.f * 4.0f + 0.0f;
+                    a1 = minf(static_cast<float>(layer.depths[p1]) / 255.0f * 1.5f + 0.3f, 1.0f); // whats the magic formular here ???
+                    a2 = minf(static_cast<float>(layer.depths[p2]) / 255.0f * 1.5f + 0.3f, 1.0f);
+                    a3 = minf(static_cast<float>(layer.depths[p3]) / 255.0f * 1.5f + 0.3f, 1.0f);
+                    a4 = minf(static_cast<float>(layer.depths[p4]) / 255.0f * 1.5f + 0.3f, 1.0f);
 				}
 
 				// Skip hidden water tile
@@ -451,9 +451,9 @@ void Liquid::createBuffer(cvec3 _position)
 	__geom = _Render->r->beginCreatingGeometry(_RenderStorage->__layoutWater);
 
 	// Vertex params
-	_Render->r->setGeomVertexParams(__geom, __vb, 0, 0 * sizeof(float), sizeof(MH2O_Vertex));
-	_Render->r->setGeomVertexParams(__geom, __vb, 1, 3 * sizeof(float), sizeof(MH2O_Vertex));
-	_Render->r->setGeomVertexParams(__geom, __vb, 2, 6 * sizeof(float), sizeof(MH2O_Vertex));
+	_Render->r->setGeomVertexParams(__geom, __vb, R_DataType::T_FLOAT, 0, sizeof(MH2O_Vertex));
+	_Render->r->setGeomVertexParams(__geom, __vb, R_DataType::T_FLOAT, 12, sizeof(MH2O_Vertex));
+	_Render->r->setGeomVertexParams(__geom, __vb, R_DataType::T_FLOAT, 24, sizeof(MH2O_Vertex));
 
 	// Index bufer
 	//uint32 __ib = _Render->r->createIndexBuffer(m_IndicesCount, m_Indices);
@@ -476,7 +476,7 @@ void Liquid::draw()
 	size_t texidx = (size_t)(_EnvironmentManager->animtime / 60.0f) % textures.size();
 	_Render->r->setTexture(10, textures[texidx]->GetObj(), 0, 0);
 
-	_TechniquesMgr->m_Water->SetWaterColorLight(_EnvironmentManager->GetSkyColor(LIGHT_GLOBAL_DIFFUSE));
+	_TechniquesMgr->m_Water->SetWaterColorLight(_EnvironmentManager->GetSkyColor(LIGHT_GLOBAL_AMBIENT));
 	_TechniquesMgr->m_Water->SetWaterColorDark(_EnvironmentManager->GetSkyColor(LIGHT_GLOBAL_DIFFUSE));
 
 	_Render->r->setGeometry(__geom);

@@ -18,8 +18,8 @@ int main(int argumentCount, char* arguments[])
 
     //----------------------------------------------------------------
 
-	Modules::log().AddDebugOutput(PlatformWindows::CreateDebugOutput_ConsoleWindows());
-	//Modules::log().AddDebugOutput(PlatformWindows::CreateDebugOutput_Log());
+	Log::AddDebugOutput(PlatformWindows::CreateDebugOutput_ConsoleWindows());
+	//Log::AddDebugOutput(PlatformWindows::CreateDebugOutput_Log());
 
     _UIMgr->Init();
 
@@ -36,7 +36,7 @@ int main(int argumentCount, char* arguments[])
     // Custom debug outputs
 	ConsoleOpenGL openGLConsole;
 	openGLConsole.Init();
-	Modules::log().AddDebugOutput(&openGLConsole);
+	Log::AddDebugOutput(&openGLConsole);
 
     //----------------------------------------------------------------
 

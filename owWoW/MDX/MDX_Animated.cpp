@@ -120,8 +120,8 @@ void MDX::initAnimated(File& f)
 			}
 			else
 			{
-				//Modules::log().Warn("MDX[%s]: Animation doesn't exists.", buf);
-				//Modules::log().Warn("header.bones.size = [%d]", header.bones.size);
+				//Log::Warn("MDX[%s]: Animation doesn't exists.", buf);
+				//Log::Warn("header.bones.size = [%d]", header.bones.size);
 				//assert1(animBones == false);
 			}
 		}

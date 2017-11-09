@@ -37,7 +37,7 @@ string Utils::ToString(const type_info& type, void* value)
 
 	else
 	{
-		//Modules::log().Error("UtilsParsing: a required type is not defined!");
+		//Log::Error("UtilsParsing: a required type is not defined!");
 		return "";
 	}
 
@@ -122,7 +122,7 @@ bool Utils::ToBool(cstring _string)
 	if (_str == "false") return false;
 	if (_str == "0") return false;
 
-	//Modules::log().Error("Utils: %s %s doesn't know how to handle %s", __FILE__, __FUNCTION__, _string.c_str());
+	//Log::Error("Utils: %s %s doesn't know how to handle %s", __FILE__, __FUNCTION__, _string.c_str());
 	return false;
 }
 

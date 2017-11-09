@@ -49,7 +49,7 @@ MapTile::MapTile(uint32 _intexX, uint32 _intexZ) : m_IndexX(_intexX), m_IndexZ(_
 
 MapTile::~MapTile()
 {
-    Modules::log().Info("MapTile[%d, %d]: Unloading tile...", m_IndexX, m_IndexZ);
+    Log::Info("MapTile[%d, %d]: Unloading tile...", m_IndexX, m_IndexZ);
 
     //---------------------------------------------------------------------------------
 
@@ -89,12 +89,12 @@ MapTile::~MapTile()
 
     //---------------------------------------------------------------------------------
 
-    Modules::log().Green("MapTile[%d, %d]: Unloaded.", m_IndexX, m_IndexZ);
+    Log::Green("MapTile[%d, %d]: Unloaded.", m_IndexX, m_IndexZ);
 }
 
 bool MapTile::Load(cstring _filename)
 {
-    //Modules::log().Info("MapTile[%d, %d, %s]: Loading...", m_IndexX, m_IndexZ, _filename.c_str());
+    //Log::Info("MapTile[%d, %d, %s]: Loading...", m_IndexX, m_IndexZ, _filename.c_str());
 
     //---------------------------------------------------------------------------------
 
@@ -124,7 +124,7 @@ bool MapTile::Load(cstring _filename)
 
     //---------------------------------------------------------------------------------
 
-    Modules::log().Green("MapTile[%d, %d, %s]: Loaded!", m_IndexX, m_IndexZ, _filename.c_str());
+    Log::Green("MapTile[%d, %d, %s]: Loaded!", m_IndexX, m_IndexZ, _filename.c_str());
 
     return true;
 }
@@ -154,7 +154,7 @@ bool MapTile::Load_SplitFile(cstring _filename, load_phases _phase)
     File f = name;
     if (!f.Open())
     {
-        Modules::log().Error("MapTile[%d, %d, %s]: Error open file!", m_IndexX, m_IndexZ, name);
+        Log::Error("MapTile[%d, %d, %s]: Error open file!", m_IndexX, m_IndexZ, name);
         return false;
     }
 
@@ -298,7 +298,7 @@ bool MapTile::Load_SplitFile(cstring _filename, load_phases _phase)
         }
         else
         {
-            Modules::log().Info("MapTile[%s]: No implement chunk %s [%d].", name, fourcc, size);
+            Log::Info("MapTile[%s]: No implement chunk %s [%d].", name, fourcc, size);
         }
 
         f.Seek(nextpos);

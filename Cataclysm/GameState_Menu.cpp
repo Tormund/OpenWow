@@ -121,16 +121,16 @@ void GameState_Menu::Input(double t, double dt)
     if (cameraSprint)
         speed *= 3.0f;
 
-    if (Modules::input().IsKeyPressed(OW_KEY_W))
+    if (Input::IsKeyPressed(OW_KEY_W))
         _Render->mainCamera->ProcessKeyboard(FORWARD, speed);
 
-    if (Modules::input().IsKeyPressed(OW_KEY_S))
+    if (Input::IsKeyPressed(OW_KEY_S))
         _Render->mainCamera->ProcessKeyboard(BACKWARD, speed);
 
-    if (Modules::input().IsKeyPressed(OW_KEY_A))
+    if (Input::IsKeyPressed(OW_KEY_A))
         _Render->mainCamera->ProcessKeyboard(LEFT, speed);
 
-    if (Modules::input().IsKeyPressed(OW_KEY_D))
+    if (Input::IsKeyPressed(OW_KEY_D))
         _Render->mainCamera->ProcessKeyboard(RIGHT, speed);
 }
 
@@ -222,7 +222,7 @@ void GameState_Menu::RenderUI()
 
 void GameState_Menu::OnBtn(DBC_MapRecord* _e)
 {
-    Modules::log().Green("Load level %s [%d]", _e->Get_Directory(), _e->Get_ID());
+    Log::Green("Load level %s [%d]", _e->Get_Directory(), _e->Get_ID());
 
     _Map->Load_WDT(_e);
     cmd = CMD_SELECT2;

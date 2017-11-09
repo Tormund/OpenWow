@@ -19,7 +19,7 @@ struct WMOFogDef
 	{
 		float end;			// Fog end
 		float startScalar;	// Fog start multiplier (0..1)
-		CImVector color;	// The back buffer is also cleared to this colour 
+		CBgra color;	// The back buffer is also cleared to this colour 
 	} fog;
 
 	// Underwater fog
@@ -27,7 +27,7 @@ struct WMOFogDef
 	{
 		float end;
 		float startScalar;
-		CImVector color;
+		CBgra color;
 	} underwater_fog;
 
 	//

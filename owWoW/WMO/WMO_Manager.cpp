@@ -23,7 +23,7 @@ void WMOsManager::Destroy()
 
 	DeleteAll();
 
-	Modules::log().Info("WMOsManager[]: All WMOs destroyed.");
+	Log::Info("WMOsManager[]: All WMOs destroyed.");
 }
 
 WMO* WMOsManager::CreateAction(cstring name)
@@ -38,7 +38,7 @@ void WMOsManager::LoadAction(string name, WMO* _wmo)
 
 	if (!_wmo->Load())
 	{
-		Modules::log().Error("WMOsManager[%s]: Failed init WMO.", name.c_str());
+		Log::Error("WMOsManager[%s]: Failed init WMO.", name.c_str());
 	}
 }
 

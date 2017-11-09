@@ -9,7 +9,7 @@ string ProcessShader(File& f)
 {
 	if (!f.Open())
 	{
-		Modules::log().Error("Error open shader [%s].", f.Path_Name().c_str());
+		Log::Error("Error open shader [%s].", f.Path_Name().c_str());
 		return "";
 	}
 
@@ -29,8 +29,9 @@ string ProcessShader(File& f)
 		if (line[0] == '#' && line[1] == 'i' && line[2] == 'n')
 		{
 			size_t firstBracketPosition = line.find('"');
+            assert1(firstBracketPosition != string::npos);
+
 			size_t lastBracketPosition = line.find_last_of('"');
-			assert1(firstBracketPosition != string::npos);
 			assert1(firstBracketPosition != lastBracketPosition);
 
 			string inludeFileName = line.substr(firstBracketPosition + 1, lastBracketPosition - firstBracketPosition - 1);
@@ -54,8 +55,8 @@ Technique::Technique(cstring _fileName)
 
 	shaderId = _Render->r->createShader(shVS.c_str(), shFS.c_str(), nullptr, nullptr, nullptr, nullptr);
 
-	Modules::log().Error("SH %s", _Render->r->getShaderLog().c_str());
-	Modules::log().Error("ID == %d", shaderId);
+	Log::Error("SH %s", _Render->r->getShaderLog().c_str());
+	Log::Error("ID == %d", shaderId);
 
     InitBaseUniforms();
 }
@@ -67,8 +68,8 @@ Technique::Technique(cstring _fileNameVS, cstring _fileNameFS)
 
 	shaderId = _Render->r->createShader(shVS.c_str(), shFS.c_str(), nullptr, nullptr, nullptr, nullptr);
 
-	Modules::log().Error("SH %s", _Render->r->getShaderLog().c_str());
-	Modules::log().Error("ID == %d", shaderId);
+	Log::Error("SH %s", _Render->r->getShaderLog().c_str());
+	Log::Error("ID == %d", shaderId);
 
     InitBaseUniforms();
 }
@@ -81,8 +82,8 @@ Technique::Technique(cstring _fileNameVS, cstring _fileNameFS, cstring _fileName
 
     shaderId = _Render->r->createShader(shVS.c_str(), shFS.c_str(), shGS.c_str(), nullptr, nullptr, nullptr);
 
-    Modules::log().Error("SH %s", _Render->r->getShaderLog().c_str());
-    Modules::log().Error("ID == %d", shaderId);
+    Log::Error("SH %s", _Render->r->getShaderLog().c_str());
+    Log::Error("ID == %d", shaderId);
 
     InitBaseUniforms();
 }

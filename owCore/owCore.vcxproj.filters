@@ -10,12 +10,6 @@
     <Filter Include="Modules\Engine Config">
       <UniqueIdentifier>{35b2f0fd-f641-4615-afb4-a501e7934900}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Modules\Engine Log">
-      <UniqueIdentifier>{ef746966-5439-4659-9eaa-b5406a1f5be7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Modules\Engine Log\Common">
-      <UniqueIdentifier>{154efe91-d5a0-4a4d-9b1d-d053b1d5228b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Modules\Resource Manager">
       <UniqueIdentifier>{c7b2f916-0dad-48d0-b7f5-33e8dc424232}</UniqueIdentifier>
     </Filter>
@@ -37,6 +31,12 @@
     <Filter Include="Objects bindings\Updatable">
       <UniqueIdentifier>{fff12d46-8046-4520-a392-ec2dd7cea339}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Modules\Log">
+      <UniqueIdentifier>{ef746966-5439-4659-9eaa-b5406a1f5be7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\Log\Common">
+      <UniqueIdentifier>{154efe91-d5a0-4a4d-9b1d-d053b1d5228b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Input.cpp">
@@ -46,14 +46,11 @@
     <ClCompile Include="EngineConfig.cpp">
       <Filter>Modules\Engine Config</Filter>
     </ClCompile>
-    <ClCompile Include="EngineLog.cpp">
-      <Filter>Modules\Engine Log</Filter>
-    </ClCompile>
     <ClCompile Include="Console.cpp">
-      <Filter>Modules\Engine Log\Common</Filter>
+      <Filter>Modules\Log\Common</Filter>
     </ClCompile>
     <ClCompile Include="DebugOutput.cpp">
-      <Filter>Modules\Engine Log\Common</Filter>
+      <Filter>Modules\Log\Common</Filter>
     </ClCompile>
     <ClCompile Include="ResourcesManager.cpp">
       <Filter>Modules\Resource Manager</Filter>
@@ -82,6 +79,9 @@
     <ClCompile Include="UpdatableObjectCollection.cpp">
       <Filter>Objects bindings\Updatable</Filter>
     </ClCompile>
+    <ClCompile Include="Log.cpp">
+      <Filter>Modules\Log</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Input.h">
@@ -96,16 +96,13 @@
       <Filter>Modules\Engine Config</Filter>
     </ClInclude>
     <ClInclude Include="Console.h">
-      <Filter>Modules\Engine Log\Common</Filter>
+      <Filter>Modules\Log\Common</Filter>
     </ClInclude>
     <ClInclude Include="DebugOutput.h">
-      <Filter>Modules\Engine Log\Common</Filter>
+      <Filter>Modules\Log\Common</Filter>
     </ClInclude>
     <ClInclude Include="ResourcesManager.h">
       <Filter>Modules\Resource Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="EngineLog.h">
-      <Filter>Modules\Engine Log</Filter>
     </ClInclude>
     <ClInclude Include="Module.h">
       <Filter>Module</Filter>
@@ -131,6 +128,9 @@
     </ClInclude>
     <ClInclude Include="UpdatableObjectCollection.h">
       <Filter>Objects bindings\Updatable</Filter>
+    </ClInclude>
+    <ClInclude Include="Log.h">
+      <Filter>Modules\Log</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

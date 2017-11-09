@@ -11,14 +11,14 @@ bool DebugOutput_Log::Init()
 
 	if (fileName.empty())
 	{
-		Modules::log().Error("LogFile[%s]: No such file or directory!", fileName.c_str());
+		Log::Error("LogFile[%s]: No such file or directory!", fileName.c_str());
 		return false;
 	}
 
 	logStream.open(fileName.c_str(), ios::out);
 	if (!logStream.is_open())
 	{
-		Modules::log().Error("LogFile[%s]: Can not open file!", fileName.c_str());
+		Log::Error("LogFile[%s]: Can not open file!", fileName.c_str());
 		logStream.clear();
 		return false;
 	}

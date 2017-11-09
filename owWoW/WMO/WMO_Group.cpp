@@ -244,7 +244,7 @@ void WMOGroup::Load()
 
 			if (m_Header.liquidType > 0)
 			{
-				Modules::log().Green("WMO[%s]: Contain liquid! [%s]", m_ParentWMO->GetName().c_str(), DBC_LiquidType[m_Header.liquidType]->Get_Name());
+				Log::Green("WMO[%s]: Contain liquid! [%s]", m_ParentWMO->GetName().c_str(), DBC_LiquidType[m_Header.liquidType]->Get_Name());
 
 				m_Liquid = new Liquid(liquidHeader.A, liquidHeader.B, From_XYZ_To_XZminusY_RET(liquidHeader.pos));
 				m_Liquid->initFromWMO2(f, m_ParentWMO->m_Materials[liquidHeader.type], DBC_LiquidType[m_Header.liquidType], m_Header.flags.FLAG_IS_INDOOR);
@@ -264,7 +264,7 @@ void WMOGroup::Load()
 		}
 		else
 		{
-			Modules::log().Info("WMO_Group[]: No implement group chunk %s [%d].", fourcc, size);
+			Log::Info("WMO_Group[]: No implement group chunk %s [%d].", fourcc, size);
 		}
 
 		f.Seek(nextpos);
@@ -375,12 +375,12 @@ void WMOGroup::Load()
 	__geom = _Render->r->beginCreatingGeometry(m_Header.flags.FLAG_HAS_VERTEX_COLORS ? _RenderStorage->__layoutWMO_VC : _RenderStorage->__layoutWMO);
 
 	// Vertex params
-	_Render->r->setGeomVertexParams(__geom, __vb, 0, m_VertexesCount * 0 * sizeof(float), 0);
-	_Render->r->setGeomVertexParams(__geom, __vb, 1, m_VertexesCount * 3 * sizeof(float), 0);
-	_Render->r->setGeomVertexParams(__geom, __vb, 2, m_VertexesCount * 5 * sizeof(float), 0);
+	_Render->r->setGeomVertexParams(__geom, __vb, R_DataType::T_FLOAT, m_VertexesCount * 0 * sizeof(float), 0);
+	_Render->r->setGeomVertexParams(__geom, __vb, R_DataType::T_FLOAT, m_VertexesCount * 3 * sizeof(float), 0);
+	_Render->r->setGeomVertexParams(__geom, __vb, R_DataType::T_FLOAT, m_VertexesCount * 5 * sizeof(float), 0);
 	if (m_Header.flags.FLAG_HAS_VERTEX_COLORS)
 	{
-		_Render->r->setGeomVertexParams(__geom, __vb, 3, m_VertexesCount * 8 * sizeof(float), 0);
+		_Render->r->setGeomVertexParams(__geom, __vb, R_DataType::T_FLOAT, m_VertexesCount * 8 * sizeof(float), 0);
 	}
 
 	// Index bufer

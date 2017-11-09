@@ -1,6 +1,6 @@
 #pragma once
 
-// EngineLog
+// Log
 #include "Techniques/Debug_GeometryPass.h"
 
 #include "Techniques/Sky_GeometryPass.h"

@@ -157,7 +157,7 @@ void World::RenderGeom()
 	//------------------------------------------------------------------------------
 	// Map water
 	//------------------------------------------------------------------------------
-	_Render->r->setCullMode(R_CullMode::RS_CULL_NONE);
+	_Render->r->setCullMode(R_CullMode::RS_CULL_FRONT);
 	_Render->r->setBlendMode(true, R_BlendFunc::BS_BLEND_SRC_ALPHA, R_BlendFunc::BS_BLEND_INV_SRC_ALPHA);
 
 	if (Modules::config().draw_map_chunk)

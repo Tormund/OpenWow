@@ -10,33 +10,33 @@ void MPQArchiveStorage::AddArchive(string filename)
 {
 	mpq_archive_s* mpq_a;
 	int result = libmpq__archive_open(&mpq_a, (MPQArchiveStorage::archives + filename).c_str(), -1);
-	//Modules::log().Info("Opening %s", filename.c_str());
+	//Log::Info("Opening %s", filename.c_str());
 	if (result)
 	{
 		switch (result)
 		{
 			case LIBMPQ_ERROR_OPEN:
-            //Modules::log().Error("Error opening archive [%s]: Does file really exist?", filename.c_str());
+            //Log::Error("Error opening archive [%s]: Does file really exist?", filename.c_str());
 			break;
 
 			case LIBMPQ_ERROR_FORMAT:            /* bad file format */
-			//Modules::log().Error("Error opening archive [%s]: Bad file format", filename.c_str());
+			//Log::Error("Error opening archive [%s]: Bad file format", filename.c_str());
 			break;
 
 			case LIBMPQ_ERROR_SEEK:         /* seeking in file failed */
-			//Modules::log().Error("Error opening archive [%s]: Seeking in file failed", filename.c_str());
+			//Log::Error("Error opening archive [%s]: Seeking in file failed", filename.c_str());
 			break;
 
 			case LIBMPQ_ERROR_READ:              /* Read error in archive */
-			//Modules::log().Error("Error opening archive [%s]: Read error in archive", filename.c_str());
+			//Log::Error("Error opening archive [%s]: Read error in archive", filename.c_str());
 			break;
 
 			case LIBMPQ_ERROR_MALLOC:               /* maybe not enough memory? :) */
-			//Modules::log().Error("Error opening archive [%s]: Maybe not enough memory", filename.c_str());
+			//Log::Error("Error opening archive [%s]: Maybe not enough memory", filename.c_str());
 			break;
 
 			default:
-			//Modules::log().Error("Error opening archive [%s]: Unknown error\n", filename.c_str());
+			//Log::Error("Error opening archive [%s]: Unknown error\n", filename.c_str());
 			break;
 		}
 		return;
@@ -68,7 +68,7 @@ void MPQArchiveStorage::AddArchive(string filename)
 	//filelist.push_back(s);
 
 	//if(s[0] == 'I')
-	//	Modules::log().Info("File [%s]", s.c_str());
+	//	Log::Info("File [%s]", s.c_str());
 
 	counter += strlen(token) + 2;
 	strtok_s(NULL, seps, &token);
@@ -77,7 +77,7 @@ void MPQArchiveStorage::AddArchive(string filename)
 	delete[] buffer;*/
 
 	m_OpenArchives.push_back(mpq_a);
-	//Modules::log().Green("MPQFile[%s]: Added!", filename.c_str());
+	//Log::Green("MPQFile[%s]: Added!", filename.c_str());
 }
 
 MPQFileLocation MPQArchiveStorage::GetFileLocation(cstring filename)

@@ -45,16 +45,16 @@ void GameState_InWorld::Input(double t, double dt)
     if (cameraSprint)
         speed *= 3.0f;
 
-    if (Modules::input().IsKeyPressed(OW_KEY_W))
+    if (Input::IsKeyPressed(OW_KEY_W))
         _Render->mainCamera->ProcessKeyboard(FORWARD, speed);
 
-    if (Modules::input().IsKeyPressed(OW_KEY_S))
+    if (Input::IsKeyPressed(OW_KEY_S))
         _Render->mainCamera->ProcessKeyboard(BACKWARD, speed);
 
-    if (Modules::input().IsKeyPressed(OW_KEY_A))
+    if (Input::IsKeyPressed(OW_KEY_A))
         _Render->mainCamera->ProcessKeyboard(LEFT, speed);
 
-    if (Modules::input().IsKeyPressed(OW_KEY_D))
+    if (Input::IsKeyPressed(OW_KEY_D))
         _Render->mainCamera->ProcessKeyboard(RIGHT, speed);
 }
 

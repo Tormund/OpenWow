@@ -28,7 +28,7 @@ WMO::WMO(cstring name) : RefItemNamed(name), m_Loaded(false)
 
 WMO::~WMO()
 {
-	Modules::log().Info("WMO[%s]: Unloading...", GetName().c_str());
+	Log::Info("WMO[%s]: Unloading...", GetName().c_str());
 
 	//
 
@@ -80,7 +80,7 @@ bool WMO::Load()
 		return false;
 	}
 
-	//Modules::log().Info("WMO[%s]: Loading...", GetName().c_str());
+	//Log::Info("WMO[%s]: Loading...", GetName().c_str());
 
 	char fourcc[5];
 	uint32 size;
@@ -104,7 +104,7 @@ bool WMO::Load()
 		else if (strcmp(fourcc, "MOHD") == 0)               // Header
 		{
 			f.ReadBytes(&m_Header, WMOHeaderDef::__size);
-			//Modules::log().Error("ID = [%d]", m_Header.wmoID()->Get_ID());
+			//Log::Error("ID = [%d]", m_Header.wmoID()->Get_ID());
 		}
 		else if (strcmp(fourcc, "MOTX") == 0)               // List of m_DiffuseTextures (BLP Files) used in this map object.
 		{
@@ -142,7 +142,7 @@ bool WMO::Load()
 				m_Skybox_Filename = new char[size + 1];
 				f.ReadBytes(m_Skybox_Filename, size);
 				m_Skybox_Filename[size] = 0x00;
-				Modules::log().Warn("WMO[%s]: Skybox [%s]", GetName().c_str(), m_Skybox_Filename);
+				Log::Warn("WMO[%s]: Skybox [%s]", GetName().c_str(), m_Skybox_Filename);
 
 				//m_SkyModel = new Sky_Model(m_Skybox_Filename);
 			}
@@ -272,7 +272,7 @@ bool WMO::Load()
 		}
 		else
 		{
-			Modules::log().Warn("WMO[%s]: No implement wmo chunk [%s] [%d].", GetName().c_str(), fourcc, size);
+			Log::Warn("WMO[%s]: No implement wmo chunk [%s] [%d].", GetName().c_str(), fourcc, size);
 		}
 
 		f.Seek(nextpos);

@@ -40,7 +40,7 @@ UIElement::UIElement(uint32 _DeepAdding)
     m_TextOffset = vec2(6, m_Font->GetHeight());
 
 
-    //Modules::log().Info("UI: [%s] created.", name.c_str());
+    //Log::Info("UI: [%s] created.", name.c_str());
 }
 
 UIElement::~UIElement()
@@ -50,7 +50,7 @@ UIElement::~UIElement()
         delete m_Image;
     }
 
-    //Modules::log().Info("UI: [%s] destroyed.", name.c_str());
+    //Log::Info("UI: [%s] destroyed.", name.c_str());
 }
 
 void UIElement::Init(cvec2 _position, cvec2 _size, Image* _image, Color _color)

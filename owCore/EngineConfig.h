@@ -98,6 +98,6 @@ public:
 	bool enableMCCV;
 	bool enableMCLV;
 
-	// Perfomance
 
+	// Perfomance
 };

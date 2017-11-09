@@ -9,8 +9,8 @@ struct VSOutput
 
 // Vertex attrib
 layout(location = 0) in vec3 position;
-layout(location = 1) in int blendWeight;
-layout(location = 2) in int blendIndices;
+layout(location = 1) in uint blendWeight;
+layout(location = 2) in uint blendIndices;
 layout(location = 3) in vec3 normal;
 layout(location = 4) in vec2 tc0;
 layout(location = 5) in vec2 tc1;
@@ -42,21 +42,21 @@ void main(void)
 
 	if(gIsAnimated)
 	{
-		int blendWeights[4];
-		blendWeights[0] = blendWeight & 0xFF000000;
-		blendWeights[1] = blendWeight & 0x00FF0000;
-		blendWeights[2] = blendWeight & 0x0000FF00;
-		blendWeights[3] = blendWeight & 0x000000FF;
+		uint blendWeights[4];
+		blendWeights[0] = blendWeight & 0xFF000000u;
+		blendWeights[1] = blendWeight & 0x00FF0000u;
+		blendWeights[2] = blendWeight & 0x0000FF00u;
+		blendWeights[3] = blendWeight & 0x000000FFu;
 			
-		int blendIndicess[4];
-		blendIndicess[0] = blendIndices & 0xFF000000;
-		blendIndicess[1] = blendIndices & 0x00FF0000;
-		blendIndicess[2] = blendIndices & 0x0000FF00;
-		blendIndicess[3] = blendIndices & 0x000000FF;
+		uint blendIndicess[4];
+		blendIndicess[0] = blendIndices & 0xFF000000u;
+		blendIndicess[1] = blendIndices & 0x00FF0000u;
+		blendIndicess[2] = blendIndices & 0x0000FF00u;
+		blendIndicess[3] = blendIndices & 0x000000FFu;
 
 		for(int i = 0; i < 4; i++)
 		{
-			if(blendWeights[i] > 0)
+			if(blendWeights[i] > 0u)
 			{
 				newVertex += gBones[blendIndicess[i]] * vec4(position, 1.0f) * (float(blendWeights[i]) / 255.0f);
 			}

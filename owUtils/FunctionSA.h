@@ -13,7 +13,7 @@ public:
 	Function_SA(procTypeArgs _FuncWAPtr, ARGTYPE _Argument) : Function_WA<ARGTYPE>(_FuncWAPtr), m_Argument(_Argument) {}
 	virtual ~Function_SA()
 	{
-		//Modules::log().Error("Del arg f");
+		//Log::Error("Del arg f");
 	}
 
 public:
@@ -49,7 +49,7 @@ public:
 	Function_Class_SA(T* _ClassInstancePtr, classProcTypeArgs _ClassMethodWAPtr, ARGTYPE _arg) : Function_SA<ARGTYPE>(nullptr, _arg), Function_Class_WA<T, ARGTYPE>(_ClassInstancePtr, _ClassMethodWAPtr), Function_Class<T>(_ClassInstancePtr) {}
 	~Function_Class_SA() override
 	{
-		//Modules::log().Error("Del cl f");
+		//Log::Error("Del cl f");
 	}
 
 	void operator()() override

@@ -11,7 +11,7 @@ inline OBJECT_TYPE* RefManager2Dim<OBJECT_TYPE, ID_TYPE>::Add(cstring name)
 	if ((id = GetIDByName(name)) != 0)
 	{
 		items[id]->AddRef();
-		//Modules::log().Warn("Item [%s] already exists", name.c_str());
+		//Log::Warn("Item [%s] already exists", name.c_str());
 		return items[id];
 	}
 
@@ -127,9 +127,9 @@ inline void RefManager2Dim<OBJECT_TYPE, ID_TYPE>::PrintAllInfo()
 	{
 		OBJECT_TYPE* item = GetItemByID(it->second);
 		refsCnt += item->GetRefsCount();
-		Modules::log().Info("Item (%d) [%d]-[%s]", item->GetRefsCount(), it->second, it->first.c_str());
+		Log::Info("Item (%d) [%d]-[%s]", item->GetRefsCount(), it->second, it->first.c_str());
 	}
 
-	Modules::log().Info("Item's count [%d], items refs [%d]", names.size(), refsCnt);
+	Log::Info("Item's count [%d], items refs [%d]", names.size(), refsCnt);
 }
 

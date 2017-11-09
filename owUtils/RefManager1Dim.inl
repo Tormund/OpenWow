@@ -93,7 +93,7 @@ inline std::string RefManager1Dim<OBJECT_TYPE>::GetNameByItem(OBJECT_TYPE* item)
 	return "";
 }
 
-// EngineLog
+// Log
 
 template <class OBJECT_TYPE>
 inline void RefManager1Dim<OBJECT_TYPE>::PrintAllInfo()
@@ -102,9 +102,9 @@ inline void RefManager1Dim<OBJECT_TYPE>::PrintAllInfo()
 	for (auto it = objects.begin(); it != objects.end(); ++it)
 	{
 		refsCnt += it->second->GetRefsCount();
-		Modules::log().Info("Item (%d) [%s]", it->second->GetRefsCount(), it->first.c_str());
+		Log::Info("Item (%d) [%s]", it->second->GetRefsCount(), it->first.c_str());
 	}
 
-	Modules::log().Info("Item's count [%d], items refs [%d]", objects.size(), refsCnt);
+	Log::Info("Item's count [%d], items refs [%d]", objects.size(), refsCnt);
 }
 

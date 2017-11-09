@@ -71,57 +71,44 @@ void Map::CreateMapArrays()
     m_DefaultMapStrip = GenarateMapArray();
 
 
-    //
-
-    vec2* vt;
-    float tx, ty;
-
     // init texture coordinates for detail map:
-    vt = dataDetail;
+    vec2* detailTextureCoord = dataDetail;
     const float detail_half = 0.5f * C_DetailSize / 8.0f;
     for (int j = 0; j < 17; j++)
     {
         for (int i = 0; i < ((j % 2) ? 8 : 9); i++)
         {
-            tx = C_DetailSize / 8.0f * i;
-            ty = C_DetailSize / 8.0f * j * 0.5f;
+            float tx = C_DetailSize / 8.0f * i;
+            float ty = C_DetailSize / 8.0f * j * 0.5f;
             if (j % 2)
             {
-                // offset by half
                 tx += detail_half;
             }
-            *vt++ = vec2(tx, ty);
+            *detailTextureCoord++ = vec2(tx, ty);
         }
     }
 
-    //
-
     // init texture coordinates for alpha map:
-    vt = dataAlpha;
+    vec2* alphaTextureCoord = dataAlpha;
     const float alpha_half = 0.5f * 1.0f / 8.0f;
     for (int j = 0; j < 17; j++)
     {
         for (int i = 0; i < ((j % 2) ? 8 : 9); i++)
         {
-            tx = 1.0f / 8.0f * i;
-            ty = 1.0f / 8.0f * j * 0.5f;
+            float tx = 1.0f / 8.0f * i;
+            float ty = 1.0f / 8.0f * j * 0.5f;
             if (j % 2)
             {
-                // offset by half
                 tx += alpha_half;
             }
-            //*vt++ = vec2(tx*0.95f, ty*0.95f);
-            const int divs = 32;
-            const float inv = 1.0f / divs;
-            const float mul = (divs - 1.0f);
-            *vt++ = vec2(tx*(mul*inv), ty*(mul*inv));
+            *alphaTextureCoord++ = vec2(tx, ty);
         }
     }
 }
 
 vector<uint16> Map::GenarateMapArray(uint16 _holes)
 {
-    if (_holes == 0 && m_DefaultMapStrip.size() > 0)
+    if (_holes == 0 && !m_DefaultMapStrip.empty())
     {
         return m_DefaultMapStrip;
     }
@@ -171,7 +158,7 @@ void Map::InitGlobalsWMOs()
 {
     // Load global WMO
 
-    Modules::log().Green("Map_GlobalWMOs[]: Global WMO exists [%s].", globalWMOExists ? "true" : "false");
+    Log::Green("Map_GlobalWMOs[]: Global WMO exists [%s].", globalWMOExists ? "true" : "false");
     if (globalWMOExists)
     {
         WMO* wmo = _WMOsMgr->Add(globalWMOName);
@@ -180,7 +167,7 @@ void Map::InitGlobalsWMOs()
 
     // Load low-resolution WMOs
 
-    Modules::log().Green("Map_GlobalWMOs[]: Low WMOs count [%d].", lowResolutionWMOsCount);
+    Log::Green("Map_GlobalWMOs[]: Low WMOs count [%d].", lowResolutionWMOsCount);
     for (uint32 i = 0; i < lowResolutionWMOsCount; i++)
     {
         const string name = lowResolutionWMOsNames[lowResolutionWMOsplacementInfo[i]->nameIndex];
@@ -197,7 +184,7 @@ void Map::Load_WDT(DBC_MapRecord* _map)
 {
     m_DBC_Map = _map;
 
-    Modules::log().Print("Map[%s]: Id [%d]. Preloading...", m_DBC_Map->Get_Directory(), m_DBC_Map->Get_ID());
+    Log::Print("Map[%s]: Id [%d]. Preloading...", m_DBC_Map->Get_Directory(), m_DBC_Map->Get_ID());
 
     m_MapFolder = "World\\Maps\\" + string(m_DBC_Map->Get_Directory()) + "\\";
 
@@ -205,7 +192,7 @@ void Map::Load_WDT(DBC_MapRecord* _map)
     File f(m_MapFolder + m_DBC_Map->Get_Directory() + ".wdt");
     if (!f.Open())
     {
-        Modules::log().Info("Map[%s]: WDT: Error opening.", m_DBC_Map->Get_Directory());
+        Log::Info("Map[%s]: WDT: Error opening.", m_DBC_Map->Get_Directory());
         return;
     }
 
@@ -230,7 +217,7 @@ void Map::Load_WDT(DBC_MapRecord* _map)
         {
             uint32 version;
             f.ReadBytes(&version, 4);
-            assert3(version == 18, "Version mismatch != 18", std::to_string(version).c_str());
+            assert1(version == 18);
         }
         else if (strcmp(fourcc, "MPHD") == 0)
         {
@@ -275,9 +262,9 @@ void Map::Load_WDT(DBC_MapRecord* _map)
         else if (strcmp(fourcc, "MODF") == 0)
         {
             uint32 globalWMOCount = WMOPlacementInfo::__size;
-            assert4(globalWMOCount > 1, "Map has more then 1 global WMO ", m_DBC_Map->Get_Directory(), std::to_string(globalWMOCount).c_str());
+            assert1(globalWMOCount > 1);
 
-            if (globalWMOCount > 0)
+            if (globalWMOCount == 1)
             {
                 globalWMOplacementInfo = new WMOPlacementInfo;
                 f.ReadBytes(globalWMOplacementInfo, WMOPlacementInfo::__size);
@@ -287,7 +274,7 @@ void Map::Load_WDT(DBC_MapRecord* _map)
         }
         else
         {
-            Modules::log().Info("Map[%s]: WDT: Chunks [%s], Size [%d] not implemented.", m_DBC_Map->Get_Directory(), fourcc, size);
+            Log::Info("Map[%s]: WDT: Chunks [%s], Size [%d] not implemented.", m_DBC_Map->Get_Directory(), fourcc, size);
         }
 
         f.Seek(nextpos);
@@ -301,7 +288,7 @@ void Map::Load_WDL()
     File f(m_MapFolder + m_DBC_Map->Get_Directory() + ".wdl");
     if (!f.Open())
     {
-        Modules::log().Info("World[%s]: WDL: Error opening.", m_DBC_Map->Get_Directory());
+        Log::Info("World[%s]: WDL: Error opening.", m_DBC_Map->Get_Directory());
         return;
     }
 
@@ -362,7 +349,7 @@ void Map::Load_WDL()
         }
         else
         {
-            Modules::log().Info("Map[%s]: WDL: Chunks [%s], Size [%d] not implemented.", m_DBC_Map->Get_Directory(), fourcc, size);
+            Log::Info("Map[%s]: WDL: Chunks [%s], Size [%d] not implemented.", m_DBC_Map->Get_Directory(), fourcc, size);
         }
         f.Seek(nextpos);
     }
@@ -512,10 +499,10 @@ void Map::Load_WDL()
 
                 //
 
-                lowrestiles[j][i] = _Render->r->beginCreatingGeometry(_RenderStorage->__layoutMapLowResolution);
+                lowrestiles[j][i] = _Render->r->beginCreatingGeometry(_RenderStorage->__layout_GxVBF_P);
 
                 // Vertex params
-                _Render->r->setGeomVertexParams(lowrestiles[j][i], __vb, 0, 0, 0);
+                _Render->r->setGeomVertexParams(lowrestiles[j][i], __vb, R_DataType::T_FLOAT, 0, 0);
 
                 // Index bufer
                 //uint32 __ib = _Render->r->createIndexBuffer(striplen, strip);
@@ -797,7 +784,7 @@ MapTile* Map::LoadTile(int x, int z)
     if (!maptilecache[firstnull]->Load(m_DBC_Map->Get_Directory()))
     {
         delete maptilecache[firstnull];
-        Modules::log().Info("Map[%d]: Error loading tile [%d, %d].", m_MapFolder.c_str(), x, z);
+        Log::Info("Map[%d]: Error loading tile [%d, %d].", m_MapFolder.c_str(), x, z);
         return nullptr;
     }
 

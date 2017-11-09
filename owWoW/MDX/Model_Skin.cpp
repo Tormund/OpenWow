@@ -10,7 +10,7 @@ Model_Skin::Model_Skin(MDX* _model, File& _mF, File& _aF) : m_ModelObject(_model
 {
 	if (!_aF.Open())
 	{
-		Modules::log().Info("Error: loading lod [%s]", _aF.Path_Name().c_str());
+		Log::Info("Error: loading lod [%s]", _aF.Path_Name().c_str());
 		return;
 	}
 
@@ -25,7 +25,7 @@ Model_Skin::Model_Skin(MDX* _model, File& _mF, File& _aF) : m_ModelObject(_model
     uint32         bonesMax      = view->boneCountMax;
 
     if(bonesMax > 0)
-    Modules::log().Error("Max bones = %d", bonesMax);
+    Log::Error("Max bones = %d", bonesMax);
 
 	//------------
 
@@ -203,12 +203,12 @@ Model_Skin::Model_Skin(MDX* _model, File& _mF, File& _aF) : m_ModelObject(_model
 	__geom = _Render->r->beginCreatingGeometry(_RenderStorage->__layout_GxVBF_PBNT2);
     
 	// Vertex params
-	_Render->r->setGeomVertexParams(__geom, m_ModelObject->__vb, 0, 0 * sizeof(float), sizeof(M2Vertex)); // pos 0-2
-	_Render->r->setGeomVertexParams(__geom, m_ModelObject->__vb, 1, 3 * sizeof(float), sizeof(M2Vertex)); // blend 3
-	_Render->r->setGeomVertexParams(__geom, m_ModelObject->__vb, 2, 4 * sizeof(float), sizeof(M2Vertex)); // index 4
-    _Render->r->setGeomVertexParams(__geom, m_ModelObject->__vb, 3, 5 * sizeof(float), sizeof(M2Vertex)); // normal 5-7
-    _Render->r->setGeomVertexParams(__geom, m_ModelObject->__vb, 4, 8 * sizeof(float), sizeof(M2Vertex)); // tc0 8-9
-    _Render->r->setGeomVertexParams(__geom, m_ModelObject->__vb, 5, 10 * sizeof(float), sizeof(M2Vertex)); // tc1 10-11
+	_Render->r->setGeomVertexParams(__geom, m_ModelObject->__vb, R_DataType::T_FLOAT, 0 * sizeof(float), sizeof(M2Vertex)); // pos 0-2
+	_Render->r->setGeomVertexParams(__geom, m_ModelObject->__vb, R_DataType::T_INT32, 3 * sizeof(float), sizeof(M2Vertex)); // blend 3
+	_Render->r->setGeomVertexParams(__geom, m_ModelObject->__vb, R_DataType::T_INT32, 4 * sizeof(float), sizeof(M2Vertex)); // index 4
+    _Render->r->setGeomVertexParams(__geom, m_ModelObject->__vb, R_DataType::T_FLOAT, 5 * sizeof(float), sizeof(M2Vertex)); // normal 5-7
+    _Render->r->setGeomVertexParams(__geom, m_ModelObject->__vb, R_DataType::T_FLOAT, 8 * sizeof(float), sizeof(M2Vertex)); // tc0 8-9
+    _Render->r->setGeomVertexParams(__geom, m_ModelObject->__vb, R_DataType::T_FLOAT, 10 * sizeof(float), sizeof(M2Vertex)); // tc1 10-11
 
 	// Index bufer
 	uint32 __ib = _Render->r->createIndexBuffer(view->indices.size * sizeof(uint16), indices);

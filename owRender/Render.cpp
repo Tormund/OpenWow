@@ -20,13 +20,13 @@ bool RenderGL::Init()
 
 	if (!r)
 	{
-		Modules::log().Fatal("CAN'T CREATE RENDER DEVICE!!!.");
+		Log::Fatal("CAN'T CREATE RENDER DEVICE!!!.");
 		return false;
 	}
 
 	if (!r->init())
 	{
-		Modules::log().Fatal("CAN'T INIT RENDER DEVICE!!!.");
+		Log::Fatal("CAN'T INIT RENDER DEVICE!!!.");
 		return false;
 	}
 

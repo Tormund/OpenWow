@@ -4,26 +4,28 @@
 #include "DebugOutput.h"
 
 // General
-#include "EngineLog.h"
+#include "Log.h"
 
-// Additional
-#include "Modules.h"
+vector<DebugOutput*> Log::debugOutputs;
+CRITICAL_SECTION     Log::debugCS;
 
-EngineLog::EngineLog()
+bool Log::Init()
 {
 	InitializeCriticalSection(&debugCS);
+
+    return true;
 }
 
-EngineLog::~EngineLog()
+void Log::Destroy()
 {
 	DeleteCriticalSection(&debugCS);
 
 	debugOutputs.clear();
 }
 
-// EngineLog outputs functional
+// Log outputs functional
 
-bool EngineLog::AddDebugOutput(DebugOutput* _debugOutput)
+bool Log::AddDebugOutput(DebugOutput* _debugOutput)
 {
 	assert1(_debugOutput != nullptr);
 
@@ -34,7 +36,7 @@ bool EngineLog::AddDebugOutput(DebugOutput* _debugOutput)
 
 	if (!_debugOutput->Init())
 	{
-		EngineLog::Error("Debug[]: Can't init debug output.");
+		Log::Error("Debug[]: Can't init debug output.");
 		return false;
 	}
 
@@ -43,7 +45,7 @@ bool EngineLog::AddDebugOutput(DebugOutput* _debugOutput)
 	return true;
 }
 
-bool EngineLog::DeleteDebugOutput(DebugOutput* _debugOutput)
+bool Log::DeleteDebugOutput(DebugOutput* _debugOutput)
 {
 	assert1(_debugOutput != nullptr);
 
@@ -62,7 +64,7 @@ bool EngineLog::DeleteDebugOutput(DebugOutput* _debugOutput)
 
 // Logs
 
-void EngineLog::Info(const char* _message, ...)
+void Log::Info(const char* _message, ...)
 {
 	va_list args;
 	va_start(args, _message);
@@ -72,7 +74,7 @@ void EngineLog::Info(const char* _message, ...)
 	va_end(args);
 }
 
-void EngineLog::Print(const char* _message, ...)
+void Log::Print(const char* _message, ...)
 {
 	va_list args;
 	va_start(args, _message);
@@ -82,7 +84,7 @@ void EngineLog::Print(const char* _message, ...)
 	va_end(args);
 }
 
-void EngineLog::Green(const char* _message, ...)
+void Log::Green(const char* _message, ...)
 {
 	va_list args;
 	va_start(args, _message);
@@ -92,7 +94,7 @@ void EngineLog::Green(const char* _message, ...)
 	va_end(args);
 }
 
-void EngineLog::Warn(const char* _message, ...)
+void Log::Warn(const char* _message, ...)
 {
 	va_list args;
 	va_start(args, _message);
@@ -102,7 +104,7 @@ void EngineLog::Warn(const char* _message, ...)
 	va_end(args);
 }
 
-void EngineLog::Error(const char* _message, ...)
+void Log::Error(const char* _message, ...)
 {
 	va_list args;
 	va_start(args, _message);
@@ -114,14 +116,14 @@ void EngineLog::Error(const char* _message, ...)
 
 // Fatal & exit
 
-void EngineLog::Fatal(const char* _message, ...)
+void Log::Fatal(const char* _message, ...)
 {
 	FatalMessageBox(_message, "Fatal");
 }
 
 //
 
-void EngineLog::PushMessageToAllDebugOutputs(const char* _message, int _type, va_list& _vaList)
+void Log::PushMessageToAllDebugOutputs(const char* _message, int _type, va_list& _vaList)
 {
 	EnterCriticalSection(&debugCS); // THREAD
 

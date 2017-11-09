@@ -169,7 +169,7 @@ On_Keyboard_Pressed(ConsoleOpenGL)
 			return true;
 		}
 
-		Modules::log().Print(inputString.c_str());
+		Log::Print(inputString.c_str());
 		Console::ProcessConsoleCommand(inputString);
 		inputString = "";
 		return true;

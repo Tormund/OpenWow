@@ -181,7 +181,7 @@ bool File::OpenLocalFile()
 	// Check stream
 	if (!stream.is_open())
 	{
-		//Modules::log().Error("File[%s]: Can not open file!", Path_Name().c_str());
+		//Log::Error("File[%s]: Can not open file!", Path_Name().c_str());
 		return false;
 	}
 
@@ -236,7 +236,7 @@ bool File::OpenMPQFile()
 		// HACK: in patch.mpq some files don't want to open and give 1 for filesize
 		if (size <= 1)
 		{
-			//Modules::log().Warn("MPQFile[%s]: Has size [%d]. Considered dummy file.", Path_Name().c_str(), size);
+			//Log::Warn("MPQFile[%s]: Has size [%d]. Considered dummy file.", Path_Name().c_str(), size);
 			isEof = true;
 			data = nullptr;
 			return false;

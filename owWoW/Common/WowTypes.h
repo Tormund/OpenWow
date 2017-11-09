@@ -55,10 +55,10 @@ struct CArgb
 	uint8 a;
 };
 
-struct CImVector
+struct CBgra
 {
-	CImVector() : b(0), g(0), r(0), a(0) {}
-	CImVector(uint8 _b, uint8 _g, uint8 _r, uint8 _a) : b(_b), g(_g), r(_r), a(_a) {}
+	CBgra() : b(0), g(0), r(0), a(0) {}
+	CBgra(uint8 _b, uint8 _g, uint8 _r, uint8 _a) : b(_b), g(_g), r(_r), a(_a) {}
 
 	uint8 b;
 	uint8 g;

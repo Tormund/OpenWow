@@ -3,7 +3,7 @@
 #include "../owCore/common.h"
 #include "../owCore/DebugOutput.h"
 
-// EngineLog outputs
+// Log outputs
 
 #include "../owCore/Console.h"
 

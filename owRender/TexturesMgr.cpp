@@ -49,7 +49,7 @@ void TexturesMgr::Destroy()
 	
 	DeleteAll();
 
-	Modules::log().Info("TexturesMgr[]: All textures destroyed.");
+	Log::Info("TexturesMgr[]: All textures destroyed.");
 }
 
 //
@@ -64,7 +64,7 @@ bool TexturesMgr::LoadSoilTexture(File& _file, Texture* _texture)
 
 	if (SOIL_last_result() != "Image loaded from memory")
 	{
-		Modules::log().Error("TexturesMgr[%s]: Error while loading texture. Error [%s].", _file.Path_Name(), SOIL_last_result());
+		Log::Error("TexturesMgr[%s]: Error while loading texture. Error [%s].", _file.Path_Name(), SOIL_last_result());
 		SOIL_free_image_data(image);
 		return false;
 	}
@@ -222,7 +222,7 @@ bool TexturesMgr::LoadBLPTexture(File& _file, Texture* _texture)
 	}
 	else
 	{
-		Modules::log().Warn("Texture[%s]: compression=[%d]", _file.Path_Name().c_str(), header.compression);
+		Log::Warn("Texture[%s]: compression=[%d]", _file.Path_Name().c_str(), header.compression);
 		//fail1();
 	}
 
@@ -259,12 +259,12 @@ void TexturesMgr::LoadAction(string _name, Texture* _texture)
 
 	if (!f.Open())
 	{
-		Modules::log().Error("TexturesMgr[%s]: Error while open texture.", f.Path_Name().c_str());
+		Log::Error("TexturesMgr[%s]: Error while open texture.", f.Path_Name().c_str());
 		_texture = _TexturesMgr->Black();
 		return;
 	}
 
-	//Modules::log().Info("TexturesMgr[%s]: Texture loading.", f.Path_Name().c_str());
+	//Log::Info("TexturesMgr[%s]: Texture loading.", f.Path_Name().c_str());
 
 	// Load texture
 	bool result;
@@ -280,13 +280,13 @@ void TexturesMgr::LoadAction(string _name, Texture* _texture)
 	// Check result
 	if (!result)
 	{
-		Modules::log().Error("TexturesMgr[%s]: Error while loading texture data.", f.Path_Name().c_str());
+		Log::Error("TexturesMgr[%s]: Error while loading texture data.", f.Path_Name().c_str());
 		delete _texture;
 		_texture = _TexturesMgr->Black();
 		return;
 	}
 
-	//Modules::log().Info("TexturesMgr[%s]: Texture loaded. Size [%0.0fx%0.0f].", f.Path_Name().c_str(), _texture->GetSize().x, _texture->GetSize().y);
+	//Log::Info("TexturesMgr[%s]: Texture loaded. Size [%0.0fx%0.0f].", f.Path_Name().c_str(), _texture->GetSize().x, _texture->GetSize().y);
 }
 
 bool TexturesMgr::DeleteAction(cstring name)

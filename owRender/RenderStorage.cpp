@@ -50,16 +50,6 @@ void RenderStorage::CreateLayouts()
 	};
 	__layoutMapLowResolution = _Render->r->registerVertexLayout(1, attribsMapLowResolution);
 	//--------------------------------------------------------------------------------------------
-	R_VertexLayoutAttrib attribsMapChunk[6] = {
-		{"VertexPosition",       0, 3, 0},
-		{"textureCoordsDetail",  1, 2, 0},
-		{"textureCoordsAlpha",   2, 2, 0},
-		{"normal",               3, 3, 0},
-		{"colorMCCV",            4, 3, 0},
-		{"colorMCLV",            5, 4, 0}
-	};
-	__layoutMapChunk = _Render->r->registerVertexLayout(6, attribsMapChunk);
-	//--------------------------------------------------------------------------------------------
 	R_VertexLayoutAttrib attribsWMO[3] = {
 		{"VertexPosition",      0, 3, 0},
 		{"textureCoords",  1, 2, 0},
@@ -76,7 +66,7 @@ void RenderStorage::CreateLayouts()
 	__layoutWMO_VC = _Render->r->registerVertexLayout(4, attribsWMO_VC);
 	//--------------------------------------------------------------------------------------------
 	R_VertexLayoutAttrib attribsWater[3] = {
-		{"VertexPosition",      0, 3, 0},
+		{"VertexPosition", 0, 3, 0},
 		{"textureCoords",  1, 3, 0},
 		{"normal",         2, 3, 0}
 	};
@@ -87,7 +77,7 @@ void RenderStorage::CreateGeometry()
 {
 	// Indexes
 	uint16 indexes[6] = {0, 1, 2, 2, 1, 3};
-	uint32 __ib = _Render->r->createIndexBuffer(6 * sizeof(uint16), indexes);
+    __ibQuadDefault = _Render->r->createIndexBuffer(sizeof(indexes), indexes);
 
     vector<vec2> verticesQuad;
     verticesQuad.push_back(vec2(-1.0f, -1.0f));
@@ -112,8 +102,8 @@ void RenderStorage::CreateGeometry()
 	uint32 __vbQuad = _Render->r->createVertexBuffer(verticesQuad.size() * sizeof(vec2), &verticesQuad[0]);
 	__Quad = _Render->r->beginCreatingGeometry(__layoutV2);
 
-	_Render->r->setGeomVertexParams(__Quad, __vbQuad, 0, 0, sizeof(vec2));
-	_Render->r->setGeomIndexParams(__Quad, __ib, R_IndexFormat::IDXFMT_16);
+	_Render->r->setGeomVertexParams(__Quad, __vbQuad, R_DataType::T_FLOAT, 0, sizeof(vec2));
+	_Render->r->setGeomIndexParams(__Quad, __ibQuadDefault, R_IndexFormat::IDXFMT_16);
 
 	_Render->r->finishCreatingGeometry(__Quad);
 
@@ -122,10 +112,10 @@ void RenderStorage::CreateGeometry()
 	uint32 __vbQuadVT = _Render->r->createVertexBuffer(verticesQuadVT.size() * sizeof(Texture_Vertex), verticesQuadVT.data());
 	__QuadVT = _Render->r->beginCreatingGeometry(__layoutV2T2);
 
-	_Render->r->setGeomVertexParams(__QuadVT, __vbQuadVT, 0, 0, sizeof(Texture_Vertex));
-	_Render->r->setGeomVertexParams(__QuadVT, __vbQuadVT, 1, sizeof(vec2), sizeof(Texture_Vertex));
+	_Render->r->setGeomVertexParams(__QuadVT, __vbQuadVT, R_DataType::T_FLOAT, 0, sizeof(Texture_Vertex));
+	_Render->r->setGeomVertexParams(__QuadVT, __vbQuadVT, R_DataType::T_FLOAT, sizeof(vec2), sizeof(Texture_Vertex));
 
-	_Render->r->setGeomIndexParams(__QuadVT, __ib, R_IndexFormat::IDXFMT_16);
+	_Render->r->setGeomIndexParams(__QuadVT, __ibQuadDefault, R_IndexFormat::IDXFMT_16);
 
 	_Render->r->finishCreatingGeometry(__QuadVT);
 
@@ -137,10 +127,10 @@ void RenderStorage::CreateGeometry()
 
     __QuadVTDynamic = _Render->r->beginCreatingGeometry(__layoutV2T2);
 
-    _Render->r->setGeomVertexParams(__QuadVTDynamic, __vbQuadVTDynamic, 0, 0,                0);
-    _Render->r->setGeomVertexParams(__QuadVTDynamic, __vbQuadVTDynamic, 1, 4 * sizeof(vec2), 0);
+    _Render->r->setGeomVertexParams(__QuadVTDynamic, __vbQuadVTDynamic, R_DataType::T_FLOAT, 0,                0);
+    _Render->r->setGeomVertexParams(__QuadVTDynamic, __vbQuadVTDynamic, R_DataType::T_FLOAT, 4 * sizeof(vec2), 0);
 
-    _Render->r->setGeomIndexParams(__QuadVTDynamic, __ib, R_IndexFormat::IDXFMT_16);
+    _Render->r->setGeomIndexParams(__QuadVTDynamic, __ibQuadDefault, R_IndexFormat::IDXFMT_16);
 
     _Render->r->finishCreatingGeometry(__QuadVTDynamic);
 }
@@ -150,6 +140,7 @@ void RenderStorage::CreateWoWLayouts()
 	R_VertexLayoutAttrib attribs_GxVBF_P[1] = { // 12
 		{"position",    0, 3, 0}
 	};
+    __layout_GxVBF_P = _Render->r->registerVertexLayout(1, attribs_GxVBF_P); // USED IN LOW-RESOLUTION TILES
 
 	//--
 
@@ -171,7 +162,6 @@ void RenderStorage::CreateWoWLayouts()
 		{"normal",      1, 3, 0},
 		{"tc",          2, 2, 0}
 	};
-	__layout_GxVBF_PNT = _Render->r->registerVertexLayout(3, attribs_GxVBF_PNT);
 
 	R_VertexLayoutAttrib attribs_GxVBF_PNCT[4] = { // 36
 		{"position",    0, 3, 0},
@@ -240,19 +230,40 @@ void RenderStorage::CreateWoWLayouts()
 		{"tc0",         4, 2, 0},
 		{"tc1",         5, 2, 0}
 	};
-    __layout_GxVBF_PBNT2 = _Render->r->registerVertexLayout(6, attribs_GxVBF_PBNT2);
+    __layout_GxVBF_PBNT2 = _Render->r->registerVertexLayout(6, attribs_GxVBF_PBNT2); // USED IN M2
 
-	R_VertexLayoutAttrib attribs_GxVBF_PNC2T2[6] = { // 48
+	R_VertexLayoutAttrib attribs_GxVBF_PNC2T2[6] = { // 72  // Original 48
 		{"position",    0, 3, 0},
 		{"normal",      1, 3, 0},
-		{"color0",      2, 1, 0},
-		{"color1",      3, 1, 0},
+		{"color0",      2, 4, 0}, // Original 1
+		{"color1",      3, 4, 0}, // Original 1
 		{"tc0",         4, 2, 0},
 		{"tc1",         5, 2, 0}
 	};
+    __layout_GxVBF_PNC2T2 = _Render->r->registerVertexLayout(6, attribs_GxVBF_PNC2T2); // USED IN MapChunk
 }
 
 //
+
+uint32 RenderStorage::CreateQuadIndicesBuffer(uint32 _quadCount)
+{
+    // {0, 1, 2, 2, 1, 3}
+
+    uint16* indexes = new uint16[6 * _quadCount];
+    uint16 j = 0;
+    for (uint32 i = 0; i < _quadCount * 6; i += 6)
+    {
+        indexes[i + 0] = 0 + j;
+        indexes[i + 1] = 1 + j;
+        indexes[i + 2] = 2 + j;
+        indexes[i + 3] = 2 + j;
+        indexes[i + 4] = 1 + j;
+        indexes[i + 5] = 3 + j;
+
+        j += 4;
+    }
+    return _Render->r->createIndexBuffer(6 * _quadCount * sizeof(uint16), indexes);
+}
 
 void RenderStorage::SetEGxBlend(uint8 _index)
 {

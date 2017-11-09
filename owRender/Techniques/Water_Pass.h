@@ -17,12 +17,12 @@ public:
 		setTexture("gSpecularMap", TextureUnit);
 	}
 
-	void SetWaterColorLight(vec3 _Color)
+	void SetWaterColorLight(cvec3 _Color)
 	{
 		setVec3("gColorLight", _Color);
 	}
 
-	void SetWaterColorDark(vec3 _Color)
+	void SetWaterColorDark(cvec3 _Color)
 	{
 		setVec3("gColorDark", _Color);
 	}

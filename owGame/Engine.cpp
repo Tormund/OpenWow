@@ -35,7 +35,7 @@ bool Engine::PreInit(int argumentCount, char* arguments[])
 
 bool Engine::Init()
 {
-	Modules::log().Green("Engine[]: Loading.");
+	Log::Green("Engine[]: Loading.");
 
 	// Init adapter
 	assert1(m_OpenGLAdapter);
@@ -59,7 +59,7 @@ bool Engine::Init()
 
 void Engine::Destroy(uint32 _errorCode)
 {
-	Modules::log().Green("Engine[]: Destroy engine.");
+	Log::Green("Engine[]: Destroy engine.");
 
 	MPQArchiveStorage::ClearArchives();
 	Modules::Destroy();
@@ -116,7 +116,7 @@ bool Engine::Tick()
 	{
 		if (!needExit)
 		{
-			Modules::log().Green("Engine[]: Need exit.");
+			Log::Green("Engine[]: Need exit.");
 			needExit = true;
 			return false;
 		}

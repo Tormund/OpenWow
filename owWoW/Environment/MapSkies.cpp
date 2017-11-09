@@ -21,7 +21,7 @@ MapSkies::MapSkies(uint32 mapid)
 			Sky* sky = new Sky(it->second);
 			skies.push_back(sky);
 
-			//Modules::log().Warn("Sky [%d] position = %f, %f, %f", it->second->Get_Map(), sky->position.x, sky->position.y, sky->position.z);
+			//Log::Warn("Sky [%d] position = %f, %f, %f", it->second->Get_Map(), sky->position.x, sky->position.y, sky->position.z);
 		}
 	}
 
@@ -84,8 +84,8 @@ void MapSkies::InitBuffer()
 	__geom = _Render->r->beginCreatingGeometry(_RenderStorage->__layoutSky);
 
 	// Vertex params
-	_Render->r->setGeomVertexParams(__geom, __vb, 0, 0,                              0);
-	_Render->r->setGeomVertexParams(__geom, __vb, 1, __vertsSize * sizeof(vec3),     0);
+	_Render->r->setGeomVertexParams(__geom, __vb, R_DataType::T_FLOAT, 0,                              0);
+	_Render->r->setGeomVertexParams(__geom, __vb, R_DataType::T_FLOAT, __vertsSize * sizeof(vec3),     0);
 
 	// Index bufer
 	//uint32 __ib = _Render->r->createIndexBuffer(striplen, strip);

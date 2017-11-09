@@ -8,7 +8,7 @@
 
 #define CHECK_GL_ERROR checkError();
 
-// EngineLog shaders
+// Log shaders
 static const char *defaultShaderVS =
 "#version 330\n"
 "uniform mat4 viewProjMat;\n"
@@ -27,6 +27,8 @@ static const char *defaultShaderFS =
 "}\n";
 
 // Bindings for RDI types to GL
+static const uint32 dataTypes[8] = {GL_BYTE, GL_UNSIGNED_BYTE, GL_SHORT, GL_UNSIGNED_SHORT, GL_INT, GL_UNSIGNED_INT, GL_FLOAT, GL_DOUBLE };
+
 static const uint32 indexFormats[2] = {GL_UNSIGNED_SHORT, GL_UNSIGNED_INT};
 
 static const uint32 primitiveTypes[5] = {GL_TRIANGLES, GL_TRIANGLE_STRIP, GL_LINES, GL_POINTS, GL_PATCHES};
@@ -56,43 +58,43 @@ void glDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severity, GLsiz
 {
 	if (id == 131169 || id == 131185 || id == 131218 || id == 131204) return;
 
-	Modules::log().Error("---------------");
-	Modules::log().Error("OpenGL Debug message (%d): [%s]", id, message);
+	Log::Error("---------------");
+	Log::Error("OpenGL Debug message (%d): [%s]", id, message);
 
 	switch (source)
 	{
-		case GL_DEBUG_SOURCE_API:             Modules::log().Error("Source: OpenGL API"); break;
-		case GL_DEBUG_SOURCE_WINDOW_SYSTEM:   Modules::log().Error("Source: Window System API"); break;
-		case GL_DEBUG_SOURCE_SHADER_COMPILER: Modules::log().Error("Source: Shader Compiler"); break;
-		case GL_DEBUG_SOURCE_THIRD_PARTY:     Modules::log().Error("Source: Third Party"); break;
-		case GL_DEBUG_SOURCE_APPLICATION:     Modules::log().Error("Source: Application"); break;
-		case GL_DEBUG_SOURCE_OTHER:           Modules::log().Error("Source: Other"); break;
+		case GL_DEBUG_SOURCE_API:             Log::Error("Source: OpenGL API"); break;
+		case GL_DEBUG_SOURCE_WINDOW_SYSTEM:   Log::Error("Source: Window System API"); break;
+		case GL_DEBUG_SOURCE_SHADER_COMPILER: Log::Error("Source: Shader Compiler"); break;
+		case GL_DEBUG_SOURCE_THIRD_PARTY:     Log::Error("Source: Third Party"); break;
+		case GL_DEBUG_SOURCE_APPLICATION:     Log::Error("Source: Application"); break;
+		case GL_DEBUG_SOURCE_OTHER:           Log::Error("Source: Other"); break;
 	}
 
 	switch (type)
 	{
-		case GL_DEBUG_TYPE_ERROR:               Modules::log().Error("Type: Error"); break;
-		case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: Modules::log().Error("Type: Deprecated Behaviour"); break;
-		case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:  Modules::log().Error("Type: Undefined Behaviour"); break;
-		case GL_DEBUG_TYPE_PORTABILITY:         Modules::log().Error("Type: Portability"); break;
-		case GL_DEBUG_TYPE_PERFORMANCE:         Modules::log().Error("Type: Performance"); break;
-		case GL_DEBUG_TYPE_MARKER:              Modules::log().Error("Type: Marker"); break;
-		case GL_DEBUG_TYPE_PUSH_GROUP:          Modules::log().Error("Type: Push Group"); break;
-		case GL_DEBUG_TYPE_POP_GROUP:           Modules::log().Error("Type: Pop Group"); break;
-		case GL_DEBUG_TYPE_OTHER:               Modules::log().Error("Type: Other"); break;
+		case GL_DEBUG_TYPE_ERROR:               Log::Error("Type: Error"); break;
+		case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: Log::Error("Type: Deprecated Behaviour"); break;
+		case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:  Log::Error("Type: Undefined Behaviour"); break;
+		case GL_DEBUG_TYPE_PORTABILITY:         Log::Error("Type: Portability"); break;
+		case GL_DEBUG_TYPE_PERFORMANCE:         Log::Error("Type: Performance"); break;
+		case GL_DEBUG_TYPE_MARKER:              Log::Error("Type: Marker"); break;
+		case GL_DEBUG_TYPE_PUSH_GROUP:          Log::Error("Type: Push Group"); break;
+		case GL_DEBUG_TYPE_POP_GROUP:           Log::Error("Type: Pop Group"); break;
+		case GL_DEBUG_TYPE_OTHER:               Log::Error("Type: Other"); break;
 	}
 
 	switch (severity)
 	{
-		case GL_DEBUG_SEVERITY_HIGH:         Modules::log().Error("Severity: high"); break;
-		case GL_DEBUG_SEVERITY_MEDIUM:       Modules::log().Error("Severity: medium"); break;
-		case GL_DEBUG_SEVERITY_LOW:          Modules::log().Error("Severity: low"); break;
-		case GL_DEBUG_SEVERITY_NOTIFICATION: Modules::log().Error("Severity: notification"); break;
+		case GL_DEBUG_SEVERITY_HIGH:         Log::Error("Severity: high"); break;
+		case GL_DEBUG_SEVERITY_MEDIUM:       Log::Error("Severity: medium"); break;
+		case GL_DEBUG_SEVERITY_LOW:          Log::Error("Severity: low"); break;
+		case GL_DEBUG_SEVERITY_NOTIFICATION: Log::Error("Severity: notification"); break;
 	}
 
 
 	//system("pause");
-	//Modules::log().Exit(-1);
+	//Log::Exit(-1);
 }
 
 RenderDevice::RenderDevice()
@@ -159,46 +161,46 @@ bool RenderDevice::init()
 
 	if (!version || !renderer || !vendor)
 	{
-		Modules::log().Error("OpenGL not initialized. Make sure you have a valid OpenGL context");
+		Log::Error("OpenGL not initialized. Make sure you have a valid OpenGL context");
 		return false;
 	}
 
-	Modules::log().Info("Initializing GL4 backend using OpenGL driver '%s' by '%s' on '%s'", version, vendor, renderer);
+	Log::Info("Initializing GL4 backend using OpenGL driver '%s' by '%s' on '%s'", version, vendor, renderer);
 
 	// Init extensions
 	if (!initOpenGLExtensions())
 	{
-		Modules::log().Error("Could not find all required OpenGL function entry points");
+		Log::Error("Could not find all required OpenGL function entry points");
 		failed = true;
 	}
 
 	// Check that OpenGL 3.3 is available
 	if (glExt::majorVersion * 10 + glExt::minorVersion < 33)
 	{
-		Modules::log().Error("OpenGL 3.3 not available");
+		Log::Error("OpenGL 3.3 not available");
 		failed = true;
 	}
 
 	// Check that required extensions are supported
 	if (!glExt::EXT_texture_filter_anisotropic)
 	{
-		Modules::log().Error("Extension EXT_texture_filter_anisotropic not supported");
+		Log::Error("Extension EXT_texture_filter_anisotropic not supported");
 		failed = true;
 	}
 	if (!glExt::EXT_texture_compression_s3tc)
 	{
-		Modules::log().Error("Extension EXT_texture_compression_s3tc not supported");
+		Log::Error("Extension EXT_texture_compression_s3tc not supported");
 		failed = true;
 	}
 	if (!glExt::EXT_texture_sRGB)
 	{
-		Modules::log().Error("Extension EXT_texture_sRGB not supported");
+		Log::Error("Extension EXT_texture_sRGB not supported");
 		failed = true;
 	}
 
 	if (failed)
 	{
-		Modules::log().Error("Failed to init renderer backend (OpenGL %d.%d), retrying with legacy OpenGL 2.1 backend", glExt::majorVersion, glExt::minorVersion);
+		Log::Error("Failed to init renderer backend (OpenGL %d.%d), retrying with legacy OpenGL 2.1 backend", glExt::majorVersion, glExt::minorVersion);
 		return false;
 	}
 
@@ -230,7 +232,7 @@ bool RenderDevice::init()
 	if (testBuf == 0)
 	{
 		_depthFormat = GL_DEPTH_COMPONENT16;
-		Modules::log().Warn("Render target depth precision limited to 16 bit");
+		Log::Warn("Render target depth precision limited to 16 bit");
 	}
 	else
 	{
@@ -315,14 +317,15 @@ void RenderDevice::finishCreatingGeometry(uint32 geoObj)
 	// Set vertex attrib pointers
 	for (uint32 i = 0; i < vl.numAttribs; ++i)
 	{
-		R_VertexLayoutAttrib &attrib = vl.attribs[i];
-		const R_VertexBufferSlot &vbSlot = curVao.vertexBufInfo[attrib.vbSlot];
+		R_VertexLayoutAttrib& attrib = vl.attribs[i];
+		const R_VertexBufferSlot& vbSlot = curVao.vertexBufInfo[attrib.vbSlot];
 
 		R_Buffer &buf = _buffers.getRef(curVao.vertexBufInfo[attrib.vbSlot].vbObj);
 		assert1(buf.glObj != 0 && buf.type == GL_ARRAY_BUFFER || buf.type == GL_SHADER_STORAGE_BUFFER); // special case for compute buffer
 
 		glBindBuffer(GL_ARRAY_BUFFER, buf.glObj);
-		glVertexAttribPointer(i, attrib.size, GL_FLOAT, GL_FALSE, vbSlot.stride, (char *)0 + vbSlot.offset + attrib.offset);
+        //bool isFloatingPoint = (vbSlot.type == R_DataType::T_FLOAT) || (vbSlot.type == R_DataType::T_DOUBLE);
+		glVertexAttribPointer(i, attrib.size, dataTypes[vbSlot.type], GL_FALSE, vbSlot.stride, (char *)0 + vbSlot.offset + attrib.offset);
 
 		newVertexAttribMask |= 1 << i;
 	}
@@ -349,7 +352,7 @@ void RenderDevice::finishCreatingGeometry(uint32 geoObj)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void RenderDevice::setGeomVertexParams(uint32 geoObj, uint32 vbo, uint32 vbSlot, uint32 offset, uint32 stride)
+void RenderDevice::setGeomVertexParams(uint32 geoObj, uint32 vbo, R_DataType type, uint32 offset, uint32 stride)
 {
 	R_GeometryInfo &curVao = _vaos.getRef(geoObj);
 	R_Buffer &buf = _buffers.getRef(vbo);
@@ -358,6 +361,7 @@ void RenderDevice::setGeomVertexParams(uint32 geoObj, uint32 vbo, uint32 vbSlot,
 
 	R_VertexBufferSlot attribInfo;
 	attribInfo.vbObj = vbo;
+    attribInfo.type = type;
 	attribInfo.offset = offset;
 	attribInfo.stride = stride;
 
@@ -429,7 +433,7 @@ uint32 RenderDevice::createShaderStorageBuffer(uint32 size, const void *data, bo
 	}
 	else
 	{
-		Modules::log().Error("Shader storage buffers are not supported on this OpenGL 4 device.");
+		Log::Error("Shader storage buffers are not supported on this OpenGL 4 device.");
 
 		return 0;
 	}
@@ -623,7 +627,7 @@ uint32 RenderDevice::createTexture(R_TextureTypes::List type, int width, int hei
 	{
 		// Check if texture is NPOT
 		if ((width & (width - 1)) != 0 || (height & (height - 1)) != 0)
-			Modules::log().Warn("Texture has non-power-of-two dimensions although NPOT is not supported by GPU");
+			Log::Warn("Texture has non-power-of-two dimensions although NPOT is not supported by GPU");
 	}
 
 	R_Texture tex;
@@ -660,7 +664,7 @@ uint32 RenderDevice::createTexture(R_TextureTypes::List type, int width, int hei
 		tex.glFmt = _depthFormat;
 		break;
 		default:
-		assert1(0);
+		fail1();
 		break;
 	};
 
@@ -815,7 +819,7 @@ bool RenderDevice::getTextureData(uint32 texObj, int slice, int mipLevel, void *
 void RenderDevice::bindImageToTexture(uint32 texObj, void *eglImage)
 {
 	if (!glExt::OES_EGL_image)
-		Modules::log().Error("OES_egl_image not supported");
+		Log::Error("OES_egl_image not supported");
 	else
 	{
 		const R_Texture &tex = _textures.getRef(texObj);
@@ -949,7 +953,7 @@ int RenderDevice::getShaderBufferLoc(uint32 shaderId, const char *name)
 	}
 	else
 	{
-		Modules::log().Error("Shader storage buffers are not supported on this device.");
+		Log::Error("Shader storage buffers are not supported on this device.");
 
 		return -1;
 	}
@@ -1012,7 +1016,7 @@ uint32 RenderDevice::createShaderProgram(const char *vertexShaderSrc, const char
 {
 	int infologLength = 0;
 	int charsWritten = 0;
-	char *infoLog = 0x0;
+	char* infoLog = 0x0;
 	int status;
 
 	_shaderLog = "";
@@ -1260,7 +1264,7 @@ uint32 RenderDevice::createRenderBuffer(uint32 width, uint32 height, R_TextureFo
 	if (samples > maxSamples)
 	{
 		samples = maxSamples;
-		Modules::log().Warn("GPU does not support desired multisampling quality for render target");
+		Log::Warn("GPU does not support desired multisampling quality for render target");
 	}
 
 	R_RenderBuffer rb;
@@ -1774,14 +1778,14 @@ void RenderDevice::applySamplerState(R_Texture &tex)
 	glTexParameteri(target, GL_TEXTURE_WRAP_T, wrapModes[(state & SS_ADDRV_MASK) >> SS_ADDRV_START]);
 	glTexParameteri(target, GL_TEXTURE_WRAP_R, wrapModes[(state & SS_ADDRW_MASK) >> SS_ADDRW_START]);
 
-	if (!(state & SS_COMP_LEQUAL))
+	if (state & SS_COMP_LEQUAL)
 	{
-		glTexParameteri(target, GL_TEXTURE_COMPARE_MODE, GL_NONE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 	}
 	else
 	{
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+        glTexParameteri(target, GL_TEXTURE_COMPARE_MODE, GL_NONE);
 	}
 }
 
@@ -1857,9 +1861,9 @@ void RenderDevice::applyRenderStates()
 		}
 		else
 		{
-			glEnable(GL_BLEND);
-			glBlendFuncSeparate(oglBlendFuncs[_newBlendState.srcRGBBlendFunc], oglBlendFuncs[_newBlendState.destRGBBlendFunc], 
-								oglBlendFuncs[_newBlendState.srcABlendFunc],   oglBlendFuncs[_newBlendState.destABlendFunc]);
+            glEnable(GL_BLEND);
+            glBlendFuncSeparate(oglBlendFuncs[_newBlendState.srcRGBBlendFunc], oglBlendFuncs[_newBlendState.destRGBBlendFunc],
+                                oglBlendFuncs[_newBlendState.srcABlendFunc], oglBlendFuncs[_newBlendState.destABlendFunc]);
 		}
 
 		_curBlendState.hash = _newBlendState.hash;

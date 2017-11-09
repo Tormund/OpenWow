@@ -90,7 +90,7 @@ public:
 	void beginRendering();
 	uint32 beginCreatingGeometry(uint32 vlObj);
 	void finishCreatingGeometry(uint32 geoObj);
-	void setGeomVertexParams(uint32 geoObj, uint32 vbo, uint32 vbSlot, uint32 offset, uint32 stride);
+	void setGeomVertexParams(uint32 geoObj, uint32 vbo, R_DataType type, uint32 offset, uint32 stride);
 	void setGeomIndexParams(uint32 geoObj, uint32 indBuf, R_IndexFormat format);
 	void destroyGeometry(uint32 &geoObj, bool destroyBindedBuffers);
 

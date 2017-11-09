@@ -13,7 +13,7 @@ On_Mouse_Entered(UIElement)
         return;
     }
 
-    //Modules::log().Info("Mouse Entered [%s]", GetName().c_str());
+    //Log::Info("Mouse Entered [%s]", GetName().c_str());
 }
 
 On_Mouse_Moved(UIElement)
@@ -24,13 +24,13 @@ On_Mouse_Moved(UIElement)
     }
 
     // This
-    //Modules::log().Info("Mouse moved [%s]", GetName().c_str());
+    //Log::Info("Mouse moved [%s]", GetName().c_str());
 
     // Childs
     for (auto it : m_Childs)
     {
         bool beforeMoveSelection = it->IsSelected();
-        bool afterMoveSelection = it->CheckSelection(Modules::input().GetMouse());
+        bool afterMoveSelection = it->CheckSelection(Input::GetMouse());
 
         if (!beforeMoveSelection && afterMoveSelection)
         {
@@ -58,7 +58,7 @@ On_Mouse_Leaved(UIElement)
         return;
     }
 
-    //Modules::log().Info("Mouse Leaved [%s]", GetName().c_str());
+    //Log::Info("Mouse Leaved [%s]", GetName().c_str());
 }
 
 On_Mouse_Pressed(UIElement)
@@ -69,7 +69,7 @@ On_Mouse_Pressed(UIElement)
     }
 
     // This
-    //Modules::log().Info("Mouse pressed [%s]", GetName().c_str());
+    //Log::Info("Mouse pressed [%s]", GetName().c_str());
 
     // Childs
     bool result = false;
@@ -95,7 +95,7 @@ On_Mouse_Released(UIElement)
     }
 
     // This
-    //Modules::log().Info("Mouse released [%s]", GetName().c_str());
+    //Log::Info("Mouse released [%s]", GetName().c_str());
 
     // Childs
     bool result = false;
@@ -117,7 +117,7 @@ On_Mouse_WScrolled(UIElement)
     }
 
     // This
-    //Modules::log().Info("Mouse scrolled [%s]", GetName().c_str());
+    //Log::Info("Mouse scrolled [%s]", GetName().c_str());
 
     // Childs
     bool result = false;
@@ -143,7 +143,7 @@ On_Keyboard_Pressed(UIElement)
     }
 
     // This
-    //Modules::log().Info("Keyboard pressed [%s]", GetName().c_str());
+    //Log::Info("Keyboard pressed [%s]", GetName().c_str());
 
     // Childs
     bool result = false;
@@ -165,7 +165,7 @@ On_Keyboard_Released(UIElement)
     }
 
     // This
-    //Modules::log().Info("Keyboard released [%s]", GetName().c_str());
+    //Log::Info("Keyboard released [%s]", GetName().c_str());
 
     // Childs
     bool result = false;

@@ -6,7 +6,12 @@
 // Additional
 #include "InputListenerCollection.h"
 
-Input::Input()
+// Static class
+bool Input::keyState[OW_KEYSCOUNT];
+bool Input::mouseButtonState[OW_MOUSEBUTTONSCOUNT];
+vec2 Input::mousePos;
+
+bool Input::Init()
 {
     for (int i = 0; i < OW_KEYSCOUNT; i++)
     {
@@ -17,9 +22,11 @@ Input::Input()
     {
         mouseButtonState[i] = false;
     }
+
+    return true;
 }
 
-Input::~Input()
+void Input::Destroy()
 {}
 
 //

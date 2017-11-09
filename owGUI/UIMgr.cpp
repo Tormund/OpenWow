@@ -50,7 +50,7 @@ void UIMgr::AttachElementToParent(UIElement* _element, UIElement* _parent)
     // If element already has a parent
     if (_element->m_Parent != nullptr)
     {
-        Modules::log().Error("UIElement: Can't attach element [%s], because element already have a parent [%s]!", _element->GetName().c_str(), _element->m_Parent->GetName().c_str());
+        Log::Error("UIElement: Can't attach element [%s], because element already have a parent [%s]!", _element->GetName().c_str(), _element->m_Parent->GetName().c_str());
         return;
     }
 
@@ -101,7 +101,7 @@ void UIMgr::Update(double t, double dt)
 
         (*it)->DeleteChilds();
 
-        Modules::log().Info("UI: Element [%s] deleted", (*it)->GetName().c_str());
+        Log::Info("UI: Element [%s] deleted", (*it)->GetName().c_str());
         DeleteUIElement(*it);
 
         it = m_ObjectsToDelete.erase(it);
@@ -139,7 +139,7 @@ void UIMgr::SetForDetach(UIElement* _element)
 {
     if (find(m_ObjectsToDetach.begin(), m_ObjectsToDetach.end(), _element) != m_ObjectsToDetach.end())
     {
-        Modules::log().Warn("UI: Element [%s] already set for detaching.", _element->GetName().c_str());
+        Log::Warn("UI: Element [%s] already set for detaching.", _element->GetName().c_str());
         return;
     }
 
@@ -150,7 +150,7 @@ void UIMgr::SetForDelete(UIElement* _element)
 {
     if (find(m_ObjectsToDelete.begin(), m_ObjectsToDelete.end(), _element) != m_ObjectsToDelete.end())
     {
-        Modules::log().Warn("UI: Element [%s] already set for deletion.", _element->GetName().c_str());
+        Log::Warn("UI: Element [%s] already set for deletion.", _element->GetName().c_str());
         return;
     }
 
@@ -163,19 +163,19 @@ void UIMgr::DetachFromParent(UIElement* _element)
 
     if (parent == nullptr)
     {
-        Modules::log().Error("UI: Element [%s] parent is nullptr.", _element->GetName().c_str());
+        Log::Error("UI: Element [%s] parent is nullptr.", _element->GetName().c_str());
         return;
     }
 
     auto& elementInParentChildsIt = find(parent->m_Childs.begin(), parent->m_Childs.end(), _element);
     if (*elementInParentChildsIt != _element)
     {
-        Modules::log().Error("UI: Element [%s] not finded in parent [%s] childs.", _element->GetName().c_str(), parent->GetName().c_str());
+        Log::Error("UI: Element [%s] not finded in parent [%s] childs.", _element->GetName().c_str(), parent->GetName().c_str());
         return;
     }
 
     parent->m_Childs.erase(elementInParentChildsIt);
-    Modules::log().Info("UI: Element [%s] detached from parent [%s].", _element->GetName().c_str(), parent->GetName().c_str());
+    Log::Info("UI: Element [%s] detached from parent [%s].", _element->GetName().c_str(), parent->GetName().c_str());
 }
 
 void UIMgr::DeleteUIElement(UIElement* _element)

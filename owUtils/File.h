@@ -16,7 +16,7 @@ public:
 
 	//
 
-	static  void InitCriticalSect()
+	static void InitCriticalSect()
 	{
 		InitializeCriticalSection(&cs);
 	}

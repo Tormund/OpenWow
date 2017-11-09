@@ -14,7 +14,7 @@ struct DoodadPlacementInfo
 	vec3 position;               // (X,Z,-Y)
 	C4ImQuaternion orientation;        // (X, Y, Z, W)
 	float scale;                      // scale factor
-	CImVector color;                 // (B,G,R,A) diffuse lighting color, used in place of global diffuse from DBCs
+	CBgra color;                 // (B,G,R,A) diffuse lighting color, used in place of global diffuse from DBCs
 
 	//
 	static const uint32 __size = 40;

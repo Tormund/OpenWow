@@ -24,7 +24,7 @@
     <ClCompile Include="Module.cpp" />
     <ClCompile Include="Modules.cpp" />
     <ClCompile Include="Console.cpp" />
-    <ClCompile Include="EngineLog.cpp" />
+    <ClCompile Include="Log.cpp" />
     <ClCompile Include="DebugOutput.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="RenderableUIObject.cpp" />
@@ -43,7 +43,7 @@
     <ClInclude Include="Module.h" />
     <ClInclude Include="Modules.h" />
     <ClInclude Include="Console.h" />
-    <ClInclude Include="EngineLog.h" />
+    <ClInclude Include="Log.h" />
     <ClInclude Include="DebugOutput.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="InputListener.h" />

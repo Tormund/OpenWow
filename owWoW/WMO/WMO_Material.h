@@ -20,8 +20,8 @@ struct WMOMaterialDef
 	uint32 shader;                 // Index into CMapObj::s_wmoShaderMetaData. See below (shader types).
 	uint32 blendMode;
 	uint32 diffuseNameIndex;       // offset into MOTX
-	CImVector emissive_color;        // emissive color; see below (emissive color)
-	CImVector sidn_emissive_color;   // set at runtime; gets sidn-manipulated emissive color; see below (emissive color)
+	CBgra emissive_color;        // emissive color; see below (emissive color)
+	CBgra sidn_emissive_color;   // set at runtime; gets sidn-manipulated emissive color; see below (emissive color)
 	uint32 envNameIndex;
 	uint32 diffColor;
 	uint32 ground_type;            //  &TerrainTypeRec::m_ID
@@ -43,7 +43,7 @@ public:
 	uint32 GetBlendMode() const { return matDef.blendMode; }
 	uint32 GetDiffuseColor() const { return matDef.diffColor; }
 
-	CImVector EmissiveColor() const { return matDef.emissive_color; }
+	CBgra EmissiveColor() const { return matDef.emissive_color; }
 
 	bool IsLightingDisabled() const { return matDef.flags.F_UNLIT; }
 	bool IsFogDisabled() const { return matDef.flags.F_UNFOGGED; }

@@ -26,7 +26,7 @@ bool GameStateManager::SetGameState(GameState* _newGameState)
 {
     assert1(_newGameState);
 
-    Modules::log().Print("Engine[]: Setting new GameState.");
+    Log::Print("Engine[]: Setting new GameState.");
 
     // 1. Unset current GameState
     if (currentGameState != nullptr)
@@ -38,14 +38,14 @@ bool GameStateManager::SetGameState(GameState* _newGameState)
     // 2. If new GameState not inited, init them
     if (!_newGameState->IsInited())
     {
-        Modules::log().Warn("Engine[]: New GameState in not inited. Initializating.");
+        Log::Warn("Engine[]: New GameState in not inited. Initializating.");
         if (_newGameState->Init())
         {
             _newGameState->m_IsInited = true;
         }
         else
         {
-            Modules::log().Error("Engine[]: Error initing new GameState.");
+            Log::Error("Engine[]: Error initing new GameState.");
         }
     }
 
@@ -57,7 +57,7 @@ bool GameStateManager::SetGameState(GameState* _newGameState)
     }
     else
     {
-        Modules::log().Error("Engine[]: Error setting current new GameState.");
+        Log::Error("Engine[]: Error setting current new GameState.");
     }
 
     return true;
