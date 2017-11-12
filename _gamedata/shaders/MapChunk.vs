@@ -14,7 +14,7 @@ struct VSOutputType
 // Vertex attrib
 layout(location = 0) in vec3 VertexPosition;
 layout(location = 1) in vec3 Normal;
-layout(location = 2) in vec4 VertexColorMCCV; // BGRA
+layout(location = 2) in vec4 VertexColorMCCV;
 layout(location = 3) in vec4 VertexColorMCLV;
 layout(location = 4) in vec2 TexCoordDetail;
 layout(location = 5) in vec2 TexCoordAlpha;

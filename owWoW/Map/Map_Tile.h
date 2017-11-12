@@ -7,6 +7,27 @@
 
 enum load_phases;
 
+struct Map_Tile_TextureInfo
+{
+    Map_Tile_TextureInfo():
+        diffuseTexture(nullptr),
+        specularTexture(nullptr)
+    {
+        mtxf.do_not_load_specular_or_height_texture_but_use_cubemap = false;
+    }
+
+    //
+
+    string textureName;
+    struct 
+    {
+        uint32_t do_not_load_specular_or_height_texture_but_use_cubemap : 1;
+        uint32_t : 31;
+    } mtxf;
+    Texture* diffuseTexture;
+    Texture* specularTexture;
+};
+
 class MapTile
 {
 public:
@@ -31,26 +52,24 @@ public:
 	MapChunk* getChunk(uint32 x, uint32 z)
     {
         assert1(x < C_ChunksInTile && z < C_ChunksInTile);
-        return m_Chunks[x][z];
+        return m_Chunks[x * C_ChunksInTile + z];
     }
 
 public:
-	vector<string> m_TexturesNames;
-	vector<uint32> m_TexureIsCubemap;
+	vector<Map_Tile_TextureInfo> m_Textures;
 
-	vector<Texture*> m_DiffuseTextures;
-	vector<Texture*> m_SpecularTextures;
+	vector<string>             m_WMOsNames;
+    vector<WMOPlacementInfo*>  m_WMOsPlacementInfo;
+	vector<WMOInstance*>       m_WMOsInstances;
 
-	vector<string> m_WMOsNames;
-	vector<WMOInstance*> m_WMOsInstances;
+	vector<string>             m_MDXsNames;
+    vector<ModelPlacementInfo*>  m_MDXsPlacementInfo;
+	vector<ModelInstance*>     m_MDXsInstances;
 
-	vector<string> m_MDXsNames;
-	vector<ModelInstance*> m_MDXsInstances;
+	int                        m_IndexX, m_IndexZ;
+	float                      m_GamePositionX, m_GamePositionZ;
 
-	int m_IndexX, m_IndexZ;
-	float m_GamePositionX, m_GamePositionZ;
-
-	MapChunk* m_Chunks[C_ChunksInTile][C_ChunksInTile];
+    vector<MapChunk*>          m_Chunks;
 };
 
 

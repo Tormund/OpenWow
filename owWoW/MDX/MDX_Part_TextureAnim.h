@@ -24,5 +24,5 @@ private:
 	//
 
 	friend class MDX;
-	friend class ModelRenderPass;
+	friend class MDX_Skin_Batch;
 };

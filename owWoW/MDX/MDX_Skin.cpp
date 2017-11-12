@@ -4,7 +4,7 @@
 #include "MDX.h"
 
 // General
-#include "Model_Skin.h"
+#include "MDX_Skin.h"
 
 Model_Skin::Model_Skin(MDX* _model, File& _mF, File& _aF) : m_ModelObject(_model)
 {
@@ -24,8 +24,10 @@ Model_Skin::Model_Skin(MDX* _model, File& _mF, File& _aF) : m_ModelObject(_model
 	M2SkinBatch*   skinBatch     = (M2SkinBatch*)   (_aF.GetData() + view->batches.offset);
     uint32         bonesMax      = view->boneCountMax;
 
-    if(bonesMax > 0)
-    Log::Error("Max bones = %d", bonesMax);
+    if (bonesMax > 0)
+    {
+        Log::Error("Max bones = %d", bonesMax);
+    }
 
 	//------------
 
@@ -37,7 +39,7 @@ Model_Skin::Model_Skin(MDX* _model, File& _mF, File& _aF) : m_ModelObject(_model
 
 	for (uint32 j = 0; j < view->batches.size; j++)
 	{
-		ModelRenderPass* pass = new ModelRenderPass();
+		MDX_Skin_Batch* pass = new MDX_Skin_Batch();
 
 		uint16 m2SkinIndex = skinBatch[j].m2SkinIndex;
 
@@ -176,13 +178,13 @@ Model_Skin::Model_Skin(MDX* _model, File& _mF, File& _aF) : m_ModelObject(_model
 			pass->texanim = -1; // no texture animation
 		}*/
 
-		m_Passes.push_back(pass);
+		m_Batches.push_back(pass);
 	}
 
 
 
 	// transparent parts come later
-	//std::sort(m_Passes.begin(), m_Passes.end());
+	//std::sort(m_Batches.begin(), m_Batches.end());
 
 
 	showGeosets = new bool[view->submeshes.size];
@@ -249,9 +251,9 @@ void Model_Skin::Draw()
 
 	_Render->r->setGeometry(__geom);
 
-	for (size_t i = 0; i < m_Passes.size(); i++)
+	for (size_t i = 0; i < m_Batches.size(); i++)
 	{
-		ModelRenderPass* p = m_Passes[i];
+		MDX_Skin_Batch* p = m_Batches[i];
 
 		if (showGeosets[p->m2SkinIndex])
 		{

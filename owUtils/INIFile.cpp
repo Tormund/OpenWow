@@ -3,32 +3,19 @@
 // General
 #include "INIFile.h"
 
-bool INIFile::Open(cstring _filename)
+bool INIFile::Open()
 {
-	iniFilename = _filename;
-
-	if (_filename.empty())
-	{
-		//Log::Error("INIFile[%s]: No such file or directory!", _filename.c_str());
-		return false;
-	}
-
-	iniStream.open(iniFilename.c_str(), ios::in);
-	if (!iniStream.is_open())
-	{
-		//Log::Error("INIFile[%s]: Can not open file!", _filename.c_str());
-		return false;
-	}
-
 	SectionStruct newSection;
 	newSection.section = "root";
 
-	while (iniStream.good())
+	while (!ByteBuffer::IsEof())
 	{
-		string line = Utils::Trim(Utils::getLine(iniStream));
+		string line = ByteBuffer::ReadLine();
 
-		if (line.length() == 0)
-			continue;
+        if (line.length() == 0)
+        {
+            continue;
+        }
 
 		if (line.at(0) == '#')
 		{
@@ -37,6 +24,7 @@ bool INIFile::Open(cstring _filename)
 		else if (line.at(0) == '[')
 		{
 			data.push_back(newSection);
+
 			newSection.data.clear();
 			newSection.section = Utils::ParseSectionName(line);
 			continue;
@@ -49,33 +37,22 @@ bool INIFile::Open(cstring _filename)
 
 	data.push_back(newSection);
 
-	iniStream.close();
-	iniStream.clear();
+    ByteBuffer::Clear();
 
 	return true;
-}
-
-void INIFile::Clear()
-{
-	for (auto it : data)
-	{
-		for (auto it2 : it.data)
-		{
-			it2.key.clear();
-			it2.value.clear();
-		}
-		it.data.clear();
-	}
-	data.clear();
 }
 
 vector<SectionStruct> INIFile::GetSections(string _sectionName)
 {
 	vector<SectionStruct> myMap;
 
-	for (auto it : data)
-		if (_sectionName == it.section)
-			myMap.push_back(it);
+    for (auto it : data)
+    {
+        if (_sectionName == it.section)
+        {
+            myMap.push_back(it);
+        }
+    }
 
 	return myMap;
 }

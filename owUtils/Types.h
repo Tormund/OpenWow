@@ -23,6 +23,7 @@ typedef const Quaternion& cquat;
 #include "Primitives.h"
 #include "Rect.h"
 #include "Timer.h"
+#include "Variant.h"
 
 // STL Types
 #include <map>

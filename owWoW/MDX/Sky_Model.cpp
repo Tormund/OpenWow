@@ -28,7 +28,7 @@ bool Sky_Model::Draw()
 	_Pipeline->Translate(_Camera->Position);
 	_Pipeline->Scale(2.0f);
 
-	m_MDX->draw();
+	m_MDX->Render();
 
 	return true;
 }

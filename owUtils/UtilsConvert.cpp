@@ -44,71 +44,8 @@ string Utils::ToString(const type_info& type, void* value)
 	return stream.str();
 }
 
-// Common types
 
-short Utils::ToShort(cstring _string)
-{
-	short result;
-	if (!(stringstream(_string) >> result))
-		result = 0;
-	return result;
-}
 
-unsigned short Utils::ToUShort(cstring _string)
-{
-	unsigned short result;
-	if (!(stringstream(_string) >> result))
-		result = 0;
-	return result;
-}
-
-int Utils::ToInt(cstring _string)
-{
-	int result;
-	if (!(stringstream(_string) >> result))
-		result = 0;
-	return result;
-}
-
-unsigned int Utils::ToUInt(cstring _string)
-{
-	unsigned int result;
-	if (!(stringstream(_string) >> result))
-		result = 0;
-	return result;
-}
-
-float Utils::ToFloat(cstring _string)
-{
-	float result;
-	if (!(stringstream(_string) >> result))
-		result = 0.0f;
-	return result;
-}
-
-double Utils::ToDouble(cstring _string)
-{
-	double result;
-	if (!(stringstream(_string) >> result))
-		result = 0.0;
-	return result;
-}
-
-long Utils::ToLong(cstring _string)
-{
-	long result;
-	if (!(stringstream(_string) >> result))
-		result = 0;
-	return result;
-}
-
-unsigned long Utils::ToULong(cstring _string)
-{
-	unsigned long result;
-	if (!(stringstream(_string) >> result))
-		result = 0;
-	return result;
-}
 
 bool Utils::ToBool(cstring _string)
 {

@@ -68,6 +68,9 @@
     <ClCompile Include="Image.cpp">
       <Filter>Textures</Filter>
     </ClCompile>
+    <ClCompile Include="RenderConfig.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
@@ -177,6 +180,9 @@
     </ClInclude>
     <ClInclude Include="Image.h">
       <Filter>Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderConfig.h">
+      <Filter>Render</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

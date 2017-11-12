@@ -9,7 +9,7 @@ struct C33Matrix
 
 struct C44Matrix
 {
-	Vec4f columns[4];
+    vec4 columns[4];
 };
 
 struct C4Plane

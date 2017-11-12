@@ -5,15 +5,15 @@
 
 World::World()
 {
-	rb2 = _Render->r->createRenderBuffer(Modules::config().windowSizeX, Modules::config().windowSizeY, R_TextureFormats::RGBA16F, true, 4, 0);
+	rb2 = _Render->r->createRenderBuffer(_Config.windowSizeX, _Config.windowSizeY, R_TextureFormats::RGBA16F, true, 4, 0);
 
 	// Test camera
 	testCamera = new Camera;
-	testCamera->setupViewParams(45.0f, Modules::config().aspectRatio, 2.0f, 15000.0f);
+	testCamera->setupViewParams(45.0f, _Config.aspectRatio, 2.0f, 15000.0f);
 
 	//----------------------------------------------------------------//
 
-	Modules::config().CalculateSquareDistances();
+	_Config.CalculateSquareDistances();
 
 	// Fog params
 	l_const = 0.0f;
@@ -90,19 +90,19 @@ void World::RenderGeom()
 	// Draw sky from WMO
 	//------------------------------------------------------------------------------
 	_Render->r->setDepthTest(false);
-	//if (Modules::config().draw_map_mdx)
+	//if (_Config.draw_map_mdx)
 	//{
-	_Map->RenderSky();
+	_Map.RenderSky();
 	//}
 
 	//------------------------------------------------------------------------------
 	// Draw sky from GLOBAL WMO
 	//------------------------------------------------------------------------------
 	_Render->r->setDepthTest(true);
-	if (_Map->MapHasGlobalWMO() && !_EnvironmentManager->m_HasSky)
+	if (_Map.MapHasGlobalWMO() && !_EnvironmentManager->m_HasSky)
 	{
-		_Map->SetOutOfBounds(false);
-		_Map->GetGlobalWMOInstance()->GetWMO()->drawSkybox();
+		_Map.SetOutOfBounds(false);
+		_Map.GetGlobalWMOInstance()->GetWMO()->drawSkybox();
 	}
 
 	//
@@ -115,14 +115,14 @@ void World::RenderGeom()
 	_Render->r->setDepthTest(false);
 
 	PERF_START(PERF_MAP_LOWRESOLUTION);
-	if (Modules::config().drawfog && Modules::config().draw_map_chunk)
+	if (_Config.drawfog && _Config.draw_map_chunk)
 	{
 		_TechniquesMgr->m_MapTileLowRes_GeometryPass->BindS();
 		_Pipeline->Clear();
 		_TechniquesMgr->m_MapTileLowRes_GeometryPass->SetPVW();
 		_TechniquesMgr->m_MapTileLowRes_GeometryPass->SetShadowColor(_EnvironmentManager->GetSkyColor(FOG_COLOR));
 
-		_Map->RenderLowResTiles();
+		_Map.RenderLowResTiles();
 
 		_TechniquesMgr->m_MapTileLowRes_GeometryPass->Unbind();
 	}
@@ -136,9 +136,9 @@ void World::RenderGeom()
 	// Map chunks
 	//------------------------------------------------------------------------------
 	PERF_START(PERF_MAP_CHUNK_GEOMETRY);
-	if (Modules::config().draw_map_chunk)
+	if (_Config.draw_map_chunk)
 	{
-		Modules::config().uselowlod = Modules::config().drawfog;
+		//_Config.uselowlod = _Config.drawfog;
 
 		_TechniquesMgr->m_MapChunk_GeometryPass->BindS();
 		_Pipeline->Clear();
@@ -146,7 +146,7 @@ void World::RenderGeom()
 
         _Render->r->setCullMode(R_CullMode::RS_CULL_FRONT);
 
-		_Map->RenderTiles();
+		_Map.RenderTiles();
 
 		_TechniquesMgr->m_MapChunk_GeometryPass->Unbind();
 	}
@@ -160,9 +160,9 @@ void World::RenderGeom()
 	_Render->r->setCullMode(R_CullMode::RS_CULL_FRONT);
 	_Render->r->setBlendMode(true, R_BlendFunc::BS_BLEND_SRC_ALPHA, R_BlendFunc::BS_BLEND_INV_SRC_ALPHA);
 
-	if (Modules::config().draw_map_chunk)
+	if (_Config.draw_map_chunk)
 	{
-		_Map->RenderWater();
+		_Map.RenderWater();
 	}
 
 	_Render->r->setBlendMode(false);
@@ -177,10 +177,10 @@ void World::RenderGeom()
 	// Global WMO
 	//------------------------------------------------------------------------------
 	PERF_START(PERF_MAP_MODELS_WMO_GLOBAL);
-	if (_Map->MapHasGlobalWMO())
+	if (_Map.MapHasGlobalWMO())
 	{
-		_Map->SetOutOfBounds(false);
-		_Map->GetGlobalWMOInstance()->Render();
+		_Map.SetOutOfBounds(false);
+		_Map.GetGlobalWMOInstance()->Render();
 	}
 	PERF_STOP(PERF_MAP_MODELS_WMO_GLOBAL);
 
@@ -190,9 +190,9 @@ void World::RenderGeom()
 	// WMOs
 	//------------------------------------------------------------------------------
 	PERF_START(PERF_MAP_MODELS_WMOs);
-	if (Modules::config().draw_map_wmo)
+	if (_Config.draw_map_wmo)
 	{
-		_Map->RenderObjects();
+		_Map.RenderObjects();
 	}
 	PERF_STOP(PERF_MAP_MODELS_WMOs);
 	
@@ -202,9 +202,9 @@ void World::RenderGeom()
 	// Map MDXs
 	//------------------------------------------------------------------------------
 	PERF_START(PERF_MAP_MODELS_MDXs);
-	if (Modules::config().draw_map_mdx)
+	if (_Config.draw_map_mdx)
 	{
-		_Map->RenderModels();
+		_Map.RenderModels();
 	}
 	PERF_STOP(PERF_MAP_MODELS_MDXs);
 }
@@ -220,9 +220,9 @@ void World::RenderPostprocess()
 
 void World::tick(float dt)
 {
-	Modules::config().CalculateSquareDistances();
+	_Config.CalculateSquareDistances();
 
-	_Map->Tick();
+	_Map.Tick();
 
 	while (dt > 0.1f)
 	{
@@ -238,7 +238,7 @@ void World::DSDirectionalLightPass(DirectionalLight& _light)
 	_TechniquesMgr->m_DSDirLightPassTech->BindS();
 	_TechniquesMgr->m_DSDirLightPassTech->SetEyeWorldPos(_Camera->Position);
 	_TechniquesMgr->m_DSDirLightPassTech->SetDirectionalLight(_light);
-	_TechniquesMgr->m_DSDirLightPassTech->SetScreenSize(Modules::config().windowSizeX, Modules::config().windowSizeY);
+	_TechniquesMgr->m_DSDirLightPassTech->SetScreenSize(_Config.windowSizeX, _Config.windowSizeY);
 	_TechniquesMgr->m_DSDirLightPassTech->BindToPostprocess();
 
 	_Render->r->setDepthTest(false);
@@ -255,7 +255,7 @@ void World::DSDirectionalLightPass(DirectionalLight& _light)
 void World::DSSimpleRenderPass()
 {
 	_TechniquesMgr->m_SimpleRender->BindS();
-	_TechniquesMgr->m_SimpleRender->SetScreenSize(Modules::config().windowSizeX, Modules::config().windowSizeY);
+	_TechniquesMgr->m_SimpleRender->SetScreenSize(_Config.windowSizeX, _Config.windowSizeY);
 
 	_Render->r->setDepthTest(false);
 	_Render->r->setBlendMode(true, R_BlendFunc::BS_BLEND_ONE, R_BlendFunc::BS_BLEND_ONE);

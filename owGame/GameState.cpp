@@ -9,7 +9,7 @@ GameState::GameState() : m_IsInited(false), m_IsCurrent(false)
 bool GameState::Init()
 {
     m_Window = new UIWindow();
-    m_Window->Init(vec2(0.0f, 0.0f), vec2(Modules::config().windowSizeX, Modules::config().windowSizeY), nullptr);
+    m_Window->Init(vec2(0.0f, 0.0f), vec2(_Config.windowSizeX, _Config.windowSizeY), nullptr);
 
     m_IsInited = true;
 

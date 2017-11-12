@@ -47,7 +47,7 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize)
 	}
 
 	string fontFileName = _nameAndSize.substr(0, _delimIndex - 1);
-	uint32 fontSize = Utils::ToUInt(_nameAndSize.substr(_delimIndex + 1));
+	uint32 fontSize = Utils::ToType<uint32>(_nameAndSize.substr(_delimIndex + 1));
 
 	File f = fontFileName;
 	if (!f.Open())

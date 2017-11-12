@@ -8,6 +8,7 @@
 
 // Additional
 #include "Map.h"
+#include "Map_Shared.h"
 
 //
 
@@ -203,8 +204,8 @@ void MapChunk::Load(File& f, load_phases phase)
         _Render->r->updateBufferData(__vb, 3 * t, C_MapBufferSize * sizeof(vec3), tempNormals);
         _Render->r->updateBufferData(__vb, 6 * t, C_MapBufferSize * sizeof(vec4), mccvColors);
         _Render->r->updateBufferData(__vb, 10 * t, C_MapBufferSize * sizeof(vec4), mclvColors);
-        _Render->r->updateBufferData(__vb, 14 * t, C_MapBufferSize * sizeof(vec2), _Map->GetTextureCoordDetail());
-        _Render->r->updateBufferData(__vb, 16 * t, C_MapBufferSize * sizeof(vec2), _Map->GetTextureCoordAlpha());
+        _Render->r->updateBufferData(__vb, 14 * t, C_MapBufferSize * sizeof(vec2), Map_Shared::GetTextureCoordDetail());
+        _Render->r->updateBufferData(__vb, 16 * t, C_MapBufferSize * sizeof(vec2), Map_Shared::GetTextureCoordAlpha());
         
 
         //
@@ -218,7 +219,7 @@ void MapChunk::Load(File& f, load_phases phase)
         _Render->r->setGeomVertexParams(__geom, __vb, R_DataType::T_FLOAT, 14 * t, 0);
         _Render->r->setGeomVertexParams(__geom, __vb, R_DataType::T_FLOAT, 16 * t, 0);
 
-        vector<uint16>& mapArray = _Map->GenarateMapArray(header.holes);
+        vector<uint16>& mapArray = Map_Shared::GenarateDefaultMapArray(header.holes);
         m_Indexes = mapArray.data();
         m_IndexesCount = mapArray.size();
 
@@ -317,7 +318,7 @@ void MapChunk::Load(File& f, load_phases phase)
 
                 if (mcly[i].flags.alpha_map_compressed) // Compressed: MPHD is only about bit depth!
                 {
-                    assert1(_Map->GetMapFlag().Flag_8bitMCAL);
+                    assert1(_Map.GetMapFlag().Flag_8bitMCAL);
 
                     // compressed
                     const uint8* input = abuf;
@@ -342,7 +343,7 @@ void MapChunk::Load(File& f, load_phases phase)
                         offset_output += n;
                     }
                 }
-                else if (_Map->GetMapFlag().Flag_8bitMCAL) // Uncomressed (4096)
+                else if (_Map.GetMapFlag().Flag_8bitMCAL) // Uncomressed (4096)
                 {
                     memcpy(amap, abuf, 64 * 64);
                 }
@@ -421,8 +422,8 @@ void MapChunk::Post_Load()
     // Texture layer definitions for this map chunk. 16 bytes per layer, up to 4 layers (thus, layer count = size / 16).
     for (uint32 i = 0; i < header.nLayers; i++)
     {
-        m_DiffuseTextures[i] = m_ParentTile->m_DiffuseTextures[mcly[i].textureIndex];
-        m_SpecularTextures[i] = m_ParentTile->m_SpecularTextures[mcly[i].textureIndex];
+        m_DiffuseTextures[i] = m_ParentTile->m_Textures[mcly[i].textureIndex].diffuseTexture;
+        m_SpecularTextures[i] = m_ParentTile->m_Textures[mcly[i].textureIndex].specularTexture;
     }
 }
 
@@ -470,9 +471,9 @@ void MapChunk::Render()
 
     // Draw chunk before fog
     /*float mydist = (_Camera->Position - vcenter).length() - r;
-    if (mydist > Modules::config().culldistance)
+    if (mydist > _Config.culldistance)
     {
-        if (Modules::config().uselowlod)
+        if (_Config.uselowlod)
         {
             this->drawNoDetail();
             return;
@@ -483,8 +484,8 @@ void MapChunk::Render()
 
     _TechniquesMgr->m_MapChunk_GeometryPass->SetLayersCount(header.nLayers);
 
-    _TechniquesMgr->m_MapChunk_GeometryPass->SetMCCVExists(header.flags.has_mccv && Modules::config().enableMCCV);
-    _TechniquesMgr->m_MapChunk_GeometryPass->SetMCLVExists(MCLV_exists && Modules::config().enableMCLV);
+    _TechniquesMgr->m_MapChunk_GeometryPass->SetMCCVExists(header.flags.has_mccv && _Config.Quality.Terrain_MCCV);
+    _TechniquesMgr->m_MapChunk_GeometryPass->SetMCLVExists(MCLV_exists && _Config._Config.Quality.Terrain_MCLV);
 
     _Render->r->setGeometry(__geom);
 
@@ -493,8 +494,8 @@ void MapChunk::Render()
     // Bind m_DiffuseTextures
     for (uint32 i = 0; i < header.nLayers; i++)
     {
-        _Render->r->setTexture(i, m_DiffuseTextures[i]->GetObj(), SS_ADDR_WRAP, 0);
-        _Render->r->setTexture(5 + i, m_SpecularTextures[i]->GetObj(), SS_ADDR_WRAP, 0);
+        _Render->r->setTexture(i, m_DiffuseTextures[i]->GetObj(), _Config.Quality.Texture_Sampler | SS_ADDR_WRAP, 0);
+        _Render->r->setTexture(5 + i, m_SpecularTextures[i]->GetObj(), _Config.Quality.Texture_Sampler | SS_ADDR_WRAP, 0);
     }
 
     // Bind blend
@@ -539,5 +540,7 @@ MCNK_MCLQ_LiquidType MapChunk::GetLiquidType()
         return MCNK_MCLQ_LiquidType::lq_magma;
     else if (header.flags.lq_slime)
         return MCNK_MCLQ_LiquidType::lq_slime;
+    else
+        fail1();
 }
 

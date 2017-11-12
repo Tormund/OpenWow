@@ -3,10 +3,12 @@
 // General
 #include "Model_Instance.h"
 
-ModelInstance::ModelInstance(File& f)
+ModelInstance::ModelInstance(MDX* _mdxObject, ModelPlacementInfo* _placementInfo) : 
+    modelObject(_mdxObject),
+    placementInfo(_placementInfo)
 {
-	placementInfo = new ModelPlacementInfo;
-	f.ReadBytes(placementInfo, ModelPlacementInfo::__size);
+    assert1(_mdxObject);
+    assert1(_placementInfo);
 
 	// Convert rotation
 	placementInfo->rotation = degToRad(placementInfo->rotation);
@@ -37,7 +39,7 @@ void ModelInstance::Render()
 		aabb.transform(_Pipeline->GetWorld());
 
 		//float dist = (placementInfo->position - _Camera->Position).length();
-		//if (dist > Modules::config().modeldrawdistance + modelObject->m_Radius * sc)
+		//if (dist > _Config.modeldrawdistance + modelObject->m_Radius * sc)
 		//{
 		//	return;
 		//}
@@ -48,7 +50,7 @@ void ModelInstance::Render()
 		}
 
 
-		modelObject->draw();
+		modelObject->Render();
 		PERF_INC(PERF_MAP_MODELS_MDXs);
 	}
 }

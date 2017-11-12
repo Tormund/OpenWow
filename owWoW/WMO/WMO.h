@@ -101,7 +101,8 @@ public:
 	bool Load();
 	inline bool IsLoaded() { return m_Loaded; }
 
-	bool draw(uint32 _doodadSet);
+    //void Render() override;
+	bool Render(uint32 _doodadSet);
 
 	bool drawSkybox();
 
@@ -131,32 +132,31 @@ public:
 
 
 	//-- Skybox --//
-#ifdef DOODADS_INCL
 	char* m_Skybox_Filename;                                 // MOSB chunk
 	MDX* m_Skybox;
 	//Sky_Model* m_SkyModel;
-#endif
+
 
 	//-- Portals --//
 	vec3* m_PortalVertices;                                 // MOPV chunk
 	vector<WMO_PortalInformation*> m_PortalInformation;     // MOPT chunk
 	vector<WMO_PortalReferences*> m_PortalReferences;       // MOPR chunk
 
+
 	//-- Visible block
 	vec3* m_VisibleBlockVertices;                           // MOVV chunk
 	vector<WMO_VisibleBlockList*> m_VisibleBlockList;		// MOVB chunk
+
 
 	// -- Lights --//
 	vector<WMOLight*> m_Lights;                               // MOLT chunk
 
 
 	//-- Doodads --//
-#ifdef DOODADS_INCL
 	vector<WMO_DoodadSet*> doodadsets;                      // MODS chunk
 	char* m_MDXFilenames;                                   // MODN chunk
 	vector<string> m_MDXNames;                             
 	vector<DoodadInstance*> m_MDXInstances;                 // MODD chunk
-#endif
 
 
 	//-- Fog --//

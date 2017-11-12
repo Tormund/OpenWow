@@ -51,18 +51,7 @@ private:
 };
 
 
-struct DeviceCaps
-{
-	uint16	maxJointCount;
-	uint16	maxTexUnitCount;
-	bool	texFloat;
-	bool	texNPOT;
-	bool	rtMultisampling;
-	bool	geometryShaders;
-	bool	tesselation;
-	bool	computeShaders;
-	bool	instancing;
-};
+
 
 
 #include "RenderEnums.h"
@@ -350,7 +339,6 @@ public:
 	const R_Buffer& getBuffer(uint32 bufObj) { return _buffers.getRef(bufObj); }
 	const R_Texture& getTexture(uint32 texObj) { return _textures.getRef(texObj); }
 	const R_RenderBuffer& getRenderBuffer(uint32 rbObj) { return _rendBufs.getRef(rbObj); }
-	const DeviceCaps& getCaps() const { return _caps; }
 
 protected:
 	// Buffer helper
@@ -384,10 +372,7 @@ protected:
 		PM_COMPUTE = 0x00000100
 	};
 
-
 protected:
-	DeviceCaps					  _caps;
-
 	R_VertexLayout                _vertexLayouts[MaxNumVertexLayouts];
 	R_Objects< R_Buffer >         _buffers;
 	R_Objects< R_Texture >        _textures;

@@ -14,7 +14,7 @@
 #include "ParticleSystem.h"
 #include "RibbonEmitter.h"
 
-#include "Model_Skin.h"
+#include "MDX_Skin.h"
 
 enum BlendModes
 {
@@ -27,7 +27,7 @@ enum BlendModes
 	M2BLEND_MOD2X
 };
 
-class MDX : public RefItemNamed
+class MDX : public RefItemNamed, public IWoWPrototype
 {
 public:
 	MDX(cstring name);
@@ -36,7 +36,7 @@ public:
 	void Init(bool forceAnim = false);
 	bool IsLoaded() { return m_Loaded; }
 
-	void draw();
+	void Render() override;
 	void updateEmitters(float dt);
 
 	ModelHeader header;
@@ -52,7 +52,7 @@ private:
 private:
 	M2Vertex* m_OriginalVertexes;
 
-	vector<Model_Skin*> m_Skins;
+	Model_Skin* m_Skin;
 
 public:
 	bool animated;
@@ -103,5 +103,5 @@ public:
 	bool animcalc;
 	int m_AnimationIndex, m_AnimationTime;
 
-	friend class ModelRenderPass;
+	friend class MDX_Skin_Batch;
 };

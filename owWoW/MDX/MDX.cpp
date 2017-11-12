@@ -4,7 +4,7 @@
 #include "MDX.h"
 
 // Additional
-#include "Model_RenderPass.h"
+#include "MDX_Skin_Batch.h"
 
 MDX::MDX(cstring name) : RefItemNamed(name), m_Loaded(false)
 {
@@ -36,6 +36,8 @@ MDX::MDX(cstring name) : RefItemNamed(name), m_Loaded(false)
 	m_Colors = nullptr;
 	m_Lights = nullptr;
 	m_TextureWeights = nullptr;
+
+    m_Skin = nullptr;
 
 #ifdef MDX_PARTICLES_ENABLE
 	particleSystems = nullptr;
@@ -219,10 +221,12 @@ void MDX::initCommon(File& f)
 	{
 		File skinFile = m_ModelName + "00.skin";
 
-		Model_Skin* skin = new Model_Skin(this, f, skinFile);
-
-		m_Skins.push_back(skin);
+        m_Skin = new Model_Skin(this, f, skinFile);
 	}
+    else
+    {
+        fail1();
+    }
 }
 
 //
@@ -235,13 +239,10 @@ void MDX::drawModel()
 	}
 
 
-	for (auto it = m_Skins.begin(); it != m_Skins.end(); ++it)
-	{
-		(*it)->Draw();
-	}
+    m_Skin->Draw();
 }
 
-void MDX::draw()
+void MDX::Render()
 {
 	if (!m_Loaded)
 	{

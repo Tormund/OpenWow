@@ -13,7 +13,7 @@ WMOFog::WMOFog(File& f)
 
 void WMOFog::setup()
 {
-	if (Modules::config().drawfog)
+	if (_Config.drawfog)
 	{
 		//glFogfv(GL_FOG_COLOR, color);
 		//glFogf(GL_FOG_START, fogDef.fog.startScalar);

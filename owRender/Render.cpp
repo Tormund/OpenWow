@@ -30,18 +30,18 @@ bool RenderGL::Init()
 		return false;
 	}
 
-	r->setViewport(0, 0, Modules::config().windowSizeX, Modules::config().windowSizeY);
+	r->setViewport(0, 0, _Config.windowSizeX, _Config.windowSizeY);
 
-	m_OrhoMatrix = Matrix4f::OrthoMat(0.0f, Modules::config().windowSizeX, Modules::config().windowSizeY, 0.0f, -1.0f, 1.0f);
+	m_OrhoMatrix = Matrix4f::OrthoMat(0.0f, _Config.windowSizeX, _Config.windowSizeY, 0.0f, -1.0f, 1.0f);
 
 	_RenderStorage->Init();
 
-    rb = r->createRenderBuffer(Modules::config().windowSizeX, Modules::config().windowSizeY, R_TextureFormats::RGBA16F, true, 4, 0);
+    rb = r->createRenderBuffer(_Config.windowSizeX, _Config.windowSizeY, R_TextureFormats::RGBA16F, true, 4, 0);
 
 
     // Main game camera
     mainCamera = new Camera;
-    mainCamera->setupViewParams(45.0f, Modules::config().aspectRatio, 2.0f, 15000.0f);
+    mainCamera->setupViewParams(45.0f, _Config.aspectRatio, 2.0f, 15000.0f);
     _PipelineGlobal->SetCamera(mainCamera);
 
 	return true;
@@ -265,17 +265,17 @@ void RenderGL::RenderQuad()
 void RenderGL::OnWindowResized(uint32 _width, uint32 _height)
 {
 	// Window size
-	Modules::config().windowSizeX = _width;
-	Modules::config().windowSizeY = _height;
+	_Config.windowSizeX = _width;
+	_Config.windowSizeY = _height;
 
 	// Aspect
-	Modules::config().CalculateAspectFactor();
+	_Config.CalculateAspectFactor();
 
 	// Set viewport
-	r->setViewport(0, 0, Modules::config().windowSizeX, Modules::config().windowSizeY);
+	r->setViewport(0, 0, _Config.windowSizeX, _Config.windowSizeY);
 
 	// Projection matix
-	m_OrhoMatrix = Matrix4f::OrthoMat(0.0f, Modules::config().windowSizeX, Modules::config().windowSizeY, 0.0f, -1.0f, 1.0f);
+	m_OrhoMatrix = Matrix4f::OrthoMat(0.0f, _Config.windowSizeX, _Config.windowSizeY, 0.0f, -1.0f, 1.0f);
 }
 
 

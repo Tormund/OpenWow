@@ -4,8 +4,6 @@
 // Build settings
 // =================================================================================================
 
-#define DOODADS_INCL
-
 //#define MDX_PARTICLES_ENABLE
 
 // =================================================================================================
@@ -18,6 +16,14 @@ static _className* instance()\
 {\
 	static _className instance;\
 	return &instance;\
+}
+
+#define CLASS_INSTANCE2(_className)\
+public:\
+static _className& instance()\
+{\
+	static _className instance;\
+	return instance;\
 }
 
 #define CLASS_INSTANCE_API(_className, _dllApi)\

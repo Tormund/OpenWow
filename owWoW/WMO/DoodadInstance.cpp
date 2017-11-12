@@ -39,7 +39,7 @@ void DoodadInstance::Render()
 		//float radius = modelObject->m_Bounds.Radius * placementInfo->scale;
 
 		// Distance test
-		//if ((pos - _Camera->Position).length2() > (Modules::config().doodaddrawdistance2 + radius))
+		//if ((pos - _Camera->Position).length2() > (_Config.doodaddrawdistance2 + radius))
 		//{
 		//	_Pipeline->Pop(); // restore matrix
 		//	return;
@@ -52,7 +52,7 @@ void DoodadInstance::Render()
 			return;
 		}
 
-		modelObject->draw();
+		modelObject->Render();
 		PERF_INC(PERF_MAP_MODELS_WMOs_DOODADS);
 	}
 	_Pipeline->Pop();  // restore matrix

@@ -37,6 +37,9 @@
     <Filter Include="Common">
       <UniqueIdentifier>{d0033b79-fd0f-4221-80fa-9a9bedd64d33}</UniqueIdentifier>
     </Filter>
+    <Filter Include="General">
+      <UniqueIdentifier>{b1c6ecd8-bd6b-45e5-9f22-b0d9e934ae6b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -44,12 +47,6 @@
       <Filter>MDX</Filter>
     </ClCompile>
     <ClCompile Include="MDX\MDX_Animated.cpp">
-      <Filter>MDX</Filter>
-    </ClCompile>
-    <ClCompile Include="MDX\Model_RenderPass.cpp">
-      <Filter>MDX</Filter>
-    </ClCompile>
-    <ClCompile Include="MDX\Model_Skin.cpp">
       <Filter>MDX</Filter>
     </ClCompile>
     <ClCompile Include="MDX\Model_Static.cpp">
@@ -154,6 +151,24 @@
     <ClCompile Include="Common\WowChunkUtils.cpp">
       <Filter>Common</Filter>
     </ClCompile>
+    <ClCompile Include="IWoWTemplate.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="MDX\MDX_Skin_Batch.cpp">
+      <Filter>MDX</Filter>
+    </ClCompile>
+    <ClCompile Include="MDX\MDX_Skin.cpp">
+      <Filter>MDX</Filter>
+    </ClCompile>
+    <ClCompile Include="WMO_Group_Batch.cpp">
+      <Filter>WMO</Filter>
+    </ClCompile>
+    <ClCompile Include="Map\Map_Shared.cpp">
+      <Filter>Map</Filter>
+    </ClCompile>
+    <ClCompile Include="IWoWPrototype.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -161,12 +176,6 @@
       <Filter>MDX</Filter>
     </ClInclude>
     <ClInclude Include="MDX\MDX_Headers.h">
-      <Filter>MDX</Filter>
-    </ClInclude>
-    <ClInclude Include="MDX\Model_RenderPass.h">
-      <Filter>MDX</Filter>
-    </ClInclude>
-    <ClInclude Include="MDX\Model_Skin.h">
       <Filter>MDX</Filter>
     </ClInclude>
     <ClInclude Include="MDX\ModelsManager.h">
@@ -327,14 +336,30 @@
     <ClInclude Include="Common\WowTypes.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="_unused.h">
+    <ClInclude Include="IWoWObject.h">
+      <Filter>General</Filter>
+    </ClInclude>
+    <ClInclude Include="IWoWTemplate.h">
+      <Filter>General</Filter>
+    </ClInclude>
+    <ClInclude Include="MDX\MDX_Skin_Batch.h">
+      <Filter>MDX</Filter>
+    </ClInclude>
+    <ClInclude Include="MDX\MDX_Skin.h">
+      <Filter>MDX</Filter>
+    </ClInclude>
+    <ClInclude Include="WMO_Group_Batch.h">
+      <Filter>WMO</Filter>
+    </ClInclude>
+    <ClInclude Include="_unused.h" />
+    <ClInclude Include="Map\Map_Shared.h">
       <Filter>Map</Filter>
+    </ClInclude>
+    <ClInclude Include="IWoWPrototype.h">
+      <Filter>General</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Map\Map.inl">
-      <Filter>Map</Filter>
-    </None>
     <None Include="DBC__File.inl">
       <Filter>DBC</Filter>
     </None>

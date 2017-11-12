@@ -8,17 +8,13 @@ public:
     {
         gLayersCount = getLocation("gLayersCount");
 
-        gColorMap0 = getLocation("gColorMap0");
-        gColorMap1 = getLocation("gColorMap1");
-        gColorMap2 = getLocation("gColorMap2");
-        gColorMap3 = getLocation("gColorMap3");
+        for (uint8 i = 0; i < 4; i++)
+        {
+            gColorMap[i] = getLocation((string("gColorMap[") + std::to_string(i) + "]").c_str());
+            gSpecularMap[i] = getLocation((string("gSpecularMap[") + std::to_string(i) + "]").c_str());
+        }
 
         gBlend = getLocation("gBlend");
-
-        gSpecularMap0 = getLocation("gSpecularMap0");
-        gSpecularMap1 = getLocation("gSpecularMap1");
-        gSpecularMap2 = getLocation("gSpecularMap2");
-        gSpecularMap3 = getLocation("gSpecularMap3");
 
         gMCCVExists = getLocation("gMCCVExists");
         gMCLVExists = getLocation("gMCLVExists");
@@ -26,30 +22,25 @@ public:
 
 	// ---------------------------------------------------
 
+    void SetFirstPasst(int _firstPass)
+    {
+        setInt("gIsFirstPass", _firstPass);
+    }
+
 	void SetLayersCount(int _layersCount)
 	{
 		setInt("gLayersCount", _layersCount);
 	}
 
-	void SetColorTextureUnit0(int TextureUnit)
+	void SetColorTextureUnit(int _number, int TextureUnit)
 	{
-		setTexture(gColorMap0, TextureUnit);
+		setTexture(gColorMap[_number], TextureUnit);
 	}
 
-	void SetColorTextureUnit1(int TextureUnit)
-	{
-		setTexture(gColorMap1, TextureUnit);
-	}
-
-	void SetColorTextureUnit2(int TextureUnit)
-	{
-		setTexture(gColorMap2, TextureUnit);
-	}
-
-	void SetColorTextureUnit3(int TextureUnit)
-	{
-		setTexture(gColorMap3, TextureUnit);
-	}
+    void SetSpecularTextureUnit(int _number, int TextureUnit)
+    {
+        setTexture(gSpecularMap[_number], TextureUnit);
+    }
 
 	// ----------------------------------------------------
 
@@ -73,25 +64,7 @@ public:
 
 	// ----------------------------------------------------
 
-	void SetSpecularTextureUnit0(int TextureUnit)
-	{
-		setTexture(gSpecularMap0, TextureUnit);
-	}
-
-	void SetSpecularTextureUnit1(int TextureUnit)
-	{
-		setTexture(gSpecularMap1, TextureUnit);
-	}
-
-	void SetSpecularTextureUnit2(int TextureUnit)
-	{
-		setTexture(gSpecularMap2, TextureUnit);
-	}
-
-	void SetSpecularTextureUnit3(int TextureUnit)
-	{
-		setTexture(gSpecularMap3, TextureUnit);
-	}
+	
 
 	void SetMCCVExists(bool _exists)
 	{
@@ -105,15 +78,11 @@ public:
 
 protected: // Base uniforms
     int32 gLayersCount;
-    int32 gColorMap0;
-    int32 gColorMap1;
-    int32 gColorMap2;
-    int32 gColorMap3;
+
+    int32 gColorMap[4];
+    int32 gSpecularMap[4];
+
     int32 gBlend;
-    int32 gSpecularMap0;
-    int32 gSpecularMap1;
-    int32 gSpecularMap2;
-    int32 gSpecularMap3;
     int32 gMCCVExists;
     int32 gMCLVExists;
 };

@@ -29,8 +29,7 @@ struct ADT_MHDR
     uint32 MH2O;
     uint32 MTXF;
 
-    uint8 mamp_value;             // Cata+, explicit MAMP chunk overrides data
-    uint8 unk[15];
+    uint8 unk0[16];
 };
 
 MapTile::MapTile(uint32 _intexX, uint32 _intexZ) : m_IndexX(_intexX), m_IndexZ(_intexZ)
@@ -38,13 +37,10 @@ MapTile::MapTile(uint32 _intexX, uint32 _intexZ) : m_IndexX(_intexX), m_IndexZ(_
     m_GamePositionX = _intexX * C_TileSize;
     m_GamePositionZ = _intexZ * C_TileSize;
 
-    for (uint32 i = 0; i < C_ChunksInTile; i++)
+    /*for (uint32 i = 0; i < C_ChunksInTileGlobal; i++)
     {
-        for (uint32 j = 0; j < C_ChunksInTile; j++)
-        {
-            m_Chunks[i][j] = new MapChunk(this);
-        }
-    }
+        m_Chunks.push_back(new MapChunk(this));
+    }*/
 }
 
 MapTile::~MapTile()
@@ -53,37 +49,23 @@ MapTile::~MapTile()
 
     //---------------------------------------------------------------------------------
 
-    for (uint32 i = 0; i < C_ChunksInTile; i++)
+    ERASE_VECTOR(m_Chunks);
+
+    for (auto it : m_Textures)
     {
-        for (uint32 j = 0; j < C_ChunksInTile; j++)
-        {
-            if (m_Chunks[i][j] != nullptr)
-            {
-                delete m_Chunks[i][j];
-                m_Chunks[i][j] = nullptr;
-            }
-        }
+        _TexturesMgr->Delete(it.diffuseTexture);
+        _TexturesMgr->Delete(it.specularTexture);
     }
 
-    for (auto it = m_DiffuseTextures.begin(); it != m_DiffuseTextures.end(); ++it)
+    for (auto it : m_WMOsNames)
     {
-        _TexturesMgr->Delete(*it);
-    }
-
-    for (auto it = m_SpecularTextures.begin(); it != m_SpecularTextures.end(); ++it)
-    {
-        _TexturesMgr->Delete(*it);
-    }
-
-    for (auto it = m_WMOsNames.begin(); it != m_WMOsNames.end(); ++it)
-    {
-        _WMOsMgr->Delete(*it);
+        _WMOsMgr->Delete(it);
     }
     ERASE_VECTOR(m_WMOsInstances);
 
-    for (auto it = m_MDXsNames.begin(); it != m_MDXsNames.end(); ++it)
+    for (auto it : m_MDXsNames)
     {
-        _ModelsMgr->Delete(*it);
+        _ModelsMgr->Delete(it);
     }
     ERASE_VECTOR(m_MDXsInstances);
 
@@ -124,6 +106,54 @@ bool MapTile::Load(cstring _filename)
 
     //---------------------------------------------------------------------------------
 
+    // Load m_DiffuseTextures
+    for (auto& it : m_Textures)
+    {
+        if (it.mtxf.do_not_load_specular_or_height_texture_but_use_cubemap)
+        {
+            it.diffuseTexture = _TexturesMgr->Black();
+            it.specularTexture = _TexturesMgr->Black();
+            continue;
+        }
+
+        // Preload diffuse texture
+        it.diffuseTexture = _TexturesMgr->Add(it.textureName);
+
+        // Preload specular texture
+        string specularTextureName = it.textureName;
+        specularTextureName = specularTextureName.insert(specularTextureName.length() - 4, "_s");
+        it.specularTexture = _TexturesMgr->Add(specularTextureName);
+    }
+
+    // WMOs
+    for (auto it : m_WMOsPlacementInfo)
+    {
+        _WMOsMgr->Add(m_WMOsNames[it->nameIndex]);
+
+        WMO* wmo = (WMO*)_WMOsMgr->objects[m_WMOsNames[it->nameIndex]];
+        WMOInstance* inst = new WMOInstance(wmo, it);
+        m_WMOsInstances.push_back(inst);
+    }
+
+    // MDXs
+    for (auto it : m_MDXsPlacementInfo)
+    {
+        _ModelsMgr->Add(m_MDXsNames[it->nameId]);
+
+        MDX* mdx = (MDX*)_ModelsMgr->GetItemByName(m_MDXsNames[it->nameId]);
+        ModelInstance* inst = new ModelInstance(mdx, it);
+        m_MDXsInstances.push_back(inst);
+    }
+
+    // Chunks
+    assert1(m_Chunks.size() == C_ChunksInTileGlobal);
+    for (auto it : m_Chunks)
+    {
+        it->Post_Load();
+    }
+
+    //---------------------------------------------------------------------------------
+
     Log::Green("MapTile[%d, %d, %s]: Loaded!", m_IndexX, m_IndexZ, _filename.c_str());
 
     return true;
@@ -158,9 +188,7 @@ bool MapTile::Load_SplitFile(cstring _filename, load_phases _phase)
         return false;
     }
 
-
-    int chunkI = 0;
-    int chunkJ = 0;
+    int chunksCntr = 0;
 
     char fourcc[5];
     uint32 size;
@@ -168,9 +196,9 @@ bool MapTile::Load_SplitFile(cstring _filename, load_phases _phase)
     {
         memset(fourcc, 0, 4);
         f.ReadBytes(fourcc, 4);
-        f.ReadBytes(&size, 4);
         flipcc(fourcc);
         fourcc[4] = 0;
+        f.ReadBytes(&size, 4);
         if (size == 0) continue;
         size_t nextpos = f.GetPos() + size;
 
@@ -189,61 +217,55 @@ bool MapTile::Load_SplitFile(cstring _filename, load_phases _phase)
         {
             WOWCHUNK_READ_STRINGS_BEGIN
 
-                m_TexturesNames.push_back(_string);
+                Map_Tile_TextureInfo textureInfo;
+            textureInfo.textureName = _string;
+
+            m_Textures.push_back(textureInfo);
 
             WOWCHUNK_READ_STRINGS_END
         }
         else if (strncmp(fourcc, "MMDX", 4) == 0) // List of filenames for M2 models that appear in this map m_TileExists.
         {
             WOWCHUNK_READ_STRINGS_BEGIN
-                _ModelsMgr->Add(_string);
-            m_MDXsNames.push_back(_string);
+                m_MDXsNames.push_back(_string);
             WOWCHUNK_READ_STRINGS_END
         }
         else if (strncmp(fourcc, "MMID", 4) == 0) // List of offsets of model filenames in the MMDX chunk.
         {
-            // Currently unused
+            assert1(m_MDXsNames.size() == size / sizeof(uint32));
         }
         else if (strncmp(fourcc, "MWMO", 4) == 0) // List of filenames for WMOs (world map objects) that appear in this map m_TileExists.
         {
             WOWCHUNK_READ_STRINGS_BEGIN
-                _WMOsMgr->Add(_string);
-            m_WMOsNames.push_back(_string);
+                m_WMOsNames.push_back(_string);
             WOWCHUNK_READ_STRINGS_END
         }
         else if (strncmp(fourcc, "MWID", 4) == 0) // List of offsets of WMO filenames in the MWMO chunk.
         {
-            // Currently unused
+            assert1(m_WMOsNames.size() == size / sizeof(uint32));
         }
         else if (strncmp(fourcc, "MDDF", 4) == 0) // Placement information for doodads (M2 models).
         {
             for (uint32 i = 0; i < size / ModelPlacementInfo::__size; i++)
             {
-                ModelInstance* inst = new ModelInstance(f);
-
-                MDX *model = (MDX*)_ModelsMgr->objects[m_MDXsNames[inst->placementInfo->nameId]];
-                assert1(model != nullptr);
-                inst->SetModel(model);
-
-                m_MDXsInstances.push_back(inst);
+                ModelPlacementInfo* placementInfo = new ModelPlacementInfo();
+                f.ReadBytes(placementInfo, ModelPlacementInfo::__size);
+                m_MDXsPlacementInfo.push_back(placementInfo);
             }
         }
         else if (strncmp(fourcc, "MODF", 4) == 0) // Placement information for WMOs.
         {
             for (uint32 i = 0; i < size / WMOPlacementInfo::__size; i++)
             {
-                uint32 wmoIndex;
-                f.ReadBytes(&wmoIndex, 4);
-                f.SeekRelative(-4);
-
-                WMO* wmo = (WMO*)_WMOsMgr->GetItemByName(m_WMOsNames[wmoIndex]);
-                WMOInstance* inst = new WMOInstance(wmo, f);
-                m_WMOsInstances.push_back(inst);
+                WMOPlacementInfo* placementInfo = new WMOPlacementInfo();
+                f.ReadBytes(placementInfo, WMOPlacementInfo::__size);
+                m_WMOsPlacementInfo.push_back(placementInfo);
             }
         }
         else if (strncmp(fourcc, "MH2O", 4) == 0) // Water
         {
-            uint8* abuf = f.GetDataFromCurrent();
+            assert1(!m_Chunks.empty());
+            /*uint8* abuf = f.GetDataFromCurrent();
 
             for (uint32 i = 0; i < C_ChunksInTile * C_ChunksInTile; i++)
             {
@@ -252,17 +274,17 @@ bool MapTile::Load_SplitFile(cstring _filename, load_phases _phase)
                 m_Chunks[i / C_ChunksInTile][i % C_ChunksInTile]->CreateMH2OLiquid(f, mh2o_Header);
 
                 abuf += sizeof(MH2O_Header);
-            }
+            }*/
         }
         else if (strncmp(fourcc, "MCNK", 4) == 0)
         {
-            m_Chunks[chunkI][chunkJ]->Load(f, _phase);
-            chunkJ++;
-            if (chunkJ == 16)
+            if (_phase == load_phases::main_file)
             {
-                chunkJ = 0;
-                chunkI++;
+                MapChunk* chunk = new MapChunk(this);
+                m_Chunks.push_back(chunk);
             }
+
+            m_Chunks[chunksCntr++]->Load(f, _phase);
         }
         else if (strncmp(fourcc, "MFBO", 4) == 0)
         {
@@ -279,60 +301,31 @@ bool MapTile::Load_SplitFile(cstring _filename, load_phases _phase)
         }
         else if (strncmp(fourcc, "MTXF", 4) == 0)
         {
-            assert1(m_TexturesNames.size() > 0);
+            assert1(m_Textures.size() == size / sizeof(uint32));
 
-            for (uint32 i = 0; i < m_TexturesNames.size(); i++)
+            for (uint32 i = 0; i < size / sizeof(uint32); i++)
             {
-                struct MTXF
-                {
-                    uint32_t do_not_load_specular_or_height_texture_but_use_cubemap : 1; // probably just 'disable_all_shading'
-                    uint32_t unk0 : 31;
-                } mtxf;
-                f.ReadBytes(&mtxf, sizeof(MTXF));
-
-                m_TexureIsCubemap.push_back(mtxf.do_not_load_specular_or_height_texture_but_use_cubemap);
+                f.ReadBytes(&m_Textures[i].mtxf, sizeof(uint32));
             }
         }
         else if (strncmp(fourcc, "MAMP", 4) == 0)
         {
+            int8 mamp_value;
+            f.ReadBytes(&mamp_value, 1);
+            if (mamp_value != 0)
+            {
+                Log::Print("Mamp value is [%d]", mamp_value);
+                Log::Print("Texture size is [%d]", 64 / (pow(2, mamp_value)));
+                fail1();
+            }
         }
         else
         {
             Log::Info("MapTile[%s]: No implement chunk %s [%d].", name, fourcc, size);
+            fail1();
         }
 
         f.Seek(nextpos);
-    }
-
-    // Load m_DiffuseTextures
-    for (uint32 i = 0; i < m_TexturesNames.size(); i++)
-    {
-        if (m_TexureIsCubemap.size() > 0)
-        {
-            if (m_TexureIsCubemap[i])
-            {
-                m_DiffuseTextures.push_back(_TexturesMgr->Black());
-                m_SpecularTextures.push_back(_TexturesMgr->Black());
-                continue;
-            }
-        }
-
-        // Preload diffuse texture
-        m_DiffuseTextures.push_back(_TexturesMgr->Add(m_TexturesNames[i]));
-
-        // Preload specular texture
-        string specularTextureName = m_TexturesNames[i];
-        specularTextureName.insert(specularTextureName.length() - 4, "_s");
-        m_SpecularTextures.push_back(_TexturesMgr->Add(specularTextureName));
-    }
-
-    // Post load chunks
-    for (uint32 i = 0; i < C_ChunksInTile; i++)
-    {
-        for (uint32 j = 0; j < C_ChunksInTile; j++)
-        {
-            m_Chunks[i][j]->Post_Load();
-        }
     }
 
     return true;
@@ -342,34 +335,34 @@ bool MapTile::Load_SplitFile(cstring _filename, load_phases _phase)
 
 void MapTile::draw()
 {
-    for (uint32 i = 0; i < C_ChunksInTile; i++)
-        for (uint32 j = 0; j < C_ChunksInTile; j++)
-            if (m_Chunks[i][j] != nullptr)
-                m_Chunks[i][j]->Render();
+    for (auto it : m_Chunks)
+    {
+        it->Render();
+    }
 }
 
 void MapTile::drawWater()
 {
-    for (uint32 i = 0; i < C_ChunksInTile; i++)
-        for (uint32 j = 0; j < C_ChunksInTile; j++)
-            if (m_Chunks[i][j] != nullptr)
-                if (m_Chunks[i][j]->m_Liquid != nullptr)
-                    m_Chunks[i][j]->m_Liquid->draw();
+    for (auto it : m_Chunks)
+    {
+        if (it->m_Liquid != nullptr)
+            it->m_Liquid->draw();
+    }
 }
 
 void MapTile::drawObjects()
 {
-    for (auto it = m_WMOsInstances.begin(); it != m_WMOsInstances.end(); ++it)
+    for (auto it : m_WMOsInstances)
     {
-        (*it)->Render();
+        it->Render();
     }
 }
 
 void MapTile::drawSky()
 {
-    for (auto it = m_WMOsInstances.begin(); it != m_WMOsInstances.end(); ++it)
+    for (auto it : m_WMOsInstances)
     {
-        (*it)->GetWMO()->drawSkybox();
+        it->GetWMO()->drawSkybox();
 
         if (_EnvironmentManager->m_HasSky)
         {
@@ -380,8 +373,8 @@ void MapTile::drawSky()
 
 void MapTile::drawModels()
 {
-    for (auto it = m_MDXsInstances.begin(); it != m_MDXsInstances.end(); ++it)
+    for (auto it : m_MDXsInstances)
     {
-        (*it)->Render();
+        it->Render();
     }
 }

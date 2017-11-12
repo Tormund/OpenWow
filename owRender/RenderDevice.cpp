@@ -175,24 +175,24 @@ bool RenderDevice::init()
 	}
 
 	// Check that OpenGL 3.3 is available
-	if (glExt::majorVersion * 10 + glExt::minorVersion < 33)
+	if (_Config.OpenGL.majorVersion * 10 + _Config.OpenGL.minorVersion < 33)
 	{
 		Log::Error("OpenGL 3.3 not available");
 		failed = true;
 	}
 
 	// Check that required extensions are supported
-	if (!glExt::EXT_texture_filter_anisotropic)
+	if (!_Config.OpenGL.EXT_texture_filter_anisotropic)
 	{
 		Log::Error("Extension EXT_texture_filter_anisotropic not supported");
 		failed = true;
 	}
-	if (!glExt::EXT_texture_compression_s3tc)
+	if (!_Config.OpenGL.EXT_texture_compression_s3tc)
 	{
 		Log::Error("Extension EXT_texture_compression_s3tc not supported");
 		failed = true;
 	}
-	if (!glExt::EXT_texture_sRGB)
+	if (!_Config.OpenGL.EXT_texture_sRGB)
 	{
 		Log::Error("Extension EXT_texture_sRGB not supported");
 		failed = true;
@@ -200,7 +200,7 @@ bool RenderDevice::init()
 
 	if (failed)
 	{
-		Log::Error("Failed to init renderer backend (OpenGL %d.%d), retrying with legacy OpenGL 2.1 backend", glExt::majorVersion, glExt::minorVersion);
+		Log::Error("Failed to init renderer backend (OpenGL %d.%d), retrying with legacy OpenGL 2.1 backend", _Config.OpenGL.majorVersion, _Config.OpenGL.minorVersion);
 		return false;
 	}
 
@@ -210,15 +210,15 @@ bool RenderDevice::init()
 	glDebugMessageCallback(glDebugOutput, nullptr);
 
 	// Set capabilities
-	_caps.texFloat = true;
-	_caps.texNPOT = true;
-	_caps.rtMultisampling = true;
-	_caps.geometryShaders = true;
-	_caps.tesselation = glExt::majorVersion >= 4 && glExt::minorVersion >= 1;
-	_caps.computeShaders = glExt::majorVersion >= 4 && glExt::minorVersion >= 3;
-	_caps.instancing = true;
-	_caps.maxJointCount = 75; // currently, will be changed soon
-	_caps.maxTexUnitCount = 96; // for most modern hardware it is 192 (GeForce 400+, Radeon 7000+, Intel 4000+). Although 96 should probably be enough.
+	_Config.DeviceCaps.texFloat = true;
+	_Config.DeviceCaps.texNPOT = true;
+	_Config.DeviceCaps.rtMultisampling = true;
+	_Config.DeviceCaps.geometryShaders = true;
+	_Config.DeviceCaps.tesselation = _Config.OpenGL.majorVersion >= 4 && _Config.OpenGL.minorVersion >= 1;
+	_Config.DeviceCaps.computeShaders = _Config.OpenGL.majorVersion >= 4 && _Config.OpenGL.minorVersion >= 3;
+	_Config.DeviceCaps.instancing = true;
+	_Config.DeviceCaps.maxJointCount = 75; // currently, will be changed soon
+	_Config.DeviceCaps.maxTexUnitCount = 96; // for most modern hardware it is 192 (GeForce 400+, Radeon 7000+, Intel 4000+). Although 96 should probably be enough.
 
 	// Find maximum number of storage buffers in compute shader
 	glGetIntegerv(GL_MAX_COMPUTE_SHADER_STORAGE_BLOCKS, (GLint *)&_maxComputeBufferAttachments);
@@ -427,7 +427,7 @@ uint32 RenderDevice::createIndexBuffer(uint32 size, const void *data, bool _isDy
 
 uint32 RenderDevice::createShaderStorageBuffer(uint32 size, const void *data, bool _isDynamic)
 {
-	if (_caps.computeShaders)
+	if (_Config.DeviceCaps.computeShaders)
 	{
 		return createBuffer(GL_SHADER_STORAGE_BUFFER, size, data, _isDynamic);
 	}
@@ -623,7 +623,7 @@ uint32 RenderDevice::createTexture(R_TextureTypes::List type, int width, int hei
 {
 	assert1(depth > 0);
 
-	if (!_caps.texNPOT)
+	if (!_Config.DeviceCaps.texNPOT)
 	{
 		// Check if texture is NPOT
 		if ((width & (width - 1)) != 0 || (height & (height - 1)) != 0)
@@ -636,7 +636,7 @@ uint32 RenderDevice::createTexture(R_TextureTypes::List type, int width, int hei
 	tex.width = width;
 	tex.height = height;
 	tex.depth = depth;
-	tex.sRGB = sRGB /*&& Modules::config().sRGBLinearization*/; // FIXME
+	tex.sRGB = sRGB /*&& _Config.sRGBLinearization*/; // FIXME
 	tex.genMips = genMips;
 	tex.hasMips = hasMips;
 
@@ -818,7 +818,7 @@ bool RenderDevice::getTextureData(uint32 texObj, int slice, int mipLevel, void *
 
 void RenderDevice::bindImageToTexture(uint32 texObj, void *eglImage)
 {
-	if (!glExt::OES_EGL_image)
+	if (!_Config.OpenGL.OES_EGL_image)
 		Log::Error("OES_egl_image not supported");
 	else
 	{
@@ -940,7 +940,7 @@ int RenderDevice::getShaderSamplerLoc(uint32 shaderId, const char *name)
 
 int RenderDevice::getShaderBufferLoc(uint32 shaderId, const char *name)
 {
-	if (_caps.computeShaders)
+	if (_Config.DeviceCaps.computeShaders)
 	{
 		R_Shader &shader = _shaders.getRef(shaderId);
 		int idx = glGetProgramResourceIndex(shader.oglProgramObj, GL_SHADER_STORAGE_BLOCK, name);
@@ -1247,7 +1247,7 @@ bool RenderDevice::linkShaderProgram(uint32 programObj)
 
 uint32 RenderDevice::createRenderBuffer(uint32 width, uint32 height, R_TextureFormats::List format, bool depth, uint32 numColBufs, uint32 samples)
 {
-	if ((format == R_TextureFormats::RGBA16F || format == R_TextureFormats::RGBA32F) && !_caps.texFloat)
+	if ((format == R_TextureFormats::RGBA16F || format == R_TextureFormats::RGBA32F) && !_Config.DeviceCaps.texFloat)
 	{
 		return 0;
 	}
@@ -1255,7 +1255,7 @@ uint32 RenderDevice::createRenderBuffer(uint32 width, uint32 height, R_TextureFo
 	if (numColBufs > R_RenderBuffer::MaxColorAttachmentCount) return 0;
 
 	uint32 maxSamples = 0;
-	if (_caps.rtMultisampling)
+	if (_Config.DeviceCaps.rtMultisampling)
 	{
 		GLint value;
 		glGetIntegerv(GL_MAX_SAMPLES, &value);

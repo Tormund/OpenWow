@@ -41,12 +41,12 @@ void Material::Set()
 
 	if (m_DiffuseTexture != 0)
 	{
-		_Render->r->setTexture(C_DiffuseTextureIndex, m_DiffuseTexture, SS_ANISO4 | SS_ADDR_WRAP, 0);
+		_Render->r->setTexture(C_DiffuseTextureIndex, m_DiffuseTexture, _Config.Quality.Texture_Sampler | SS_ADDR_WRAP, 0);
 	}
 	
 	if (m_SpecularTexture != 0)
 	{
-		_Render->r->setTexture(C_SpecularTextureIndex, m_SpecularTexture, SS_ANISO4 | SS_ADDR_WRAP, 0);
+		_Render->r->setTexture(C_SpecularTextureIndex, m_SpecularTexture, _Config.Quality.Texture_Sampler | SS_ADDR_WRAP, 0);
 	}
 
 }

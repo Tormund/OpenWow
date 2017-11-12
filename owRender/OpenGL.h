@@ -14,18 +14,7 @@
 #   define GLAPIENTRY _stdcall
 #   define GLAPIENTRYP _stdcall *
 
-namespace glExt
-{
-	extern bool EXT_texture_filter_anisotropic;
-	extern bool EXT_texture_compression_s3tc;
-	extern bool EXT_texture_sRGB;
-
-	extern bool OES_EGL_image;
-	extern int  majorVersion, minorVersion;
-}
-
 bool initOpenGLExtensions();
-
 
 // =================================================================================================
 // OpenGL 2.1 functionality that has not been deprecated by GL3

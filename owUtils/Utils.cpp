@@ -121,17 +121,17 @@ string Utils::ToLower(cstring _string)
 
 int Utils::popFirstInt(string& s, char separator)
 {
-	return ToInt(GetFirstSubString(s, separator));
+	return ToType<int>(GetFirstSubString(s, separator));
 }
 
 double Utils::popFirstDouble(string& s, char separator)
 {
-	return ToDouble(GetFirstSubString(s, separator));
+	return ToType<double>(GetFirstSubString(s, separator));
 }
 
 float Utils::popFirstFloat(string& s, char separator)
 {
-	return ToFloat(GetFirstSubString(s, separator));
+	return ToType<float>(GetFirstSubString(s, separator));
 }
 
 string Utils::GetFirstSubString(string& s, char separator)

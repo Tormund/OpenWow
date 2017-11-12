@@ -176,6 +176,7 @@
     </ClCompile>
     <ClCompile Include="Perfomance.cpp" />
     <ClCompile Include="PipelineWorldTransformation.cpp" />
+    <ClCompile Include="RenderConfig.cpp" />
     <ClCompile Include="RenderDevice.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
@@ -208,6 +209,7 @@
     </ClInclude>
     <ClInclude Include="Perfomance.h" />
     <ClInclude Include="PipelineWorldTransformation.h" />
+    <ClInclude Include="RenderConfig.h" />
     <ClInclude Include="RenderDevice.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>

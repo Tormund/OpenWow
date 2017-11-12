@@ -47,7 +47,7 @@ public:
 
 	//
 
-	 bool Open() override;
+	 virtual bool Open() override;
 
 private:
 	 bool OpenLocalFile() override;
@@ -55,7 +55,5 @@ private:
 
 private:
 	static CRITICAL_SECTION cs;
-
-private:
-	static  FileLocation m_DefaultFileLocation;
+	static FileLocation m_DefaultFileLocation;
 };

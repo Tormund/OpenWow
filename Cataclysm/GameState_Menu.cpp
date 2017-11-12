@@ -165,7 +165,7 @@ void GameState_Menu::Render(double t, double dt)
         
         
         // Geom
-		backgroundModel->draw();
+		backgroundModel->Render();
 
         // Postprocess pass
         _Render->r->setRenderBuffer(0);
@@ -174,7 +174,7 @@ void GameState_Menu::Render(double t, double dt)
 
         // Simple pass
         _TechniquesMgr->m_SimpleRender->BindS();
-        _TechniquesMgr->m_SimpleRender->SetScreenSize(Modules::config().windowSizeX, Modules::config().windowSizeY);
+        _TechniquesMgr->m_SimpleRender->SetScreenSize(_Config.windowSizeX, _Config.windowSizeY);
 
         _Render->r->setDepthTest(false);
         _Render->r->setBlendMode(true, R_BlendFunc::BS_BLEND_ONE, R_BlendFunc::BS_BLEND_ONE);
@@ -193,9 +193,9 @@ void GameState_Menu::RenderUI()
 	if (cmd == CMD_SELECT2)
 	{
 
-		if (_Map->GetMinimap() != 0)
+		if (_Map.GetMinimap() != 0)
 		{
-            m_MinimapTexture->SetObj(_Map->GetMinimap());
+            m_MinimapTexture->SetObj(_Map.GetMinimap());
 
             m_MinimapUI->Show();
 		}
@@ -207,7 +207,7 @@ void GameState_Menu::RenderUI()
 
 	if (cmd == CMD_SELECT2)
 	{
-		if (_Map->MapHasTiles())
+		if (_Map.MapHasTiles())
 		{
 			_Render->RenderText(vec2(400, 0), "Select your starting point");
 		}
@@ -224,7 +224,7 @@ void GameState_Menu::OnBtn(DBC_MapRecord* _e)
 {
     Log::Green("Load level %s [%d]", _e->Get_Directory(), _e->Get_ID());
 
-    _Map->Load_WDT(_e);
+    _Map.Load_WDT(_e);
     cmd = CMD_SELECT2;
 
     m_MinimapUI->AttachTo(m_Window);
@@ -232,7 +232,7 @@ void GameState_Menu::OnBtn(DBC_MapRecord* _e)
 
 bool GameState_Menu::LoadWorld(cvec3 _pos)
 {
-	_Map->enterTile(_pos.x / C_TileSize, _pos.z / C_TileSize);
+	_Map.enterTile(_pos.x / C_TileSize, _pos.z / C_TileSize);
 
     _Render->mainCamera->Position = _pos;
     _Render->mainCamera->Update();
@@ -256,7 +256,7 @@ On_Mouse_Moved(GameState_Menu)
 {
     if (enableFreeCamera)
     {
-        vec2 mouseDelta = (_mousePos - lastMousePos) / Modules::config().GetWindowSize();
+        vec2 mouseDelta = (_mousePos - lastMousePos) / _Config.GetWindowSize();
 
         _Render->mainCamera->ProcessMouseMovement(mouseDelta.x, -mouseDelta.y);
 
@@ -282,13 +282,13 @@ On_Mouse_Pressed(GameState_Menu)
 
 		vec3 pointInWorld;
 
-		if (_Map->MapHasTiles())
+		if (_Map.MapHasTiles())
 		{
 			pointInWorld = vec3(selectedPointX / 12.0f, 0.1f, selectedPointZ / 12.0f) * C_TileSize;
 		}
-		else if (_Map->MapHasGlobalWMO())
+		else if (_Map.MapHasGlobalWMO())
 		{
-			pointInWorld = _Map->GetGlobalWMOPlacementInfo()->position;
+			pointInWorld = _Map.GetGlobalWMOPlacementInfo()->position;
 		}
 
 		delete backgroundModel;
@@ -333,46 +333,46 @@ On_Keyboard_Pressed(GameState_Menu)
 
 	if (_key == OW_KEY_KP_1)
 	{
-		Modules::config().draw_map_chunk = !Modules::config().draw_map_chunk;
+		_Config.draw_map_chunk = !_Config.draw_map_chunk;
 		return true;
 	}
 	if (_key == OW_KEY_KP_2)
 	{
-		Modules::config().draw_map_wmo = !Modules::config().draw_map_wmo;
+		_Config.draw_map_wmo = !_Config.draw_map_wmo;
 		return true;
 	}
 	if (_key == OW_KEY_KP_3)
 	{
-		Modules::config().draw_map_wmo_doodads = !Modules::config().draw_map_wmo_doodads;
+		_Config.draw_map_wmo_doodads = !_Config.draw_map_wmo_doodads;
 		return true;
 	}
 	if (_key == OW_KEY_KP_4)
 	{
-		Modules::config().draw_map_mdx = !Modules::config().draw_map_mdx;
+		_Config.draw_map_mdx = !_Config.draw_map_mdx;
 		return true;
 	}
 
 	if (_key == OW_KEY_C)
 	{
-		Modules::config().enableMCCV = !Modules::config().enableMCCV;
+		_Config.Switch(_Config.Quality.Terrain_MCCV);
 		return true;
 	}
 
 	if (_key == OW_KEY_V)
 	{
-		Modules::config().enableMCLV = !Modules::config().enableMCLV;
+        _Config.Switch(_Config.Quality.Terrain_MCLV);
 		return true;
 	}
 
 	if (_key == OW_KEY_H)
 	{
-		Modules::config().drawhighres = !Modules::config().drawhighres;
+		//_Config.drawhighres = !_Config.drawhighres;
 		return true;
 	}
 
 	if (_key == OW_KEY_F)
 	{
-		Modules::config().drawfog = !Modules::config().drawfog;
+		_Config.drawfog = !_Config.drawfog;
 		return true;
 	}
 

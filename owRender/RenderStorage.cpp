@@ -45,11 +45,6 @@ void RenderStorage::CreateLayouts()
 	};
 	__layoutSky = _Render->r->registerVertexLayout(2, attribsSky);
 	//--------------------------------------------------------------------------------------------
-	R_VertexLayoutAttrib attribsMapLowResolution[1] = {
-		{"VertexPosition",      0, 3, 0}
-	};
-	__layoutMapLowResolution = _Render->r->registerVertexLayout(1, attribsMapLowResolution);
-	//--------------------------------------------------------------------------------------------
 	R_VertexLayoutAttrib attribsWMO[3] = {
 		{"VertexPosition",      0, 3, 0},
 		{"textureCoords",  1, 2, 0},

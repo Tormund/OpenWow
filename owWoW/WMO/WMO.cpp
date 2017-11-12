@@ -18,12 +18,10 @@ WMO::WMO(cstring name) : RefItemNamed(name), m_Loaded(false)
 	m_TexturesNames = nullptr;
 	m_GroupsNames = nullptr;
 
-#ifdef DOODADS_INCL
 	m_Skybox_Filename = nullptr;
 	m_Skybox = nullptr;
 
 	m_MDXFilenames = nullptr;
-#endif
 }
 
 WMO::~WMO()
@@ -38,10 +36,8 @@ WMO::~WMO()
 	delete[] m_GroupsNames;
 	ERASE_VECTOR(m_Groups);
 
-#ifdef DOODADS_INCL
 	delete[] m_Skybox_Filename;
 	_ModelsMgr->Delete(m_Skybox);
-#endif
 
 	// Clear portals
 	if (m_Header.nPortals)
@@ -60,14 +56,12 @@ WMO::~WMO()
 
 	ERASE_VECTOR(m_Lights);
 
-#ifdef DOODADS_INCL
 	ERASE_VECTOR(doodadsets);
 	for (auto it = m_MDXNames.begin(); it != m_MDXNames.end(); ++it)
 	{
 		_ModelsMgr->Delete(*it);
 	}
 	ERASE_VECTOR(m_MDXInstances);
-#endif
 
 	ERASE_VECTOR(m_Fogs);
 }
@@ -136,7 +130,6 @@ bool WMO::Load()
 		}
 		else if (strcmp(fourcc, "MOSB") == 0) // Skybox. 
 		{
-#ifdef DOODADS_INCL
 			if (size > 4)
 			{
 				m_Skybox_Filename = new char[size + 1];
@@ -146,7 +139,6 @@ bool WMO::Load()
 
 				//m_SkyModel = new Sky_Model(m_Skybox_Filename);
 			}
-#endif
 		}
 		else if (strcmp(fourcc, "MOPV") == 0)
 		{
@@ -217,18 +209,15 @@ bool WMO::Load()
 		{
 			for (uint32 i = 0; i < m_Header.nDoodadSets; i++)
 			{
-#ifdef DOODADS_INCL
 				WMO_DoodadSet* dds = new WMO_DoodadSet();
 				f.ReadBytes(dds, WMO_DoodadSet::__size);
 				doodadsets.push_back(dds);
-#endif
 			}
 		}
 		else if (strcmp(fourcc, "MODN") == 0) // List of filenames for M2 (mdx) models that appear in this WMO.
 		{
 			if (size)
 			{
-#ifdef DOODADS_INCL
 				m_MDXFilenames = (char*)f.GetDataFromCurrent();
 
 				WOWCHUNK_READ_STRINGS2_BEGIN;
@@ -237,7 +226,6 @@ bool WMO::Load()
 				m_MDXNames.push_back(_string);
 
 				WOWCHUNK_READ_STRINGS2_END;
-#endif
 			}
 		}
 		else if (strcmp(fourcc, "MODD") == 0) // Information for doodad instances. 40 bytes per doodad instance, nDoodads entries.
@@ -245,7 +233,6 @@ bool WMO::Load()
 			m_Header.nDoodadNames = size / 40;
 			for (uint32 i = 0; i < m_Header.nDoodadNames; i++)
 			{
-#ifdef DOODADS_INCL
 				DoodadInstance* _doodadInstance = new DoodadInstance(f);
 
 				MDX* m = (MDX*)_ModelsMgr->objects[m_MDXFilenames + _doodadInstance->placementInfo->flags.nameIndex];
@@ -253,7 +240,6 @@ bool WMO::Load()
 				_doodadInstance->SetModel(m);
 
 				m_MDXInstances.push_back(_doodadInstance);
-#endif
 			}
 
 		}
@@ -292,7 +278,10 @@ bool WMO::Load()
 
 //
 
-bool WMO::draw(uint32 _doodadSet)
+/*void WMO::Render()
+{}*/
+
+bool WMO::Render(uint32 _doodadSet)
 {
 	if (!m_Loaded)
 	{
@@ -320,7 +309,7 @@ bool WMO::draw(uint32 _doodadSet)
 	// WMO doodads
 	{
 		PERF_START(PERF_MAP_MODELS_WMOs_DOODADS);
-		if (Modules::config().draw_map_wmo_doodads)
+		if (_Config.draw_map_wmo_doodads)
 		{
 			for (auto it = m_Groups.begin(); it != m_Groups.end(); ++it)
 			{
@@ -368,7 +357,6 @@ bool WMO::drawSkybox()
 		return false;
 	}
 
-#ifdef DOODADS_INCL
 	if (m_Skybox == nullptr)
 	{
 		return false;
@@ -378,10 +366,9 @@ bool WMO::drawSkybox()
 	_Pipeline->Translate(_Camera->Position);
 	_Pipeline->Scale(2.0f);
 
-	m_Skybox->draw();
+	m_Skybox->Render();
 
 	_EnvironmentManager->m_HasSky = true;
-#endif
 
 	return true;
 }

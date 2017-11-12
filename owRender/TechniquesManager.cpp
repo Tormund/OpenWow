@@ -36,17 +36,12 @@ void TechniquesMgr::Init()
 	m_MapChunk_GeometryPass = new MapChunk_GeometryPass();
 	m_MapChunk_GeometryPass->BindS();
 
-	m_MapChunk_GeometryPass->SetColorTextureUnit0(0);
-	m_MapChunk_GeometryPass->SetColorTextureUnit1(1);
-	m_MapChunk_GeometryPass->SetColorTextureUnit2(2);
-	m_MapChunk_GeometryPass->SetColorTextureUnit3(3);
-
+    for (uint8 i = 0; i < 4; i++)
+    {
+        m_MapChunk_GeometryPass->SetColorTextureUnit(i, i);
+        m_MapChunk_GeometryPass->SetSpecularTextureUnit(i, 5 + i);
+    }
 	m_MapChunk_GeometryPass->SetBlendBuffer(4);
-
-	m_MapChunk_GeometryPass->SetSpecularTextureUnit0(5);
-	m_MapChunk_GeometryPass->SetSpecularTextureUnit1(6);
-	m_MapChunk_GeometryPass->SetSpecularTextureUnit2(7);
-	m_MapChunk_GeometryPass->SetSpecularTextureUnit3(8);
 
 	m_MapChunk_GeometryPass->Unbind();
 
@@ -89,7 +84,7 @@ void TechniquesMgr::Init()
 
 	m_DSDirLightPassTech->BindToPostprocess();
 
-	m_DSDirLightPassTech->SetScreenSize(Modules::config().windowSizeX, Modules::config().windowSizeY);
+	m_DSDirLightPassTech->SetScreenSize(_Config.windowSizeX, _Config.windowSizeY);
 	m_DSDirLightPassTech->SetMatSpecularPower(64);
 
 	m_DSDirLightPassTech->Unbind();
@@ -105,7 +100,7 @@ void TechniquesMgr::Init()
 
 	m_SimpleRender->BindToPostprocess();
 
-	m_SimpleRender->SetScreenSize(Modules::config().windowSizeX, Modules::config().windowSizeY);
+	m_SimpleRender->SetScreenSize(_Config.windowSizeX, _Config.windowSizeY);
 	
 	m_SimpleRender->Unbind();
 

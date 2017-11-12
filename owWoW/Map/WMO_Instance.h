@@ -21,7 +21,6 @@ struct WMOPlacementInfo
 class WMOInstance : protected SceneNode, protected RenderableItem
 {
 public:
-	WMOInstance(WMO* _wmoObject, File& f);
 	WMOInstance(WMO* _wmoObject, WMOPlacementInfo* _placementInfo);
 	~WMOInstance();
 

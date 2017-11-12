@@ -3,17 +3,12 @@
 // General
 #include "WMO_Instance.h"
 
-WMOInstance::WMOInstance(WMO* _wmoObject, File& f) : wmoObject(_wmoObject)
+WMOInstance::WMOInstance(WMO* _wmoObject, WMOPlacementInfo* _placementInfo) : 
+    wmoObject(_wmoObject),
+    placementInfo(_placementInfo)
 {
-	placementInfo = new WMOPlacementInfo;
-	f.ReadBytes(placementInfo, WMOPlacementInfo::__size);
-
-	CalculateMatrix();
-}
-
-WMOInstance::WMOInstance(WMO* _wmoObject, WMOPlacementInfo* _placementInfo) : wmoObject(_wmoObject)
-{
-	placementInfo = _placementInfo;
+    assert1(wmoObject);
+    assert1(_placementInfo);
 
 	CalculateMatrix();
 }
@@ -39,7 +34,7 @@ void WMOInstance::Render()
 	{
 		_Pipeline->SetWorld(m_RelTransform);
 
-		wmoObject->draw(placementInfo->doodadSetIndex);
+		wmoObject->Render(placementInfo->doodadSetIndex);
 		PERF_INC(PERF_MAP_MODELS_WMOs);
 	}
 }

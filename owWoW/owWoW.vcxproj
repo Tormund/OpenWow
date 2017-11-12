@@ -26,9 +26,12 @@
     <ClCompile Include="Environment\EnvironmentManager.cpp" />
     <ClCompile Include="Environment\MapSkies.cpp" />
     <ClCompile Include="Environment\Sky.cpp" />
+    <ClCompile Include="IWoWPrototype.cpp" />
+    <ClCompile Include="IWoWTemplate.cpp" />
     <ClCompile Include="Liquid.cpp" />
     <ClCompile Include="Map\Map.cpp" />
     <ClCompile Include="Map\Map_Chunk.cpp" />
+    <ClCompile Include="Map\Map_Shared.cpp" />
     <ClCompile Include="Map\Map_Tile.cpp" />
     <ClCompile Include="Map\Model_Instance.cpp" />
     <ClCompile Include="Map\WMO_Instance.cpp" />
@@ -42,8 +45,8 @@
     <ClCompile Include="MDX\MDX_Part_TextureAnim.cpp" />
     <ClCompile Include="MDX\MDX_Part_TextureWeight.cpp" />
     <ClCompile Include="MDX\ModelsManager.cpp" />
-    <ClCompile Include="MDX\Model_RenderPass.cpp" />
-    <ClCompile Include="MDX\Model_Skin.cpp" />
+    <ClCompile Include="MDX\MDX_Skin_Batch.cpp" />
+    <ClCompile Include="MDX\MDX_Skin.cpp" />
     <ClCompile Include="MDX\Model_Static.cpp" />
     <ClCompile Include="MDX\Particle.cpp" />
     <ClCompile Include="MDX\ParticleEmitters.cpp" />
@@ -58,6 +61,7 @@
     <ClCompile Include="WMO\WMO_Light.cpp" />
     <ClCompile Include="WMO\WMO_Manager.cpp" />
     <ClCompile Include="WMO\WMO_Material.cpp" />
+    <ClCompile Include="WMO_Group_Batch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\shared\owWoW.h" />
@@ -87,10 +91,14 @@
     <ClInclude Include="Environment\EnvironmentManager.h" />
     <ClInclude Include="Environment\MapSkies.h" />
     <ClInclude Include="Environment\Sky.h" />
+    <ClInclude Include="IWoWObject.h" />
+    <ClInclude Include="IWoWPrototype.h" />
+    <ClInclude Include="IWoWTemplate.h" />
     <ClInclude Include="Liquid.h" />
     <ClInclude Include="Map\Map.h" />
     <ClInclude Include="Map\Map_Chunk.h" />
     <ClInclude Include="Map\Map_Chunk_Types.h" />
+    <ClInclude Include="Map\Map_Shared.h" />
     <ClInclude Include="Map\Map_Tile.h" />
     <ClInclude Include="Map\Model_Instance.h" />
     <ClInclude Include="Map\WMO_Instance.h" />
@@ -105,8 +113,8 @@
     <ClInclude Include="MDX\MDX_Part_TextureAnim.h" />
     <ClInclude Include="MDX\MDX_Part_TextureWeight.h" />
     <ClInclude Include="MDX\ModelsManager.h" />
-    <ClInclude Include="MDX\Model_RenderPass.h" />
-    <ClInclude Include="MDX\Model_Skin.h" />
+    <ClInclude Include="MDX\MDX_Skin_Batch.h" />
+    <ClInclude Include="MDX\MDX_Skin.h" />
     <ClInclude Include="MDX\Particle.h" />
     <ClInclude Include="MDX\ParticleSystem.h" />
     <ClInclude Include="MDX\RibbonEmitter.h" />
@@ -119,11 +127,11 @@
     <ClInclude Include="WMO\WMO_Light.h" />
     <ClInclude Include="WMO\WMO_Manager.h" />
     <ClInclude Include="WMO\WMO_Material.h" />
+    <ClInclude Include="WMO_Group_Batch.h" />
     <ClInclude Include="_unused.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DBC__File.inl" />
-    <None Include="Map\Map.inl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C29C7FEE-86D9-4EEF-965F-68B89C516FAE}</ProjectGuid>

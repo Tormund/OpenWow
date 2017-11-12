@@ -86,11 +86,11 @@ void GameState_InWorld::RenderUI()
         int basex = 200;
         int basey = 0;
 
-        if (_Map->GetMinimap() != 0)
+        if (_Map.GetMinimap() != 0)
         {
             const int len = 768;
 
-            _Render->RenderTexture(vec2(basex, basey), _Map->GetMinimap(), vec2(len, len));
+            _Render->RenderTexture(vec2(basex, basey), _Map.GetMinimap(), vec2(len, len));
 
             // Player position
             /*glBegin(GL_LINES);
@@ -121,7 +121,7 @@ void GameState_InWorld::RenderUI()
     DBÑ_AreaTableRecord* areaRecord = nullptr;
     string areaName = "<unknown>";
 
-    areaRecord = DBÑ_AreaTable[_Map->getAreaID()];
+    areaRecord = DBÑ_AreaTable[_Map.getAreaID()];
     if (areaRecord != nullptr)
     {
         areaName = areaRecord->Get_Name();
@@ -144,27 +144,27 @@ void GameState_InWorld::RenderUI()
     //
     // DEBUG
     //
-    _Render->RenderTexture(vec2(Modules::config().windowSizeX * 2.0 / 3.0, Modules::config().windowSizeY * 2.0 / 3.0), _Render->r->getRenderBufferTex(_World->rb2, 2), vec2(Modules::config().windowSizeX / 3, Modules::config().windowSizeY / 3));
+    _Render->RenderTexture(vec2(_Config.windowSizeX * 2.0 / 3.0, _Config.windowSizeY * 2.0 / 3.0), _Render->r->getRenderBufferTex(_World->rb2, 2), vec2(_Config.windowSizeX / 3, _Config.windowSizeY / 3));
 
 
     //
 
 
-    /*_Render->RenderText(vec2(5, 20), "Area: [" + areaName + "] [Area id = " + std::to_string(_Map->getAreaID()) + "]");
+    _Render->RenderText(vec2(5, 20), "Area: [" + areaName + "] [Area id = " + std::to_string(_Map.getAreaID()) + "]");
     _Render->RenderText(vec2(5, 40), "Region: [" + regionName + "]");
-    _Render->RenderText(vec2(5, 60), "CURRX: " + to_string(_Map->GetCurrentX()) + ", CURRZ " + to_string(_Map->GetCurrentZ()));*/
+    _Render->RenderText(vec2(5, 60), "CURRX: " + to_string(_Map.GetCurrentX()) + ", CURRZ " + to_string(_Map.GetCurrentZ()));
 
 
     ///
 
     _Perfomance->Draw(vec2(5, 100));
 
-    /*_Render->RenderText(vec2(5, Modules::config().windowSizeY - 66), "REAL CamPos: [" + to_string(_World->mainCamera->Position.x) + "], [" + to_string(_World->mainCamera->Position.y) + "], [" + to_string(_World->mainCamera->Position.z) + "]");
-    _Render->RenderText(vec2(5, Modules::config().windowSizeY - 44), "CamPos: [" + to_string(-(_World->mainCamera->Position.x - C_ZeroPoint)) + "], [" + to_string(-(_World->mainCamera->Position.z - C_ZeroPoint)) + "], [" + to_string(_World->mainCamera->Position.y) + "]");
-    _Render->RenderText(vec2(5, Modules::config().windowSizeY - 22), "CamRot: [" + to_string(_World->mainCamera->Direction.x) + "], [" + to_string(_World->mainCamera->Direction.y) + "], [" + to_string(_World->mainCamera->Direction.z) + "]");
+    _Render->RenderText(vec2(5, _Config.windowSizeY - 66), "REAL CamPos: [" + to_string(_Render->mainCamera->Position.x) + "], [" + to_string(_Render->mainCamera->Position.y) + "], [" + to_string(_Render->mainCamera->Position.z) + "]");
+    _Render->RenderText(vec2(5, _Config.windowSizeY - 44), "CamPos: [" + to_string(-(_Render->mainCamera->Position.x - C_ZeroPoint)) + "], [" + to_string(-(_Render->mainCamera->Position.z - C_ZeroPoint)) + "], [" + to_string(_Render->mainCamera->Position.y) + "]");
+    _Render->RenderText(vec2(5, _Config.windowSizeY - 22), "CamRot: [" + to_string(_Render->mainCamera->Direction.x) + "], [" + to_string(_Render->mainCamera->Direction.y) + "], [" + to_string(_Render->mainCamera->Direction.z) + "]");
 
     // Time
-    _Render->RenderText(vec2(Modules::config().windowSizeX - 150, 0), "TIME [" + to_string(_EnvironmentManager->m_GameTime.GetHour()) + "." + to_string(_EnvironmentManager->m_GameTime.GetMinute()) + "]");
+    _Render->RenderText(vec2(_Config.windowSizeX - 150, 0), "TIME [" + to_string(_EnvironmentManager->m_GameTime.GetHour()) + "." + to_string(_EnvironmentManager->m_GameTime.GetMinute()) + "]");
     char buff[256];
 
     // Ambient
@@ -173,7 +173,7 @@ void GameState_InWorld::RenderUI()
     _EnvironmentManager->dayNightPhase.ambientColor.x, _EnvironmentManager->dayNightPhase.ambientColor.y, _EnvironmentManager->dayNightPhase.ambientColor.z,
     _EnvironmentManager->dayNightPhase.ambientIntensity
     );
-    _Render->RenderText(vec2(Modules::config().windowSizeX - 400, 20), buff);
+    _Render->RenderText(vec2(_Config.windowSizeX - 400, 20), buff);
 
     // Day
 
@@ -182,7 +182,7 @@ void GameState_InWorld::RenderUI()
     _EnvironmentManager->dayNightPhase.dayIntensity,
     _EnvironmentManager->dayNightPhase.dayDir.x, _EnvironmentManager->dayNightPhase.dayDir.y, _EnvironmentManager->dayNightPhase.dayDir.z
     );
-    _Render->RenderText(vec2(Modules::config().windowSizeX - 400, 40), buff);
+    _Render->RenderText(vec2(_Config.windowSizeX - 400, 40), buff);
 
     // Night
 
@@ -191,7 +191,7 @@ void GameState_InWorld::RenderUI()
     _EnvironmentManager->dayNightPhase.nightIntensity,
     _EnvironmentManager->dayNightPhase.nightDir.x, _EnvironmentManager->dayNightPhase.nightDir.y, _EnvironmentManager->dayNightPhase.nightDir.z
     );
-    _Render->RenderText(vec2(Modules::config().windowSizeX - 400, 60), buff);*/
+    _Render->RenderText(vec2(_Config.windowSizeX - 400, 60), buff);
 }
 
 //
@@ -202,7 +202,7 @@ On_Mouse_Moved(GameState_InWorld)
 {
     if (enableFreeCamera)
     {
-        vec2 mouseDelta = (_mousePos - lastMousePos) / Modules::config().GetWindowSize();
+        vec2 mouseDelta = (_mousePos - lastMousePos) / _Config.GetWindowSize();
 
         _Render->mainCamera->ProcessMouseMovement(mouseDelta.x, -mouseDelta.y);
 
@@ -263,48 +263,97 @@ On_Keyboard_Pressed(GameState_InWorld)
 
     if (_key == OW_KEY_KP_1)
     {
-        Modules::config().draw_map_chunk = !Modules::config().draw_map_chunk;
+        _Config.draw_map_chunk = !_Config.draw_map_chunk;
         return true;
     }
     if (_key == OW_KEY_KP_2)
     {
-        Modules::config().draw_map_wmo = !Modules::config().draw_map_wmo;
+        _Config.draw_map_wmo = !_Config.draw_map_wmo;
         return true;
     }
     if (_key == OW_KEY_KP_3)
     {
-        Modules::config().draw_map_wmo_doodads = !Modules::config().draw_map_wmo_doodads;
+        _Config.draw_map_wmo_doodads = !_Config.draw_map_wmo_doodads;
         return true;
     }
 
     if (_key == OW_KEY_KP_4)
     {
-        Modules::config().draw_map_mdx = !Modules::config().draw_map_mdx;
+        _Config.draw_map_mdx = !_Config.draw_map_mdx;
         return true;
     }
 
+    if (_key == OW_KEY_F1)
+    {
+        _Config.Quality.Texture_Sampler = R_SamplerState::SS_FILTER_POINT;
+        return true;
+    }
+
+    if (_key == OW_KEY_F2)
+    {
+        _Config.Quality.Texture_Sampler = R_SamplerState::SS_FILTER_BILINEAR;
+        return true;
+    }
+
+    if (_key == OW_KEY_F3)
+    {
+        _Config.Quality.Texture_Sampler = R_SamplerState::SS_FILTER_TRILINEAR;
+        return true;
+    }
+
+    if (_key == OW_KEY_F6)
+    {
+        _Config.Quality.Texture_Sampler = R_SamplerState::SS_ANISO1;
+        return true;
+    }
+
+    if (_key == OW_KEY_F7)
+    {
+        _Config.Quality.Texture_Sampler = R_SamplerState::SS_ANISO2;
+        return true;
+    }
+
+    if (_key == OW_KEY_F8)
+    {
+        _Config.Quality.Texture_Sampler = R_SamplerState::SS_ANISO4;
+        return true;
+    }
+
+    if (_key == OW_KEY_F9)
+    {
+        _Config.Quality.Texture_Sampler = R_SamplerState::SS_ANISO8;
+        return true;
+    }
+
+    if (_key == OW_KEY_F10)
+    {
+        _Config.Quality.Texture_Sampler = R_SamplerState::SS_ANISO16;
+        return true;
+    }
+   
+    
 
     if (_key == OW_KEY_C)
     {
-        Modules::config().enableMCCV = !Modules::config().enableMCCV;
+        _Config.Switch(_Config.Quality.Terrain_MCCV);
         return true;
     }
 
     if (_key == OW_KEY_V)
     {
-        Modules::config().enableMCLV = !Modules::config().enableMCLV;
+        _Config.Switch(_Config.Quality.Terrain_MCLV);
         return true;
     }
 
     if (_key == OW_KEY_H)
     {
-        Modules::config().drawhighres = !Modules::config().drawhighres;
+        //_Config.drawhighres = !_Config.drawhighres;
         return true;
     }
 
     if (_key == OW_KEY_F)
     {
-        Modules::config().drawfog = !Modules::config().drawfog;
+        _Config.drawfog = !_Config.drawfog;
         return true;
     }
 

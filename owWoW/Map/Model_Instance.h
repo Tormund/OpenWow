@@ -30,13 +30,11 @@ struct ModelPlacementInfo
 class ModelInstance : protected SceneNode, protected RenderableItem
 {
 public:
-	ModelInstance(File& f);
+	ModelInstance(MDX* _mdxObject, ModelPlacementInfo* _placementInfo);
 	~ModelInstance();
 
-	void SetModel(MDX* m)
-	{
-		modelObject = m;
-	}
+    void SetMDX(MDX* _mdx) { modelObject = _mdx; }
+    MDX* GetMDX() { return modelObject; }
 
 	void Render();
 

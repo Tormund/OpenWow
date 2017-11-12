@@ -106,6 +106,8 @@ void WMOGroup::Load()
 		return;
 	}
 
+    //
+
 	uint32 MOTVCount = 0;
 	uint32 MOCVCount = 0;
 
@@ -289,69 +291,14 @@ void WMOGroup::Load()
 		vertexColors = new vec4[m_VertexesCount];
 	}
 
-	float v35 = 0;
-	float v36 = 0;
-	float v37 = 0;
-
-	if (m_ParentWMO->m_Header.flags.FLAG_skip_base_color)
-	{
-		v35 = 0;
-		v36 = 0;
-		v37 = 0;
-	}
-	else
-	{
-		v35 = m_ParentWMO->m_Header.ambColor.r;
-		v37 = m_ParentWMO->m_Header.ambColor.g;
-		v36 = m_ParentWMO->m_Header.ambColor.b;
-	}
-
 	// Converts
 	for (uint32 i = 0; i < m_VertexesCount; i++)
 	{
 		m_Vertexes[i] = From_XYZ_To_XZminusY_RET(m_Vertexes[i]);
 		m_Normals[i] = From_XYZ_To_XZminusY_RET(m_Normals[i]);
-
-		if (m_Header.flags.FLAG_HAS_VERTEX_COLORS)
-		{
-			vertexColors[i] = fromBGRA(m_VertexColors[0][i]);
-
-			if (m_ParentWMO->m_Header.flags.FLAG_lighten_interiors)
-			{
-				vertexColors[i].w = m_Header.flags.FLAG_IS_OUTDOOR ? 1.0f : 0.0f;
-			}
-			else
-			{
-				vertexColors[i].x -= v36;
-				vertexColors[i].y -= v37;
-				vertexColors[i].z -= v35;
-
-				float v38 = vertexColors[i].w;
-
-				float v11 = vertexColors[i].x - v38 * vertexColors[i].x;
-				vertexColors[i].x = v11 / 2;
-
-				float v13 = vertexColors[i].y - v38 * vertexColors[i].y;
-				vertexColors[i].y = v13 / 2;
-
-				float v14 = vertexColors[i].z - v38 * vertexColors[i].z;
-				vertexColors[i].z = v14 / 2;
-
-
-				vertexColors[i].x = clamp(vertexColors[i].x, 0.0f, 1.0f);
-				vertexColors[i].y = clamp(vertexColors[i].y, 0.0f, 1.0f);
-				vertexColors[i].z = clamp(vertexColors[i].z, 0.0f, 1.0f);
-
-				vertexColors[i].w = m_Header.flags.FLAG_IS_OUTDOOR ? 1.0f : 0.0f;
-			}
-		}
-		//else
-		//{
-		//	vertexColors[i] = vec4(0.0f, 0.3f, 0.6f, 0.9f);
-		//}
 	}
 
-	initLighting();
+    initLighting();
 
 	uint32 bufferSize = 8 * sizeof(float);
 	if (m_Header.flags.FLAG_HAS_VERTEX_COLORS)
@@ -410,7 +357,6 @@ void WMOGroup::initLighting()
 		float lenmin;
 		int lmin;
 
-#ifdef DOODADS_INCL
 		for (uint32 i = 0; i < m_DoodadsIndexesCount; i++)
 		{
 			lenmin = 999999.0f * 999999.0f;
@@ -431,7 +377,6 @@ void WMOGroup::initLighting()
 			mi->light = lmin;
 			mi->ldir = dirmin;
 		}
-#endif
 
 		m_EnableOutdoorLights = false;
 	}
@@ -451,7 +396,7 @@ bool WMOGroup::Render()
 	aabb.transform(_Pipeline->GetWorld());
 
 	/*float dist = (aabb.Center - _Camera->Position).length();
-	if (dist > Modules::config().culldistance + m_Bounds.Radius)
+	if (dist > _Config.culldistance + m_Bounds.Radius)
 	{
 		return false;
 	}*/
@@ -501,12 +446,10 @@ bool WMOGroup::drawDoodads(uint32 _doodadSet)
 	{
 		uint16 doodadIndex = m_DoodadsIndexes[i];
 
-#ifdef DOODADS_INCL
 		if (m_ParentWMO->doodadsets[_doodadSet]->InSet(doodadIndex) || m_ParentWMO->doodadsets[0]->InSet(doodadIndex))
 		{
 			m_ParentWMO->m_MDXInstances[doodadIndex]->Render();
 		}
-#endif
 	}
 
 	return true;

@@ -6,8 +6,11 @@
 // Additional
 #include "../Environment/EnvironmentManager.h"
 #include "../WMO/WMO_Manager.h"
+#include "Map_Shared.h"
 
-Map::Map()
+Map::Map() : 
+    m_GlobalWMO(nullptr),
+    m_GlobalWMOPlacementInfo(nullptr)
 {
     // Load default variables
     m_IsTileBased = false;
@@ -16,165 +19,40 @@ Map::Map()
     memset(maptilecache, 0, sizeof(maptilecache));
     currentTileX = currentTileZ = -1;
     memset(current, 0, sizeof(current));
-    outOfBounds = false;
+    m_IsOnInvalidTile = false;
 
-    CreateMapArrays();
+    Map_Shared::CreateMapArrays();
 
     ADDCONSOLECOMMAND_CLASS("map_clear", Map, ClearCache);
 }
 
 Map::~Map()
 {
-    /*if (mapstrip)
-    {
-        delete[] mapstrip;
-    }
-
-    if (mapstrip2)
-    {
-        delete[] mapstrip2;
-    }*/
 }
 
 //
-
-bool isHole(uint16 holes, uint16 i, uint16 j)
-{
-    const uint16 holetab_h[4] = {0x1111, 0x2222, 0x4444, 0x8888};
-    const uint16 holetab_v[4] = {0x000F, 0x00F0, 0x0F00, 0xF000};
-
-    return (holes & holetab_h[i] & holetab_v[j]) != 0;
-}
-
-void Map::CreateMapArrays()
-{
-    /*vector<uint16> myIndexes2;
-    for (uint16 i = 0; i < 8; i++)
-    {
-        for (uint16 j = 0; j < 8; j++)
-        {
-            myIndexes2.push_back(outerArray[i][j]);
-            myIndexes2.push_back(outerArray[i][j + 1]);
-            myIndexes2.push_back(outerArray[i + 1][j]);
-
-            myIndexes2.push_back(outerArray[i + 1][j]);
-            myIndexes2.push_back(outerArray[i][j + 1]);
-            myIndexes2.push_back(outerArray[i + 1][j + 1]);
-        }
-    }
-    mapstrip4 = new int16[myIndexes2.size()];
-    for (uint16 i = 0; i < myIndexes2.size(); i++)
-    {
-        mapstrip4[i] = myIndexes2[i];
-    }*/
-
-    m_DefaultMapStrip = GenarateMapArray();
-
-
-    // init texture coordinates for detail map:
-    vec2* detailTextureCoord = dataDetail;
-    const float detail_half = 0.5f * C_DetailSize / 8.0f;
-    for (int j = 0; j < 17; j++)
-    {
-        for (int i = 0; i < ((j % 2) ? 8 : 9); i++)
-        {
-            float tx = C_DetailSize / 8.0f * i;
-            float ty = C_DetailSize / 8.0f * j * 0.5f;
-            if (j % 2)
-            {
-                tx += detail_half;
-            }
-            *detailTextureCoord++ = vec2(tx, ty);
-        }
-    }
-
-    // init texture coordinates for alpha map:
-    vec2* alphaTextureCoord = dataAlpha;
-    const float alpha_half = 0.5f * 1.0f / 8.0f;
-    for (int j = 0; j < 17; j++)
-    {
-        for (int i = 0; i < ((j % 2) ? 8 : 9); i++)
-        {
-            float tx = 1.0f / 8.0f * i;
-            float ty = 1.0f / 8.0f * j * 0.5f;
-            if (j % 2)
-            {
-                tx += alpha_half;
-            }
-            *alphaTextureCoord++ = vec2(tx, ty);
-        }
-    }
-}
-
-vector<uint16> Map::GenarateMapArray(uint16 _holes)
-{
-    if (_holes == 0 && !m_DefaultMapStrip.empty())
-    {
-        return m_DefaultMapStrip;
-    }
-
-    int16 outerArray[9][9];
-    for (uint16 i = 0; i < 9; i++)
-        for (uint16 j = 0; j < 9; j++)
-            outerArray[i][j] = (i * 17) + j;
-
-    int16 innerArray[8][8];
-    for (uint16 i = 0; i < 8; i++)
-        for (uint16 j = 0; j < 8; j++)
-            innerArray[i][j] = 9 + (i * 17) + j;
-
-    vector<uint16> myIndexes;
-    for (uint16 i = 0; i < 8; i++)
-    {
-        for (uint16 j = 0; j < 8; j++)
-        {
-            if (isHole(_holes, j / 2, i / 2))
-            {
-                continue;
-            }
-
-            myIndexes.push_back(outerArray[i][j]);
-            myIndexes.push_back(outerArray[i][j + 1]);
-            myIndexes.push_back(innerArray[i][j]);
-
-            myIndexes.push_back(outerArray[i][j + 1]);
-            myIndexes.push_back(outerArray[i + 1][j + 1]);
-            myIndexes.push_back(innerArray[i][j]);
-
-            myIndexes.push_back(outerArray[i + 1][j + 1]);
-            myIndexes.push_back(outerArray[i + 1][j]);
-            myIndexes.push_back(innerArray[i][j]);
-
-            myIndexes.push_back(outerArray[i + 1][j]);
-            myIndexes.push_back(outerArray[i][j]);
-            myIndexes.push_back(innerArray[i][j]);
-        }
-    }
-
-    return myIndexes;
-}
 
 void Map::InitGlobalsWMOs()
 {
     // Load global WMO
 
-    Log::Green("Map_GlobalWMOs[]: Global WMO exists [%s].", globalWMOExists ? "true" : "false");
-    if (globalWMOExists)
+    Log::Green("Map_GlobalWMOs[]: Global WMO exists [%s].", m_GlobalWMOPlacementInfo != nullptr ? "true" : "false");
+    if (m_GlobalWMOPlacementInfo != nullptr)
     {
-        WMO* wmo = _WMOsMgr->Add(globalWMOName);
-        globalWMO = new WMOInstance(wmo, globalWMOplacementInfo);
+        WMO* wmo = _WMOsMgr->Add(m_GlobalWMOName);
+        m_GlobalWMO = new WMOInstance(wmo, m_GlobalWMOPlacementInfo);
     }
 
     // Load low-resolution WMOs
 
-    Log::Green("Map_GlobalWMOs[]: Low WMOs count [%d].", lowResolutionWMOsCount);
-    for (uint32 i = 0; i < lowResolutionWMOsCount; i++)
+    Log::Green("Map_GlobalWMOs[]: Low WMOs count [%d].", m_LowResolutionWMOsPlacementInfo.size());
+    for (auto it : m_LowResolutionWMOsPlacementInfo)
     {
-        const string name = lowResolutionWMOsNames[lowResolutionWMOsplacementInfo[i]->nameIndex];
+        const string name = m_LowResolutionWMOsNames[it->nameIndex];
 
         WMO* wmo = _WMOsMgr->Add(name);
-        WMOInstance* inst = new WMOInstance(wmo, lowResolutionWMOsplacementInfo[i]);
-        lowResolutionWMOs.push_back(inst);
+        WMOInstance* inst = new WMOInstance(wmo, it);
+        m_LowResolutionWMOs.push_back(inst);
     }
 }
 
@@ -254,22 +132,19 @@ void Map::Load_WDT(DBC_MapRecord* _map)
                 char* buf = new char[size];
                 f.ReadBytes(buf, size);
 
-                globalWMOName = string(buf);
+                m_GlobalWMOName = string(buf);
 
                 delete[] buf;
             }
         }
         else if (strcmp(fourcc, "MODF") == 0)
         {
-            uint32 globalWMOCount = WMOPlacementInfo::__size;
-            assert1(globalWMOCount > 1);
+            assert1((size / WMOPlacementInfo::__size) > 1);
 
-            if (globalWMOCount == 1)
+            if ((size / WMOPlacementInfo::__size) == 1)
             {
-                globalWMOplacementInfo = new WMOPlacementInfo;
-                f.ReadBytes(globalWMOplacementInfo, WMOPlacementInfo::__size);
-
-                globalWMOExists = true;
+                m_GlobalWMOPlacementInfo = new WMOPlacementInfo;
+                f.ReadBytes(m_GlobalWMOPlacementInfo, WMOPlacementInfo::__size);
             }
         }
         else
@@ -320,7 +195,7 @@ void Map::Load_WDL()
         {
             WOWCHUNK_READ_STRINGS_BEGIN
 
-                lowResolutionWMOsNames.push_back(_string);
+                m_LowResolutionWMOsNames.push_back(_string);
             WOWCHUNK_READ_STRINGS_END;
         }
         else if (strncmp(fourcc, "MWID", 4) == 0) // List of indexes into the MWMO chunk.
@@ -332,7 +207,7 @@ void Map::Load_WDL()
             {
                 WMOPlacementInfo* placement = new WMOPlacementInfo;
                 f.ReadBytes(placement, WMOPlacementInfo::__size);
-                lowResolutionWMOsplacementInfo.push_back(placement);
+                m_LowResolutionWMOsPlacementInfo.push_back(placement);
             }
         }
         else if (strncmp(fourcc, "MAOF", 4) == 0) // Contains 64*64 = 4096 unsigned 32-bit integers, these are absolute offsets in the file to each map tile's MapAreaLow-array-entry. For unused tiles the value is 0.
@@ -354,10 +229,6 @@ void Map::Load_WDL()
         f.Seek(nextpos);
     }
 
-    // Buffer
-    short tilebuf[17 * 17];
-    short tilebuf2[16 * 16];
-
     // Minimap
     uint32* texbuf = new uint32[512 * 512];
     memset(texbuf, 0, 512 * 512 * 4);
@@ -372,9 +243,14 @@ void Map::Load_WDL()
         {
             if (MARE_Offsets[j][i])
             {
-                // Read data
+                // Read data             
+                
                 f.Seek(MARE_Offsets[j][i] + 4 + 4);
+
+                short tilebuf[17 * 17];
                 f.ReadBytes(tilebuf, 17 * 17 * 2);
+
+                short tilebuf2[16 * 16];
                 f.ReadBytes(tilebuf2, 16 * 16 * 2);
 
                 // make minimap
@@ -558,9 +434,9 @@ void Map::Tick()
     bool loading = false;
     int enteredTileX, enteredTileZ;
     int midTile = static_cast<uint32>(C_RenderedTiles / 2);
-    if (current[midTile][midTile] != nullptr || outOfBounds)
+    if (current[midTile][midTile] != nullptr || m_IsOnInvalidTile)
     {
-        if (outOfBounds ||
+        if (m_IsOnInvalidTile ||
             (_Camera->Position.x < current[midTile][midTile]->m_GamePositionX) ||
             (_Camera->Position.x > (current[midTile][midTile]->m_GamePositionX + C_TileSize)) ||
             (_Camera->Position.z < current[midTile][midTile]->m_GamePositionZ) ||
@@ -706,10 +582,9 @@ void Map::RenderWater()
 
 void Map::enterTile(int x, int z)
 {
-    // Check bad tile & exists
     if (IsBadTileIndex(x, z) || !m_TileFlag[x][z].Flag_HasTerrain)
     {
-        outOfBounds = true;
+        m_IsOnInvalidTile = true;
         return;
     }
 

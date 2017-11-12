@@ -10,7 +10,7 @@
 
 bool ConsoleOpenGL::Init()
 {
-	windowSize = vec2(Modules::config().windowSizeX, Modules::config().windowSizeY);
+	windowSize = vec2(_Config.windowSizeX, _Config.windowSizeY);
 	opened = false;
 	consoleFont = _FontsMgr->GetMainFont();
 	assert1(consoleFont != nullptr);
@@ -180,15 +180,21 @@ On_Keyboard_Pressed(ConsoleOpenGL)
 
 On_Character_Printed(ConsoleOpenGL)
 {
-	if (!opened)
-		return false;
+    if (!opened)
+    {
+        return false;
+    }
 
-	if (_char == '`')
-		return false;
+    if (_char == '`')
+    {
+        return false;
+    }
 
 	// If empty line then skip space
-	if (inputString.empty() && _char == ' ')
-		return true;
+    if (inputString.empty() && _char == ' ')
+    {
+        return true;
+    }
 
 	// Skip multiple spaces
 	if (!inputString.empty())

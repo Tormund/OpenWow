@@ -207,6 +207,9 @@
       <Filter>Common\Functions</Filter>
     </ClInclude>
     <ClInclude Include="..\shared\owUtils.h" />
+    <ClInclude Include="Variant.h">
+      <Filter>Common\Types</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="RefManager1Dim.inl">

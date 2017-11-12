@@ -20,14 +20,15 @@ struct SectionStruct
 	}
 };
 
-class INIFile
+#include "File.h"
+
+class INIFile final : public File
 {
 public:
-	 bool Open(cstring filename);
-	 void Clear();
+    bool Open() override;
 
-	 vector<SectionStruct> GetSections(string _sectionName);
-	 SectionStruct* GetFirstSection(string _sectionName);
+	vector<SectionStruct> GetSections(string _sectionName);
+	SectionStruct* GetFirstSection(string _sectionName);
 
 	template<typename T>
 	bool Assign(T& addr, string _keyName);
@@ -38,9 +39,6 @@ public:
 	 vector<SectionStruct> Data() const { return data; }
 
 private:
-	string iniFilename;
-	ifstream iniStream;
-
 	vector<SectionStruct> data;
 };
 

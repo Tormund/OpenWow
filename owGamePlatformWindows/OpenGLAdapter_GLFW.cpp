@@ -79,11 +79,11 @@ bool OpenGLAdapter_GLFW::Init()
 
 	// Create GLFW window
 
-	window = glfwCreateWindow(Modules::config().windowSizeX, Modules::config().windowSizeY, "Default window title.", nullptr, nullptr);
+	window = glfwCreateWindow(_Config.windowSizeX, _Config.windowSizeY, "Default window title.", nullptr, nullptr);
 
 	// Move window to center
-	//uint32 windowPositionX = (primaryMonitorMode->width / 2) - (Modules::config().windowSizeX / 2);
-	//uint32 windowPositionY = (primaryMonitorMode->height / 2) - (Modules::config().windowSizeY / 2);
+	//uint32 windowPositionX = (primaryMonitorMode->width / 2) - (_Config.windowSizeX / 2);
+	//uint32 windowPositionY = (primaryMonitorMode->height / 2) - (_Config.windowSizeY / 2);
 	//glfwSetWindowPos(window, windowPositionX, windowPositionY);
 	//Log::Print("GLFW[]: Window position [%d, %d]", windowPositionX, windowPositionY);
 

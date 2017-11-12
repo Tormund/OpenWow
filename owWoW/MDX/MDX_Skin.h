@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Model_RenderPass.h"
+#include "MDX_Skin_Batch.h"
 
 struct M2SkinSection
 {
@@ -83,7 +83,7 @@ struct M2SkinProfile
 	//M2Array<M2ShadowBatch> shadow_batches;
 };
 
-//
+// Skin is a part of model
 
 class Model_Skin
 {
@@ -96,7 +96,7 @@ public:
 
 private:
 	MDX* m_ModelObject;
-	vector<ModelRenderPass*> m_Passes;
+	vector<MDX_Skin_Batch*> m_Batches;
 
 	uint32 __geom;
 

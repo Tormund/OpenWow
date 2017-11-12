@@ -27,14 +27,12 @@ class DBC_MapRecord;
 
 class Map
 {
-	CLASS_INSTANCE(Map);
+	CLASS_INSTANCE2(Map);
 
 	Map();
 	~Map();
 
-	void CreateMapArrays();
-    vector<uint16> GenarateMapArray(uint16 _holes = 0);
-	void InitGlobalsWMOs();
+    void InitGlobalsWMOs();
 
 	void Load_WDT(DBC_MapRecord* _map);
 	void Load_WDL();
@@ -60,11 +58,11 @@ public: // Getters
 	string GetFolder() { return m_MapFolder; }
 	DBC_MapRecord* GetDBCMap() { return m_DBC_Map; }
 
-	WMOInstance* GetGlobalWMOInstance() { return globalWMO; }
-	WMOPlacementInfo* GetGlobalWMOPlacementInfo() { return globalWMOplacementInfo; }
+	WMOInstance* GetGlobalWMOInstance() { return m_GlobalWMO; }
+	WMOPlacementInfo* GetGlobalWMOPlacementInfo() { return m_GlobalWMOPlacementInfo; }
 
 	bool MapHasTiles() { return m_IsTileBased; }
-	bool MapHasGlobalWMO() { return globalWMOExists; }
+	bool MapHasGlobalWMO() { return m_GlobalWMOPlacementInfo != nullptr; }
 
 	const WDT_MPHD_Flags& GetMapFlag() { return m_Flag; }
 
@@ -73,23 +71,11 @@ public: // Getters
 	int GetCurrentX() { return currentTileX; }
 	int GetCurrentZ() { return currentTileZ; }
 
-	bool IsOutOfBounds() const { return outOfBounds; }
-	void SetOutOfBounds(bool _value) { outOfBounds = _value; }
-
-	const vec2* GetTextureCoordDetail()
-	{
-		return &dataDetail[0];
-	}
-
-	const vec2* GetTextureCoordAlpha()
-	{
-		return &dataAlpha[0];
-	}
+	bool IsOutOfBounds() const { return m_IsOnInvalidTile; }
+	void SetOutOfBounds(bool _value) { m_IsOnInvalidTile = _value; }
 
 private:
 	bool IsTileInCurrent(MapTile* _mapTile);
-
-	// Fields
 
 private:
 	string m_MapFolder;
@@ -102,29 +88,49 @@ private:
 	uint32 lowrestiles[C_TilesInMap][C_TilesInMap];
 	uint32 minimap;
 	MapTile* maptilecache[C_TilesCacheSize];
-	int currentTileX, currentTileZ;
 	MapTile* current[C_RenderedTiles][C_RenderedTiles];
-	bool outOfBounds;
 
-private: // Global wmo
-	bool globalWMOExists;
-	string globalWMOName;
-	WMOPlacementInfo* globalWMOplacementInfo;
-	WMOInstance* globalWMO;
+    int currentTileX, currentTileZ;
+	bool                       m_IsOnInvalidTile;
 
-private: // Low-resolution WMOs
-	uint32 lowResolutionWMOsCount;
-	vector<string> lowResolutionWMOsNames;
-	vector<WMOPlacementInfo*> lowResolutionWMOsplacementInfo;
-	vector<WMOInstance*> lowResolutionWMOs;
+private: // WMOs
+	string                     m_GlobalWMOName;
+	WMOPlacementInfo*          m_GlobalWMOPlacementInfo;
+	WMOInstance*               m_GlobalWMO;
 
-private: // Index buffer
-	vec2 dataDetail[C_MapBufferSize];
-	vec2 dataAlpha[C_MapBufferSize];
-    vector<uint16> m_DefaultMapStrip;
-    vector<uint16> m_LowResMapStrip;
+	vector<string>             m_LowResolutionWMOsNames;
+	vector<WMOPlacementInfo*>  m_LowResolutionWMOsPlacementInfo;
+	vector<WMOInstance*>       m_LowResolutionWMOs;
 };
 
 #define _Map Map::instance()
 
-#include "Map.inl"
+inline bool IsBadTileIndex(int i, int j)
+{
+    if (i < 0)
+    {
+        return true;
+    }
+
+    if (j < 0)
+    {
+        return true;
+    }
+
+    if (i >= C_TilesInMap)
+    {
+        return true;
+    }
+
+    if (j >= C_TilesInMap)
+    {
+        return true;
+    }
+
+    return false;
+}
+
+inline bool IsGoodTileIndex(int i, int j)
+{
+    return (!IsBadTileIndex(i, j));
+}
