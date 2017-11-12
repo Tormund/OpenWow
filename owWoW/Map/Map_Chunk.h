@@ -37,11 +37,6 @@ public:
 	void Render();
 	void drawPass(int anim);
 
-	//
-
-	void CreateMH2OLiquid(File& f, MH2O_Header* _liquidHeader);
-	MCNK_MCLQ_LiquidType GetLiquidType();
-
 public:
 	MapTile* m_ParentTile;
 	float m_GamePositionX, m_GamePositionY, m_GamePositionZ;
@@ -65,8 +60,6 @@ public:
 
 	uint16* m_Indexes;
 	uint16  m_IndexesCount;
-
-	Liquid* m_Liquid;
 
 	BoundingBox m_Bounds;
 

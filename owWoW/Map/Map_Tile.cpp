@@ -111,8 +111,8 @@ bool MapTile::Load(cstring _filename)
     {
         if (it.mtxf.do_not_load_specular_or_height_texture_but_use_cubemap)
         {
-            it.diffuseTexture = _TexturesMgr->Black();
-            it.specularTexture = _TexturesMgr->Black();
+            it.diffuseTexture = _TexturesMgr->DefaultTexture();
+            it.specularTexture = _TexturesMgr->DefaultTexture();
             continue;
         }
 
@@ -264,17 +264,22 @@ bool MapTile::Load_SplitFile(cstring _filename, load_phases _phase)
         }
         else if (strncmp(fourcc, "MH2O", 4) == 0) // Water
         {
-            assert1(!m_Chunks.empty());
-            /*uint8* abuf = f.GetDataFromCurrent();
+            uint8* abuf = f.GetDataFromCurrent();
 
-            for (uint32 i = 0; i < C_ChunksInTile * C_ChunksInTile; i++)
+            for (uint32 i = 0; i < C_ChunksInTile; i++)
             {
-                MH2O_Header* mh2o_Header = (MH2O_Header*)abuf;
+                for (uint32 j = 0; j < C_ChunksInTile; j++)
+                {
+                    MH2O_Header* mh2o_Header = (MH2O_Header*)abuf;
 
-                m_Chunks[i / C_ChunksInTile][i % C_ChunksInTile]->CreateMH2OLiquid(f, mh2o_Header);
+                    Liquid* liquid = new Liquid(8, 8, vec3());
+                    liquid->initFromTerrainMH2O(f, mh2o_Header);
+                    liquid->createBuffer(vec3(m_GamePositionX + j * C_ChunkSize, 0.0f, m_GamePositionZ + i * C_ChunkSize));
+                    m_MH2O.push_back(liquid);
 
-                abuf += sizeof(MH2O_Header);
-            }*/
+                    abuf += sizeof(MH2O_Header);
+                }
+            }
         }
         else if (strncmp(fourcc, "MCNK", 4) == 0)
         {
@@ -343,10 +348,9 @@ void MapTile::draw()
 
 void MapTile::drawWater()
 {
-    for (auto it : m_Chunks)
+    for (auto it : m_MH2O)
     {
-        if (it->m_Liquid != nullptr)
-            it->m_Liquid->draw();
+        it->draw();
     }
 }
 

@@ -117,8 +117,7 @@ struct LiquidOwner
 	enum List
 	{
 		LIQUID_OWNER_WMO,
-		LIQUID_OWNER_MAP_CHUNK_MH2O,
-		LIQUID_OWNER_MAP_CHUNK_MLIQ
+		LIQUID_OWNER_MAP_CHUNK_MH2O
 	};
 };
 
@@ -132,11 +131,10 @@ class WMOMaterial;
 class Liquid
 {
 public:
-	Liquid(uint32 x, uint32 y, vec3 base, float tilesize = C_UnitSize);
+	Liquid(uint32 x, uint32 y, vec3 base);
 	~Liquid();
 
 	void initFromTerrainMH2O(File& f, MH2O_Header* _header);
-	void initFromTerrainMCLQ(File& f, MCNK_MCLQ_LiquidType _liquidType);
 	void initFromWMO2(File& f, WMOMaterial* _material, const DBC_LiquidTypeRecord* _liquidType, bool _indoor);
 	void createBuffer(cvec3 _position);
 
@@ -145,7 +143,6 @@ public:
 private:
 	void initGeometry(File& f);
 	void InitTextures(const DBC_LiquidTypeRecord* _liquidType);
-	void initTextures(const char *basename, int first, int last);
 
 private:
 	uint32 m_TilesX, m_TilesY;
@@ -156,7 +153,6 @@ private:
 	vec3 m_WaterColorDark;
 
 	uint32 __geom;
-	//GLuint globalBufferWater;
 	uint32 globalBufferSize;
 
 
@@ -165,7 +161,6 @@ private:
 
 	vector<MH2O_WaterLayer> m_WaterLayers;
 
-	float tilesize;
 	float ydir;
 	float texRepeats;
 

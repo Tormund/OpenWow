@@ -1,9 +1,6 @@
 #pragma once
 
 #include <iostream>
-#include <chrono>
-#include <thread>
-#include <mutex>
 
 class Module;
 class File;
@@ -17,8 +14,7 @@ public:
 	Texture* Add(cstring _textureFileName);
 	Texture* Add(File& _textureFile);
 
-	Texture* Black() { return black; }
-	Texture* White() { return white; }
+	Texture* DefaultTexture() { return m_DefaultTexture; }
 
 protected:
 	Texture* CreateAction(cstring name) override;
@@ -26,12 +22,14 @@ protected:
 	bool DeleteAction(cstring name) override;
 
 public:
-	bool LoadSoilTexture(File& _file, Texture* _texture);
 	bool LoadBLPTexture(File& _file, Texture* _texture);
 
 private:
-	Texture* black;
-	Texture* white;
+    Texture* m_DefaultTexture;
+    uint32   m_DefaultTexture2DObj;
+    uint32   m_DefaultTexture3DObj;
+    uint32   m_DefaultTextureCubeObj;
+    vec2     m_DefaultTextureSize;
 
 	ContainerAssync<string, Texture*> textures;
 };

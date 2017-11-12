@@ -40,6 +40,9 @@
     <Filter Include="General">
       <UniqueIdentifier>{b1c6ecd8-bd6b-45e5-9f22-b0d9e934ae6b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Environment\DayNight">
+      <UniqueIdentifier>{28b97f23-4ed2-4ece-b969-7b97bd834fdc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -121,12 +124,6 @@
     <ClCompile Include="WMO\DoodadInstance.cpp">
       <Filter>WMO\Instances</Filter>
     </ClCompile>
-    <ClCompile Include="Environment\DayNightCycle.cpp">
-      <Filter>Environment</Filter>
-    </ClCompile>
-    <ClCompile Include="Environment\DayNightPhase.cpp">
-      <Filter>Environment</Filter>
-    </ClCompile>
     <ClCompile Include="Environment\EnvironmentManager.cpp">
       <Filter>Environment</Filter>
     </ClCompile>
@@ -168,6 +165,12 @@
     </ClCompile>
     <ClCompile Include="IWoWPrototype.cpp">
       <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Environment\DayNightCycle.cpp">
+      <Filter>Environment\DayNight</Filter>
+    </ClCompile>
+    <ClCompile Include="Environment\DayNightPhase.cpp">
+      <Filter>Environment\DayNight</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -246,12 +249,6 @@
     </ClInclude>
     <ClInclude Include="WMO\DoodadInstance.h">
       <Filter>WMO\Instances</Filter>
-    </ClInclude>
-    <ClInclude Include="Environment\DayNightCycle.h">
-      <Filter>Environment</Filter>
-    </ClInclude>
-    <ClInclude Include="Environment\DayNightPhase.h">
-      <Filter>Environment</Filter>
     </ClInclude>
     <ClInclude Include="Environment\EnvironmentManager.h">
       <Filter>Environment</Filter>
@@ -357,6 +354,12 @@
     </ClInclude>
     <ClInclude Include="IWoWPrototype.h">
       <Filter>General</Filter>
+    </ClInclude>
+    <ClInclude Include="Environment\DayNightPhase.h">
+      <Filter>Environment\DayNight</Filter>
+    </ClInclude>
+    <ClInclude Include="Environment\DayNightCycle.h">
+      <Filter>Environment\DayNight</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

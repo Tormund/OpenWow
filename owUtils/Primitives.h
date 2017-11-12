@@ -155,6 +155,8 @@ struct BoundingBox
 			if (b.Max.z > Max.z) { changed = true; Max.z = b.Max.z; }
 		}
 
+        calculateInternal();
+
 		return changed;
 	}
 };

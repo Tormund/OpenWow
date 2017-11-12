@@ -33,9 +33,9 @@ void EnvironmentManager::Destroy()
 	}
 }
 
-void EnvironmentManager::InitSkies(uint32 mapid)
+void EnvironmentManager::InitSkies(DBC_MapRecord* _mapRecord)
 {
-	skies = new MapSkies(mapid);
+	skies = new MapSkies(_mapRecord);
 }
 
 
@@ -114,7 +114,7 @@ void EnvironmentManager::SetFog()
 
 void EnvironmentManager::BeforeDraw()
 {
-	m_GameTime.Tick();
+	//m_GameTime.Tick();
 
 	m_HasSky = false;
 

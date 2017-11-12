@@ -4,7 +4,6 @@
 #include "TexturesMgr.h"
 
 // Additional
-#include <SOIL.h>
 #include "Render.h"
 
 // Header
@@ -31,14 +30,58 @@ struct BLPHeader
 
 //
 
+struct __RGBA
+{
+    uint8 r, g, b, a;
+};
+
 bool TexturesMgr::Init()
 {
 	ADDCONSOLECOMMAND_CLASS("tm_info", TexturesMgr, PrintAllInfo);
 
 	RefManager1DimAssync::Init();
 
-	black = new Texture(0);
-	white = new Texture(0);
+    m_DefaultTextureSize = vec2(64, 64);
+
+    __RGBA defaultColors[4096];
+    for (uint8 i = 0; i < m_DefaultTextureSize.x; i++)
+    {
+        for (uint8 j = 0; j < m_DefaultTextureSize.y; j++)
+        {
+            defaultColors[i * 64 + j].r = i * 4;
+            defaultColors[i * 64 + j].g = j * 4;
+            defaultColors[i * 64 + j].b = ((i + j) % 64) * 4;
+            defaultColors[i * 64 + j].a = 255;
+        }
+    }
+
+    m_DefaultTexture2DObj = _Render->r->createTexture(R_TextureTypes::Tex2D, m_DefaultTextureSize.x, m_DefaultTextureSize.y, 1, R_TextureFormats::RGBA8, true, true, false, false);
+    _Render->r->uploadTextureData(m_DefaultTexture2DObj, 0, 0, defaultColors);
+    
+    //--------------
+
+    /*m_DefaultTextureCubeObj = _Render->r->createTexture(R_TextureTypes::TexCube, 4, 4, 1, R_TextureFormats::RGBA8, true, true, false, false);
+    for (uint32 i = 0; i < 6; ++i)
+    {
+        _Render->r->uploadTextureData(m_DefaultTextureCubeObj, i, 0, texData);
+    }*/
+
+    //-------------
+
+    /*unsigned char *texData2 = new unsigned char[256];
+    memcpy(texData2, texData, 64); 
+    memcpy(texData2 + 64, texData, 64);
+    memcpy(texData2 + 128, texData, 64);
+    memcpy(texData2 + 192, texData, 64);
+
+    m_DefaultTexture3DObj = _Render->r->createTexture(R_TextureTypes::Tex3D, 4, 4, 4, R_TextureFormats::RGBA8, true, true, false, false);
+    _Render->r->uploadTextureData(m_DefaultTexture3DObj, 0, 0, texData2);
+    delete[] texData2;*/
+
+
+    //-------------
+
+    m_DefaultTexture = new Texture(m_DefaultTexture2DObj, m_DefaultTextureSize);
 
 	return true;
 }
@@ -53,41 +96,6 @@ void TexturesMgr::Destroy()
 }
 
 //
-
-bool TexturesMgr::LoadSoilTexture(File& _file, Texture* _texture)
-{
-	//_texture->Bind();
-
-	// Read data
-	int32 sizeX, sizeY;
-	uint8* image = SOIL_load_image_from_memory(_file.GetData(), static_cast<int32>(_file.GetSize()), &sizeX, &sizeY, 0, SOIL_LOAD_RGBA);
-
-	if (SOIL_last_result() != "Image loaded from memory")
-	{
-		Log::Error("TexturesMgr[%s]: Error while loading texture. Error [%s].", _file.Path_Name(), SOIL_last_result());
-		SOIL_free_image_data(image);
-		return false;
-	}
-
-	_texture->SetSize(vec2(sizeX, sizeY));
-
-	// Create texture
-	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _texture->GetSize().x, _texture->GetSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-	//glGenerateMipmap(GL_TEXTURE_2D);
-
-	// Params
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	// Params
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	// Unbind
-	//glBindTexture(GL_TEXTURE_2D, 0);
-
-	return true;
-}
 
 bool TexturesMgr::LoadBLPTexture(File& _file, Texture* _texture)
 {
@@ -246,7 +254,7 @@ Texture* TexturesMgr::Add(File& _textureFile)
 
 Texture* TexturesMgr::CreateAction(cstring name)
 {
-	Texture* texture = new Texture(0, vec2(16, 16));
+	Texture* texture = new Texture(m_DefaultTexture2DObj, m_DefaultTextureSize);
 
 	return texture;
 }
@@ -255,34 +263,30 @@ void TexturesMgr::LoadAction(string _name, Texture* _texture)
 {
 	//wglMakeCurrent(_Render->dc, _Render->glrc2);
 
+    //_texture->SetObj(m_DefaultTexture2DObj);
+    //_texture->SetSize(m_DefaultTextureSize);
+    //return;
+
 	File f = _name;
 
 	if (!f.Open())
 	{
 		Log::Error("TexturesMgr[%s]: Error while open texture.", f.Path_Name().c_str());
-		_texture = _TexturesMgr->Black();
+		_texture = _TexturesMgr->DefaultTexture();
 		return;
 	}
 
 	//Log::Info("TexturesMgr[%s]: Texture loading.", f.Path_Name().c_str());
 
 	// Load texture
-	bool result;
-	if (f.Extension() == "blp")
-	{
-		result = _TexturesMgr->LoadBLPTexture(f, _texture);
-	}
-	else
-	{
-		result = _TexturesMgr->LoadSoilTexture(f, _texture);
-	}
+	bool result = LoadBLPTexture(f, _texture);
 
 	// Check result
 	if (!result)
 	{
 		Log::Error("TexturesMgr[%s]: Error while loading texture data.", f.Path_Name().c_str());
 		delete _texture;
-		_texture = _TexturesMgr->Black();
+		_texture = DefaultTexture();
 		return;
 	}
 

@@ -75,7 +75,7 @@ void Map::Load_WDT(DBC_MapRecord* _map)
     }
 
     // Load sky
-    _EnvironmentManager->InitSkies(m_DBC_Map->Get_ID());
+    _EnvironmentManager->InitSkies(m_DBC_Map);
 
     char fourcc[5];
     uint32 size;

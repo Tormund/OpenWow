@@ -9,14 +9,15 @@ DayNightCycle::DayNightCycle()
 	if (!f.Open())
 	{
 		Log::Error("DayNightCycle[]: Can't init day-night cycle.");
+        fail1();
 		return;
 	}
 
 	uint32 nFields1, nFields, d;
 
 	// Header
+    f.ReadBytes(&nFields, 4);
 	f.ReadBytes(&nFields1, 4);
-	f.ReadBytes(&nFields, 4);
 	assert1(nFields == nFields1);
 	assert1(nFields == 25);
 

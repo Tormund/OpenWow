@@ -56,20 +56,21 @@ public:
     }
 
 public:
+    int                          m_IndexX, m_IndexZ;
+    float                        m_GamePositionX, m_GamePositionZ;
+
 	vector<Map_Tile_TextureInfo> m_Textures;
 
-	vector<string>             m_WMOsNames;
-    vector<WMOPlacementInfo*>  m_WMOsPlacementInfo;
-	vector<WMOInstance*>       m_WMOsInstances;
+	vector<string>               m_WMOsNames;
+    vector<WMOPlacementInfo*>    m_WMOsPlacementInfo;
+	vector<WMOInstance*>         m_WMOsInstances;
 
-	vector<string>             m_MDXsNames;
+	vector<string>               m_MDXsNames;
     vector<ModelPlacementInfo*>  m_MDXsPlacementInfo;
-	vector<ModelInstance*>     m_MDXsInstances;
+	vector<ModelInstance*>       m_MDXsInstances;
 
-	int                        m_IndexX, m_IndexZ;
-	float                      m_GamePositionX, m_GamePositionZ;
-
-    vector<MapChunk*>          m_Chunks;
+    vector<MapChunk*>            m_Chunks;
+    vector<Liquid*>              m_MH2O;
 };
 
 

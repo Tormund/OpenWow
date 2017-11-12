@@ -6,14 +6,11 @@
 // Additional
 #include "../DBC__Storage.h"
 
-const float skymul = 36.0f;
-
 Sky::Sky(DBC_LightRecord* data)
 {
-	if (data == nullptr)
-	{
-		return;
-	}
+    assert1(data != nullptr);
+
+    const float skymul = 36.0f;
 
 	position.x = data->Get_PositionX() / skymul;
 	position.y = data->Get_PositionY() / skymul;
@@ -28,12 +25,15 @@ Sky::Sky(DBC_LightRecord* data)
 	}
 
 	global = (position.x == 0.0f && position.y == 0.0f && position.z == 0.0f);
+    if (global)
+    {
+        Log::Error("Sky [%d] is GLOBAL!!!!", data->Get_ID());
+    }
 
-	uint32 ParamsClear = data->Get_Params(0) * 18;
+	uint32 ParamsClear = data->Get_Params(0) * SKY_COLORSCOUNT;
 
 	for (uint32 i = 0; i < 18; i++)
 	{
-
 		auto rec = DBC_LightIntBand[ParamsClear + i];
 		if (rec == nullptr)
 		{
@@ -104,5 +104,5 @@ vec3 Sky::colorFor(int r, int _time) const
 	}
 
 	float tt = (float)(_time - t1) / (float)(t2 - t1);
-	return c1*(1.0f - tt) + c2*tt;
+	return c1 * (1.0f - tt) + c2*tt;
 }

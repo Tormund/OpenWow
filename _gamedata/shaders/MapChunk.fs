@@ -60,12 +60,12 @@ void main()
 
 	if (gMCLVExists)
 	{
-		//resultColor += (VSInput.VertexColorMCLV.rgb * resultSpecular.a);
+		resultColor += (VSInput.VertexColorMCLV.rgb * resultSpecular.a);
 	}
 
 	if (gMCCVExists)
 	{
-		//resultColor *= VSInput.VertexColorMCCV.rgb;
+		resultColor *= VSInput.VertexColorMCCV.rgb;
 	}
 
 	//

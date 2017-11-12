@@ -105,7 +105,10 @@ struct MH2O_Vertex
 
 //
 
-Liquid::Liquid(uint32 x, uint32 y, vec3 base, float tilesize) : m_TilesX(x), m_TilesY(y), m_Position(base), tilesize(tilesize), shader(-1), ydir(1.0f)
+Liquid::Liquid(uint32 x, uint32 y, vec3 base) : 
+    m_TilesX(x),
+    m_TilesY(y), 
+    m_Position(base), shader(-1), ydir(1.0f)
 {
 	m_TilesCount = (m_TilesX + 1) * (m_TilesY + 1);
 }
@@ -259,39 +262,6 @@ void Liquid::initFromTerrainMH2O(File& f, MH2O_Header * _header)
 	m_WaterColorDark = _EnvironmentManager->GetSkyColor(RIVER_COLOR_DARK);
 }
 
-void Liquid::initFromTerrainMCLQ(File& f, MCNK_MCLQ_LiquidType _liquidType)
-{
-	texRepeats = 4.0f;
-	ydir = 1.0f;
-
-	initGeometry(f);
-
-	switch (_liquidType)
-	{
-		case lq_river:
-		initTextures("XTextures\\river\\lake_a", 1, 30);
-		break;
-
-		case lq_ocean:
-		initTextures("XTextures\\ocean\\ocean_h", 1, 30);
-		break;
-
-		case lq_magma:
-		initTextures("XTextures\\lava\\lava", 1, 30);
-		break;
-
-		case lq_slime:
-		initTextures("XTextures\\slime\\slime", 1, 30);
-		break;
-	}
-
-	//m_WaterColorLight = _EnvironmentManager->GetSkyColor(RIVER_COLOR_LIGHT); // FIXME!!!
-	//m_WaterColorDark = _EnvironmentManager->GetSkyColor(RIVER_COLOR_DARK);
-
-	m_WaterColorLight = vec3(1.0f, 1.0f, 1.0f);
-	m_WaterColorDark = vec3(0.7f, 0.7f, 0.7f);
-}
-
 void Liquid::initFromWMO2(File& f, WMOMaterial* _material, const DBC_LiquidTypeRecord* _liquidType, bool _indoor)
 {
 	// Magic for WMO
@@ -350,7 +320,7 @@ void Liquid::createBuffer(cvec3 _position)
 					h4 = layer.heights[p4];
 				}
 
-				// m_DiffuseTextures coords
+				// Texture coords
 				std::pair<float, float> t1, t2, t3, t4;
 				t1 = make_pair(0.0f, 0.0f);
 				t2 = make_pair(0.0f, 1.0f);
@@ -388,21 +358,21 @@ void Liquid::createBuffer(cvec3 _position)
 
 				mh2oVertices.push_back
 				({
-					vec3(_position.x + C_UnitSize * static_cast<float>(x), h1, _position.z + ydir * (C_UnitSize * static_cast<float>(y))),
+                    _position + vec3(C_UnitSize * static_cast<float>(x), h1, ydir * (C_UnitSize * static_cast<float>(y))),
 					vec3(t1.first, t1.second, a1),
 					defaultNormal
 				});
 
 				mh2oVertices.push_back
 				({
-					vec3(_position.x + C_UnitSize + C_UnitSize * static_cast<float>(x), h4, _position.z + ydir * (C_UnitSize * static_cast<float>(y))),
+                    _position + vec3(C_UnitSize + C_UnitSize * static_cast<float>(x), h4, ydir * (C_UnitSize * static_cast<float>(y))),
 					vec3(t4.first, t4.second, a4),
 					defaultNormal
 				});
 
 				mh2oVertices.push_back
 				({
-					vec3(_position.x + C_UnitSize * static_cast<float>(x), h2, _position.z + ydir * (C_UnitSize +  C_UnitSize * static_cast<float>(y))),
+                    _position + vec3(C_UnitSize * static_cast<float>(x), h2, ydir * (C_UnitSize +  C_UnitSize * static_cast<float>(y))),
 					vec3(t2.first, t2.second, a2),
 					defaultNormal
 				});
@@ -411,21 +381,21 @@ void Liquid::createBuffer(cvec3 _position)
 
 				mh2oVertices.push_back
 				({
-					vec3(_position.x + C_UnitSize * static_cast<float>(x), h2, _position.z + ydir * (C_UnitSize + C_UnitSize * static_cast<float>(y))),
+                    _position + vec3(C_UnitSize * static_cast<float>(x), h2, ydir * (C_UnitSize + C_UnitSize * static_cast<float>(y))),
 					vec3(t2.first, t2.second, a2),
 					defaultNormal
 				});
 
 				mh2oVertices.push_back
 				({
-					vec3(_position.x + C_UnitSize + C_UnitSize * static_cast<float>(x), h4, _position.z + ydir * (C_UnitSize * static_cast<float>(y))),
+                    _position + vec3(C_UnitSize + C_UnitSize * static_cast<float>(x), h4, ydir * (C_UnitSize * static_cast<float>(y))),
 					vec3(t4.first, t4.second, a4),
 					defaultNormal
 				});
 
 				mh2oVertices.push_back
 				({
-					vec3(_position.x + C_UnitSize + C_UnitSize * static_cast<float>(x), h3, _position.z + ydir * (C_UnitSize + C_UnitSize * static_cast<float>(y))),
+                    _position + vec3(C_UnitSize + C_UnitSize * static_cast<float>(x), h3, ydir * (C_UnitSize + C_UnitSize * static_cast<float>(y))),
 					vec3(t3.first, t3.second, a3),
 					defaultNormal
 				});
@@ -547,20 +517,6 @@ void Liquid::InitTextures(const DBC_LiquidTypeRecord* _liquidType)
 
 		textures.push_back(_TexturesMgr->Add(buf));
 		counter++;
-	}
-}
-
-void Liquid::initTextures(const char* basename, int first, int last)
-{
-	char buf[256];
-	for (int i = first; i <= last; i++)
-	{
-		sprintf_s(buf, "%s.%d.blp", basename, i);
-		if (!MPQFile::IsFileExists(buf))
-		{
-			break;
-		}
-		textures.push_back(_TexturesMgr->Add(buf));
 	}
 }
 

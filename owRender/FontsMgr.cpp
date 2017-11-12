@@ -158,13 +158,13 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize)
 		double texY1 = (double)(y - maxAscent) / imageHeight;
 		double texY2 = texY1 + (double)(charHeight) / imageHeight;
 
-		fontVertices.push_back({vec2(0.0f,          0.0f),       vec2(texX1, texY1)});
-		fontVertices.push_back({vec2(charWidth[ch], 0.0f),       vec2(texX2, texY1)});
-		fontVertices.push_back({vec2(0.0f,          charHeight), vec2(texX1, texY2)});
+		fontVertices.push_back({vec3(0.0f,          0.0f,        1.0f), vec2(texX1, texY1)});
+		fontVertices.push_back({vec3(charWidth[ch], 0.0f,        1.0f), vec2(texX2, texY1)});
+		fontVertices.push_back({vec3(0.0f,          charHeight,  1.0f), vec2(texX1, texY2)});
 
-		fontVertices.push_back({vec2(0.0f,          charHeight), vec2(texX1, texY2)});
-		fontVertices.push_back({vec2(charWidth[ch], 0.0f),       vec2(texX2, texY1)});
-		fontVertices.push_back({vec2(charWidth[ch], charHeight), vec2(texX2, texY2)});
+		fontVertices.push_back({vec3(0.0f,          charHeight,  1.0f), vec2(texX1, texY2)});
+		fontVertices.push_back({vec3(charWidth[ch], 0.0f,        1.0f), vec2(texX2, texY1)});
+		fontVertices.push_back({vec3(charWidth[ch], charHeight,  1.0f), vec2(texX2, texY2)});
 
 		for (uint32 row = 0; row < face->glyph->bitmap.rows; ++row)
 		{
@@ -186,11 +186,11 @@ Font* FontsMgr::CreateAction(cstring _nameAndSize)
 
 	//
 
-	uint32 __geom = _Render->r->beginCreatingGeometry(_RenderStorage->__layoutV2T2);
+	uint32 __geom = _Render->r->beginCreatingGeometry(_RenderStorage->__layout_GxVBF_PT);
 
 	// Vertex params
-	_Render->r->setGeomVertexParams(__geom, __vb, R_DataType::T_FLOAT, 0 * sizeof(float), 4 * sizeof(float));
-	_Render->r->setGeomVertexParams(__geom, __vb, R_DataType::T_FLOAT, 2 * sizeof(float), 4 * sizeof(float));
+	_Render->r->setGeomVertexParams(__geom, __vb, R_DataType::T_FLOAT, 0,            sizeof(Texture_Vertex));
+	_Render->r->setGeomVertexParams(__geom, __vb, R_DataType::T_FLOAT, sizeof(vec3), sizeof(Texture_Vertex));
 
 	// Finish
 	_Render->r->finishCreatingGeometry(__geom);

@@ -12,7 +12,7 @@ class EnvironmentManager : public Module
 {
 	DEF_MODULE(EnvironmentManager);
 
-	void InitSkies(uint32 mapid);
+	void InitSkies(DBC_MapRecord* _mapRecord);
 
 	//
 

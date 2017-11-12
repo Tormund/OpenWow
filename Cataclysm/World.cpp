@@ -84,8 +84,7 @@ void World::RenderGeom()
 	//------------------------------------------------------------------------------
 	_Render->r->setDepthTest(false);
 	_EnvironmentManager->skies->drawSky(_Camera->Position);
-
-	
+    
 	//------------------------------------------------------------------------------
 	// Draw sky from WMO
 	//------------------------------------------------------------------------------
@@ -108,6 +107,10 @@ void World::RenderGeom()
 	//
 	PERF_START(PERF_MAP);
 	//
+
+    //=== DEBUG
+    _EnvironmentManager->skies->DEBUG_Render();
+    //=== DEBUG
 
 	//------------------------------------------------------------------------------
 	// Map low-resolution tiles
@@ -160,7 +163,7 @@ void World::RenderGeom()
 	_Render->r->setCullMode(R_CullMode::RS_CULL_FRONT);
 	_Render->r->setBlendMode(true, R_BlendFunc::BS_BLEND_SRC_ALPHA, R_BlendFunc::BS_BLEND_INV_SRC_ALPHA);
 
-	if (_Config.draw_map_chunk)
+	//if (_Config.draw_map_chunk)
 	{
 		_Map.RenderWater();
 	}

@@ -2,7 +2,7 @@
 
 #include "Sky.h"
 
-#define SKY_COLORSCOUNT 18
+
 
 enum SkyColorNames
 {
@@ -38,7 +38,7 @@ enum SkyColorNames
 class MapSkies
 {
 public:
-	MapSkies(uint32 mapid);
+	MapSkies(DBC_MapRecord* _mapRecord);
 	~MapSkies();
 
 	void InitBuffer();
@@ -48,16 +48,21 @@ public:
 
 	void CalculateSkiesWeights(cvec3 pos);
 	void initSky(cvec3 pos, uint32 t);
+    bool hasSkies() { return !skies.empty(); }
+
+    DBC_LightRecord* GetLightRecordByMap(DBC_MapRecord* _mapRecord);
 
 	bool drawSky(cvec3 pos);
-	bool hasSkies() { return !skies.empty(); }
+    bool DEBUG_Render();
+
 
 private:
 	uint32 __vb;
 	uint32 __geom;
 	uint32 __vertsSize;
+
 	vector<vec3> colors;
 
 	vector<Sky*> skies;
-	/*MDX* stars;*/  // BOUZI FIXME ENABLE ME
+	//MDX* stars;  // BOUZI FIXME ENABLE ME
 };

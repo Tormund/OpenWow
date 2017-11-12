@@ -325,7 +325,7 @@ void RenderDevice::finishCreatingGeometry(uint32 geoObj)
 
 		glBindBuffer(GL_ARRAY_BUFFER, buf.glObj);
         //bool isFloatingPoint = (vbSlot.type == R_DataType::T_FLOAT) || (vbSlot.type == R_DataType::T_DOUBLE);
-		glVertexAttribPointer(i, attrib.size, dataTypes[vbSlot.type], GL_FALSE, vbSlot.stride, (char *)0 + vbSlot.offset + attrib.offset);
+		glVertexAttribPointer(i, attrib.size, dataTypes[vbSlot.type], vbSlot.needNorm, vbSlot.stride, (char *)0 + vbSlot.offset + attrib.offset);
 
 		newVertexAttribMask |= 1 << i;
 	}
@@ -352,7 +352,7 @@ void RenderDevice::finishCreatingGeometry(uint32 geoObj)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void RenderDevice::setGeomVertexParams(uint32 geoObj, uint32 vbo, R_DataType type, uint32 offset, uint32 stride)
+void RenderDevice::setGeomVertexParams(uint32 geoObj, uint32 vbo, R_DataType type, uint32 offset, uint32 stride, bool needNorm)
 {
 	R_GeometryInfo &curVao = _vaos.getRef(geoObj);
 	R_Buffer &buf = _buffers.getRef(vbo);
@@ -364,6 +364,7 @@ void RenderDevice::setGeomVertexParams(uint32 geoObj, uint32 vbo, R_DataType typ
     attribInfo.type = type;
 	attribInfo.offset = offset;
 	attribInfo.stride = stride;
+    attribInfo.needNorm = needNorm;
 
 	curVao.vertexBufInfo.push_back(attribInfo);
 }

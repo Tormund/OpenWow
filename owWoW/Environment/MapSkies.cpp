@@ -12,11 +12,11 @@ const float C_SkyAngles[] = {90.0f, 30.0f, 15.0f, 5.0f, 0.0f, -30.0f, -90.0f};
 const uint32 C_Skycolors[] = {SKY_COLOR_0,      SKY_COLOR_1,      SKY_COLOR_2,    SKY_COLOR_3,    SKY_COLOR_4,    FOG_COLOR,     FOG_COLOR};
 const uint32 C_SkycolorsCount = 7;
 
-MapSkies::MapSkies(uint32 mapid)
+MapSkies::MapSkies(DBC_MapRecord* _mapRecord)
 {
 	for (auto it = DBC_Light.Records()->begin(); it != DBC_Light.Records()->end(); ++it)
 	{
-		if (mapid == it->second->Get_MapID()->Get_ID())
+		if (_mapRecord == it->second->Get_MapID())
 		{
 			Sky* sky = new Sky(it->second);
 			skies.push_back(sky);
@@ -25,7 +25,21 @@ MapSkies::MapSkies(uint32 mapid)
 		}
 	}
 
-	sort(skies.begin(), skies.end());
+    std::sort(skies.begin(), skies.end(), [](Sky* lhs, Sky* rhs)
+    {
+        if (lhs->global)
+            return false;
+        else if (rhs->global)
+            return true;
+        else
+            return lhs->radiusOuter < rhs->radiusOuter;
+    });
+
+    if (skies.size() > 0 && !skies.back()->global)
+    {
+        Log::Error("Sky for maps [%d] size [%d] don't have global sky!!!", _mapRecord->Get_ID(), skies.size());
+        skies.back()->global = true;
+    }
 
 	InitBuffer();
 
@@ -40,11 +54,6 @@ MapSkies::~MapSkies()
 
 void MapSkies::InitBuffer()
 {
-	if (skies.empty())
-	{
-		return;
-	}
-
 	// Draw sky
 	vec3 basepos1[C_SkycolorsCount];
 	vec3 basepos2[C_SkycolorsCount];
@@ -55,7 +64,7 @@ void MapSkies::InitBuffer()
 	{
 		for (uint32 i = 0; i < C_SkycolorsCount; i++)
 		{
-			basepos1[i] = basepos2[i] = vec3(cosf(C_SkyAngles[i] * DEG_TO_RAD) * C_SkyRadius, sinf(C_SkyAngles[i] * DEG_TO_RAD) * C_SkyRadius, 0);
+			basepos1[i] = basepos2[i] = vec3(cosf(degToRad(C_SkyAngles[i])), sinf(degToRad(C_SkyAngles[i])), 0.0f) * C_SkyRadius;
 			rotate(0, 0, &basepos1[i].x, &basepos1[i].z, M_2_PI / C_SkySegmentsCount * (h + 0));
 			rotate(0, 0, &basepos2[i].x, &basepos2[i].z, M_2_PI / C_SkySegmentsCount * (h + 1));
 		}
@@ -106,34 +115,25 @@ void MapSkies::initSky(cvec3 _cameraPosition, uint32 _time)
 
 	for (int i = 0; i < SKY_COLORSCOUNT; i++)
 	{
-		colorSet[i] = vec3(1, 1, 1);
+		colorSet[i] = vec3();
 	}
 
 	// interpolation
-	for (size_t j = 0; j < skies.size(); j++)
+	for (auto it : skies)
 	{
-		if (skies[j]->weight > 0)
+		if (it->weight > 0)
 		{
 			for (uint32 i = 0; i < SKY_COLORSCOUNT; i++)
 			{
-				if ((skies[j]->colorFor(i, _time).x > 1.0f) || (skies[j]->colorFor(i, _time).y > 1.0f) || (skies[j]->colorFor(i, _time).z > 1.0f))
-				{
-					fail1();
-					continue;
-				}
-				colorSet[i] += skies[j]->colorFor(i, _time) * skies[j]->weight;
+                vec3 color = it->colorFor(i, _time);
+                assert1(color.x <= 1.0f && color.y <= 1.0f && color.z <= 1.0f);
+
+				colorSet[i] += color * it->weight;
 			}
 		}
 	}
 
-	for (uint32 i = 0; i < SKY_COLORSCOUNT; i++)
-	{
-		colorSet[i] -= vec3(1, 1, 1);
-	}
-
-
 	colors.clear();
-
 
 	for (uint32 h = 0; h < C_SkySegmentsCount; h++)
 	{
@@ -156,6 +156,9 @@ void MapSkies::initSky(cvec3 _cameraPosition, uint32 _time)
 void MapSkies::CalculateSkiesWeights(cvec3 pos)
 {
 	skies.back()->weight = 1.0f;
+
+
+    assert1(skies.back()->global);
 
 	for (int i = skies.size() - 2; i >= 0; i--)
 	{
@@ -188,6 +191,19 @@ void MapSkies::CalculateSkiesWeights(cvec3 pos)
 	}
 }
 
+DBC_LightRecord* MapSkies::GetLightRecordByMap(DBC_MapRecord* _mapRecord)
+{
+    for (auto it = DBC_Light.Records()->begin(); it != DBC_Light.Records()->end(); ++it)
+    {
+        if (_mapRecord == it->second->Get_MapID())
+        {
+            return it->second;
+        }
+    }
+
+    return nullptr;
+}
+
 bool MapSkies::drawSky(cvec3 pos)
 {
 	if (skies.empty())
@@ -205,4 +221,40 @@ bool MapSkies::drawSky(cvec3 pos)
 	_Render->r->draw(PRIM_TRILIST, 0, __vertsSize);
 
 	return true;
+}
+
+bool MapSkies::DEBUG_Render()
+{
+    _Render->r->setFillMode(R_FillMode::RS_FILL_WIREFRAME);
+    _TechniquesMgr->m_Debug_GeometryPass->BindS();
+
+    _Render->r->setGeometry(_RenderStorage->_sphereGeo);
+
+    for (auto it : skies)
+    {
+        _Pipeline->Clear();
+        _Pipeline->Translate(it->position);
+        _Pipeline->Scale(it->radiusInner);
+
+        _TechniquesMgr->m_Debug_GeometryPass->SetPVW();
+        _TechniquesMgr->m_Debug_GeometryPass->SetColor4(vec4(1.0f, 0.0f, 1.0f, 0.3f));
+
+        _Render->r->drawIndexed(PRIM_TRILIST, 0, 128 * 3, 0, 126, false);
+
+        //---------------------------------------------------------------------------------
+
+        _Pipeline->Clear();
+        _Pipeline->Translate(it->position);
+        _Pipeline->Scale(it->radiusOuter);
+
+        _TechniquesMgr->m_Debug_GeometryPass->SetPVW();
+        _TechniquesMgr->m_Debug_GeometryPass->SetColor4(vec4(1.0f, 1.0f, 0.0f, 0.3f));
+
+        _Render->r->drawIndexed(PRIM_TRILIST, 0, 128 * 3, 0, 126, false);
+    }
+
+    _TechniquesMgr->m_Debug_GeometryPass->Unbind();
+    _Render->r->setFillMode(R_FillMode::RS_FILL_SOLID);
+
+    return false;
 }

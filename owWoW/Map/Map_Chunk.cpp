@@ -22,8 +22,8 @@ MapChunk::MapChunk(MapTile* _parentTile) :
     hasholes(false),
     m_BlendRBGShadowATexture(0),
     m_Indexes(nullptr),
-    m_IndexesCount(0),
-    m_Liquid(nullptr)
+    m_IndexesCount(0)
+    //m_Liquid(nullptr)
 {
 
     waterlevel[0] = 0;
@@ -38,10 +38,10 @@ MapChunk::MapChunk(MapTile* _parentTile) :
 
 MapChunk::~MapChunk()
 {
-    if (m_Liquid != nullptr)
+    /*if (m_Liquid != nullptr)
     {
         delete m_Liquid;
-    }
+    }*/
 }
 
 //
@@ -68,10 +68,10 @@ void MapChunk::Load(File& f, load_phases phase)
 
         hasholes = (header.holes != 0);
 
-        if (m_Liquid != nullptr)
+        /*if (m_Liquid != nullptr)
         {
             m_Liquid->createBuffer(vec3(m_GamePositionX, 0.0f, m_GamePositionZ));
-        }
+        }*/
 
         //
 
@@ -81,6 +81,8 @@ void MapChunk::Load(File& f, load_phases phase)
         vec3 tempNormals[C_MapBufferSize];
         vec4 mccvColors[C_MapBufferSize];
         vec4 mclvColors[C_MapBufferSize];
+        uint32 mccvColors2[C_MapBufferSize];
+        uint32 mclvColors2[C_MapBufferSize];
 
         // MCVT sub-chunk (height's)
         f.Seek(startPosition + header.ofsHeight);
@@ -154,6 +156,7 @@ void MapChunk::Load(File& f, load_phases phase)
         f.Seek(startPosition + header.ofsMCCV);
         {
             vec4* ttn = mccvColors;
+            uint32* ttn2 = mccvColors2;
             for (int j = 0; j < 17; j++)
             {
                 for (uint32 i = 0; i < ((j % 2u) ? 8u : 9u); i++)
@@ -162,6 +165,12 @@ void MapChunk::Load(File& f, load_phases phase)
                     f.ReadBytes(&nor, sizeof(uint32));
 
                     *ttn++ = vec4((float)nor[2] / 127.0f, (float)nor[1] / 127.0f, (float)nor[0] / 127.0f, (float)nor[3] / 127.0f);
+
+                    *ttn2++ = uint32(
+                        (uint8)(nor[0]) << 16 |
+                        (uint8)(nor[1]) << 8 |
+                        (uint8)(nor[2])
+                    );
                 }
             }
         }
@@ -182,6 +191,7 @@ void MapChunk::Load(File& f, load_phases phase)
             MCLV_exists = strncmp(blockName, "MCLV", 4) == 0;
 
             vec4* ttn = mclvColors;
+            uint32* ttn2 = mclvColors2;
             for (int j = 0; j < 17; j++)
             {
                 for (int i = 0; i < ((j % 2) ? 8 : 9); i++)
@@ -189,6 +199,13 @@ void MapChunk::Load(File& f, load_phases phase)
                     int8 nor[4];
                     f.ReadBytes(&nor, 4);
                     *ttn++ = vec4((float)nor[2] / 255.0f, (float)nor[1] / 255.0f, (float)nor[0] / 255.0f, (float)nor[3] / 255.0f);
+
+                    *ttn2++ = uint32(
+                        (uint8)(nor[3]) << 24 |
+                        (uint8)(nor[0]) << 16 |
+                        (uint8)(nor[1]) << 8 |
+                        (uint8)(nor[2])
+                    );
                 }
             }
         }
@@ -198,15 +215,15 @@ void MapChunk::Load(File& f, load_phases phase)
         uint32 t = C_MapBufferSize * sizeof(float);
 
         // Vertex buffer
-        uint32 __vb = _Render->r->createVertexBuffer(18 * t, nullptr);
+        uint32 __vb = _Render->r->createVertexBuffer(12 * t, nullptr);
 
         _Render->r->updateBufferData(__vb, 0 * t, C_MapBufferSize * sizeof(vec3), tempVertexes);
         _Render->r->updateBufferData(__vb, 3 * t, C_MapBufferSize * sizeof(vec3), tempNormals);
-        _Render->r->updateBufferData(__vb, 6 * t, C_MapBufferSize * sizeof(vec4), mccvColors);
-        _Render->r->updateBufferData(__vb, 10 * t, C_MapBufferSize * sizeof(vec4), mclvColors);
-        _Render->r->updateBufferData(__vb, 14 * t, C_MapBufferSize * sizeof(vec2), Map_Shared::GetTextureCoordDetail());
-        _Render->r->updateBufferData(__vb, 16 * t, C_MapBufferSize * sizeof(vec2), Map_Shared::GetTextureCoordAlpha());
-        
+        _Render->r->updateBufferData(__vb, 6 * t, C_MapBufferSize * sizeof(uint32), mccvColors2);
+        _Render->r->updateBufferData(__vb, 7 * t, C_MapBufferSize * sizeof(uint32), mclvColors2);
+        _Render->r->updateBufferData(__vb, 8 * t, C_MapBufferSize * sizeof(vec2), Map_Shared::GetTextureCoordDetail());
+        _Render->r->updateBufferData(__vb, 10 * t, C_MapBufferSize * sizeof(vec2), Map_Shared::GetTextureCoordAlpha());
+
 
         //
 
@@ -214,10 +231,10 @@ void MapChunk::Load(File& f, load_phases phase)
 
         _Render->r->setGeomVertexParams(__geom, __vb, R_DataType::T_FLOAT, 0 * t, 0);
         _Render->r->setGeomVertexParams(__geom, __vb, R_DataType::T_FLOAT, 3 * t, 0);
-        _Render->r->setGeomVertexParams(__geom, __vb, R_DataType::T_FLOAT, 6 * t, 0);
+        _Render->r->setGeomVertexParams(__geom, __vb, R_DataType::T_UINT8, 6 * t, 0, true);
+        _Render->r->setGeomVertexParams(__geom, __vb, R_DataType::T_UINT8, 7 * t, 0, true);
+        _Render->r->setGeomVertexParams(__geom, __vb, R_DataType::T_FLOAT, 8 * t, 0);
         _Render->r->setGeomVertexParams(__geom, __vb, R_DataType::T_FLOAT, 10 * t, 0);
-        _Render->r->setGeomVertexParams(__geom, __vb, R_DataType::T_FLOAT, 14 * t, 0);
-        _Render->r->setGeomVertexParams(__geom, __vb, R_DataType::T_FLOAT, 16 * t, 0);
 
         vector<uint16>& mapArray = Map_Shared::GenarateDefaultMapArray(header.holes);
         m_Indexes = mapArray.data();
@@ -517,30 +534,5 @@ void MapChunk::Render()
 
 
     _Render->r->setFillMode(R_FillMode::RS_FILL_SOLID);
-}
-
-//
-
-void MapChunk::CreateMH2OLiquid(File& f, MH2O_Header* _liquidHeader)
-{
-    assert1(_liquidHeader != nullptr);
-    assert1(m_Liquid == nullptr);
-
-    m_Liquid = new Liquid(8, 8, vec3());
-    m_Liquid->initFromTerrainMH2O(f, _liquidHeader);
-}
-
-MCNK_MCLQ_LiquidType MapChunk::GetLiquidType()
-{
-    if (header.flags.lq_river)
-        return MCNK_MCLQ_LiquidType::lq_river;
-    else if (header.flags.lq_ocean)
-        return MCNK_MCLQ_LiquidType::lq_ocean;
-    else if (header.flags.lq_magma)
-        return MCNK_MCLQ_LiquidType::lq_magma;
-    else if (header.flags.lq_slime)
-        return MCNK_MCLQ_LiquidType::lq_slime;
-    else
-        fail1();
 }
 

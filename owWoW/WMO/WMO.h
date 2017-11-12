@@ -110,6 +110,7 @@ public:
 	void DEBUG_DrawLightPlaceHolders();
 	void DEBUG_DrawFogPositions();
 	void DEBUG_DrawMainBoundingBox();
+    void DEBUG_DrawMainBoundingSphere();
 	void DEBUG_DrawBoundingBoxes();
 	void DEBUG_DrawPortalsRelations();
 	void DEBUG_DrawPortals();

@@ -1,5 +1,7 @@
 #pragma once
 
+#define SKY_COLORSCOUNT 18
+
 class SkyColor
 {
 public:
@@ -21,29 +23,19 @@ public:
 class Sky
 {
 public:
+    Sky(DBC_LightRecord* data);
+    vec3 colorFor(int r, int t) const;
+
+public:
 	vec3 position;
 	float radiusInner;
 	float radiusOuter;
 
-	Sky(DBC_LightRecord* data);
-
 	vector<SkyColor> colorRows[18];
 	int mmin[18];
 
-	vec3 colorFor(int r, int t) const;
-
 	float weight;
 	bool global;
-
-	inline bool operator<(const Sky& s) const
-	{
-		if (global)
-			return false;
-		else if (s.global)
-			return true;
-		else
-			return radiusOuter < s.radiusOuter;
-	}
 };
 
 

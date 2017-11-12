@@ -2,7 +2,7 @@
 
 struct Texture_Vertex
 {
-	vec2 vertex;
+	vec3 vertex;
 	vec2 textureCoord;
 };
 
@@ -23,10 +23,6 @@ public:
     // Layouts
     //----------------------------------------------
 
-    // Layouts UI
-    uint32 __layoutV2;
-    uint32 __layoutV2T2;
-
     // Layouts geometry
     uint32 __layoutSky;
     uint32 __layoutWMO;
@@ -34,6 +30,8 @@ public:
     uint32 __layoutWater;
 
     uint32 __layout_GxVBF_P;
+    uint32 __layout_GxVBF_PÑ;
+    uint32 __layout_GxVBF_PT;
     uint32 __layout_GxVBF_PBNT2;  // MDX
     uint32 __layout_GxVBF_PNC2T2; // Tiles
 
@@ -41,11 +39,19 @@ public:
 	// Geometry & VertexBuffers
     //----------------------------------------------
 
-	uint32 __Quad;
-	uint32 __QuadVT;
-
-    uint32 __vbQuadVTDynamic;
     uint32 __QuadVTDynamic;
+
+    // 2D
+
+    uint32 __Quad;
+    uint32 __QuadVT;
+    uint32 __vbQuadVTDynamic;
+
+    // 3D
+
+    uint32 _cubeGeo;
+    uint32 _sphereGeo;
+    uint32 _coneGeo;
 
     //----------------------------------------------
     // Index buffers

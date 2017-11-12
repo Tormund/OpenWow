@@ -37,6 +37,6 @@ void main(void)
 	VSInput.TexCoordAlpha = TexCoordAlpha;
 	VSInput.Normal = (gWorld * vec4(Normal, 0.0)).xyz;
 		
-	VSInput.VertexColorMCCV = VertexColorMCCV;				
+	VSInput.VertexColorMCCV = VertexColorMCCV * 2;				
 	VSInput.VertexColorMCLV = VertexColorMCLV;
 };

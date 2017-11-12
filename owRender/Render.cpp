@@ -95,7 +95,7 @@ void RenderGL::RenderImage(vec2 _pos, Image* _image, vec2 _size)
     texCoordsQuad.push_back(_image->GetP1());
     texCoordsQuad.push_back(_image->GetP3());
     texCoordsQuad.push_back(_image->GetP2());
-    _Render->r->updateBufferData(_RenderStorage->__vbQuadVTDynamic, 4 * sizeof(vec2), 4 * sizeof(vec2), texCoordsQuad.data());
+    _Render->r->updateBufferData(_RenderStorage->__vbQuadVTDynamic, 4 * sizeof(vec3), 4 * sizeof(vec2), texCoordsQuad.data());
 
     // Shader
     _TechniquesMgr->m_UI_Texture->BindS();
