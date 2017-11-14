@@ -14,7 +14,7 @@ public:
 
 	void DSDirectionalLightPass(DirectionalLight& _light);
 	void DSSimpleRenderPass();
-
+    void DSFogRenderPass();
 public:
 	// Fog params
 	float l_const, l_linear, l_quadratic;

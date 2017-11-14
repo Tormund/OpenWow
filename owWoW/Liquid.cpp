@@ -446,8 +446,8 @@ void Liquid::draw()
 	size_t texidx = (size_t)(_EnvironmentManager->animtime / 60.0f) % textures.size();
 	_Render->r->setTexture(10, textures[texidx]->GetObj(), 0, 0);
 
-	_TechniquesMgr->m_Water->SetWaterColorLight(_EnvironmentManager->GetSkyColor(LIGHT_GLOBAL_AMBIENT));
-	_TechniquesMgr->m_Water->SetWaterColorDark(_EnvironmentManager->GetSkyColor(LIGHT_GLOBAL_DIFFUSE));
+	_TechniquesMgr->m_Water->SetWaterColorLight(_EnvironmentManager->GetSkyColor(RIVER_COLOR_LIGHT));
+	_TechniquesMgr->m_Water->SetWaterColorDark(_EnvironmentManager->GetSkyColor(RIVER_COLOR_DARK));
 
 	_Render->r->setGeometry(__geom);
 

@@ -109,7 +109,7 @@ void World::RenderGeom()
 	//
 
     //=== DEBUG
-    _EnvironmentManager->skies->DEBUG_Render();
+    //_EnvironmentManager->skies->DEBUG_Render();
     //=== DEBUG
 
 	//------------------------------------------------------------------------------
@@ -216,6 +216,8 @@ void World::RenderPostprocess()
 {
 	DSSimpleRenderPass();
 
+    DSFogRenderPass();
+
 	/*_EnvironmentManager->dayNightPhase.setupLighting();
 	DSDirectionalLightPass(_EnvironmentManager->dayNightPhase.m_dirLightDay);
 	DSDirectionalLightPass(_EnvironmentManager->dayNightPhase.m_dirLightNight);*/
@@ -269,4 +271,25 @@ void World::DSSimpleRenderPass()
 	_Render->r->setDepthTest(true);
 
 	_TechniquesMgr->m_SimpleRender->Unbind();
+}
+
+void World::DSFogRenderPass()
+{
+    _TechniquesMgr->m_POST_Fog->BindS();
+    _TechniquesMgr->m_POST_Fog->SetScreenSize(_Config.windowSizeX, _Config.windowSizeY);
+
+    _TechniquesMgr->m_POST_Fog->SetCameraPos(_Camera->Position);
+    _TechniquesMgr->m_POST_Fog->SetFogDistance(_EnvironmentManager->skies->fogSet[FOG_DISTANCE]);
+    _TechniquesMgr->m_POST_Fog->SetFogModifier(_EnvironmentManager->skies->fogSet[FOG_MULTIPLIER]);
+    _TechniquesMgr->m_POST_Fog->SetFogColor(_EnvironmentManager->skies->colorSet[FOG_COLOR]);
+
+    _Render->r->setDepthTest(false);
+    _Render->r->setBlendMode(true, R_BlendFunc::BS_BLEND_SRC_ALPHA, R_BlendFunc::BS_BLEND_INV_SRC_ALPHA);
+
+    _Render->RenderQuad();
+
+    _Render->r->setBlendMode(false);
+    _Render->r->setDepthTest(true);
+
+    _TechniquesMgr->m_POST_Fog->Unbind();
 }

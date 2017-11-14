@@ -192,6 +192,68 @@ void GameState_InWorld::RenderUI()
     _EnvironmentManager->dayNightPhase.nightDir.x, _EnvironmentManager->dayNightPhase.nightDir.y, _EnvironmentManager->dayNightPhase.nightDir.z
     );
     _Render->RenderText(vec2(_Config.windowSizeX - 400, 60), buff);
+
+    // Fog
+
+    sprintf(buff, "Fog[end=[%f] koeff=[%f]]\0",
+            _EnvironmentManager->skies->fogSet[FOG_DISTANCE],
+            _EnvironmentManager->skies->fogSet[FOG_MULTIPLIER]
+    );
+    _Render->RenderText(vec2(_Config.windowSizeX - 400, 80), buff);
+
+    // Colors
+    float xPos = _Config.windowSizeX - 400;
+    float yPos = 100;
+
+    const char* names[18] =
+    {
+        "LIGHT_GLOBAL_DIFFUSE" ,
+        "LIGHT_GLOBAL_AMBIENT",
+
+        "SKY_COLOR_0",
+        "SKY_COLOR_1",
+        "SKY_COLOR_2",
+        "SKY_COLOR_3",
+        "SKY_COLOR_4",
+
+        "FOG_COLOR",
+
+        "SKY_UNKNOWN_1",
+
+        "SUN_COLOR",
+        "SUN_HALO_COLOR",
+
+        "SKY_UNKNOWN_2",
+
+        "CLOUD_COLOR",
+
+        "SKY_UNKNOWN_3",
+
+        "OCEAN_COLOR_LIGHT",
+        "OCEAN_COLOR_DARK",
+
+        "RIVER_COLOR_LIGHT",
+        "RIVER_COLOR_DARK"
+    };
+
+    for (uint8 i = 0; i < 18; i++)
+    {
+        _Render->RenderRectangle(vec2(xPos,      yPos + i * 16), vec2(16.0f, 16.0f), Color(_EnvironmentManager->skies->colorSet[i]));
+        _Render->RenderText(     vec2(xPos + 20, yPos + i * 16), names[i]);
+    }
+
+
+    RenderUIDebug();
+}
+
+void GameState_InWorld::RenderUIDebug()
+{
+    char buff[256];
+    sprintf(buff, "Buffer memory [%d] bytes", _Render->r->getBufferMem());
+    _Render->RenderText(vec2(_Config.windowSizeX - 400, _Config.windowSizeY - 40), buff);
+
+    sprintf(buff, "Texture memory [%d] bytes", _Render->r->getTextureMem());
+    _Render->RenderText(vec2(_Config.windowSizeX - 400, _Config.windowSizeY - 20), buff);
 }
 
 //

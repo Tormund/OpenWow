@@ -23,5 +23,5 @@
 
 // Environment
 #include "../owWoW/Environment/DayNightCycle.h"
-#include "../owWoW/Environment/MapSkies.h"
+#include "../owWoW/Environment/SkyManager.h"
 #include "../owWoW/Environment/EnvironmentManager.h"

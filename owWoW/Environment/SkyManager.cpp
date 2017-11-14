@@ -1,7 +1,7 @@
 #include "../stdafx.h"
 
 // General
-#include "MapSkies.h"
+#include "SkyManager.h"
 
 
 const float C_SkyRadius = 400.0f;
@@ -27,21 +27,23 @@ MapSkies::MapSkies(DBC_MapRecord* _mapRecord)
 
     std::sort(skies.begin(), skies.end(), [](Sky* lhs, Sky* rhs)
     {
-        if (lhs->global)
+        if (lhs->m_IsGlobalSky)
             return false;
-        else if (rhs->global)
+        else if (rhs->m_IsGlobalSky)
             return true;
         else
-            return lhs->radiusOuter < rhs->radiusOuter;
+            return lhs->m_Range.max < rhs->m_Range.max;
     });
 
-    if (skies.size() > 0 && !skies.back()->global)
+    if (skies.size() > 0 && !skies.back()->m_IsGlobalSky)
     {
         Log::Error("Sky for maps [%d] size [%d] don't have global sky!!!", _mapRecord->Get_ID(), skies.size());
-        skies.back()->global = true;
+        skies.back()->m_IsGlobalSky = true;
     }
 
 	InitBuffer();
+
+    m_TempSky = new Sky();
 
 	/*stars = new MDX("Environments\\Stars\\Stars.m2");  // BOUZI FIXME ENABLE ME
 	stars->Init(true);*/
@@ -85,7 +87,6 @@ void MapSkies::InitBuffer()
 
 	// Vertex buffer
 	__vb = _Render->r->createVertexBuffer(2 * __vertsSize * sizeof(vec3), nullptr);
-
 	_Render->r->updateBufferData(__vb, 0, __vertsSize * sizeof(vec3), vertices.data());
 
 	//
@@ -113,27 +114,43 @@ void MapSkies::initSky(cvec3 _cameraPosition, uint32 _time)
 
 	CalculateSkiesWeights(_cameraPosition);
 
-	for (int i = 0; i < SKY_COLORSCOUNT; i++)
+	for (int i = 0; i < COLORS_PARAMS_COUNT; i++)
 	{
 		colorSet[i] = vec3();
 	}
 
+    for (int i = 0; i < FOGS_PARAMS_COUNT; i++)
+    {
+        fogSet[i] = float();
+    }
+
+    glow = 0.0f;
+
 	// interpolation
 	for (auto it : skies)
 	{
-		if (it->weight > 0)
+		if (it->m_Wight > 0)
 		{
-			for (uint32 i = 0; i < SKY_COLORSCOUNT; i++)
+			for (uint32 i = 0; i < COLORS_PARAMS_COUNT; i++)
 			{
-                vec3 color = it->colorFor(i, _time);
+                vec3 color = it->Intepolate(it->m_IntBand_Colors, i, _time);
                 assert1(color.x <= 1.0f && color.y <= 1.0f && color.z <= 1.0f);
 
-				colorSet[i] += color * it->weight;
+				colorSet[i] += color * it->m_Wight;
 			}
+
+            for (uint32 i = 0; i < FOGS_PARAMS_COUNT; i++)
+            {
+                float fog = it->Intepolate(it->m_FloatBand_Fogs, i, _time);
+
+                fogSet[i] += fog * it->m_Wight;
+            }
+
+            glow += it->m_glow * it->m_Wight;
 		}
 	}
 
-	colors.clear();
+    vector<vec3> colors;
 
 	for (uint32 h = 0; h < C_SkySegmentsCount; h++)
 	{
@@ -155,53 +172,38 @@ void MapSkies::initSky(cvec3 _cameraPosition, uint32 _time)
 
 void MapSkies::CalculateSkiesWeights(cvec3 pos)
 {
-	skies.back()->weight = 1.0f;
-
-
-    assert1(skies.back()->global);
+	skies.back()->m_Wight = 1.0f;
+    assert1(skies.back()->m_IsGlobalSky);
 
 	for (int i = skies.size() - 2; i >= 0; i--)
 	{
 		Sky* s = skies[i];
-		const float dist = (pos - s->position).length();
+		const float dist = (pos - s->m_Position).length();
 
-		if (dist < s->radiusInner)
+		if (dist < s->m_Range.min)
 		{
 			// we're in a sky, zero out the rest
-			s->weight = 1.0f;
+			s->m_Wight = 1.0f;
 			for (size_t j = i + 1; j < skies.size(); j++)
 			{
-				skies[j]->weight = 0.0f;
+				skies[j]->m_Wight = 0.0f;
 			}
 		}
-		else if (dist < s->radiusOuter)
+		else if (dist < s->m_Range.max)
 		{
 			// we're in an outer area, scale down the other weights
-			float r = (dist - s->radiusInner) / (s->radiusOuter - s->radiusInner);
-			s->weight = 1.0f - r;
+			float r = (dist - s->m_Range.min) / (s->m_Range.max - s->m_Range.min);
+			s->m_Wight = 1.0f - r;
 			for (size_t j = i + 1; j < skies.size(); j++)
 			{
-				skies[j]->weight *= r;
+				skies[j]->m_Wight *= r;
 			}
 		}
 		else
 		{
-			s->weight = 0.0f;
+			s->m_Wight = 0.0f;
 		}
 	}
-}
-
-DBC_LightRecord* MapSkies::GetLightRecordByMap(DBC_MapRecord* _mapRecord)
-{
-    for (auto it = DBC_Light.Records()->begin(); it != DBC_Light.Records()->end(); ++it)
-    {
-        if (_mapRecord == it->second->Get_MapID())
-        {
-            return it->second;
-        }
-    }
-
-    return nullptr;
 }
 
 bool MapSkies::drawSky(cvec3 pos)
@@ -232,20 +234,20 @@ bool MapSkies::DEBUG_Render()
 
     for (auto it : skies)
     {
-        _Pipeline->Clear();
+        /*_Pipeline->Clear();
         _Pipeline->Translate(it->position);
         _Pipeline->Scale(it->radiusInner);
 
         _TechniquesMgr->m_Debug_GeometryPass->SetPVW();
         _TechniquesMgr->m_Debug_GeometryPass->SetColor4(vec4(1.0f, 0.0f, 1.0f, 0.3f));
 
-        _Render->r->drawIndexed(PRIM_TRILIST, 0, 128 * 3, 0, 126, false);
+        _Render->r->drawIndexed(PRIM_TRILIST, 0, 128 * 3, 0, 126, false);*/
 
         //---------------------------------------------------------------------------------
 
         _Pipeline->Clear();
-        _Pipeline->Translate(it->position);
-        _Pipeline->Scale(it->radiusOuter);
+        _Pipeline->Translate(it->m_Position);
+        _Pipeline->Scale(it->m_Range.max);
 
         _TechniquesMgr->m_Debug_GeometryPass->SetPVW();
         _TechniquesMgr->m_Debug_GeometryPass->SetColor4(vec4(1.0f, 1.0f, 0.0f, 0.3f));

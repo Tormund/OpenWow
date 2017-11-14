@@ -89,6 +89,20 @@ void TechniquesMgr::Init()
 
 	m_DSDirLightPassTech->Unbind();
 
+    //----------------------------------------------------------------//
+
+    m_POST_Fog = new POST_Fog();
+    m_POST_Fog->BindS();
+
+    m_POST_Fog->SetProjectionMatrix(mat4());
+    m_POST_Fog->SetViewMatrix(mat4());
+    m_POST_Fog->SetWorldMatrix(mat4());
+
+    m_POST_Fog->BindToPostprocess();
+
+    m_POST_Fog->SetScreenSize(_Config.windowSizeX, _Config.windowSizeY);
+
+    m_POST_Fog->Unbind();
 	//----------------------------------------------------------------//
 
 	m_SimpleRender = new SimpleRenderGBuffer();

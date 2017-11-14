@@ -24,7 +24,7 @@
     <ClCompile Include="Environment\DayNightCycle.cpp" />
     <ClCompile Include="Environment\DayNightPhase.cpp" />
     <ClCompile Include="Environment\EnvironmentManager.cpp" />
-    <ClCompile Include="Environment\MapSkies.cpp" />
+    <ClCompile Include="Environment\SkyManager.cpp" />
     <ClCompile Include="Environment\Sky.cpp" />
     <ClCompile Include="IWoWPrototype.cpp" />
     <ClCompile Include="IWoWTemplate.cpp" />
@@ -89,7 +89,7 @@
     <ClInclude Include="Environment\DayNightCycle.h" />
     <ClInclude Include="Environment\DayNightPhase.h" />
     <ClInclude Include="Environment\EnvironmentManager.h" />
-    <ClInclude Include="Environment\MapSkies.h" />
+    <ClInclude Include="Environment\SkyManager.h" />
     <ClInclude Include="Environment\Sky.h" />
     <ClInclude Include="IWoWObject.h" />
     <ClInclude Include="IWoWPrototype.h" />

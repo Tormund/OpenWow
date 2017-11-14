@@ -41,9 +41,6 @@
     <ClCompile Include="OpenGL.cpp">
       <Filter>Render</Filter>
     </ClCompile>
-    <ClCompile Include="Techniques\SimpleRenderGBuffer.cpp">
-      <Filter>Techniques\Postprocess</Filter>
-    </ClCompile>
     <ClCompile Include="Techniques\ds_dir_light_pass_tech.cpp">
       <Filter>Techniques\Postprocess</Filter>
     </ClCompile>
@@ -183,6 +180,9 @@
     </ClInclude>
     <ClInclude Include="RenderConfig.h">
       <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Techniques\POST_Fog.h">
+      <Filter>Techniques\Postprocess</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

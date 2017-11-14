@@ -12,6 +12,7 @@
 
 // After
 #include "Techniques/ds_dir_light_pass_tech.h"
+#include "Techniques/POST_Fog.h"
 #include "Techniques/SimpleRenderGBuffer.h"
 
 // UI
@@ -40,7 +41,7 @@ class TechniquesMgr
 	// Lights
 
 	DSDirLightPassTech* m_DSDirLightPassTech;
-
+    POST_Fog* m_POST_Fog;
 	SimpleRenderGBuffer* m_SimpleRender;
 
 	// UI

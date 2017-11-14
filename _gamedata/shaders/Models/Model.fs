@@ -50,7 +50,7 @@ void main(void)
 			discard;
 	}
 	
-	setMatID(1.0);
+	setMatID(float(gBlendMode));
 	setPos(VSout.position);
 	setNormal(normalize(VSout.normal));
 	setAlbedo4(resultColor);

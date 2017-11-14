@@ -8,6 +8,11 @@ class SimpleRenderGBuffer : public Technique
 public:
 	SimpleRenderGBuffer() : Technique("shaders/Common_SimpleVertex.vs", "shaders/POST_SimpleRender.fs") {}
 
+    void SetCameraPos(cvec3 _cameraPos)
+    {
+        setVec3("gCameraPosition", _cameraPos);
+    }
+
 	 void SetScreenSize(unsigned int Width, unsigned int Height)
 	 {
 		 setVec2("gScreenSize", (float)Width, (float)Height);

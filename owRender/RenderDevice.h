@@ -68,10 +68,6 @@ public:
 	void initStates();
 	bool init();
 
-	// -----------------------------------------------------------------------------
-	// Resources
-	// -----------------------------------------------------------------------------
-
 	// Vertex layouts
 	uint32 registerVertexLayout(uint32 numAttribs, R_VertexLayoutAttrib *attribs);
 
@@ -119,8 +115,6 @@ public:
 	int getShaderBufferLoc(uint32 shaderId, const char *name);
 	void setShaderConst(int loc, R_ShaderConstType type, const void *values, uint32 count = 1);
 	void setShaderSampler(int loc, uint32 texUnit);
-	const char* getDefaultVSCode();
-	const char* getDefaultFSCode();
 	void runComputeShader(uint32 shaderId, uint32 xDim, uint32 yDim, uint32 zDim);
 	string getShaderLog() const
 	{
@@ -330,10 +324,6 @@ public:
 	void clear(uint32 flags = CLR_COLOR_RT0 | CLR_COLOR_RT1 | CLR_COLOR_RT2 | CLR_COLOR_RT3 | CLR_DEPTH, float* colorRGBA = 0x0, float depth = 1.0f);
 	void draw(R_PrimitiveType primType, uint32 firstVert, uint32 numVerts);
 	void drawIndexed(R_PrimitiveType primType, uint32 firstIndex, uint32 numIndices, uint32 firstVert, uint32 numVerts, bool _softReset = true);
-
-	// -----------------------------------------------------------------------------
-	// Getters
-	// -----------------------------------------------------------------------------
 
 	// WARNING: Modifying internal states may lead to unexpected behavior and/or crashes
 	const R_Buffer& getBuffer(uint32 bufObj) { return _buffers.getRef(bufObj); }

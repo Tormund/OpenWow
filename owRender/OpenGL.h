@@ -4,6 +4,8 @@
 #   error gl.h included before OpenGL.h
 #endif
 
+#define GL_VERSION_NUM 100
+
 #   define WIN32_LEAN_AND_MEAN 1
 #   ifndef NOMINMAX
 #       define NOMINMAX
@@ -20,8 +22,7 @@ bool initOpenGLExtensions();
 // OpenGL 2.1 functionality that has not been deprecated by GL3
 // =================================================================================================
 
-#ifndef GL_VERSION_1_1
-#define GL_VERSION_1_1 1
+#if (GL_VERSION_NUM >= 10)
 
 typedef unsigned int          GLenum;
 typedef unsigned char         GLboolean;
@@ -330,7 +331,7 @@ extern "C"
 	GLAPI void GLAPIENTRY glViewport(GLint x, GLint y, GLsizei width, GLsizei height);
 }  // extern "C"
 
-#endif  // GL_VERSION_1_1
+#endif 
 
 typedef void (GLAPIENTRYP PFNGLGETTEXIMAGEPROC) (GLenum target, GLint level, GLenum format, GLenum type, GLvoid *pixels);
 typedef void (GLAPIENTRYP PFNGLPOLYGONMODEPROC)(GLenum face, GLenum mode);
@@ -342,8 +343,7 @@ extern PFNGLPOLYGONMODEPROC glPolygonMode;
 extern PFNGLCLEARDEPTH glClearDepth;
 extern PFNGLDRAWBUFFERPROC glDrawBuffer;
 
-#ifndef GL_VERSION_1_2
-#define GL_VERSION_1_2 1
+#if (GL_VERSION_NUM >= 12)
 
 #define GL_UNSIGNED_BYTE_3_3_2            0x8032
 #define GL_UNSIGNED_SHORT_4_4_4_4         0x8033
@@ -397,11 +397,10 @@ extern PFNGLTEXIMAGE3DPROC glTexImage3D;
 extern PFNGLTEXSUBIMAGE3DPROC glTexSubImage3D;
 extern PFNGLCOPYTEXSUBIMAGE3DPROC glCopyTexSubImage3D;
 
-#endif  // GL_VERSION_1_2
+#endif
 
 
-#ifndef GL_VERSION_1_3
-#define GL_VERSION_1_3 1
+#if (GL_VERSION_NUM >= 13)
 
 #define GL_TEXTURE0                       0x84C0
 #define GL_TEXTURE1                       0x84C1
@@ -483,11 +482,10 @@ extern PFNGLCOMPRESSEDTEXSUBIMAGE2DPROC glCompressedTexSubImage2D;
 extern PFNGLCOMPRESSEDTEXSUBIMAGE1DPROC glCompressedTexSubImage1D;
 extern PFNGLGETCOMPRESSEDTEXIMAGEPROC glGetCompressedTexImage;
 
-#endif  // GL_VERSION_1_3
+#endif
 
 
-#ifndef GL_VERSION_1_4
-#define GL_VERSION_1_4 1
+#if (GL_VERSION_NUM >= 14)
 
 #define GL_BLEND_DST_RGB                  0x80C8
 #define GL_BLEND_SRC_RGB                  0x80C9
@@ -525,11 +523,10 @@ extern PFNGLPOINTPARAMETERFVPROC glPointParameterfv;
 extern PFNGLPOINTPARAMETERIPROC glPointParameteri;
 extern PFNGLPOINTPARAMETERIVPROC glPointParameteriv;
 
-#endif  // GL_VERSION_1_4
+#endif
 
 
-#ifndef GL_VERSION_1_5
-#define GL_VERSION_1_5 1
+#if (GL_VERSION_NUM >= 15)
 
 typedef ptrdiff_t   GLintptr;
 typedef ptrdiff_t   GLsizeiptr;
@@ -608,11 +605,10 @@ extern PFNGLUNMAPBUFFERPROC glUnmapBuffer;
 extern PFNGLGETBUFFERPARAMETERIVPROC glGetBufferParameteriv;
 extern PFNGLGETBUFFERPOINTERVPROC glGetBufferPointerv;
 
-#endif  // GL_VERSION_1_5
+#endif
 
 
-#ifndef GL_VERSION_2_0
-#define GL_VERSION_2_0 1
+#if (GL_VERSION_NUM >= 20)
 
 typedef char    GLchar;
 
@@ -815,11 +811,10 @@ extern PFNGLUNIFORMMATRIX4FVPROC glUniformMatrix4fv;
 extern PFNGLVALIDATEPROGRAMPROC glValidateProgram;
 extern PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer;
 
-#endif  // GL_VERSION_2_0
+#endif
 
 
-#ifndef GL_VERSION_2_1
-#define GL_VERSION_2_1 1
+#if (GL_VERSION_NUM >= 21)
 
 #define GL_CURRENT_RASTER_SECONDARY_COLOR   0x845F
 #define GL_PIXEL_PACK_BUFFER                0x88EB
@@ -852,11 +847,10 @@ extern PFNGLUNIFORMMATRIX4X2FVPROC glUniformMatrix4x2fv;
 extern PFNGLUNIFORMMATRIX3X4FVPROC glUniformMatrix3x4fv;
 extern PFNGLUNIFORMMATRIX4X3FVPROC glUniformMatrix4x3fv;
 
-#endif  // GL_VERSION_2_1
+#endif
 
 
-#ifndef GL_VERSION_3_0
-#define GL_VERSION_3_0 1
+#if (GL_VERSION_NUM >= 30)
 
 #define GL_COMPARE_REF_TO_TEXTURE         0x884E
 #define GL_CLIP_DISTANCE0                 0x3000
@@ -1266,11 +1260,10 @@ extern PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays;
 extern PFNGLGENVERTEXARRAYSPROC glGenVertexArrays;
 extern PFNGLISVERTEXARRAYPROC glIsVertexArray;
 
-#endif // GL_VERSION_3_0
+#endif
 
 
-#ifndef GL_VERSION_3_1
-#define GL_VERSION_3_1 1
+#if (GL_VERSION_NUM >= 31)
 
 #define GL_SAMPLER_2D_RECT                0x8B63
 #define GL_SAMPLER_2D_RECT_SHADOW         0x8B64
@@ -1360,11 +1353,10 @@ extern PFNGLGETACTIVEUNIFORMBLOCKIVPROC glGetActiveUniformBlockiv;
 extern PFNGLGETACTIVEUNIFORMBLOCKNAMEPROC glGetActiveUniformBlockName;
 extern PFNGLUNIFORMBLOCKBINDINGPROC glUniformBlockBinding;
 
-#endif /* GL_VERSION_3_1 */
+#endif 
 
 
-#ifndef GL_VERSION_3_2
-#define GL_VERSION_3_2 1
+#if (GL_VERSION_NUM >= 32)
 
 typedef struct __GLsync *GLsync;
 
@@ -1473,11 +1465,10 @@ extern PFNGLTEXIMAGE3DMULTISAMPLEPROC glTexImage3DMultisample;
 extern PFNGLGETMULTISAMPLEFVPROC glGetMultisamplefv;
 extern PFNGLSAMPLEMASKIPROC glSampleMaski;
 
-#endif // GL_VERSION_3_2
+#endif
 
 
-#ifndef GL_VERSION_3_3
-#define GL_VERSION_3_3 1
+#if (GL_VERSION_NUM >= 33)
 
 #define GL_VERTEX_ATTRIB_ARRAY_DIVISOR    0x88FE
 #define GL_SRC1_COLOR                     0x88F9
@@ -1554,11 +1545,10 @@ extern PFNGLVERTEXATTRIBP3UIVPROC glVertexAttribP3uiv;
 extern PFNGLVERTEXATTRIBP4UIPROC glVertexAttribP4ui;
 extern PFNGLVERTEXATTRIBP4UIVPROC glVertexAttribP4uiv;
 
-#endif /* GL_VERSION_3_3 */
+#endif
 
 
-#ifndef GL_VERSION_4_0
-#define GL_VERSION_4_0 1
+#if (GL_VERSION_NUM >= 40)
 
 #define GL_SAMPLE_SHADING                 0x8C36
 #define GL_MIN_SAMPLE_SHADING_VALUE       0x8C37
@@ -1732,11 +1722,10 @@ extern PFNGLBEGINQUERYINDEXEDPROC glBeginQueryIndexed;
 extern PFNGLENDQUERYINDEXEDPROC glEndQueryIndexed;
 extern PFNGLGETQUERYINDEXEDIVPROC glGetQueryIndexediv;
 
-#endif /* GL_VERSION_4_0 */
+#endif
 
 
-#ifndef GL_VERSION_4_1
-#define GL_VERSION_4_1 1
+#if (GL_VERSION_NUM >= 41)
 
 #define GL_FIXED                          0x140C
 #define GL_IMPLEMENTATION_COLOR_READ_TYPE 0x8B9A
@@ -1952,11 +1941,10 @@ extern PFNGLDEPTHRANGEINDEXEDPROC glDepthRangeIndexed;
 extern PFNGLGETFLOATI_VPROC glGetFloati_v;
 extern PFNGLGETDOUBLEI_VPROC glGetDoublei_v;
 
-#endif /* GL_VERSION_4_1 */
+#endif
 
 
-#ifndef GL_VERSION_4_2
-#define GL_VERSION_4_2 1
+#if (GL_VERSION_NUM >= 42)
 
 #define GL_COPY_READ_BUFFER_BINDING       0x8F36
 #define GL_COPY_WRITE_BUFFER_BINDING      0x8F37
@@ -2097,11 +2085,10 @@ extern PFNGLTEXSTORAGE3DPROC glTexStorage3D;
 extern PFNGLDRAWTRANSFORMFEEDBACKINSTANCEDPROC glDrawTransformFeedbackInstanced;
 extern PFNGLDRAWTRANSFORMFEEDBACKSTREAMINSTANCEDPROC glDrawTransformFeedbackStreamInstanced;
 
-#endif /* GL_VERSION_4_2 */
+#endif
 
 
-#ifndef GL_VERSION_4_3
-#define GL_VERSION_4_3 1
+#if (GL_VERSION_NUM >= 43)
 
 #define GL_NUM_SHADING_LANGUAGE_VERSIONS  0x82E9
 #define GL_VERTEX_ATTRIB_ARRAY_LONG       0x874E
@@ -2453,11 +2440,10 @@ extern PFNGLGETOBJECTLABELPROC glGetObjectLabel;
 extern PFNGLOBJECTPTRLABELPROC glObjectPtrLabel;
 extern PFNGLGETOBJECTPTRLABELPROC glGetObjectPtrLabel;
 
-#endif /* GL_VERSION_4_3 */
+#endif
 
 
-#ifndef GL_VERSION_4_4
-#define GL_VERSION_4_4 1
+#if (GL_VERSION_NUM >= 44)
 
 #define GL_MAX_VERTEX_ATTRIB_STRIDE       0x82E5
 #define GL_PRIMITIVE_RESTART_FOR_PATCHES_SUPPORTED 0x8221
@@ -2499,7 +2485,7 @@ extern PFNGLBINDSAMPLERSPROC glBindSamplers;
 extern PFNGLBINDIMAGETEXTURESPROC glBindImageTextures;
 extern PFNGLBINDVERTEXBUFFERSPROC glBindVertexBuffers;
 
-#endif /* GL_VERSION_4_4 */
+#endif
 
 
 // =================================================================================================

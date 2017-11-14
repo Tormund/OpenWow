@@ -8,24 +8,6 @@
 
 #define CHECK_GL_ERROR checkError();
 
-// Log shaders
-static const char *defaultShaderVS =
-"#version 330\n"
-"uniform mat4 viewProjMat;\n"
-"uniform mat4 worldMat;\n"
-"layout ( location = 0 ) in vec3 vertPos;\n"
-"void main() {\n"
-"	gl_Position = viewProjMat * worldMat * vec4( vertPos, 1.0 );\n"
-"}\n";
-
-static const char *defaultShaderFS =
-"#version 330\n"
-"out vec4 fragColor;\n"
-"uniform vec4 color;\n"
-"void main() {\n"
-"	fragColor = color;\n"
-"}\n";
-
 // Bindings for RDI types to GL
 static const uint32 dataTypes[8] = {GL_BYTE, GL_UNSIGNED_BYTE, GL_SHORT, GL_UNSIGNED_SHORT, GL_INT, GL_UNSIGNED_INT, GL_FLOAT, GL_DOUBLE };
 
@@ -324,7 +306,6 @@ void RenderDevice::finishCreatingGeometry(uint32 geoObj)
 		assert1(buf.glObj != 0 && buf.type == GL_ARRAY_BUFFER || buf.type == GL_SHADER_STORAGE_BUFFER); // special case for compute buffer
 
 		glBindBuffer(GL_ARRAY_BUFFER, buf.glObj);
-        //bool isFloatingPoint = (vbSlot.type == R_DataType::T_FLOAT) || (vbSlot.type == R_DataType::T_DOUBLE);
 		glVertexAttribPointer(i, attrib.size, dataTypes[vbSlot.type], vbSlot.needNorm, vbSlot.stride, (char *)0 + vbSlot.offset + attrib.offset);
 
 		newVertexAttribMask |= 1 << i;
@@ -991,16 +972,6 @@ void RenderDevice::setShaderConst(int loc, R_ShaderConstType type, const void *v
 void RenderDevice::setShaderSampler(int loc, uint32 texUnit)
 {
 	glUniform1i(loc, (int)texUnit);
-}
-
-const char *RenderDevice::getDefaultVSCode()
-{
-	return defaultShaderVS;
-}
-
-const char *RenderDevice::getDefaultFSCode()
-{
-	return defaultShaderFS;
 }
 
 void RenderDevice::runComputeShader(uint32 shaderId, uint32 xDim, uint32 yDim, uint32 zDim)

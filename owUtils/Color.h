@@ -10,6 +10,14 @@ struct Color
 		alpha = 0.0f;
 	}
 
+    Color(vec3 _vec)
+    {
+        red = _vec.x;
+        green = _vec.y;
+        blue = _vec.z;
+        alpha = 1.0f;
+    }
+
 	Color(float _Red, float _Green, float _Blue)
 	{
 		red = _Red;

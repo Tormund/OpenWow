@@ -192,7 +192,6 @@
     <ClCompile Include="Techniques\ds_dir_light_pass_tech.cpp" />
     <ClCompile Include="Techniques\ds_light_pass_tech.cpp" />
     <ClCompile Include="Techniques\ds_point_light_pass_tech.cpp" />
-    <ClCompile Include="Techniques\SimpleRenderGBuffer.cpp" />
     <ClCompile Include="Techniques\Technique.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TexturesMgr.cpp" />
@@ -231,6 +230,7 @@
     <ClInclude Include="Techniques\MapChunk_GeometryPass.h" />
     <ClInclude Include="Techniques\MapTileLowRes_GeometryPass.h" />
     <ClInclude Include="Techniques\Model_Shader.h" />
+    <ClInclude Include="Techniques\POST_Fog.h" />
     <ClInclude Include="Techniques\SimpleRenderGBuffer.h" />
     <ClInclude Include="Techniques\Sky_GeometryPass.h" />
     <ClInclude Include="Techniques\Technique.h" />

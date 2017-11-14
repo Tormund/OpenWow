@@ -20,6 +20,8 @@ public:
     void Render(double t, double dt);
     void RenderUI() override;
 
+    void RenderUIDebug();
+
     //
 
     V_MOUSE_MOVED;

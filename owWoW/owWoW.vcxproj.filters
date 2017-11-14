@@ -43,6 +43,9 @@
     <Filter Include="Environment\DayNight">
       <UniqueIdentifier>{28b97f23-4ed2-4ece-b969-7b97bd834fdc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="DBC\Light">
+      <UniqueIdentifier>{5d127be8-c522-4fd9-8653-859692201da5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -127,9 +130,6 @@
     <ClCompile Include="Environment\EnvironmentManager.cpp">
       <Filter>Environment</Filter>
     </ClCompile>
-    <ClCompile Include="Environment\MapSkies.cpp">
-      <Filter>Environment</Filter>
-    </ClCompile>
     <ClCompile Include="Environment\Sky.cpp">
       <Filter>Environment</Filter>
     </ClCompile>
@@ -171,6 +171,9 @@
     </ClCompile>
     <ClCompile Include="Environment\DayNightPhase.cpp">
       <Filter>Environment\DayNight</Filter>
+    </ClCompile>
+    <ClCompile Include="Environment\SkyManager.cpp">
+      <Filter>Environment</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -253,9 +256,6 @@
     <ClInclude Include="Environment\EnvironmentManager.h">
       <Filter>Environment</Filter>
     </ClInclude>
-    <ClInclude Include="Environment\MapSkies.h">
-      <Filter>Environment</Filter>
-    </ClInclude>
     <ClInclude Include="Environment\Sky.h">
       <Filter>Environment</Filter>
     </ClInclude>
@@ -273,21 +273,6 @@
       <Filter>DBC</Filter>
     </ClInclude>
     <ClInclude Include="DBC_AreaTable.h">
-      <Filter>DBC</Filter>
-    </ClInclude>
-    <ClInclude Include="DBC_Light.h">
-      <Filter>DBC</Filter>
-    </ClInclude>
-    <ClInclude Include="DBC_LightFloatBand.h">
-      <Filter>DBC</Filter>
-    </ClInclude>
-    <ClInclude Include="DBC_LightIntBand.h">
-      <Filter>DBC</Filter>
-    </ClInclude>
-    <ClInclude Include="DBC_LightParams.h">
-      <Filter>DBC</Filter>
-    </ClInclude>
-    <ClInclude Include="DBC_LightSkyBox.h">
       <Filter>DBC</Filter>
     </ClInclude>
     <ClInclude Include="DBC_LiquidMaterial.h">
@@ -360,6 +345,24 @@
     </ClInclude>
     <ClInclude Include="Environment\DayNightCycle.h">
       <Filter>Environment\DayNight</Filter>
+    </ClInclude>
+    <ClInclude Include="Environment\SkyManager.h">
+      <Filter>Environment</Filter>
+    </ClInclude>
+    <ClInclude Include="DBC_Light.h">
+      <Filter>DBC\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="DBC_LightFloatBand.h">
+      <Filter>DBC\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="DBC_LightIntBand.h">
+      <Filter>DBC\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="DBC_LightParams.h">
+      <Filter>DBC\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="DBC_LightSkyBox.h">
+      <Filter>DBC\Light</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
