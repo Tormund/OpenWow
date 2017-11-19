@@ -79,6 +79,10 @@ void glDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severity, GLsiz
 	//Log::Exit(-1);
 }
 
+// =================================================================================================
+// Common
+// =================================================================================================
+
 RenderDevice::RenderDevice()
 {
 	_numVertexLayouts = 0;

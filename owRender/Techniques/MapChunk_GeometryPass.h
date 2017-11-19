@@ -4,7 +4,7 @@
 
 class MapChunk_GeometryPass : public Technique {
 public:
-	MapChunk_GeometryPass() : Technique("shaders/MapChunk.vs", "shaders/MapChunk.fs") 
+	MapChunk_GeometryPass() : Technique("shaders/MapChunk.vs", "shaders/MapChunk.fs")
     {
         gLayersCount = getLocation("gLayersCount");
 

@@ -132,6 +132,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="DBC__File.inl" />
+    <None Include="Environment\Sky.inl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C29C7FEE-86D9-4EEF-965F-68B89C516FAE}</ProjectGuid>

@@ -346,6 +346,14 @@ void MapTile::draw()
     }
 }
 
+void MapTile::Render_DEBUG()
+{
+    for (auto it : m_Chunks)
+    {
+        it->Render_DEBUG();
+    }
+}
+
 void MapTile::drawWater()
 {
     for (auto it : m_MH2O)

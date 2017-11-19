@@ -46,7 +46,7 @@ class Map
 	void RenderObjects();
 	void RenderModels();
 	void RenderWater();
-
+    void Render_DEBUG();
 	//
 
 	void enterTile(int x, int z);

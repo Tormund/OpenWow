@@ -85,20 +85,20 @@ vector<uint16> Map_Shared::GenarateDefaultMapArray(uint16 _holes)
             }
 
             myIndexes.push_back(outerArray[i][j]);
+            myIndexes.push_back(innerArray[i][j]);
+            myIndexes.push_back(outerArray[i][j + 1]);
+            
             myIndexes.push_back(outerArray[i][j + 1]);
             myIndexes.push_back(innerArray[i][j]);
+            myIndexes.push_back(outerArray[i + 1][j + 1]);
 
-            myIndexes.push_back(outerArray[i][j + 1]);
             myIndexes.push_back(outerArray[i + 1][j + 1]);
             myIndexes.push_back(innerArray[i][j]);
-
-            myIndexes.push_back(outerArray[i + 1][j + 1]);
+            myIndexes.push_back(outerArray[i + 1][j]);
+           
             myIndexes.push_back(outerArray[i + 1][j]);
             myIndexes.push_back(innerArray[i][j]);
-
-            myIndexes.push_back(outerArray[i + 1][j]);
             myIndexes.push_back(outerArray[i][j]);
-            myIndexes.push_back(innerArray[i][j]);
         }
     }
 
@@ -129,11 +129,11 @@ vector<uint16> Map_Shared::GenarateLowResMapArray(uint16 _holes)
             }
 
             myIndexes.push_back(outerArray[i][j]);
-            myIndexes.push_back(outerArray[i][j + 1]);
-            myIndexes.push_back(outerArray[i + 1][j]);
-
             myIndexes.push_back(outerArray[i + 1][j]);
             myIndexes.push_back(outerArray[i][j + 1]);
+            
+            myIndexes.push_back(outerArray[i][j + 1]);
+            myIndexes.push_back(outerArray[i + 1][j]);
             myIndexes.push_back(outerArray[i + 1][j + 1]);
         }
     }

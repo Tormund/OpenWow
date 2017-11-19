@@ -162,7 +162,6 @@ private:
 	vector<MH2O_WaterLayer> m_WaterLayers;
 
 	float ydir;
-	float texRepeats;
 
 	int type;
 

@@ -2,35 +2,57 @@
 
 #include "Sky.h"
 
-class MapSkies
+class SkyManager
 {
 public:
-	MapSkies(DBC_MapRecord* _mapRecord);
-	~MapSkies();
-
-	void InitBuffer();
+	SkyManager(DBC_MapRecord* _mapRecord);
+	~SkyManager();
 
 public:
-    Sky* m_TempSky;
-    Sky* m_CurrentSky;
-
-
-	vec3 colorSet[COLORS_PARAMS_COUNT];
-    float fogSet[FOGS_PARAMS_COUNT];
-    float glow;
+	void Calculate(cvec3 _cameraPosition, uint32 _time);
+    bool HasSkies() { return !skies.empty(); }
 
 
 
+    vec3 GetColor(LightColors _color)
+    {
+        return m_Interpolated.m_InterpolatedColors[_color];
+    }
+    float GetFog(LightFogs _fog)
+    {
+        return m_Interpolated.m_InterpolatedFogs[_fog];
+    }
+    float GetGlow()
+    {
+        return m_Interpolated.m_glow;
+    }
+    float GetWaterShallowAlpha()
+    {
+        return m_Interpolated.m_waterShallowAlpha;
+    }
+    float GetWaterDarkAlpha()
+    {
+        return m_Interpolated.m_waterDeepAlpha;
+    }
+    float GetOceanShallowAlpha()
+    {
+        return m_Interpolated.m_oceanShallowAlpha;
+    }
+    float GetOceanDarkAlpha()
+    {
+        return m_Interpolated.m_oceanDeepAlpha;
+    }
 
-	void CalculateSkiesWeights(cvec3 pos);
-	void initSky(cvec3 pos, uint32 t);
-    bool hasSkies() { return !skies.empty(); }
 
 	bool drawSky(cvec3 pos);
     bool DEBUG_Render();
 
+private:
+    void InitBuffer();
+    void CalculateSkiesWeights(cvec3 pos);
 
 private:
+    SkyParams m_Interpolated;
 	uint32 __vb;
 	uint32 __geom;
 	uint32 __vertsSize;
@@ -38,3 +60,4 @@ private:
 	vector<Sky*> skies;
 	//MDX* stars;  // BOUZI FIXME ENABLE ME
 };
+

@@ -8,6 +8,8 @@ protected:
     Technique(cstring _fileNameVS, cstring _fileNameFS, cstring _filenameGS);
 	~Technique();
 
+    void Process(const char *vertexShaderSrc, const char *fragmentShaderSrc, const char *geometryShaderSrc);
+
     void InitBaseUniforms();
 
 public:

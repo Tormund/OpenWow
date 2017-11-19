@@ -1,6 +1,4 @@
-#version 330
-
-struct VSOutputType
+/*struct VSOutputType
 {
 	vec3 WorldSpacePos;
 	vec2 TexCoordDetail;
@@ -37,4 +35,4 @@ void main(void)
     // done with the vertex
     EmitVertex();
   }
-};
+};*/

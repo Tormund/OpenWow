@@ -53,10 +53,7 @@ Technique::Technique(cstring _fileName)
 	string shVS = ProcessShader(File(_fileName + ".vs"));
 	string shFS = ProcessShader(File(_fileName + ".fs"));
 
-	shaderId = _Render->r->createShader(shVS.c_str(), shFS.c_str(), nullptr, nullptr, nullptr, nullptr);
-
-	Log::Error("SH %s", _Render->r->getShaderLog().c_str());
-	Log::Error("ID == %d", shaderId);
+    Process(shVS.c_str(), shFS.c_str(), nullptr);
 
     InitBaseUniforms();
 }
@@ -66,10 +63,7 @@ Technique::Technique(cstring _fileNameVS, cstring _fileNameFS)
 	string shVS = ProcessShader(File(_fileNameVS));
 	string shFS = ProcessShader(File(_fileNameFS));
 
-	shaderId = _Render->r->createShader(shVS.c_str(), shFS.c_str(), nullptr, nullptr, nullptr, nullptr);
-
-	Log::Error("SH %s", _Render->r->getShaderLog().c_str());
-	Log::Error("ID == %d", shaderId);
+    Process(shVS.c_str(), shFS.c_str(), nullptr);
 
     InitBaseUniforms();
 }
@@ -80,10 +74,7 @@ Technique::Technique(cstring _fileNameVS, cstring _fileNameFS, cstring _fileName
     string shFS = ProcessShader(File(_fileNameFS));
     string shGS = ProcessShader(File(_fileNameGS));
 
-    shaderId = _Render->r->createShader(shVS.c_str(), shFS.c_str(), shGS.c_str(), nullptr, nullptr, nullptr);
-
-    Log::Error("SH %s", _Render->r->getShaderLog().c_str());
-    Log::Error("ID == %d", shaderId);
+    Process(shVS.c_str(), shFS.c_str(), shGS.c_str());
 
     InitBaseUniforms();
 }
@@ -91,4 +82,20 @@ Technique::Technique(cstring _fileNameVS, cstring _fileNameFS, cstring _fileName
 Technique::~Technique()
 {
 
+}
+
+void Technique::Process(const char* vertexShaderSrc, const char* fragmentShaderSrc, const char* geometryShaderSrc)
+{
+    shaderId = _Render->r->createShader(vertexShaderSrc, fragmentShaderSrc, geometryShaderSrc, nullptr, nullptr, nullptr);
+    if (_Render->r->getShaderLog().empty())
+    {
+        Log::Green("Shader: Successfull. Id [%d].", shaderId);
+    }
+    else
+    {
+        Log::Error("______");
+        Log::Error("Shader: Error.");
+        Log::Error(_Render->r->getShaderLog().c_str());
+        Log::Error("______");
+    }
 }

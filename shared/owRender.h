@@ -15,8 +15,3 @@
 
 // Techiques
 #include "../owRender/TechniquesManager.h"
-
-#include "../owRender/Techniques/Technique.h"
-#include "../owRender/Techniques/ds_dir_light_pass_tech.h"
-#include "../owRender/Techniques/ds_light_pass_tech.h"
-#include "../owRender/Techniques/ds_point_light_pass_tech.h"

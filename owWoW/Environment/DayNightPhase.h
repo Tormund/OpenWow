@@ -9,12 +9,11 @@ public:
 
 	//
 
-	void setupLighting();
+	// void setupLighting();
 	// void setupFog(); // TODO
+
+    void Render_DEBUG(cvec3 _playerPos);
 
 	float dayIntensity, nightIntensity, ambientIntensity, fogIntensity, fogDepth;
 	vec3 dayColor, nightColor, ambientColor, fogColor, dayDir, nightDir;
-
-	DirectionalLight m_dirLightDay;
-	DirectionalLight m_dirLightNight;
 };

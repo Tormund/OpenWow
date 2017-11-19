@@ -196,8 +196,8 @@ void GameState_InWorld::RenderUI()
     // Fog
 
     sprintf(buff, "Fog[end=[%f] koeff=[%f]]\0",
-            _EnvironmentManager->skies->fogSet[FOG_DISTANCE],
-            _EnvironmentManager->skies->fogSet[FOG_MULTIPLIER]
+            _EnvironmentManager->skies->GetFog(LIGHT_FOG_DISTANCE),
+            _EnvironmentManager->skies->GetFog(LIGHT_FOG_MULTIPLIER)
     );
     _Render->RenderText(vec2(_Config.windowSizeX - 400, 80), buff);
 
@@ -207,38 +207,38 @@ void GameState_InWorld::RenderUI()
 
     const char* names[18] =
     {
-        "LIGHT_GLOBAL_DIFFUSE" ,
-        "LIGHT_GLOBAL_AMBIENT",
+        "LIGHT_COLOR_GLOBAL_DIFFUSE" ,
+        "LIGHT_COLOR_GLOBAL_AMBIENT",
 
-        "SKY_COLOR_0",
-        "SKY_COLOR_1",
-        "SKY_COLOR_2",
-        "SKY_COLOR_3",
-        "SKY_COLOR_4",
+        "LIGHT_COLOR_SKY_0",
+        "LIGHT_COLOR_SKY_1",
+        "LIGHT_COLOR_SKY_2",
+        "LIGHT_COLOR_SKY_3",
+        "LIGHT_COLOR_SKY_4",
 
-        "FOG_COLOR",
+        "LIGHT_COLOR_FOG",
 
-        "SKY_UNKNOWN_1",
+        "LIGHT_COLOR_UNK0",
 
-        "SUN_COLOR",
-        "SUN_HALO_COLOR",
+        "LIGHT_COLOR_SUN",
+        "LIGHT_COLOR_SUN_HALO",
 
-        "SKY_UNKNOWN_2",
+        "LIGHT_COLOR_UNK1",
 
-        "CLOUD_COLOR",
+        "LIGHT_COLOR_CLOUD",
 
-        "SKY_UNKNOWN_3",
+        "LIGHT_COLOR_UNK2",
 
-        "OCEAN_COLOR_LIGHT",
-        "OCEAN_COLOR_DARK",
+        "LIGHT_COLOR_OCEAN_LIGHT",
+        "LIGHT_COLOR_OCEAN_DARK",
 
-        "RIVER_COLOR_LIGHT",
-        "RIVER_COLOR_DARK"
+        "LIGHT_COLOR_RIVER_LIGHT",
+        "LIGHT_COLOR_RIVER_DARK"
     };
 
     for (uint8 i = 0; i < 18; i++)
     {
-        _Render->RenderRectangle(vec2(xPos,      yPos + i * 16), vec2(16.0f, 16.0f), Color(_EnvironmentManager->skies->colorSet[i]));
+        _Render->RenderRectangle(vec2(xPos,      yPos + i * 16), vec2(16.0f, 16.0f), Color(_EnvironmentManager->skies->GetColor((LightColors)i)));
         _Render->RenderText(     vec2(xPos + 20, yPos + i * 16), names[i]);
     }
 
@@ -407,22 +407,21 @@ On_Keyboard_Pressed(GameState_InWorld)
         return true;
     }
 
-    if (_key == OW_KEY_H)
-    {
-        //_Config.drawhighres = !_Config.drawhighres;
-        return true;
-    }
-
     if (_key == OW_KEY_F)
     {
         _Config.drawfog = !_Config.drawfog;
         return true;
     }
 
-    // minimap
     if (_key == OW_KEY_M)
     {
         minimapActive = !minimapActive;
+        return true;
+    }
+
+    if (_key == OW_KEY_T)
+    {
+        _Config.Switch(_Config.timeEnable);
         return true;
     }
 

@@ -167,6 +167,7 @@ void MapChunk::Load(File& f, load_phases phase)
                     *ttn++ = vec4((float)nor[2] / 127.0f, (float)nor[1] / 127.0f, (float)nor[0] / 127.0f, (float)nor[3] / 127.0f);
 
                     *ttn2++ = uint32(
+                        (uint8)(nor[3]) << 24 |
                         (uint8)(nor[0]) << 16 |
                         (uint8)(nor[1]) << 8 |
                         (uint8)(nor[2])
@@ -196,10 +197,12 @@ void MapChunk::Load(File& f, load_phases phase)
             {
                 for (int i = 0; i < ((j % 2) ? 8 : 9); i++)
                 {
-                    int8 nor[4];
+                    uint8 nor[4];
                     f.ReadBytes(&nor, 4);
                     *ttn++ = vec4((float)nor[2] / 255.0f, (float)nor[1] / 255.0f, (float)nor[0] / 255.0f, (float)nor[3] / 255.0f);
+                    //Log::Green("Color [%d][%d][%d][%d]", nor[2], nor[1], nor[0], nor[3]);
 
+                    nor[3] = maxf(maxf(nor[2], nor[1]), nor[0]);
                     *ttn2++ = uint32(
                         (uint8)(nor[3]) << 24 |
                         (uint8)(nor[0]) << 16 |
@@ -244,6 +247,26 @@ void MapChunk::Load(File& f, load_phases phase)
         _Render->r->setGeomIndexParams(__geom, __ib, R_IndexFormat::IDXFMT_16);
 
         _Render->r->finishCreatingGeometry(__geom);
+
+
+        //***************** DEBUG NORMALS
+
+        // Vertex buffer
+        uint32 __vb2 = _Render->r->createVertexBuffer(6 * t, nullptr);
+
+        _Render->r->updateBufferData(__vb2, 0 * t, C_MapBufferSize * sizeof(vec3), tempVertexes);
+        _Render->r->updateBufferData(__vb2, 3 * t, C_MapBufferSize * sizeof(vec3), tempNormals);
+
+
+        //
+
+        __geomDebugNormals = _Render->r->beginCreatingGeometry(_RenderStorage->__layout_GxVBF_PN);
+        _Render->r->setGeomVertexParams(__geomDebugNormals, __vb, R_DataType::T_FLOAT, 0 * t, 0);
+        _Render->r->setGeomVertexParams(__geomDebugNormals, __vb, R_DataType::T_FLOAT, 3 * t, 0);
+        _Render->r->setGeomIndexParams(__geomDebugNormals, __ib, R_IndexFormat::IDXFMT_16);
+        _Render->r->finishCreatingGeometry(__geomDebugNormals);
+
+
     }
 
     // Textures file. Offsets are NOT set
@@ -530,9 +553,21 @@ void MapChunk::Render()
 
     _Render->r->drawIndexed(PRIM_TRILIST, 0, m_IndexesCount, 0, C_MapBufferSize);
 
-    //PERF_INC(PERF_MAP_CHUNK_GEOMETRY);
+    //_Render->r->setFillMode(R_FillMode::RS_FILL_SOLID);
 
 
-    _Render->r->setFillMode(R_FillMode::RS_FILL_SOLID);
+
+
+}
+
+void MapChunk::Render_DEBUG()
+{
+    if (_CameraFrustum->_frustum.cullBox(m_Bounds))
+    {
+        return;
+    }
+
+    _Render->r->setGeometry(__geomDebugNormals);
+    _Render->r->drawIndexed(PRIM_TRILIST, 0, m_IndexesCount, 0, C_MapBufferSize);
 }
 

@@ -14,15 +14,6 @@ public:
         var = !var;
     }
 
-	inline void CalculateSquareDistances()
-	{
-		highresdistance2 = highresdistance * highresdistance;
-		mapdrawdistance2 = mapdrawdistance * mapdrawdistance;
-		modeldrawdistance2 = modeldrawdistance * modeldrawdistance;
-		doodaddrawdistance2 = doodaddrawdistance * doodaddrawdistance;
-		culldistance2 = culldistance * culldistance;
-	}
-
 	inline void CalculateAspectFactor()
 	{
 		aspectFactor = 1.0f;
@@ -60,22 +51,33 @@ public:
     //----------------------------------------------------
     //                     Distances                    --
     //----------------------------------------------------
+    struct
+    {
+        float mapdrawdistance;
+        float modeldrawdistance;
+        float doodaddrawdistance;
+        float highresdistance;
+        float culldistance;
+        float fogdistance;
 
-	float mapdrawdistance;
-	float modeldrawdistance;
-	float doodaddrawdistance;
-	float highresdistance;
-	float culldistance;
-    float fogdistance;
+        float mapdrawdistance2;
+        float modeldrawdistance2;
+        float doodaddrawdistance2;
+        float highresdistance2;
+        float culldistance2;
 
-	float mapdrawdistance2;
-	float modeldrawdistance2;
-	float doodaddrawdistance2;
-	float highresdistance2;
-	float culldistance2;
+        void Update()
+        {
+            highresdistance2 = highresdistance * highresdistance;
+            mapdrawdistance2 = mapdrawdistance * mapdrawdistance;
+            modeldrawdistance2 = modeldrawdistance * modeldrawdistance;
+            doodaddrawdistance2 = doodaddrawdistance * doodaddrawdistance;
+            culldistance2 = culldistance * culldistance;
+        }
+    } Distances;
 
     //----------------------------------------------------
-    //                      Render                      --
+    //                   Render OpenGL                  --
     //----------------------------------------------------
 
     struct
@@ -90,6 +92,10 @@ public:
         int	minorVersion = 0;
     } OpenGL;
 
+    //----------------------------------------------------
+    //                    Render Caps                   --
+    //----------------------------------------------------
+
     struct 
     {
         uint16	maxJointCount;
@@ -103,6 +109,10 @@ public:
         bool	instancing;
     } DeviceCaps;
 
+    //----------------------------------------------------
+    //                      Quality                     --
+    //----------------------------------------------------
+
     struct
     {
         bool Terrain_LowDetail;
@@ -112,19 +122,16 @@ public:
         uint16 Texture_Sampler;
     } Quality;
 
-    //--------------------------------------------------------------
-
 	// Drawing
+
 	bool draw_map_chunk;
 	bool draw_map_wmo;
 	bool draw_map_wmo_doodads;
 	bool draw_map_mdx;
     bool draw_water;
 
-	bool loading;
-	bool drawhighres;
 	bool drawfog;
-	bool drawColors;
+    bool timeEnable;
 };
 
 #define _Config RenderConfig::instance()

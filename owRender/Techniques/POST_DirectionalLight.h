@@ -3,10 +3,10 @@
 #include "ds_light_pass_tech.h"
 #include "../lights_common.h"
 
-class DSDirLightPassTech : public Technique
+class POST_DirectionalLight : public Technique
 {
 public:
-	DSDirLightPassTech() : Technique("shaders/Common_SimpleVertex.vs", "shaders/POST_Light_Direction.fs") {}
+	POST_DirectionalLight() : Technique("shaders/Common_SimpleVertex.vs", "shaders/POST_Light_Direction.fs") {}
 
 	void SetDirectionalLight(const DirectionalLight& Light)
 	{

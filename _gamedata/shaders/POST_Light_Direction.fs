@@ -52,52 +52,58 @@ uniform vec2 gScreenSize;
 // OUT
 out vec4 FragColor;
 
-vec4 CalcLightInternal(BaseLight Light, vec3 LightDirection, vec3 _position, vec3 _normal, vec2 _pixelXY)
-{
-	float DiffuseFactor = max(dot(_normal, -LightDirection), 0.0f);
+// Local
+vec2 pixelXY;
+vec3 WorldPos;
+vec3 Normal;
+vec4 Color;
 
-	vec4 DiffuseColor = vec4(Light.diffuse * DiffuseFactor, 0.0f);
-	vec4 SpecularColor = vec4(0, 0, 0, 0.0);
+vec3 CalcLightInternal(BaseLight Light, vec3 LightDirection)
+{
+	float DiffuseFactor = max(dot(Normal, -LightDirection), 0.0f);
+	vec3 DiffuseColor = vec3(Light.diffuse) * DiffuseFactor;
+	
+	vec3 SpecularColor = vec3(0, 0, 0);
 
 	if (DiffuseFactor > 0)
 	{
-		vec3 VertexToEye = normalize(gEyeWorldPos - _position);
-		vec3 LightReflect = normalize(reflect(-LightDirection, _normal));
-
+		vec3 VertexToEye = normalize(gEyeWorldPos - WorldPos);
+		vec3 LightReflect = normalize(reflect(LightDirection, Normal));
 
 		float SpecularFactor = dot(VertexToEye, LightReflect);
 		SpecularFactor = pow(SpecularFactor, gSpecularPower);
 
 		if (SpecularFactor > 0)
 		{
-			SpecularColor = vec4(Light.specular * getSpecParams(_pixelXY).xyz * SpecularFactor, 1.0f);
+			SpecularColor = vec3(Light.specular * getSpecParams(pixelXY).rgb) * SpecularFactor;
 		}
 	}
 
-	return vec4(Light.ambient, 1.0f) + DiffuseColor + SpecularColor;
+	return Light.ambient + DiffuseColor + SpecularColor;
 }
 
-vec4 CalcDirectionalLight(vec3 _position, vec3 _normal, vec2 _pixelXY)
+vec3 CalcDirectionalLight()
 {
-	return CalcLightInternal(gDirectionalLight.Base, gDirectionalLight.Direction, _position, _normal, _pixelXY);
+	return CalcLightInternal(gDirectionalLight.Base, gDirectionalLight.Direction);
 }
 
 // -----------------------------------------------------------------------------------------------
 
 void main(void)
 {
-	vec2 pixelXY = gl_FragCoord.xy / gScreenSize;
+	pixelXY = gl_FragCoord.xy / gScreenSize;
 	
-	vec3 WorldPos = getPos(pixelXY);
-	vec3 Normal = getNormal(pixelXY);
-	vec3 Color = getAlbedo(pixelXY);
-
-	if(getMatID(pixelXY) > 0.0)
+	WorldPos = getPos(pixelXY);
+	Normal = getNormal(pixelXY);
+	Color = getAlbedo4(pixelXY);
+	Color.a = 1.0;
+	
+	if(getMatID(pixelXY) >= 0.0)
 	{
-		FragColor = vec4(Color, 1.0)  * vec4(CalcDirectionalLight(WorldPos, Normal, pixelXY).xyz, 1.0f);
+		FragColor = Color * vec4(CalcLightInternal(gDirectionalLight.Base, gDirectionalLight.Direction), 1.0);
 	}
 	else
 	{
-		FragColor = vec4(Color, 1.0);
+		FragColor = Color;
 	}
 }

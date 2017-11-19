@@ -173,8 +173,8 @@ void GameState_Menu::Render(double t, double dt)
         _Render->r->clear(CLR_COLOR_RT0 | CLR_DEPTH);
 
         // Simple pass
-        _TechniquesMgr->m_SimpleRender->BindS();
-        _TechniquesMgr->m_SimpleRender->SetScreenSize(_Config.windowSizeX, _Config.windowSizeY);
+        _TechniquesMgr->m_POST_Simple->BindS();
+        _TechniquesMgr->m_POST_Simple->SetScreenSize(_Config.windowSizeX, _Config.windowSizeY);
 
         _Render->r->setDepthTest(false);
         _Render->r->setBlendMode(true, R_BlendFunc::BS_BLEND_ONE, R_BlendFunc::BS_BLEND_ONE);
@@ -184,7 +184,7 @@ void GameState_Menu::Render(double t, double dt)
         _Render->r->setBlendMode(false);
         _Render->r->setDepthTest(true);
 
-        _TechniquesMgr->m_SimpleRender->Unbind();
+        _TechniquesMgr->m_POST_Simple->Unbind();
 	}
 }
 
@@ -361,12 +361,6 @@ On_Keyboard_Pressed(GameState_Menu)
 	if (_key == OW_KEY_V)
 	{
         _Config.Switch(_Config.Quality.Terrain_MCLV);
-		return true;
-	}
-
-	if (_key == OW_KEY_H)
-	{
-		//_Config.drawhighres = !_Config.drawhighres;
 		return true;
 	}
 

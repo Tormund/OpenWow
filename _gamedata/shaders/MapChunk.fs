@@ -1,7 +1,8 @@
 #version 330
 #include "lib/fragDeferredWrite.glsl"
 
-struct VSOutputType
+// In put
+in struct
 {
 	vec3 WorldSpacePos;
 	vec3 Normal;
@@ -9,10 +10,7 @@ struct VSOutputType
 	vec4 VertexColorMCLV;
 	vec2 TexCoordDetail;
 	vec2 TexCoordAlpha;
-};
-
-// In
-in VSOutputType VSInput;
+} VSInput;
 
 // Layers
 uniform int gLayersCount;
@@ -54,13 +52,21 @@ void main()
 	
 	if (gShadowMapExists)
 	{
-		//float alphaCurrent = texture(gBlend, VSInput.TexCoordAlpha).a;
-		//resultColor = resultColor * (1.0 - alphaCurrent) + gShadowColor * alphaCurrent;
+		float alphaCurrent = texture(gBlend, VSInput.TexCoordAlpha).a;
+		resultColor = resultColor * (1.0 - alphaCurrent) + gShadowColor * alphaCurrent;
 	}
 
 	if (gMCLVExists)
 	{
-		resultColor += (VSInput.VertexColorMCLV.rgb * resultSpecular.a);
+		vec3 orig = resultColor;
+		//resultColor *= VSInput.VertexColorMCLV.rgb;
+		//resultColor = (vec3(1,1,1) - resultColor) * orig;
+		//resultColor = (vec3(1,1,1) + VSInput.VertexColorMCLV.rgb) / 2.0;
+		
+		//3
+		//vec3 col = mix(vec3(1,1,1), VSInput.VertexColorMCLV.rgb, VSInput.VertexColorMCLV.a);
+		//resultColor *= col;
+		resultColor += 0.5 * VSInput.VertexColorMCLV.rgb * VSInput.VertexColorMCLV.a;
 	}
 
 	if (gMCCVExists)
@@ -71,7 +77,7 @@ void main()
 	//
 	setMatID(1.0);
 	setPos(VSInput.WorldSpacePos);
-	setNormal(normalize(VSInput.Normal));
+	setNormal(VSInput.Normal);
 	setAlbedo(resultColor.rgb);
-	setSpecParams(resultSpecular.rgb, 1.0);
+	setSpecParams(resultSpecular.rgb, 16.0);
 };

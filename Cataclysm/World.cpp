@@ -13,7 +13,7 @@ World::World()
 
 	//----------------------------------------------------------------//
 
-	_Config.CalculateSquareDistances();
+	_Config.Distances.Update();
 
 	// Fog params
 	l_const = 0.0f;
@@ -36,13 +36,16 @@ void World::Render()
 		
 	// Main frame
 	
-
+    //--------------------------------------------------
 	// Geometry pass
+    //--------------------------------------------------
 	_Render->r->setRenderBuffer(_Render->rb);
 	_Render->r->clear();
 	RenderGeom();
 
+    //--------------------------------------------------
 	// Postprocess pass
+    //--------------------------------------------------
 	_Render->r->setRenderBuffer(0);
 	for (uint32 i = 0; i < 4; i++)
 	{
@@ -50,6 +53,12 @@ void World::Render()
 	}
 	_Render->r->clear(CLR_COLOR_RT0 | CLR_DEPTH);
 	RenderPostprocess();
+
+    // Result pass
+    /*_Render->r->setRenderBuffer(0);
+    _Render->r->setTexture(0, _Render->r->getRenderBufferTex(_Render->rbFinal, 0), 0, R_TextureUsage::Texture);
+    _Render->r->clear(CLR_COLOR_RT0 | CLR_DEPTH);
+    DSResultQuad();*/
 
 	//
 	// SECONDS PASS
@@ -123,7 +132,7 @@ void World::RenderGeom()
 		_TechniquesMgr->m_MapTileLowRes_GeometryPass->BindS();
 		_Pipeline->Clear();
 		_TechniquesMgr->m_MapTileLowRes_GeometryPass->SetPVW();
-		_TechniquesMgr->m_MapTileLowRes_GeometryPass->SetShadowColor(_EnvironmentManager->GetSkyColor(FOG_COLOR));
+		_TechniquesMgr->m_MapTileLowRes_GeometryPass->SetShadowColor(_EnvironmentManager->skies->GetColor(LIGHT_COLOR_FOG));
 
 		_Map.RenderLowResTiles();
 
@@ -132,6 +141,10 @@ void World::RenderGeom()
 	PERF_STOP(PERF_MAP_LOWRESOLUTION);
 
 	_Render->r->setDepthTest(true);
+
+    //=== DEBUG
+    _EnvironmentManager->dayNightPhase.Render_DEBUG(_Camera->Position);
+    //=== DEBUG
 
 	//
 
@@ -147,20 +160,34 @@ void World::RenderGeom()
 		_Pipeline->Clear();
 		_TechniquesMgr->m_MapChunk_GeometryPass->SetPVW();
 
-        _Render->r->setCullMode(R_CullMode::RS_CULL_FRONT);
-
 		_Map.RenderTiles();
 
 		_TechniquesMgr->m_MapChunk_GeometryPass->Unbind();
 	}
 	PERF_STOP(PERF_MAP_CHUNK_GEOMETRY);
 
+    //------------------------------------------------------------------------------
+    // Map chunks DEBUG
+    //------------------------------------------------------------------------------
+    /*if (_Config.draw_map_chunk)
+    {
+        //_Config.uselowlod = _Config.drawfog;
+
+        _TechniquesMgr->m_Debug_Normals->BindS();
+        _Pipeline->Clear();
+        _TechniquesMgr->m_Debug_Normals->SetPVW();
+
+        _Map.Render_DEBUG();
+
+        _TechniquesMgr->m_Debug_Normals->Unbind();
+    }*/
+
 	//
 
 	//------------------------------------------------------------------------------
 	// Map water
 	//------------------------------------------------------------------------------
-	_Render->r->setCullMode(R_CullMode::RS_CULL_FRONT);
+	//_Render->r->setCullMode(R_CullMode::RS_CULL_FRONT);
 	_Render->r->setBlendMode(true, R_BlendFunc::BS_BLEND_SRC_ALPHA, R_BlendFunc::BS_BLEND_INV_SRC_ALPHA);
 
 	//if (_Config.draw_map_chunk)
@@ -169,7 +196,7 @@ void World::RenderGeom()
 	}
 
 	_Render->r->setBlendMode(false);
-	_Render->r->setCullMode(R_CullMode::RS_CULL_BACK);
+	//_Render->r->setCullMode(R_CullMode::RS_CULL_BACK);
 	//
 
 	PERF_STOP(PERF_MAP);
@@ -214,18 +241,25 @@ void World::RenderGeom()
 
 void World::RenderPostprocess()
 {
-	DSSimpleRenderPass();
+	//DSSimpleRenderPass();
+
+    DirectionalLight light;
+    light.Direction = vec3(_EnvironmentManager->dayNightPhase.dayDir);
+    light.ambient = _EnvironmentManager->skies->GetColor(LightColors::LIGHT_COLOR_GLOBAL_AMBIENT);
+    light.diffuse = _EnvironmentManager->skies->GetColor(LightColors::LIGHT_COLOR_GLOBAL_DIFFUSE);
+    light.specular = vec3(1.0f, 1.0f, 1.0f);
+    DSDirectionalLightPass(light);
+
+    /*_EnvironmentManager->dayNightPhase.setupLighting();
+    DSDirectionalLightPass(_EnvironmentManager->dayNightPhase.m_dirLightDay);
+    DSDirectionalLightPass(_EnvironmentManager->dayNightPhase.m_dirLightNight);*/
 
     DSFogRenderPass();
-
-	/*_EnvironmentManager->dayNightPhase.setupLighting();
-	DSDirectionalLightPass(_EnvironmentManager->dayNightPhase.m_dirLightDay);
-	DSDirectionalLightPass(_EnvironmentManager->dayNightPhase.m_dirLightNight);*/
 }
 
 void World::tick(float dt)
 {
-	_Config.CalculateSquareDistances();
+	_Config.Distances.Update();
 
 	_Map.Tick();
 
@@ -240,37 +274,39 @@ void World::tick(float dt)
 
 void World::DSDirectionalLightPass(DirectionalLight& _light)
 {
-	_TechniquesMgr->m_DSDirLightPassTech->BindS();
-	_TechniquesMgr->m_DSDirLightPassTech->SetEyeWorldPos(_Camera->Position);
-	_TechniquesMgr->m_DSDirLightPassTech->SetDirectionalLight(_light);
-	_TechniquesMgr->m_DSDirLightPassTech->SetScreenSize(_Config.windowSizeX, _Config.windowSizeY);
-	_TechniquesMgr->m_DSDirLightPassTech->BindToPostprocess();
+	_TechniquesMgr->m_POST_DirectionalLight->BindS();
+	_TechniquesMgr->m_POST_DirectionalLight->SetEyeWorldPos(_Camera->Position);
+	_TechniquesMgr->m_POST_DirectionalLight->SetDirectionalLight(_light);
+	_TechniquesMgr->m_POST_DirectionalLight->SetScreenSize(_Config.windowSizeX, _Config.windowSizeY);
 
 	_Render->r->setDepthTest(false);
-	_Render->r->setBlendMode(true, R_BlendFunc::BS_BLEND_ONE, R_BlendFunc::BS_BLEND_ONE);
+	_Render->r->setBlendMode(true, R_BlendFunc::BS_BLEND_SRC_ALPHA, R_BlendFunc::BS_BLEND_INV_SRC_ALPHA);
 
 	_Render->RenderQuad();
 
 	_Render->r->setBlendMode(false);
 	_Render->r->setDepthTest(true);
 
-	_TechniquesMgr->m_DSDirLightPassTech->Unbind();
+	_TechniquesMgr->m_POST_DirectionalLight->Unbind();
 }
 
 void World::DSSimpleRenderPass()
 {
-	_TechniquesMgr->m_SimpleRender->BindS();
-	_TechniquesMgr->m_SimpleRender->SetScreenSize(_Config.windowSizeX, _Config.windowSizeY);
+	_TechniquesMgr->m_POST_Simple->BindS();
+	_TechniquesMgr->m_POST_Simple->SetScreenSize(_Config.windowSizeX, _Config.windowSizeY);
+    _TechniquesMgr->m_POST_Simple->SetAmbientColor(_EnvironmentManager->skies->GetColor(LIGHT_COLOR_GLOBAL_AMBIENT));
+    //_TechniquesMgr->m_POST_Simple->SetAmbientColor(_EnvironmentManager->dayNightPhase.ambientColor);
+    _TechniquesMgr->m_POST_Simple->SetAmbientIntensitive(_EnvironmentManager->dayNightPhase.ambientIntensity);
 
 	_Render->r->setDepthTest(false);
-	_Render->r->setBlendMode(true, R_BlendFunc::BS_BLEND_ONE, R_BlendFunc::BS_BLEND_ONE);
+	_Render->r->setBlendMode(true, R_BlendFunc::BS_BLEND_SRC_ALPHA, R_BlendFunc::BS_BLEND_INV_SRC_ALPHA);
 
 	_Render->RenderQuad();
 
 	_Render->r->setBlendMode(false);
 	_Render->r->setDepthTest(true);
 
-	_TechniquesMgr->m_SimpleRender->Unbind();
+	_TechniquesMgr->m_POST_Simple->Unbind();
 }
 
 void World::DSFogRenderPass()
@@ -279,9 +315,9 @@ void World::DSFogRenderPass()
     _TechniquesMgr->m_POST_Fog->SetScreenSize(_Config.windowSizeX, _Config.windowSizeY);
 
     _TechniquesMgr->m_POST_Fog->SetCameraPos(_Camera->Position);
-    _TechniquesMgr->m_POST_Fog->SetFogDistance(_EnvironmentManager->skies->fogSet[FOG_DISTANCE]);
-    _TechniquesMgr->m_POST_Fog->SetFogModifier(_EnvironmentManager->skies->fogSet[FOG_MULTIPLIER]);
-    _TechniquesMgr->m_POST_Fog->SetFogColor(_EnvironmentManager->skies->colorSet[FOG_COLOR]);
+    _TechniquesMgr->m_POST_Fog->SetFogDistance(_EnvironmentManager->skies->GetFog(LIGHT_FOG_DISTANCE));
+    _TechniquesMgr->m_POST_Fog->SetFogModifier(_EnvironmentManager->skies->GetFog(LIGHT_FOG_MULTIPLIER));
+    _TechniquesMgr->m_POST_Fog->SetFogColor(_EnvironmentManager->skies->GetColor(LIGHT_COLOR_FOG));
 
     _Render->r->setDepthTest(false);
     _Render->r->setBlendMode(true, R_BlendFunc::BS_BLEND_SRC_ALPHA, R_BlendFunc::BS_BLEND_INV_SRC_ALPHA);
@@ -292,4 +328,20 @@ void World::DSFogRenderPass()
     _Render->r->setDepthTest(true);
 
     _TechniquesMgr->m_POST_Fog->Unbind();
+}
+
+
+void World::DSResultQuad()
+{
+    _TechniquesMgr->m_UI_Texture->BindS();
+
+    _Render->r->setDepthTest(false);
+    _Render->r->setBlendMode(true, R_BlendFunc::BS_BLEND_SRC_ALPHA, R_BlendFunc::BS_BLEND_INV_SRC_ALPHA);
+
+    _Render->RenderQuadVT();
+
+    _Render->r->setBlendMode(false);
+    _Render->r->setDepthTest(true);
+
+    _TechniquesMgr->m_UI_Texture->Unbind();
 }

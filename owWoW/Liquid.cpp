@@ -125,7 +125,6 @@ Liquid::~Liquid()
 
 void Liquid::initFromTerrainMH2O(File& f, MH2O_Header * _header)
 {
-	texRepeats = 0.5f;
 	ydir = 1.0f;
 
 	//
@@ -258,14 +257,13 @@ void Liquid::initFromTerrainMH2O(File& f, MH2O_Header * _header)
 		m_WaterLayers.push_back(waterLayer);
 	}
 
-	m_WaterColorLight = _EnvironmentManager->GetSkyColor(RIVER_COLOR_LIGHT);
-	m_WaterColorDark = _EnvironmentManager->GetSkyColor(RIVER_COLOR_DARK);
+	m_WaterColorLight = _EnvironmentManager->skies->GetColor(LIGHT_COLOR_RIVER_LIGHT);
+	m_WaterColorDark = _EnvironmentManager->skies->GetColor(LIGHT_COLOR_RIVER_DARK);
 }
 
 void Liquid::initFromWMO2(File& f, WMOMaterial* _material, const DBC_LiquidTypeRecord* _liquidType, bool _indoor)
 {
 	// Magic for WMO
-	texRepeats = 4.0f;
 	ydir = -1.0f;
 
 	initGeometry(f);
@@ -278,8 +276,8 @@ void Liquid::initFromWMO2(File& f, WMOMaterial* _material, const DBC_LiquidTypeR
 	}
 	else
 	{
-		m_WaterColorLight = _EnvironmentManager->GetSkyColor(RIVER_COLOR_LIGHT);
-		m_WaterColorDark = _EnvironmentManager->GetSkyColor(RIVER_COLOR_DARK);
+		m_WaterColorLight = _EnvironmentManager->skies->GetColor(LIGHT_COLOR_RIVER_LIGHT);
+		m_WaterColorDark = _EnvironmentManager->skies->GetColor(LIGHT_COLOR_RIVER_DARK);
 	}
 }
 
@@ -339,10 +337,10 @@ void Liquid::createBuffer(cvec3 _position)
 				a1 = a2 = a3 = a4 = 1.0f;
 				if (layer.depths.size() > 0)
 				{
-                    a1 = minf(static_cast<float>(layer.depths[p1]) / 255.0f * 1.5f + 0.3f, 1.0f); // whats the magic formular here ???
-                    a2 = minf(static_cast<float>(layer.depths[p2]) / 255.0f * 1.5f + 0.3f, 1.0f);
-                    a3 = minf(static_cast<float>(layer.depths[p3]) / 255.0f * 1.5f + 0.3f, 1.0f);
-                    a4 = minf(static_cast<float>(layer.depths[p4]) / 255.0f * 1.5f + 0.3f, 1.0f);
+                    a1 = minf(static_cast<float>(layer.depths[p1]) / 255.0f, 1.0f); // whats the magic formular here ???
+                    a2 = minf(static_cast<float>(layer.depths[p2]) / 255.0f, 1.0f);
+                    a3 = minf(static_cast<float>(layer.depths[p3]) / 255.0f, 1.0f);
+                    a4 = minf(static_cast<float>(layer.depths[p4]) / 255.0f, 1.0f);
 				}
 
 				// Skip hidden water tile
@@ -363,33 +361,33 @@ void Liquid::createBuffer(cvec3 _position)
 					defaultNormal
 				});
 
+                mh2oVertices.push_back
+                ({
+                    _position + vec3(C_UnitSize * static_cast<float>(x), h2, ydir * (C_UnitSize + C_UnitSize * static_cast<float>(y))),
+                    vec3(t2.first, t2.second, a2),
+                    defaultNormal
+                });
+
 				mh2oVertices.push_back
 				({
                     _position + vec3(C_UnitSize + C_UnitSize * static_cast<float>(x), h4, ydir * (C_UnitSize * static_cast<float>(y))),
 					vec3(t4.first, t4.second, a4),
-					defaultNormal
-				});
-
-				mh2oVertices.push_back
-				({
-                    _position + vec3(C_UnitSize * static_cast<float>(x), h2, ydir * (C_UnitSize +  C_UnitSize * static_cast<float>(y))),
-					vec3(t2.first, t2.second, a2),
 					defaultNormal
 				});
 
 				//
 
+                mh2oVertices.push_back
+                ({
+                    _position + vec3(C_UnitSize + C_UnitSize * static_cast<float>(x), h4, ydir * (C_UnitSize * static_cast<float>(y))),
+                    vec3(t4.first, t4.second, a4),
+                    defaultNormal
+                });
+
 				mh2oVertices.push_back
 				({
                     _position + vec3(C_UnitSize * static_cast<float>(x), h2, ydir * (C_UnitSize + C_UnitSize * static_cast<float>(y))),
 					vec3(t2.first, t2.second, a2),
-					defaultNormal
-				});
-
-				mh2oVertices.push_back
-				({
-                    _position + vec3(C_UnitSize + C_UnitSize * static_cast<float>(x), h4, ydir * (C_UnitSize * static_cast<float>(y))),
-					vec3(t4.first, t4.second, a4),
 					defaultNormal
 				});
 
@@ -446,8 +444,15 @@ void Liquid::draw()
 	size_t texidx = (size_t)(_EnvironmentManager->animtime / 60.0f) % textures.size();
 	_Render->r->setTexture(10, textures[texidx]->GetObj(), 0, 0);
 
-	_TechniquesMgr->m_Water->SetWaterColorLight(_EnvironmentManager->GetSkyColor(RIVER_COLOR_LIGHT));
-	_TechniquesMgr->m_Water->SetWaterColorDark(_EnvironmentManager->GetSkyColor(RIVER_COLOR_DARK));
+	/*_TechniquesMgr->m_Water->SetWaterColorLight(_EnvironmentManager->GetSkyColor(LIGHT_COLOR_OCEAN_LIGHT));
+	_TechniquesMgr->m_Water->SetWaterColorDark(_EnvironmentManager->GetSkyColor(LIGHT_COLOR_OCEAN_DARK));
+    _TechniquesMgr->m_Water->SetShallowAlpha(_EnvironmentManager->skies->oceanShallowAlpha);
+    _TechniquesMgr->m_Water->SetDeepAlpha(_EnvironmentManager->skies->oceanDeepAlpha);*/
+
+    _TechniquesMgr->m_Water->SetWaterColorLight(_EnvironmentManager->skies->GetColor(LIGHT_COLOR_RIVER_LIGHT));
+    _TechniquesMgr->m_Water->SetWaterColorDark(_EnvironmentManager->skies->GetColor(LIGHT_COLOR_RIVER_DARK));
+    _TechniquesMgr->m_Water->SetShallowAlpha(_EnvironmentManager->skies->GetWaterShallowAlpha());
+    _TechniquesMgr->m_Water->SetDeepAlpha(_EnvironmentManager->skies->GetWaterDarkAlpha());
 
 	_Render->r->setGeometry(__geom);
 

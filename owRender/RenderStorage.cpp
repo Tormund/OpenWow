@@ -222,6 +222,7 @@ void RenderStorage::CreateWoWLayouts()
         {"position",    0, 3, 0},
         {"normal",      1, 3, 0}
     };
+    __layout_GxVBF_PN = _Render->r->registerVertexLayout(2, attribs_GxVBF_PN); // USED IN LOW-RESOLUTION TILES
 
     R_VertexLayoutAttrib attribs_GxVBF_PNC[3] = { // 28
         {"position",    0, 3, 0},

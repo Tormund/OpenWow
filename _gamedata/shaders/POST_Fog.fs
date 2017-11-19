@@ -7,9 +7,10 @@ uniform vec3 gCameraPosition;
 
 uniform float gFogDistance;
 uniform float gFogModifier;
-uniform vec3 gFogColor;
+uniform vec3  gFogColor;
 
 float cameraDistance;
+float cameraDistance2D;
 int materialID;
 
 // Out
@@ -19,7 +20,7 @@ vec4 applyFog()
 {
     vec4 color = vec4(0.0);
 	float fogStart = gFogModifier * gFogDistance;
-	float fogFactor = (gFogDistance - cameraDistance) / (gFogDistance - fogStart);
+	float fogFactor = (gFogDistance - cameraDistance2D) / (gFogDistance - fogStart);
 	fogFactor = 1.0 - clamp(fogFactor, 0.0, 1.0);
 
 	if (materialID >=0 && materialID <= 2) 
@@ -54,6 +55,7 @@ void main(void)
 	vec4 Color = getAlbedo4(pixelXY);
 	
 	cameraDistance = distance(WorldPos, gCameraPosition);
+	cameraDistance2D = distance(WorldPos.xz, gCameraPosition.xz);
 	
 	FragColor = applyFog();
 }

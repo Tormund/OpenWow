@@ -46,6 +46,12 @@
     <Filter Include="DBC\Light">
       <UniqueIdentifier>{5d127be8-c522-4fd9-8653-859692201da5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Environment\Skies">
+      <UniqueIdentifier>{179d7822-1b17-4d5c-9dcf-34999c82a998}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DBC\Liquid">
+      <UniqueIdentifier>{4fea2d40-9d28-41d5-9f2d-510a470ab6c5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -130,9 +136,6 @@
     <ClCompile Include="Environment\EnvironmentManager.cpp">
       <Filter>Environment</Filter>
     </ClCompile>
-    <ClCompile Include="Environment\Sky.cpp">
-      <Filter>Environment</Filter>
-    </ClCompile>
     <ClCompile Include="MDX\Animated.cpp">
       <Filter>MDX\Animated</Filter>
     </ClCompile>
@@ -172,8 +175,11 @@
     <ClCompile Include="Environment\DayNightPhase.cpp">
       <Filter>Environment\DayNight</Filter>
     </ClCompile>
+    <ClCompile Include="Environment\Sky.cpp">
+      <Filter>Environment\Skies</Filter>
+    </ClCompile>
     <ClCompile Include="Environment\SkyManager.cpp">
-      <Filter>Environment</Filter>
+      <Filter>Environment\Skies</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -256,9 +262,6 @@
     <ClInclude Include="Environment\EnvironmentManager.h">
       <Filter>Environment</Filter>
     </ClInclude>
-    <ClInclude Include="Environment\Sky.h">
-      <Filter>Environment</Filter>
-    </ClInclude>
     <ClInclude Include="common.h" />
     <ClInclude Include="MDX\Animated.h">
       <Filter>MDX\Animated</Filter>
@@ -273,15 +276,6 @@
       <Filter>DBC</Filter>
     </ClInclude>
     <ClInclude Include="DBC_AreaTable.h">
-      <Filter>DBC</Filter>
-    </ClInclude>
-    <ClInclude Include="DBC_LiquidMaterial.h">
-      <Filter>DBC</Filter>
-    </ClInclude>
-    <ClInclude Include="DBC_LiquidObject.h">
-      <Filter>DBC</Filter>
-    </ClInclude>
-    <ClInclude Include="DBC_LiquidType.h">
       <Filter>DBC</Filter>
     </ClInclude>
     <ClInclude Include="DBC_LoadingScreen.h">
@@ -346,9 +340,6 @@
     <ClInclude Include="Environment\DayNightCycle.h">
       <Filter>Environment\DayNight</Filter>
     </ClInclude>
-    <ClInclude Include="Environment\SkyManager.h">
-      <Filter>Environment</Filter>
-    </ClInclude>
     <ClInclude Include="DBC_Light.h">
       <Filter>DBC\Light</Filter>
     </ClInclude>
@@ -364,10 +355,28 @@
     <ClInclude Include="DBC_LightSkyBox.h">
       <Filter>DBC\Light</Filter>
     </ClInclude>
+    <ClInclude Include="Environment\Sky.h">
+      <Filter>Environment\Skies</Filter>
+    </ClInclude>
+    <ClInclude Include="Environment\SkyManager.h">
+      <Filter>Environment\Skies</Filter>
+    </ClInclude>
+    <ClInclude Include="DBC_LiquidMaterial.h">
+      <Filter>DBC\Liquid</Filter>
+    </ClInclude>
+    <ClInclude Include="DBC_LiquidObject.h">
+      <Filter>DBC\Liquid</Filter>
+    </ClInclude>
+    <ClInclude Include="DBC_LiquidType.h">
+      <Filter>DBC\Liquid</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="DBC__File.inl">
       <Filter>DBC</Filter>
+    </None>
+    <None Include="Environment\Sky.inl">
+      <Filter>Environment\Skies</Filter>
     </None>
   </ItemGroup>
 </Project>

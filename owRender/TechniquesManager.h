@@ -2,6 +2,7 @@
 
 // Log
 #include "Techniques/Debug_GeometryPass.h"
+#include "Techniques/Debug_Normals.h"
 
 #include "Techniques/Sky_GeometryPass.h"
 #include "Techniques/MapTileLowRes_GeometryPass.h"
@@ -11,9 +12,9 @@
 #include "Techniques/Model_Shader.h"
 
 // After
-#include "Techniques/ds_dir_light_pass_tech.h"
+#include "Techniques/POST_DirectionalLight.h"
 #include "Techniques/POST_Fog.h"
-#include "Techniques/SimpleRenderGBuffer.h"
+#include "Techniques/POST_Simple.h"
 
 // UI
 #include "Techniques/UI_Color.h"
@@ -30,6 +31,7 @@ class TechniquesMgr
 	void Init();
 
 	Debug_GeometryPass* m_Debug_GeometryPass;
+    Debug_Normals* m_Debug_Normals;
 
 	Sky_GeometryPass* m_Sky_GeometryPass;
 	MapChunk_GeometryPass* m_MapChunk_GeometryPass;
@@ -40,9 +42,9 @@ class TechniquesMgr
 
 	// Lights
 
-	DSDirLightPassTech* m_DSDirLightPassTech;
+	POST_DirectionalLight* m_POST_DirectionalLight;
     POST_Fog* m_POST_Fog;
-	SimpleRenderGBuffer* m_SimpleRender;
+	POST_Simple* m_POST_Simple;
 
 	// UI
 	UI_Color* m_UI_Color;

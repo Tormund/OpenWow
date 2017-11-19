@@ -42,6 +42,7 @@ public:
 	//
 
 	void draw();
+    void Render_DEBUG();
 	void drawWater();
 	void drawObjects();
 	void drawSky();

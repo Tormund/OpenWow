@@ -10,12 +10,11 @@ RenderConfig::RenderConfig()
 {
 	SetWindowSize(1280, 1024);
 
-	mapdrawdistance = 998.0f * 12.0f;
-	modeldrawdistance = 384.0f * 12.0f;
-	doodaddrawdistance = 64.0f * 12.0f;
-	highresdistance = 384.0f * 12.0f;
-
-	fogdistance = 51200.0f;
+	Distances.mapdrawdistance = 998.0f * 12.0f;
+    Distances.modeldrawdistance = 384.0f * 12.0f;
+    Distances.doodaddrawdistance = 64.0f * 12.0f;
+    Distances.highresdistance = 384.0f * 12.0f;
+    Distances.fogdistance = 51200.0f;
 
     // Render
     OpenGL.EXT_texture_filter_anisotropic = false;
@@ -25,21 +24,20 @@ RenderConfig::RenderConfig()
     OpenGL.majorVersion = 1;
     OpenGL.minorVersion = 0;
 
+    // Quality
     Quality.Terrain_LowDetail = false;
     Quality.Terrain_MCCV = true; 
     Quality.Terrain_MCLV = true;
-    Quality.Texture_Sampler = R_SamplerState::SS_FILTER_POINT;
+    Quality.Texture_Sampler = R_SamplerState::SS_ANISO16;
 
 	// Drawing
 	draw_map_chunk = true;
 	draw_map_wmo = true;
 	draw_map_wmo_doodads = true;
 	draw_map_mdx = true;
+    draw_water = true;
 
-	// Quality
-
-	// Perfomance
-
+    timeEnable = false;
 }
 
 RenderConfig::~RenderConfig()

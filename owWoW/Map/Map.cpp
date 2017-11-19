@@ -578,6 +578,18 @@ void Map::RenderWater()
                 current[i][j]->drawWater();
 }
 
+void Map::Render_DEBUG()
+{
+    // Draw cache
+    for (int i = 0; i < C_TilesCacheSize; i++)
+    {
+        if (maptilecache[i] != nullptr)
+        {
+            maptilecache[i]->Render_DEBUG();
+        }
+    }
+}
+
 //
 
 void Map::enterTile(int x, int z)

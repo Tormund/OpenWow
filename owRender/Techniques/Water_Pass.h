@@ -26,4 +26,14 @@ public:
 	{
 		setVec3("gColorDark", _Color);
 	}
+
+    void SetShallowAlpha(float _value)
+    {
+        setFloat("gShallowAlpha", _value);
+    }
+
+    void SetDeepAlpha(float _value)
+    {
+        setFloat("gDeepAlpha", _value);
+    }
 };

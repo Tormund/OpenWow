@@ -11,7 +11,7 @@ TechniquesMgr::TechniquesMgr()
 	m_MapChunk_GeometryPass = nullptr;
 	m_MapTileLowRes_GeometryPass = nullptr;
 	m_WMO_GeometryPass = nullptr;
-	m_SimpleRender = nullptr;
+	m_POST_Simple = nullptr;
 }
 
 TechniquesMgr::~TechniquesMgr()
@@ -20,12 +20,14 @@ TechniquesMgr::~TechniquesMgr()
 	delete m_MapTileLowRes_GeometryPass;
 	delete m_WMO_GeometryPass;
 
-	delete m_SimpleRender;
+	delete m_POST_Simple;
 }
 
 void TechniquesMgr::Init()
 {
 	m_Debug_GeometryPass = new Debug_GeometryPass();
+
+    m_Debug_Normals = new Debug_Normals();
 
 	//
 
@@ -75,19 +77,19 @@ void TechniquesMgr::Init()
 
 	//----------------------------------------------------------------//
 
-	m_DSDirLightPassTech = new DSDirLightPassTech();
-	m_DSDirLightPassTech->BindS();
+	m_POST_DirectionalLight = new POST_DirectionalLight();
+	m_POST_DirectionalLight->BindS();
 
-	m_DSDirLightPassTech->SetProjectionMatrix(mat4());
-	m_DSDirLightPassTech->SetViewMatrix(mat4());
-	m_DSDirLightPassTech->SetWorldMatrix(mat4());
+	m_POST_DirectionalLight->SetProjectionMatrix(mat4());
+	m_POST_DirectionalLight->SetViewMatrix(mat4());
+	m_POST_DirectionalLight->SetWorldMatrix(mat4());
 
-	m_DSDirLightPassTech->BindToPostprocess();
+	m_POST_DirectionalLight->BindToPostprocess();
 
-	m_DSDirLightPassTech->SetScreenSize(_Config.windowSizeX, _Config.windowSizeY);
-	m_DSDirLightPassTech->SetMatSpecularPower(64);
+	m_POST_DirectionalLight->SetScreenSize(_Config.windowSizeX, _Config.windowSizeY);
+	m_POST_DirectionalLight->SetMatSpecularPower(64);
 
-	m_DSDirLightPassTech->Unbind();
+	m_POST_DirectionalLight->Unbind();
 
     //----------------------------------------------------------------//
 
@@ -105,18 +107,18 @@ void TechniquesMgr::Init()
     m_POST_Fog->Unbind();
 	//----------------------------------------------------------------//
 
-	m_SimpleRender = new SimpleRenderGBuffer();
-	m_SimpleRender->BindS();
+	m_POST_Simple = new POST_Simple();
+	m_POST_Simple->BindS();
 
-	m_SimpleRender->SetProjectionMatrix(mat4());
-	m_SimpleRender->SetViewMatrix(mat4());
-	m_SimpleRender->SetWorldMatrix(mat4());
+	m_POST_Simple->SetProjectionMatrix(mat4());
+	m_POST_Simple->SetViewMatrix(mat4());
+	m_POST_Simple->SetWorldMatrix(mat4());
 
-	m_SimpleRender->BindToPostprocess();
+	m_POST_Simple->BindToPostprocess();
 
-	m_SimpleRender->SetScreenSize(_Config.windowSizeX, _Config.windowSizeY);
+	m_POST_Simple->SetScreenSize(_Config.windowSizeX, _Config.windowSizeY);
 	
-	m_SimpleRender->Unbind();
+	m_POST_Simple->Unbind();
 
 	//
 

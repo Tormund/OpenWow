@@ -26,23 +26,11 @@
     <ClCompile Include="TechniquesManager.cpp">
       <Filter>Techniques</Filter>
     </ClCompile>
-    <ClCompile Include="Techniques\ds_light_pass_tech.cpp">
-      <Filter>Techniques\Lights</Filter>
-    </ClCompile>
-    <ClCompile Include="Techniques\ds_point_light_pass_tech.cpp">
-      <Filter>Techniques\Lights</Filter>
-    </ClCompile>
-    <ClCompile Include="Techniques\Technique.cpp">
-      <Filter>Techniques\Common</Filter>
-    </ClCompile>
     <ClCompile Include="PipelineWorldTransformation.cpp">
       <Filter>Pipeline</Filter>
     </ClCompile>
     <ClCompile Include="OpenGL.cpp">
       <Filter>Render</Filter>
-    </ClCompile>
-    <ClCompile Include="Techniques\ds_dir_light_pass_tech.cpp">
-      <Filter>Techniques\Postprocess</Filter>
     </ClCompile>
     <ClCompile Include="RenderDevice.cpp">
       <Filter>Render</Filter>
@@ -67,6 +55,9 @@
     </ClCompile>
     <ClCompile Include="RenderConfig.cpp">
       <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Techniques\Technique.cpp">
+      <Filter>Techniques</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -97,41 +88,29 @@
     <ClInclude Include="TechniquesManager.h">
       <Filter>Techniques</Filter>
     </ClInclude>
-    <ClInclude Include="Techniques\ds_light_pass_tech.h">
-      <Filter>Techniques\Lights</Filter>
-    </ClInclude>
-    <ClInclude Include="Techniques\ds_point_light_pass_tech.h">
-      <Filter>Techniques\Lights</Filter>
-    </ClInclude>
     <ClInclude Include="Techniques\MapChunk_GeometryPass.h">
-      <Filter>Techniques\Geometry</Filter>
+      <Filter>Techniques\Shaders</Filter>
     </ClInclude>
     <ClInclude Include="Techniques\MapTileLowRes_GeometryPass.h">
-      <Filter>Techniques\Geometry</Filter>
+      <Filter>Techniques\Shaders</Filter>
     </ClInclude>
     <ClInclude Include="Techniques\WMO_GeomertyPass.h">
-      <Filter>Techniques\Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Techniques\Technique.h">
-      <Filter>Techniques\Common</Filter>
+      <Filter>Techniques\Shaders</Filter>
     </ClInclude>
     <ClInclude Include="Techniques\Sky_GeometryPass.h">
-      <Filter>Techniques\Geometry</Filter>
+      <Filter>Techniques\Shaders</Filter>
     </ClInclude>
     <ClInclude Include="Techniques\UI_Font.h">
       <Filter>Techniques\UI</Filter>
     </ClInclude>
     <ClInclude Include="Techniques\Debug_GeometryPass.h">
-      <Filter>Techniques\Geometry</Filter>
+      <Filter>Techniques\Shaders</Filter>
     </ClInclude>
     <ClInclude Include="PipelineWorldTransformation.h">
       <Filter>Pipeline</Filter>
     </ClInclude>
-    <ClInclude Include="lights_common.h">
-      <Filter>Techniques\Lights</Filter>
-    </ClInclude>
     <ClInclude Include="Techniques\Water_Pass.h">
-      <Filter>Techniques\Geometry</Filter>
+      <Filter>Techniques\Shaders</Filter>
     </ClInclude>
     <ClInclude Include="Techniques\UI_Texture.h">
       <Filter>Techniques\UI</Filter>
@@ -141,12 +120,6 @@
     </ClInclude>
     <ClInclude Include="Techniques\UI_Color.h">
       <Filter>Techniques\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Techniques\SimpleRenderGBuffer.h">
-      <Filter>Techniques\Postprocess</Filter>
-    </ClInclude>
-    <ClInclude Include="Techniques\ds_dir_light_pass_tech.h">
-      <Filter>Techniques\Postprocess</Filter>
     </ClInclude>
     <ClInclude Include="RenderDevice.h">
       <Filter>Render</Filter>
@@ -170,7 +143,7 @@
       <Filter>Render</Filter>
     </ClInclude>
     <ClInclude Include="Techniques\Model_Shader.h">
-      <Filter>Techniques\Geometry</Filter>
+      <Filter>Techniques\Shaders</Filter>
     </ClInclude>
     <ClInclude Include="ConsoleOpenGL.h">
       <Filter>Render</Filter>
@@ -183,6 +156,27 @@
     </ClInclude>
     <ClInclude Include="Techniques\POST_Fog.h">
       <Filter>Techniques\Postprocess</Filter>
+    </ClInclude>
+    <ClInclude Include="Techniques\POST_Simple.h">
+      <Filter>Techniques\Postprocess</Filter>
+    </ClInclude>
+    <ClInclude Include="Techniques\POST_DirectionalLight.h">
+      <Filter>Techniques\Postprocess</Filter>
+    </ClInclude>
+    <ClInclude Include="Techniques\Technique.h">
+      <Filter>Techniques</Filter>
+    </ClInclude>
+    <ClInclude Include="Techniques\ds_light_pass_tech.h">
+      <Filter>Techniques\Postprocess</Filter>
+    </ClInclude>
+    <ClInclude Include="Techniques\ds_point_light_pass_tech.h">
+      <Filter>Techniques\Postprocess</Filter>
+    </ClInclude>
+    <ClInclude Include="lights_common.h">
+      <Filter>Techniques\Postprocess</Filter>
+    </ClInclude>
+    <ClInclude Include="Techniques\Debug_Normals.h">
+      <Filter>Techniques\Shaders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -198,15 +192,6 @@
     <Filter Include="Techniques">
       <UniqueIdentifier>{3b62bcfc-0d63-440b-a018-58f0bb73c48f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Techniques\Lights">
-      <UniqueIdentifier>{caac44df-f1bd-4c10-906c-c9f0c71d0df2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Techniques\Geometry">
-      <UniqueIdentifier>{4f764ab4-cbb8-4e5e-a319-2e3029ed2fb9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Techniques\Common">
-      <UniqueIdentifier>{6c66dea9-ccdc-44e3-a078-21fb291eb62c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Techniques\UI">
       <UniqueIdentifier>{6b0560c6-62a4-4fef-bc46-e4040e3313b1}</UniqueIdentifier>
     </Filter>
@@ -219,13 +204,16 @@
     <Filter Include="Render">
       <UniqueIdentifier>{83e27261-1695-4e85-a7fe-099ead28f2d2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Techniques\Shaders">
+      <UniqueIdentifier>{4f764ab4-cbb8-4e5e-a319-2e3029ed2fb9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Techniques\Technique.inl">
-      <Filter>Techniques\Common</Filter>
-    </None>
     <None Include="PipelineWorldTransformation.inl">
       <Filter>Pipeline</Filter>
+    </None>
+    <None Include="Techniques\Technique.inl">
+      <Filter>Techniques</Filter>
     </None>
   </ItemGroup>
 </Project>

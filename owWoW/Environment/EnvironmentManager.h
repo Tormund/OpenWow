@@ -20,13 +20,6 @@ class EnvironmentManager : public Module
 	void SetAmbientLights(bool on);
 	void SetFog();
 
-	//
-
-	vec3 GetSkyColor(SkyColorNames _color)
-	{
-		return skies->colorSet[_color];
-	}
-
 public:
 	void BeforeDraw();
 
@@ -46,7 +39,7 @@ public:
 	WowTime m_GameTime;
 
 
-	MapSkies* skies;
+	SkyManager* skies;
 
 	DayNightCycle* dayNightCycle;
 	DayNightPhase dayNightPhase;

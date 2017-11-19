@@ -35,6 +35,7 @@ public:
 	void Post_Load();
 
 	void Render();
+    void Render_DEBUG();
 	void drawPass(int anim);
 
 public:
@@ -62,6 +63,8 @@ public:
 	uint16  m_IndexesCount;
 
 	BoundingBox m_Bounds;
+
+    uint32 __geomDebugNormals;
 
 private:
 	MCNK_Header header;

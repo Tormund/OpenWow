@@ -36,12 +36,12 @@ bool RenderGL::Init()
 
 	_RenderStorage->Init();
 
-    rb = r->createRenderBuffer(_Config.windowSizeX, _Config.windowSizeY, R_TextureFormats::RGBA16F, true, 4, 0);
-
+    rb = r->createRenderBuffer(_Config.windowSizeX, _Config.windowSizeY, R_TextureFormats::RGBA32F, true, 4, 0);
+    rbFinal = r->createRenderBuffer(_Config.windowSizeX, _Config.windowSizeY, R_TextureFormats::RGBA32F, false, 1, 0);
 
     // Main game camera
     mainCamera = new Camera;
-    mainCamera->setupViewParams(45.0f, _Config.aspectRatio, 2.0f, 15000.0f);
+    mainCamera->setupViewParams(45.0f, _Config.aspectRatio, 2.0f, 10000.0f);
     _PipelineGlobal->SetCamera(mainCamera);
 
 	return true;
@@ -69,6 +69,7 @@ void RenderGL::Set2D()
 	r->setCullMode(R_CullMode::RS_CULL_NONE);
 
 	// Depth settings
+    r->setDepthMask(false);
 	r->setDepthTest(false);
 
 	// Blending settings
@@ -256,8 +257,13 @@ void RenderGL::RenderText(vec2 _pos, cstring _string, TextAlignW _alignW, TextAl
 void RenderGL::RenderQuad()
 {
 	r->setGeometry(_RenderStorage->__Quad);
-
 	r->drawIndexed(PRIM_TRILIST, 0, 6, 0, 4);
+}
+
+void RenderGL::RenderQuadVT()
+{
+    r->setGeometry(_RenderStorage->__QuadVT);
+    r->drawIndexed(PRIM_TRILIST, 0, 6, 0, 4);
 }
 
 //

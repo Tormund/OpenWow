@@ -53,6 +53,7 @@ public:
 	void RenderText(vec2 _pos, cstring _string, TextAlignW _alignW, TextAlignH _alignH, Font* _font, const Color& _color = COLOR_WHITE) const;
 
 	void RenderQuad();
+    void RenderQuadVT();
 
 private:
 	void OnWindowResized(uint32 _width, uint32 _height);
@@ -63,6 +64,7 @@ private:
 public:
 	RenderDevice* r;
     uint32 rb;
+    uint32 rbFinal;
     Camera* mainCamera;
 };
 
